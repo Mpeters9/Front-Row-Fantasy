@@ -1,10 +1,18 @@
 [
-    { "name": "Josh Allen", "position": "QB" },
-    { "name": "Patrick Mahomes", "position": "QB" },
-    { "name": "Christian McCaffrey", "position": "RB" },
-    { "name": "Davante Adams", "position": "WR" },
-    { "name": "Travis Kelce", "position": "TE" },
-    { "name": "Justin Jefferson", "position": "WR" },
-    { "name": "Derrick Henry", "position": "RB" },
-    { "name": "Lamar Jackson", "position": "QB" }
+    {
+        "name": "Josh Allen",
+        "name": "QB",
+        "position": 25.4,
+        "position":Points,
+    },
+    {
+        "name": "Patrick Mahomes",
+        "name": "QB",
+        "name": 22.1,
+    },
+    {
+    "name": "name": "Davante Adams",
+    "position": "position": WR",
+    "fantasyPoints": "25.418.9
+    }
 ]
