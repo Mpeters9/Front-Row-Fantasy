@@ -5,53 +5,80 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>2025 Fantasy Football Players - Front Row Fantasy</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
+    <link rel="icon" href="logo.png" type="image/png">
 </head>
-<body class="bg-gray-50 dark:bg-gray-900 font-inter transition-colors duration-300">
-    <header class="bg-navy text-white py-4 sticky top-0 z-10 shadow-lg">
+<body class="bg-gray-50 dark:bg-gray-900 font-inter transition-colors duration-300" aria-label="Main content">
+    <header class="bg-navy text-white py-4 sticky top-0 z-20 shadow-lg">
         <div class="max-w-7xl mx-auto flex justify-between items-center px-6">
             <div class="flex items-center gap-4">
                 <img src="logo.png" alt="Front Row Fantasy Logo" class="h-12" onerror="this.src='https://via.placeholder.com/48?text=FRF'">
                 <h1 class="text-3xl font-bold">Front Row Fantasy</h1>
             </div>
             <div class="flex items-center gap-4">
-                <nav class="hidden md:flex gap-4">
+                <nav class="hidden md:flex gap-4" aria-label="Main navigation">
                     <a href="index.html" class="px-4 py-2 hover:bg-orange-600 rounded-lg transition">Home</a>
-                    <a href="players.html" class="px-4 py-2 hover:bg-orange-600 rounded-lg transition">Players</a>
+                    <a href="players.html" class="px-4 py-2 hover:bg-orange-600 rounded-lg transition" aria-current="page">Players</a>
+                    <a href="stats.html" class="px-4 py-2 hover:bg-orange-600 rounded-lg transition">Stats</a>
                     <a href="guides.html" class="px-4 py-2 hover:bg-orange-600 rounded-lg transition">Guides</a>
                     <a href="https://discord.com" class="px-4 py-2 hover:bg-orange-600 rounded-lg transition">Community</a>
                 </nav>
-                <button id="themeToggle" class="p-2 rounded-full hover:bg-orange-600 transition" title="Toggle Dark Mode">
+                <button id="themeToggle" class="p-2 rounded-full hover:bg-orange-600 transition" title="Toggle Dark Mode" aria-label="Toggle dark mode">
                     <svg id="themeIcon" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
                     </svg>
                 </button>
+                <button id="mobileMenuToggle" class="md:hidden p-2 rounded-full hover:bg-orange-600 transition" aria-label="Toggle mobile menu">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                    </svg>
+                </button>
             </div>
         </div>
+        <nav id="mobileMenu" class="hidden md:hidden bg-navy text-white px-6 py-4" aria-label="Mobile navigation">
+            <a href="index.html" class="block px-4 py-2 hover:bg-orange-600 rounded-lg transition">Home</a>
+            <a href="players.html" class="block px-4 py-2 hover:bg-orange-600 rounded-lg transition">Players</a>
+            <a href="stats.html" class="block px-4 py-2 hover:bg-orange-600 rounded-lg transition">Stats</a>
+            <a href="guides.html" class="block px-4 py-2 hover:bg-orange-600 rounded-lg transition">Guides</a>
+            <a href="https://discord.com" class="block px-4 py-2 hover:bg-orange-600 rounded-lg transition">Community</a>
+        </nav>
     </header>
     <main class="max-w-7xl mx-auto p-6">
-        <div class="bg-white dark:bg-gray-800 p-8 rounded-xl shadow-xl relative animate__fadeInUp">
+        <div class="bg-white dark:bg-gray-800 p-8 rounded-xl shadow-xl relative animate__fadeInUp" aria-label="Player list">
             <h2 class="text-2xl font-bold mb-6 text-gray-900 dark:text-white">2025 NFL Players</h2>
             <div class="flex flex-col sm:flex-row gap-4 mb-6">
-                <input id="searchInput" type="text" placeholder="Search players..." class="p-3 border rounded-lg w-full bg-gray-50 dark:bg-gray-700 dark:text-white">
-                <select id="positionFilter" class="p-3 border rounded-lg bg-gray-50 dark:bg-gray-700 dark:text-white">
+                <input id="searchInput" type="text" placeholder="Search players..." class="p-3 border rounded-lg w-full bg-gray-50 dark:bg-gray-700 dark:text-white" aria-label="Search players">
+                <select id="positionFilter" class="p-3 border rounded-lg bg-gray-50 dark:bg-gray-700 dark:text-white" aria-label="Filter by position">
                     <option value="">All Positions</option>
                     <option value="QB">QB</option>
                     <option value="RB">RB</option>
                     <option value="WR">WR</option>
                     <option value="TE">TE</option>
                 </select>
-                <select id="sortBy" class="p-3 border rounded-lg bg-gray-50 dark:bg-gray-700 dark:text-white">
+                <select id="sortBy" class="p-3 border rounded-lg bg-gray-50 dark:bg-gray-700 dark:text-white" aria-label="Sort players">
                     <option value="name">Sort by Name</option>
                     <option value="position">Sort by Position</option>
                     <option value="points">Sort by Fantasy Points</option>
                 </select>
             </div>
-            <div id="loadingSpinner" class="hidden absolute inset-0 flex items-center justify-center bg-gray-100 dark:bg-gray-800 bg-opacity-75">
-                <div class="w-8 h-8 border-4 border-orange-500 border-t-transparent rounded-full animate-spin"></div>
+            <div class="flex flex-col sm:flex-row gap-4 mb-6">
+                <select id="comparePlayer1" class="p-3 border rounded-lg w-full bg-gray-50 dark:bg-gray-700 dark:text-white" aria-label="Select Player 1 for comparison">
+                    <option value="">Select Player 1</option>
+                </select>
+                <select id="comparePlayer2" class="p-3 border rounded-lg w-full bg-gray-50 dark:bg-gray-700 dark:text-white" aria-label="Select Player 2 for comparison">
+                    <option value="">Select Player 2</option>
+                </select>
+                <button id="compareBtn" class="bg-orange-500 text-white px-6 py-3 rounded-lg hover:bg-orange-600 transition" aria-label="Compare players">
+                    Compare Players
+                </button>
             </div>
-            <ul id="playerList" class="space-y-4"></ul>
+            <canvas id="playerChart" class="hidden mt-6" aria-hidden="true"></canvas>
+            <div id="loadingSpinner" class="hidden absolute inset-0 flex items-center justify-center bg-gray-600 bg-opacity-50">
+                <div class="w-24 h-24 border-4 border-orange-600 border-t-transparent rounded-full animate-spin"></div>
+            </div>
+            <ul id="playerList" class="space-y-4" aria-label="Player list"></ul>
             <div id="errorMessage" class="text-red-600 dark:text-red-400 text-center mt-6"></div>
         </div>
     </main>
@@ -61,8 +88,16 @@
     <script>
         const apiKey = 'YOUR_API_FOOTBALL_KEY'; // Replace with your API-Football key
         const teamsUrl = 'https://v1.american-football.api-sports.io/teams?league=1&season=2025';
+        const sleeperUrl = 'https://api.sleeper.app/v1/players/nfl';
         const localUrl = 'players_2025.json';
         let allPlayers = [];
+
+        function calculateFantasyPoints(stats) {
+            return (stats?.passing_yards || 0) * 0.04 + (stats?.passing_touchdowns || 0) * 4 +
+                (stats?.rushing_yards || 0) * 0.1 + (stats?.rushing_touchdowns || 0) * 6 +
+                (stats?.receiving_yards || 0) * 0.1 + (stats?.receiving_touchdowns || 0) * 6 +
+                (stats?.receptions || 0) * 0.5 - (stats?.interceptions || 0) * 2 - (stats?.fumbles_lost || 0) * 2;
+        }
 
         function displayPlayers(players) {
             const playerList = document.getElementById('playerList');
@@ -72,31 +107,38 @@
                 const position = player.position;
                 const team = player.team?.name || 'N/A';
                 const points = player.fantasy_points || 'N/A';
+                const image = player.image || 'https://via.placeholder.com/40';
                 const li = document.createElement('li');
-                li.className = 'bg-gray-100 dark:bg-gray-700 p-4 rounded-lg shadow-md flex justify-between transform hover:scale-105 transition duration-300';
+                li.className = 'bg-gray-100 dark:bg-gray-700 p-4 rounded-lg shadow-md flex items-center gap-4 transform hover:scale-[1.02] transition duration-300';
                 li.innerHTML = `
-                    <span class="text-gray-900 dark:text-white">${name} - ${position} (${team})</span>
-                    <span class="text-gray-600 dark:text-gray-300">${points} pts</span>
+                    <img src="${image}" alt="${name}" class="h-10 w-10 rounded-full object-cover lazy-load" loading="lazy">
+                    <div class="flex-1">
+                        <span class="text-gray-900 dark:text-white font-semibold">${name} - ${position} (${team})</span>
+                        <span class="text-gray-600 dark:text-gray-300 block">${points} pts</span>
+                    </div>
                 `;
                 playerList.appendChild(li);
+            });
+            const compare1 = document.getElementById('comparePlayer1');
+            const compare2 = document.getElementById('comparePlayer2');
+            compare1.innerHTML = '<option value="">Select Player 1</option>';
+            compare2.innerHTML = '<option value="">Select Player 2</option>';
+            players.forEach(player => {
+                const option = document.createElement('option');
+                option.value = player.player_name || player.name;
+                option.textContent = player.name} (${player.position})`;
+                compare1.appendChild(option.cloneNode(true));
+                compare2.appendChild(option);
             });
         }
 
         function sortPlayers(players, sortBy) {
             if (sortBy === 'name') {
-                return players.sort((a, b) => {
-                    const nameA = a.player_name || a.name;
-                    const nameB = b.player_name || b.name;
-                    return nameA.localeCompare(nameB);
-                });
+                return players.sort((a, b) => (a.player_name || a.name).localeCompare(b.player_name || b.name));
             } else if (sortBy === 'position') {
                 return players.sort((a, b) => a.position.localeCompare(b.position));
             } else if (sortBy === 'points') {
-                return players.sort((a, b) => {
-                    const pointsA = parseFloat(a.fantasy_points || 0);
-                    const pointsB = parseFloat(b.fantasy_points || 0);
-                    return pointsB - pointsA;
-                });
+                return players.sort((a, b) => parseFloat(b.fantasy_points || 0) - parseFloat(a.fantasy_points || 0));
             }
             return players;
         }
@@ -118,50 +160,107 @@
         document.getElementById('positionFilter').addEventListener('change', filterPlayers);
         document.getElementById('sortBy').addEventListener('change', filterPlayers);
 
+        document.getElementById('compareBtn').addEventListener('click', () => {
+            const p1Name = document.getElementById('comparePlayer1').value;
+            const p2Name = document.getElementById('comparePlayer2').value;
+            const player1 = allPlayers.find(p => (p.player_name || p.name) === p1Name);
+            const player2 = allPlayers.find(p => (p.player_name || p.name) === p2Name);
+            if (player1 && player2) {
+                const ctx = document.getElementById('playerChart').getContext('2d');
+                document.getElementById('playerChart').classList.remove('hidden');
+                new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: ['Fantasy Points', 'Yards', 'Touchdowns'],
+                        datasets: [
+                            {
+                                label: player1.name,
+                                data: [
+                                    parseFloat(player1.fantasy_points || 0),
+                                    parseFloat(player1.stats?.total_yards || 0),
+                                    parseFloat(player1.stats?.total_touchdowns || 0)
+                                ],
+                                backgroundColor: 'rgba(255, 159, 64, 0.6)',
+                                borderColor: 'rgba(255, 159, 64, 1)',
+                                borderWidth: 1
+                            },
+                            {
+                                label: player2.name,
+                                data: [
+                                    parseFloat(player2.fantasy_points || 0),
+                                    parseFloat(player2.stats?.total_yards || 0),
+                                    parseFloat(player2.stats?.total_touchdowns || 0)
+                                ],
+                                backgroundColor: 'rgba(54, 162, 235, 0.6)',
+                                borderColor: 'rgba(54, 162, 235, 1)',
+                                borderWidth: 1
+                            }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        scales: { y: { beginAtZero: true } },
+                        plugins: { legend: { display: true } }
+                    }
+                });
+            }
+        });
+
         document.getElementById('loadingSpinner').classList.remove('hidden');
-        // Fetch teams to get player data
-        fetch(teamsUrl, {
-            headers: { 'x-rapidapi-key': apiKey }
-        })
-            .then(response => {
-                if (!response.ok) throw new Error('Failed to fetch teams');
-                return response.json();
-            })
-            .then(data => {
-                const teams = data.response;
-                const playerPromises = teams.map(team => 
-                    fetch(`https://v1.american-football.api-sports.io/players?season=2025&team=${team.id}`, {
-                        headers: { 'x-rapidapi-key': apiKey }
-                    })
-                    .then(response => response.json())
-                    .then(data => data.response)
-                );
-                return Promise.all(playerPromises);
-            })
-            .then(playerArrays => {
-                allPlayers = playerArrays.flat().map(player => ({
-                    player_name: player.name,
-                    position: player.position || 'Unknown',
-                    team: { name: player.team || 'N/A' },
-                    fantasy_points: player.points || 'N/A'  // Adjust based on actual API response
-                }));
-                document.getElementById('loadingSpinner').classList.add('hidden');
-                filterPlayers();
-            })
-            .catch(error => {
-                console.error('Error fetching players:', error);
-                document.getElementById('loadingSpinner').classList.add('hidden');
-                document.getElementById('errorMessage').textContent = 'Failed to load players from API. Using local data.';
-                fetch(localUrl)
-                    .then(response => response.json())
-                    .then(data => {
-                        allPlayers = data;
-                        filterPlayers();
-                    })
-                    .catch(() => {
-                        document.getElementById('errorMessage').textContent = 'Failed to load local data.';
+        fetch(sleeperUrl)
+            .then(response => response.json())
+            .then(sleeperData => {
+                const sleeperMap = new Map(Object.entries(sleeperData).map(([id, p]) => [p.full_name, {
+                    image: `https://sleepercdn.com/avatars/${id}`,
+                    position: p.position
+                }]));
+                fetch(teamsUrl, {
+                    headers: { 'x-rapidapi-key': apiKey }
+                })
+                .then(response => {
+                    if (!response.ok) throw new Error('Failed to fetch teams');
+                    return response.json();
+                })
+                .then(data => {
+                    const teams = data.response;
+                    const playerPromises = teams.map(team => 
+                        return fetch(`https://v1.american-football.api-sports.io/players?season=2025&team=${team.id}`, {
+                            headers: { 'x-rapidapi-key': apiKey }
+                        })
+                        .then(response => response.json())
+                        .then(data => data.response)
+                    );
+                    return Promise.all(playerPromises)
+                })
+                .then(playerArrays => {
+                    allPlayers = playerArrays.flat().map(player => {
+                        const sleeper = sleeperMap.get(player.name) || {};
+                        return {
+                            player_name: player.name,
+                            position: player.position || sleeper.position || 'Unknown',
+                            team: { name: player.team || 'N/A' },
+                            fantasy_points: calculateFantasyPoints(player.stats),
+                            stats: player.stats || {},
+                            image: sleeper.image || 'https://via.placeholder.com/40'
+                        };
                     });
-            });
+                    document.getElementById('loadingSpinner').classList.add('hidden');
+                    filterPlayers();
+                })
+                .catch(error => {
+                    console.error('Error fetching players:', error);
+                    document.getElementById('loadingSpinner').classList.add('hidden');
+                    document.getElementById('errorMessage').textContent = 'Failed to load players from API. Using local data.';
+                    fetch(localUrl)
+                        .then(response => response.json())
+                        .then(data => {
+                            allPlayers = data;
+                            filterPlayers();
+                        })
+                        .catch(() => {
+                            document.getElementById('errorMessage').textContent = 'Failed to load local data.';
+                        });
+                });
     </script>
 </body>
 </html>
