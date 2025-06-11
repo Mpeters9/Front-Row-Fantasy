@@ -1,18 +1,17 @@
 [
     {
         "name": "Josh Allen",
-        "name": "QB",
-        "position": 25.4,
-        "position":Points,
+        "position": "QB",
+        "fantasyPoints": 25.4
     },
     {
         "name": "Patrick Mahomes",
-        "name": "QB",
-        "name": 22.1,
+        "position": "QB",
+        "fantasyPoints": 22.1
     },
     {
-    "name": "name": "Davante Adams",
-    "position": "position": WR",
-    "fantasyPoints": "25.418.9
+        "name": "Davante Adams",
+        "position": "WR",
+        "fantasyPoints": 18.9
     }
 ]
