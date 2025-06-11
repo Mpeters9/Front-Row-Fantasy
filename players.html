@@ -25,14 +25,14 @@
                     <a href="guides.html" class="px-4 py-2 hover:bg-orange-600 rounded-lg transition">Guides</a>
                     <a href="https://discord.com" class="px-4 py-2 hover:bg-orange-600 rounded-lg transition">Community</a>
                 </nav>
-                <button id="themeToggle" class="p-2 rounded-full hover:bg-orange-600 transition" title="Toggle Dark Mode" aria-label="Toggle dark mode">
-                    <svg id="themeIcon" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+                <button id="themeToggle" class="p-2 rounded-lg hover:bg-orange-600 transition" title="Toggle Dark Mode" aria-label="Toggle dark mode">
+                    <svg id="themeIcon" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24">
+                        <path stroke-linecap="round" stroke-width="2" stroke-linejoin="round" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
                     </svg>
                 </button>
-                <button id="mobileMenuToggle" class="md:hidden p-2 rounded-full hover:bg-orange-600 transition" aria-label="Toggle mobile menu">
+                <button id="mobileMenuToggle" class="md:hidden p-2 rounded-lg hover:bg-orange-600 transition" aria-label="Toggle mobile menu">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                        <path stroke-linecap="round" stroke-width="2" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" />
                     </svg>
                 </button>
             </div>
@@ -86,26 +86,17 @@
         <p>© 2025 Front Row Fantasy. All rights reserved.</p>
     </footer>
     <script>
-        const apiKey = 'YOUR_API_FOOTBALL_KEY'; // Replace with your API-Football key
-        const teamsUrl = 'https://v1.american-football.api-sports.io/teams?league=1&season=2025';
         const sleeperUrl = 'https://api.sleeper.app/v1/players/nfl';
         const localUrl = 'players_2025.json';
         let allPlayers = [];
-
-        function calculateFantasyPoints(stats) {
-            return (stats?.passing_yards || 0) * 0.04 + (stats?.passing_touchdowns || 0) * 4 +
-                (stats?.rushing_yards || 0) * 0.1 + (stats?.rushing_touchdowns || 0) * 6 +
-                (stats?.receiving_yards || 0) * 0.1 + (stats?.receiving_touchdowns || 0) * 6 +
-                (stats?.receptions || 0) * 0.5 - (stats?.interceptions || 0) * 2 - (stats?.fumbles_lost || 0) * 2;
-        }
 
         function displayPlayers(players) {
             const playerList = document.getElementById('playerList');
             playerList.innerHTML = '';
             players.forEach(player => {
-                const name = player.player_name || player.name;
+                const name = player.name;
                 const position = player.position;
-                const team = player.team?.name || 'N/A';
+                const team = player.team || 'N/A';
                 const points = player.fantasy_points || 'N/A';
                 const image = player.image || 'https://via.placeholder.com/40';
                 const li = document.createElement('li');
@@ -125,8 +116,8 @@
             compare2.innerHTML = '<option value="">Select Player 2</option>';
             players.forEach(player => {
                 const option = document.createElement('option');
-                option.value = player.player_name || player.name;
-                option.textContent = player.name} (${player.position})`;
+                option.value = player.name;
+                option.textContent = `${player.name} (${player.position})`;
                 compare1.appendChild(option.cloneNode(true));
                 compare2.appendChild(option);
             });
@@ -134,7 +125,7 @@
 
         function sortPlayers(players, sortBy) {
             if (sortBy === 'name') {
-                return players.sort((a, b) => (a.player_name || a.name).localeCompare(b.player_name || b.name));
+                return players.sort((a, b) => a.name.localeCompare(b.name));
             } else if (sortBy === 'position') {
                 return players.sort((a, b) => a.position.localeCompare(b.position));
             } else if (sortBy === 'points') {
@@ -148,7 +139,7 @@
             const position = document.getElementById('positionFilter').value;
             const sortBy = document.getElementById('sortBy').value;
             let filtered = allPlayers.filter(player => {
-                const name = (player.player_name || player.name).toLowerCase();
+                const name = player.name.toLowerCase();
                 const pos = player.position;
                 return (!search || name.includes(search)) && (!position || pos === position);
             });
@@ -163,15 +154,15 @@
         document.getElementById('compareBtn').addEventListener('click', () => {
             const p1Name = document.getElementById('comparePlayer1').value;
             const p2Name = document.getElementById('comparePlayer2').value;
-            const player1 = allPlayers.find(p => (p.player_name || p.name) === p1Name);
-            const player2 = allPlayers.find(p => (p.player_name || p.name) === p2Name);
+            const player1 = allPlayers.find(p => p.name === p1Name);
+            const player2 = allPlayers.find(p => p.name === p2Name);
             if (player1 && player2) {
                 const ctx = document.getElementById('playerChart').getContext('2d');
                 document.getElementById('playerChart').classList.remove('hidden');
                 new Chart(ctx, {
                     type: 'bar',
                     data: {
-                        labels: ['Fantasy Points', 'Yards', 'Touchdowns'],
+                        labels: ['Fantasy Points', 'Total Yards', 'Touchdowns'],
                         datasets: [
                             {
                                 label: player1.name,
@@ -211,56 +202,40 @@
             .then(response => response.json())
             .then(sleeperData => {
                 const sleeperMap = new Map(Object.entries(sleeperData).map(([id, p]) => [p.full_name, {
-                    image: `https://sleepercdn.com/avatars/${id}`,
+                    image: `https://sleepercdn.com/content/nfl/players/thumb/${id}.jpg`,
                     position: p.position
                 }]));
-                fetch(teamsUrl, {
-                    headers: { 'x-rapidapi-key': apiKey }
-                })
-                .then(response => {
-                    if (!response.ok) throw new Error('Failed to fetch teams');
-                    return response.json();
-                })
-                .then(data => {
-                    const teams = data.response;
-                    const playerPromises = teams.map(team => 
-                        return fetch(`https://v1.american-football.api-sports.io/players?season=2025&team=${team.id}`, {
-                            headers: { 'x-rapidapi-key': apiKey }
-                        })
-                        .then(response => response.json())
-                        .then(data => data.response)
-                    );
-                    return Promise.all(playerPromises)
-                })
-                .then(playerArrays => {
-                    allPlayers = playerArrays.flat().map(player => {
-                        const sleeper = sleeperMap.get(player.name) || {};
-                        return {
-                            player_name: player.name,
-                            position: player.position || sleeper.position || 'Unknown',
-                            team: { name: player.team || 'N/A' },
-                            fantasy_points: calculateFantasyPoints(player.stats),
-                            stats: player.stats || {},
-                            image: sleeper.image || 'https://via.placeholder.com/40'
-                        };
+                fetch(localUrl)
+                    .then(response => response.json())
+                    .then(data => {
+                        allPlayers = data.map(player => ({
+                            ...player,
+                            image: sleeperMap.get(player.name)?.image || 'https://via.placeholder.com/40'
+                        }));
+                        document.getElementById('loadingSpinner').classList.add('hidden');
+                        filterPlayers();
+                    })
+                    .catch(error => {
+                        console.error('Error fetching local data:', error);
+                        document.getElementById('loadingSpinner').classList.add('hidden');
+                        document.getElementById('errorMessage').textContent = 'Failed to load player data.';
                     });
-                    document.getElementById('loadingSpinner').classList.add('hidden');
-                    filterPlayers();
-                })
-                .catch(error => {
-                    console.error('Error fetching players:', error);
-                    document.getElementById('loadingSpinner').classList.add('hidden');
-                    document.getElementById('errorMessage').textContent = 'Failed to load players from API. Using local data.';
-                    fetch(localUrl)
-                        .then(response => response.json())
-                        .then(data => {
-                            allPlayers = data;
-                            filterPlayers();
-                        })
-                        .catch(() => {
-                            document.getElementById('errorMessage').textContent = 'Failed to load local data.';
-                        });
-                });
+            })
+            .catch(error => {
+                console.error('Error fetching Sleeper data:', error);
+                fetch(localUrl)
+                    .then(response => response.json())
+                    .then(data => {
+                        allPlayers = data;
+                        document.getElementById('loadingSpinner').classList.add('hidden');
+                        filterPlayers();
+                    })
+                    .catch(err => {
+                        console.error('Error fetching local data:', err);
+                        document.getElementById('loadingSpinner').classList.add('hidden');
+                        document.getElementById('errorMessage').textContent = 'Failed to load player data.';
+                    });
+            });
     </script>
 </body>
 </html>
