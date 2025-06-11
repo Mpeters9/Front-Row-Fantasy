@@ -73,6 +73,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function displayNews(articles) {
         newsList.innerHTML = '';
+        if (articles.length === 0) {
+            newsList.innerHTML = `
+                <div class="bg-gray-100 dark:bg-gray-700 p-4 rounded-lg">
+                    <h4 class="font-semibold text-gray-900 dark:text-white">No News Available</h4>
+                    <p class="text-gray-600 dark:text-gray-300">Unable to load news. Please try again later.</p>
+                </div>
+            `;
+            return;
+        }
         articles.forEach(article => {
             const div = document.createElement('div');
             div.className = 'bg-gray-100 dark:bg-gray-700 p-4 rounded-lg';
@@ -85,43 +94,49 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // Fetch ESPN RSS
+    let espnArticles = [];
     fetch(espnRssUrl)
-        .then(response => response.text())
+        .then(response => {
+            if (!response.ok) throw new Error(`ESPN RSS fetch failed: ${response.status}`);
+            return response.text();
+        })
         .then(data => {
             const parser = new DOMParser();
             const xml = parser.parseFromString(data, 'text/xml');
             const items = xml.querySelectorAll('item');
-            const articles = Array.from(items).slice(0, 3).map(item => ({
+            espnArticles = Array.from(items).slice(0, 3).map(item => ({
                 title: item.querySelector('title').textContent,
                 link: item.querySelector('link').textContent,
                 description: item.querySelector('description')?.textContent || ''
             }));
-            displayNews(articles);
+            // Fetch Sleeper after ESPN to combine results
+            fetchSleeperNews();
         })
         .catch(error => {
             console.error('Error fetching ESPN news:', error);
-            newsList.innerHTML = `
-                <div class="bg-gray-100 dark:bg-gray-700 p-4 rounded-lg">
-                    <h4 class="font-semibold text-gray-900 dark:text-white">News Unavailable</h4>
-                    <p class="text-gray-600 dark:text-gray-300">Unable to load news. Please try again later.</p>
-                </div>
-            `;
+            espnArticles = [];
+            fetchSleeperNews(); // Try Sleeper even if ESPN fails
         });
 
-    // Fetch Sleeper Trending Players (optional)
-    fetch(sleeperNewsUrl)
-        .then(response => response.json())
-        .then(data => {
-            const sleeperNews = data.map(player => ({
-                title: `${player.name} Trending Up`,
-                link: `https://sleeper.app/players/nfl/${player.player_id}`,
-                description: `Added by ${player.add_count} managers in the last 24 hours.`
-            }));
-            displayNews([...document.querySelectorAll('#newsList > div').map(div => ({
-                title: div.querySelector('h4 a').textContent,
-                link: div.querySelector('h4 a').href,
-                description: div.querySelector('p').textContent
-            })), ...sleeperNews.slice(0, 2)]);
-        })
-        .catch(error => console.error('Error fetching Sleeper news:', error));
+    // Fetch Sleeper Trending Players
+    function fetchSleeperNews() {
+        fetch(sleeperNewsUrl)
+            .then(response => {
+                if (!response.ok) throw new Error(`Sleeper API fetch failed: ${response.status}`);
+                return response.json();
+            })
+            .then(data => {
+                const sleeperNews = data.map(player => ({
+                    title: `${player.first_name} ${player.last_name} Trending Up`,
+                    link: `https://sleeper.app/players/nfl/${player.player_id}`,
+                    description: `Added by ${player.add_count || 0} managers in the last 24 hours.`
+                })).slice(0, 2);
+                const combinedNews = [...espnArticles, ...sleeperNews];
+                displayNews(combinedNews);
+            })
+            .catch(error => {
+                console.error('Error fetching Sleeper news:', error);
+                displayNews(espnArticles); // Display ESPN articles if Sleeper fails
+            });
+    }
 });
