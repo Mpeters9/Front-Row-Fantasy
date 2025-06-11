@@ -13,5 +13,10 @@
         "name": "Davante Adams",
         "position": "WR",
         "fantasyPoints": 18.9
+    },
+    {
+        "name": "Christian McCaffrey",
+        "position": "RB",
+        "fantasyPoints": 20.5
     }
 ]
