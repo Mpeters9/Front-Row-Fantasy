@@ -5,22 +5,24 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>2025 Fantasy Football Players - Front Row Fantasy</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
 </head>
-<body class="bg-gray-100 font-sans">
-    <header class="bg-indigo-900 text-white text-center py-6">
+<body class="bg-gray-100 font-poppins">
+    <header class="bg-gradient-to-r from-indigo-900 to-purple-800 text-white text-center py-6">
+        <img src="logo.png" alt="Front Row Fantasy Logo" class="h-16 mx-auto mb-2" onerror="this.src='https://via.placeholder.com/64?text=FRF'">
         <h1 class="text-4xl font-bold">Front Row Fantasy</h1>
         <p class="text-lg mt-2">2025 Fantasy Football Player List</p>
         <nav class="mt-4">
-            <a href="index.html" class="px-4 py-2 text-white hover:bg-indigo-700 rounded">Home</a>
-            <a href="players.html" class="px-4 py-2 text-white hover:bg-indigo-700 rounded">Player List</a>
-            <a href="guides.html" class="px-4 py-2 text-white hover:bg-indigo-700 rounded">Guides</a>
-            <a href="https://discord.com" class="px-4 py-2 text-white hover:bg-indigo-700 rounded">Community</a>
+            <a href="index.html" class="px-4 py-2 text-white hover:bg-indigo-600 rounded transition duration-300">Home</a>
+            <a href="players.html" class="px-4 py-2 text-white hover:bg-indigo-600 rounded transition duration-300">Player List</a>
+            <a href="guides.html" class="px-4 py-2 text-white hover:bg-indigo-600 rounded transition duration-300">Guides</a>
+            <a href="https://discord.com" class="px-4 py-2 text-white hover:bg-indigo-600 rounded transition duration-300">Community</a>
         </nav>
     </header>
     <main class="max-w-6xl mx-auto p-6">
-        <div class="bg-white p-6 rounded-lg shadow">
+        <div class="bg-white p-6 rounded-lg shadow-lg relative">
             <h2 class="text-2xl font-bold mb-4">2025 NFL Players</h2>
-            <div class="flex gap-4 mb-4">
+            <div class="flex flex-col sm:flex-row gap-4 mb-4">
                 <input id="searchInput" type="text" placeholder="Search players..." class="p-2 border rounded w-full">
                 <select id="positionFilter" class="p-2 border rounded">
                     <option value="">All Positions</option>
@@ -29,12 +31,20 @@
                     <option value="WR">WR</option>
                     <option value="TE">TE</option>
                 </select>
+                <select id="sortBy" class="p-2 border rounded">
+                    <option value="name">Sort by Name</option>
+                    <option value="position">Sort by Position</option>
+                    <option value="points">Sort by Fantasy Points</option>
+                </select>
+            </div>
+            <div id="loadingSpinner" class="hidden absolute inset-0 flex items-center justify-center bg-gray-100 bg-opacity-75">
+                <div class="w-8 h-8 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin"></div>
             </div>
             <ul id="playerList" class="space-y-4"></ul>
             <div id="errorMessage" class="text-red-600 text-center mt-4"></div>
         </div>
     </main>
-    <footer class="bg-indigo-900 text-white text-center py-4">
+    <footer class="bg-gradient-to-r from-indigo-900 to-purple-800 text-white text-center py-4">
         <p>© 2025 Front Row Fantasy. All rights reserved.</p>
     </footer>
     <script>
@@ -50,30 +60,58 @@
                 const name = player.player ? `${player.player.firstName} ${player.player.lastName}` : player.name;
                 const position = player.player?.primaryPosition || player.position;
                 const team = player.player?.currentTeam?.abbreviation || 'N/A';
+                const points = player.fantasyPoints || 'N/A';
                 const li = document.createElement('li');
-                li.className = 'bg-gray-50 p-4 rounded-lg shadow flex justify-between';
+                li.className = 'bg-gray-50 p-4 rounded-lg shadow-lg flex justify-between transform hover:scale-105 transition duration-300';
                 li.innerHTML = `
                     <span>${name} - ${position} (${team})</span>
-                    <span class="text-gray-600">${player.fantasyPoints || 'N/A'} pts</span>
+                    <span class="text-gray-600">${points} pts</span>
                 `;
                 playerList.appendChild(li);
             });
         }
 
+        function sortPlayers(players, sortBy) {
+            if (sortBy === 'name') {
+                return players.sort((a, b) => {
+                    const nameA = a.player ? `${a.player.firstName} ${a.player.lastName}` : a.name;
+                    const nameB = b.player ? `${b.player.firstName} ${b.player.lastName}` : b.name;
+                    return nameA.localeCompare(nameB);
+                });
+            } else if (sortBy === 'position') {
+                return players.sort((a, b) => {
+                    const posA = a.player?.primaryPosition || a.position;
+                    const posB = b.player?.primaryPosition || b.position;
+                    return posA.localeCompare(posB);
+                });
+            } else if (sortBy === 'points') {
+                return players.sort((a, b) => {
+                    const pointsA = parseFloat(a.fantasyPoints) || 0;
+                    const pointsB = parseFloat(b.fantasyPoints) || 0;
+                    return pointsB - pointsA;
+                });
+            }
+            return players;
+        }
+
         function filterPlayers() {
             const search = document.getElementById('searchInput').value.toLowerCase();
             const position = document.getElementById('positionFilter').value;
-            const filtered = allPlayers.filter(player => {
+            const sortBy = document.getElementById('sortBy').value;
+            let filtered = allPlayers.filter(player => {
                 const name = player.player ? `${player.player.firstName} ${player.player.lastName}`.toLowerCase() : player.name.toLowerCase();
                 const pos = player.player?.primaryPosition || player.position;
                 return (!search || name.includes(search)) && (!position || pos === position);
             });
+            filtered = sortPlayers(filtered, sortBy);
             displayPlayers(filtered);
         }
 
         document.getElementById('searchInput').addEventListener('input', filterPlayers);
         document.getElementById('positionFilter').addEventListener('change', filterPlayers);
+        document.getElementById('sortBy').addEventListener('change', filterPlayers);
 
+        document.getElementById('loadingSpinner').classList.remove('hidden');
         fetch(apiUrl, {
             headers: { 'Authorization': 'Basic ' + btoa(apiKey + ':MYSPORTSFEEDS') }
         })
@@ -87,10 +125,12 @@
             .then(response => response.json())
             .then(data => {
                 allPlayers = data.players || data;
-                displayPlayers(allPlayers);
+                document.getElementById('loadingSpinner').classList.add('hidden');
+                filterPlayers();
             })
             .catch(error => {
                 console.error('Error:', error);
+                document.getElementById('loadingSpinner').classList.add('hidden');
                 document.getElementById('errorMessage').textContent = 'Failed to load player list.';
             });
     </script>
