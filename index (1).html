@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Front Row Fantasy</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 font-sans">
+    <header class="bg-indigo-900 text-white text-center py-6">
+        <h1 class="text-4xl font-bold">Front Row Fantasy</h1>
+        <p class="text-lg mt-2">Your Ultimate Fantasy Football Hub</p>
+        <nav class="mt-4">
+            <a href="index.html" class="px-4 py-2 text-white hover:bg-indigo-700 rounded">Home</a>
+            <a href="players.html" class="px-4 py-2 text-white hover:bg-indigo-700 rounded">Player List</a>
+            <a href="guides.html" class="px-4 py-2 text-white hover:bg-indigo-700 rounded">Guides</a>
+            <a href="https://discord.com" class="px-4 py-2 text-white hover:bg-indigo-700 rounded">Community</a>
+        </nav>
+    </header>
+    <div class="bg-red-600 text-white text-center py-3 overflow-hidden">
+        <span class="inline-block animate-scroll whitespace-nowrap">
+            Live Updates: J. Allen - 25.4 pts | P. Mahomes - 22.1 pts | D. Adams - 18.9 pts
+        </span>
+    </div>
+    <main class="max-w-6xl mx-auto flex gap-6 p-6">
+        <section class="flex-2 bg-white p-6 rounded-lg shadow">
+            <h2 class="text-2xl font-bold mb-4">Welcome to Front Row Fantasy!</h2>
+            <p class="mb-4">Get live scores, stats, and tools for all levels of fantasy players.</p>
+            <h3 class="text-xl font-semibold mb-2">Trade Analyzer</h3>
+            <div class="flex gap-4 mb-4">
+                <input id="player1" type="text" placeholder="Enter Player 1" class="p-2 border rounded w-full">
+                <input id="player2" type="text" placeholder="Enter Player 2" class="p-2 border rounded w-full">
+            </div>
+            <button id="tradeAnalyzerBtn" class="bg-indigo-900 text-white px-4 py-2 rounded hover:bg-indigo-700">Analyze Trade</button>
+            <div id="tradeResult" class="mt-4"></div>
+            <h3 class="text-xl font-semibold mt-6 mb-2">Waiver Wire Picks</h3>
+            <div id="waiverList"></div>
+        </section>
+        <aside class="flex-1 bg-white p-6 rounded-lg shadow">
+            <h3 class="text-xl font-bold mb-4">Quick Links</h3>
+            <ul class="space-y-2">
+                <li><a href="guides.html" class="text-indigo-900 hover:underline">Beginner Guides</a></li>
+                <li><a href="players.html" class="text-indigo-900 hover:underline">Player Stats</a></li>
+                <li><a href="https://discord.com" class="text-indigo-900 hover:underline">Join Our Discord</a></li>
+            </ul>
+        </aside>
+    </main>
+    <footer class="bg-indigo-900 text-white text-center py-4">
+        <p>&copy; 2025 Front Row Fantasy. All rights reserved.</p>
+    </footer>
+    <script src="script.js"></script>
+    <style>
+        @keyframes scroll {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-100%); }
+        }
+        .animate-scroll {
+            display: inline-block;
+            padding-left: 100%;
+            animation: scroll 10s linear infinite;
+        }
+    </style>
+</body>
+</html>
