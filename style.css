@@ -1,0 +1,21 @@
+/* Custom styles for enhanced design */
+.bg-navy {
+  background-color: #1e2a44;
+}
+.text-primary {
+  color: #f97316;
+}
+.animate__fadeIn {
+  animation: fadeIn 1s ease-in-out;
+}
+.animate__fadeInUp {
+  animation: fadeInUp 1s ease-in-out;
+}
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
