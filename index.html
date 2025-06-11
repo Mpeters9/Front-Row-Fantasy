@@ -5,16 +5,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Front Row Fantasy</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
 </head>
-<body class="bg-gray-100 font-sans">
-    <header class="bg-indigo-900 text-white text-center py-6">
+<body class="bg-gray-100 font-poppins">
+    <header class="bg-gradient-to-r from-indigo-900 to-purple-800 text-white text-center py-6">
+        <img src="logo.png" alt="Front Row Fantasy Logo" class="h-16 mx-auto mb-2" onerror="this.src='https://via.placeholder.com/64?text=FRF'">
         <h1 class="text-4xl font-bold">Front Row Fantasy</h1>
         <p class="text-lg mt-2">Your Ultimate Fantasy Football Hub</p>
         <nav class="mt-4">
-            <a href="index.html" class="px-4 py-2 text-white hover:bg-indigo-700 rounded">Home</a>
-            <a href="players.html" class="px-4 py-2 text-white hover:bg-indigo-700 rounded">Player List</a>
-            <a href="guides.html" class="px-4 py-2 text-white hover:bg-indigo-700 rounded">Guides</a>
-            <a href="https://discord.com" class="px-4 py-2 text-white hover:bg-indigo-700 rounded">Community</a>
+            <a href="index.html" class="px-4 py-2 text-white hover:bg-indigo-600 rounded transition duration-300">Home</a>
+            <a href="players.html" class="px-4 py-2 text-white hover:bg-indigo-600 rounded transition duration-300">Player List</a>
+            <a href="guides.html" class="px-4 py-2 text-white hover:bg-indigo-600 rounded transition duration-300">Guides</a>
+            <a href="https://discord.com" class="px-4 py-2 text-white hover:bg-indigo-600 rounded transition duration-300">Community</a>
         </nav>
     </header>
     <div class="bg-red-600 text-white text-center py-3 overflow-hidden">
@@ -23,20 +25,38 @@
         </span>
     </div>
     <main class="max-w-6xl mx-auto flex gap-6 p-6">
-        <section class="flex-2 bg-white p-6 rounded-lg shadow">
+        <section class="flex-1 bg-white p-6 rounded-lg shadow-lg">
             <h2 class="text-2xl font-bold mb-4">Welcome to Front Row Fantasy!</h2>
             <p class="mb-4">Get live scores, stats, and tools for all levels of fantasy players.</p>
             <h3 class="text-xl font-semibold mb-2">Trade Analyzer</h3>
             <div class="flex gap-4 mb-4">
-                <input id="player1" type="text" placeholder="Enter Player 1" class="p-2 border rounded w-full">
-                <input id="player2" type="text" placeholder="Enter Player 2" class="p-2 border rounded w-full">
+                <select id="player1" class="p-2 border rounded w-full">
+                    <option value="">Select Player 1</option>
+                </select>
+                <select id="player2" class="p-2 border rounded w-full">
+                    <option value="">Select Player 2</option>
+                </select>
             </div>
-            <button id="tradeAnalyzerBtn" class="bg-indigo-900 text-white px-4 py-2 rounded hover:bg-indigo-700">Analyze Trade</button>
+            <button id="tradeAnalyzerBtn" class="bg-indigo-900 text-white px-4 py-2 rounded hover:bg-indigo-700 transition duration-300 relative group" title="Analyze trade fairness">
+                Analyze Trade
+                <span class="absolute hidden group-hover:block bg-gray-800 text-white text-xs rounded py-1 px-2 -top-8 left-1/2 transform -translate-x-1/2">Check trade balance</span>
+            </button>
             <div id="tradeResult" class="mt-4"></div>
             <h3 class="text-xl font-semibold mt-6 mb-2">Waiver Wire Picks</h3>
             <div id="waiverList"></div>
+            <h3 class="text-xl font-semibold mt-6 mb-2">Fantasy News</h3>
+            <div class="space-y-4">
+                <article class="bg-gray-50 p-4 rounded">
+                    <h4 class="font-semibold">Week 1 Recap</h4>
+                    <p>Josh Allen dominates with 3 TDs. Read more...</p>
+                </article>
+                <article class="bg-gray-50 p-4 rounded">
+                    <h4 class="font-semibold">Injury Updates</h4>
+                    <p>McCaffrey expected to return Week 2. Read more...</p>
+                </article>
+            </div>
         </section>
-        <aside class="flex-1 bg-white p-6 rounded-lg shadow">
+        <aside class="flex-1 bg-white p-6 rounded-lg shadow-lg">
             <h3 class="text-xl font-bold mb-4">Quick Links</h3>
             <ul class="space-y-2">
                 <li><a href="guides.html" class="text-indigo-900 hover:underline">Beginner Guides</a></li>
@@ -45,7 +65,7 @@
             </ul>
         </aside>
     </main>
-    <footer class="bg-indigo-900 text-white text-center py-4">
+    <footer class="bg-gradient-to-r from-indigo-900 to-purple-800 text-white text-center py-4">
         <p>© 2025 Front Row Fantasy. All rights reserved.</p>
     </footer>
     <script src="script.js"></script>
@@ -58,6 +78,9 @@
             display: inline-block;
             padding-left: 100%;
             animation: scroll 10s linear infinite;
+        }
+        .font-poppins {
+            font-family: 'Poppins', sans-serif;
         }
     </style>
 </body>
