@@ -23,7 +23,7 @@
     { "name": "Garrett Wilson", "position": "WR", "team": "NYJ", "fantasy_points": 16.9, "stats": { "total_yards": 1000, "total_touchdowns": 7 } },
     { "name": "Sam LaPorta", "position": "TE", "team": "DET", "fantasy_points": 12.8, "stats": { "total_yards": 750, "total_touchdowns": 5 } },
     { "name": "Dak Prescott", "position": "QB", "team": "DAL", "fantasy_points": 20.1, "stats": { "total_yards": 3200, "total_touchdowns": 26 } },
-    { "name": "Breece Hall", "position":-prone "RB", "team": "NYJ", "fantasy_points": 16.0, "stats": { "total_yards": 1300, "total_touchdowns": 11 } },
+    { "name": "Breece Hall", "position": "RB", "team": "NYJ", "fantasy_points": 16.0, "stats": { "total_yards": 1300, "total_touchdowns": 11 } },
     { "name": "Ja'Marr Chase", "position": "WR", "team": "CIN", "fantasy_points": 18.0, "stats": { "total_yards": 1100, "total_touchdowns": 9 } },
     { "name": "T.J. Hockenson", "position": "TE", "team": "MIN", "fantasy_points": 12.2, "stats": { "total_yards": 700, "total_touchdowns": 5 } },
     { "name": "C.J. Stroud", "position": "QB", "team": "HOU", "fantasy_points": 19.7, "stats": { "total_yards": 3100, "total_touchdowns": 23 } },
