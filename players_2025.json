@@ -43,7 +43,7 @@
     { "name": "Joe Mixon", "position": "RB", "team": "CIN", "fantasy_points": "14.2", "stats": { "total_yards": 950, "total_touchdowns": 8 } },
     { "name": "Mike Evans", "position": "WR", "team": "TB", "fantasy_points": 15.4, "stats": { "total_yards": 900, "total_touchdowns": 6 } },
     { "name": "David Montgomery", "position": "RB", "team": "DET", "fantasy_points": 13.8, "stats": { "total_yards": 900, "total_touchdowns": 7 } },
-    { "name": "Cooper Kupp", "position": "WR", "team": "LAR", "fantasy_points": "15.2", "stats": { "total_yards": 850, "total_touchdowns": "6 } },
+    { "name": "Cooper Kupp", "position": "WR", "team": "LAR", "fantasy_points": "15.2", "stats": { "total_yards": 850, "total_touchdowns": 6 } },
     { "name": "David Njoku", "position": "TE", "team": "CLE", "fantasy_points": "11.5", "stats": { "total_yards": 550, "total_touchdowns": 4 } },
     { "name": "Trevor Lawrence", "position": "QB", "team": "JAC", "fantasy_points": 18.7, "stats": { "total_yards": 3000, "total_touchdowns": 22 } },
     { "name": "Rhamondre Stevenson", "position": "RB", "team": "NE", "fantasy_points": 14.0, "stats": { "total_yards": 900, "total_touchdowns": 7 } },
