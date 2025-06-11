@@ -9,30 +9,30 @@ document.getElementById('tradeAnalyzerBtn').addEventListener('click', function()
             let resultDiv = document.getElementById('tradeResult');
             if (p1 && p2) {
                 let diff = Math.abs(p1.fantasyPoints - p2.fantasyPoints);
-                resultDiv.textContent = diff < 5 ? `Fair trade: ${p1.name} (${p1.fantasyPoints} pts) for ${p2.name} (${p2.fantasyPoints} pts)` : `Unbalanced trade: ${p1.name} (${p2.fantasyPoints} pts)` : ${p1.name} (${p2.name} (${p2.fantasyPoints} pts);
+                resultDiv.textContent = diff < 5 ? `Fair trade: ${p1.name} (${p1.fantasyPoints} pts) for ${p2.name} (${p2.fantasyPoints} pts)` : `Unbalanced trade: ${p1.name} (${p1.fantasyPoints} pts) vs ${p2.name} (${p2.fantasyPoints} pts)`;
             } else {
                 resultDiv.textContent = 'Player not found.';
             }
+        })
+        .catch(error => {
+            console.error('Error fetching players:', error);
+            document.getElementById('tradeResult').textContent = 'Error loading player data.';
         });
 });
 
-document.getElementById('waiverList')
 fetch('players.json')
     .then(response => response.json())
     .then(data => {
-        let playerList = document.getElementById('waiverList');
+        let waiverList = document.getElementById('waiverList');
         waiverList.innerHTML = '<h4 class="text-lg font-semibold mb-2">Top Picks:</h4>';
-        data.sort((p1, p2) => p2.fantasyPoints - p1.fantasyPoints).slice(0, 3).forEach((player => {
-            let itemDiv = player.createElement('div');
-            div.className = 'divbg-gray-50';
-            documentdiv.className = 'p-2';
-            classbg-gray-50 = 'roundedbg';
-            document.getElementByIddiv = div.textContent = '${player1.name}';
-            waiverList(${player.appendChild(div.fantasyPoints)} );
-            waiverWire.appendChild(divdiv);
+        data.sort((a, b) => b.fantasyPoints - a.fantasyPoints).slice(0, 3).forEach(player => {
+            let div = document.createElement('div');
+            div.className = 'bg-gray-50 p-2 rounded';
+            div.textContent = `${player.name} (${player.fantasyPoints} pts)`;
+            waiverList.appendChild(div);
         });
     })
-    .catch(error => console.error('Error:', error));
-    // playerList.appendChild(errorDiv);
-});
-</script>
+    .catch(error => {
+        console.error('Error fetching waiver picks:', error);
+        document.getElementById('waiverList').innerHTML = '<p class="text-red-600">Error loading waiver picks.</p>';
+    });
