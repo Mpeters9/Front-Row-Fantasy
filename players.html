@@ -46,3 +46,53 @@
         function displayPlayers(players) {
             const playerList = document.getElementById('playerList');
             playerList.innerHTML = '';
+            players.forEach(player => {
+                const name = player.player ? `${player.player.firstName} ${player.player.lastName}` : player.name;
+                const position = player.player?.primaryPosition || player.position;
+                const team = player.player?.currentTeam?.abbreviation || 'N/A';
+                const li = document.createElement('li');
+                li.className = 'bg-gray-50 p-4 rounded-lg shadow flex justify-between';
+                li.innerHTML = `
+                    <span>${name} - ${position} (${team})</span>
+                    <span class="text-gray-600">${player.fantasyPoints || 'N/A'} pts</span>
+                `;
+                playerList.appendChild(li);
+            });
+        }
+
+        function filterPlayers() {
+            const search = document.getElementById('searchInput').value.toLowerCase();
+            const position = document.getElementById('positionFilter').value;
+            const filtered = allPlayers.filter(player => {
+                const name = player.player ? `${player.player.firstName} ${player.player.lastName}`.toLowerCase() : player.name.toLowerCase();
+                const pos = player.player?.primaryPosition || player.position;
+                return (!search || name.includes(search)) && (!position || pos === position);
+            });
+            displayPlayers(filtered);
+        }
+
+        document.getElementById('searchInput').addEventListener('input', filterPlayers);
+        document.getElementById('positionFilter').addEventListener('change', filterPlayers);
+
+        fetch(apiUrl, {
+            headers: { 'Authorization': 'Basic ' + btoa(apiKey + ':MYSPORTSFEEDS') }
+        })
+            .then(response => {
+                if (!response.ok) {
+                    console.warn('API fetch failed, trying local JSON...');
+                    return fetch(localUrl);
+                }
+                return response;
+            })
+            .then(response => response.json())
+            .then(data => {
+                allPlayers = data.players || data;
+                displayPlayers(allPlayers);
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                document.getElementById('errorMessage').textContent = 'Failed to load player list.';
+            });
+    </script>
+</body>
+</html>
