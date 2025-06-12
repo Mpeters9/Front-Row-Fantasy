@@ -2,42 +2,44 @@
 const showLoader = (id) => document.getElementById(id)?.classList?.remove('hidden');
 const hideLoader = (id) => document.getElementById(id)?.classList?.add('hidden');
 
-// Populate player dropdowns
+// Populate player dropdowns for trade analyzer
 fetch('players_2025.json')
     .then(response => response.json())
     .then(data => {
-        const playerSelect1 = document.getElementById('player1');
-        const playerSelect2 = document.getElementById('player2');
+        const players1Select = document.getElementById('players1');
+        const players2Select = document.getElementById('players2');
         data.forEach(player => {
             const option = document.createElement('option');
             option.value = player.name;
             option.textContent = `${player.name} (${player.position} - ${player.team})`;
-            playerSelect1.appendChild(option.cloneNode(true));
-            playerSelect2.appendChild(option);
+            players1Select.appendChild(option.cloneNode(true));
+            players2Select.appendChild(option);
         });
     })
     .catch(error => {
         console.error('Error loading players for dropdowns:', error);
     });
 
-// Trade Analyzer logic
+// Trade Analyzer logic with multiple players
 document.getElementById('tradeAnalyzerBtn')?.addEventListener('click', async () => {
     try {
-        const playerName1 = document.getElementById('player1').value;
-        const playerName2 = document.getElementById('player2').value;
+        const players1 = Array.from(document.getElementById('players1').selectedOptions).map(option => option.value);
+        const players2 = Array.from(document.getElementById('players2').selectedOptions).map(option => option.value);
         const data = await fetch('players_2025.json').then(res => res.json());
-        const player1 = data.find(p => p.name === playerName1);
-        const player2 = data.find(p => p.name === playerName2);
+        
+        const totalPoints1 = players1.reduce((sum, name) => sum + (data.find(p => p.name === name)?.fantasy_points || 0), 0);
+        const totalPoints2 = players2.reduce((sum, name) => sum + (data.find(p => p.name === name)?.fantasy_points || 0), 0);
+        
         const tradeResultDiv = document.getElementById('tradeResult');
-        if (player1 && player2) {
-            const pointsDiff = Math.abs(parseFloat(player1.fantasy_points || 0) - parseFloat(player2.fantasy_points || 0));
-            tradeResultDiv.innerHTML = pointsDiff < 5 ? `
-                <p class="text-green-600 dark:text-green-400">Fair trade: ${player1.name} (${player1.fantasy_points} pts) vs ${player2.name} (${player2.fantasy_points} pts)</p>
+        if (players1.length > 0 && players2.length > 0) {
+            const pointsDiff = Math.abs(totalPoints1 - totalPoints2);
+            tradeResultDiv.innerHTML = pointsDiff < 10 ? `
+                <p class="text-green-600 dark:text-green-400">Fair trade: Team 1 (${totalPoints1.toFixed(2)} pts) vs Team 2 (${totalPoints2.toFixed(2)} pts)</p>
             ` : `
-                <p class="text-red-600 dark:text-red-400">Unbalanced trade: ${player1.name} (${player1.fantasy_points} pts) vs ${player2.name} (${player2.fantasy_points} pts)</p>
+                <p class="text-red-600 dark:text-red-400">Unbalanced trade: Team 1 (${totalPoints1.toFixed(2)} pts) vs Team 2 (${totalPoints2.toFixed(2)} pts)</p>
             `;
         } else {
-            tradeResultDiv.innerHTML = '<p class="text-red-600 dark:text-red-400">Please select both players for trade analysis.</p>';
+            tradeResultDiv.innerHTML = '<p class="text-red-600 dark:text-red-400">Please select players for both teams.</p>';
         }
     } catch (error) {
         console.error('Error analyzing trade:', error);
@@ -45,7 +47,7 @@ document.getElementById('tradeAnalyzerBtn')?.addEventListener('click', async () 
     }
 });
 
-// Fantasy Points Ticker
+// Fantasy Points Ticker with Images
 const fantasyTicker = document.getElementById('fantasyTicker');
 if (fantasyTicker) {
     showLoader('tickerLoader');
@@ -64,7 +66,8 @@ if (fantasyTicker) {
             .then(data => {
                 const topPlayers = data.sort((a, b) => (parseFloat(b.fantasy_points || 0) - parseFloat(a.fantasy_points || 0))).slice(0, 10);
                 const tickerContent = topPlayers.concat(topPlayers).map(player => `
-                    <span class="inline-block px-4 py-2 mx-4 bg-teal-500 text-white rounded-lg shadow-md whitespace-nowrap">
+                    <span class="inline-block px-4 py-2 mx-4 bg-teal-500 text-white rounded-lg shadow-md whitespace-nowrap flex items-center">
+                        <img src="${player.image || 'https://via.placeholder.com/40'}" alt="${player.name}" class="w-10 h-10 rounded-full mr-2" loading="lazy" onerror="this.src='https://via.placeholder.com/40';">
                         ${player.name} (${player.position} - ${player.team || 'N/A'}) - ${parseFloat(player.fantasy_points || 0).toFixed(1)} pts
                     </span>
                 `).join('');
