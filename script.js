@@ -53,7 +53,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 .then(data => {
                     const topPlayers = data.sort((a, b) => (parseFloat(b.fantasy_points || 0) - parseFloat(a.fantasy_points || 0))).slice(0, 10);
                     const tickerContent = topPlayers.concat(topPlayers).map(player => `
-                        <span class="inline-block px-4 py-2 mx-4 bg-teal-500 text-white rounded-lg shadow-md whitespace-nowrap flex items-center">
+                        <span class="inline-flex items-center px-4 py-2 bg-teal-500 text-white rounded-lg shadow-md whitespace-nowrap">
                             <img src="${player.image || 'https://via.placeholder.com/40'}" alt="${player.name}" class="w-10 h-10 rounded-full mr-2" loading="lazy" onerror="this.src='https://via.placeholder.com/40';">
                             ${player.name} (${player.position} - ${player.team || 'N/A'}) - ${parseFloat(player.fantasy_points || 0).toFixed(1)} pts
                         </span>
@@ -94,12 +94,12 @@ document.addEventListener('DOMContentLoaded', () => {
                     data.sort((a, b) => parseFloat(b.fantasy_points || 0) - parseFloat(a.fantasy_points || 0)).slice(0, 5).forEach(player => {
                         const imageSrc = player.image || 'https://via.placeholder.com/80?text=Player';
                         const div = document.createElement('div');
-                        div.className = 'card';
+                        div.className = 'bg-white dark:bg-gray-800 p-4 rounded-lg shadow-md hover:shadow-xl transition transform hover:-translate-y-1';
                         div.innerHTML = `
-                            <img src="${imageSrc}" alt="${player.name}" class="h-20 w-20 rounded-full mx-auto mb-2 object-cover" loading="lazy" onload="this.classList.add('loaded')" onerror="this.src='https://via.placeholder.com/80?text=Player';">
-                            <div class="text-gray-800 dark:text-white font-semibold text-center">${player.name}</div>
-                            <div class="text-gray-600 dark:text-gray-400 text-center text-sm">${player.position} - ${player.team || 'N/A'}</div>
-                            <div class="text-gray-600 dark:text-gray-400 text-center">${parseFloat(player.fantasy_points || 0).toFixed(2)} pts</div>
+                            <img src="${imageSrc}" alt="${player.name}" class="h-20 w-20 rounded-full mx-auto mb-2 object-cover" loading="lazy" onerror="this.src='https://via.placeholder.com/80?text=Player';">
+                            <div class="text-gray-900 dark:text-white font-semibold text-center">${player.name}</div>
+                            <div class="text-gray-600 dark:text-gray-300 text-center text-sm">${player.position} - ${player.team || 'N/A'}</div>
+                            <div class="text-gray-600 dark:text-gray-300 text-center">${parseFloat(player.fantasy_points || 0).toFixed(2)} pts</div>
                         `;
                         topPlayersDiv.appendChild(div);
                     });
@@ -144,10 +144,10 @@ document.addEventListener('DOMContentLoaded', () => {
                     waiverList.innerHTML = '<h3 class="text-lg font-semibold mb-2 text-gray-900 dark:text-white">Top Waiver Picks:</h3>';
                     data.sort((a, b) => parseFloat(b.fantasy_points || 0) - parseFloat(a.fantasy_points || 0)).slice(0, 5).forEach(player => {
                         const playerDiv = document.createElement('div');
-                        playerDiv.className = 'card';
+                        playerDiv.className = 'bg-white dark:bg-gray-800 p-4 rounded-lg shadow-md';
                         playerDiv.innerHTML = `
                             <span class="text-gray-800 dark:text-white">${player.name} (${player.position})</span>
-                            <span class="text-gray-600 dark:text-gray-400">${parseFloat(player.fantasy_points || 0).toFixed(2)} pts</span>
+                            <span class="text-gray-600 dark:text-gray-300">${parseFloat(player.fantasy_points || 0).toFixed(2)} pts</span>
                         `;
                         waiverList.appendChild(playerDiv);
                     });
@@ -228,10 +228,10 @@ document.addEventListener('DOMContentLoaded', () => {
             }
             articles.forEach(article => {
                 const div = document.createElement('div');
-                div.className = 'card';
+                div.className = 'bg-white dark:bg-gray-800 p-4 rounded-lg shadow-md';
                 div.innerHTML = `
                     <h4 class="text-lg font-semibold mb-2"><a href="${article.link}" target="_blank" class="text-blue-600 dark:text-blue-400 hover:underline">${article.title}</a></h4>
-                    <p class="text-gray-600 dark:text-gray-400 text-sm">${article.description || 'No summary available.'}</p>
+                    <p class="text-gray-600 dark:text-gray-300 text-sm">${article.description || 'No summary available.'}</p>
                 `;
                 newsList.appendChild(div);
             });
@@ -244,8 +244,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     displayNews(allNews.slice(newsOffset, newsOffset + newsPerLoad));
                     newsOffset += newsPerLoad;
                     return;
-ське
-
                 }
                 const corsProxy = 'https://api.allorigins.win/raw?url=';
                 const espnUrl = corsProxy + 'https://www.espn.com/espn/rss/nfl/news';
