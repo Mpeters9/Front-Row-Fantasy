@@ -27,11 +27,23 @@
         .marquee-content:hover {
             animation-play-state: paused;
         }
+        .spinner {
+            border: 4px solid rgba(0, 0, 0, 0.1);
+            border-left: 4px solid #2dd4bf;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
     </style>
 </head>
-<body class="bg-gray-50 dark:bg-gray-900 font-poppins transition-colors duration-300" aria-label="Main content">
+<body class="bg-gray-50 dark:bg-gray-900 font-poppins transition-colors duration-300">
     <header class="bg-gradient-to-r from-navy to-blue-900 text-white py-4 shadow-md">
-        <div class="max-w-7xl mx-auto flex justify-between items-center px-6">
+        <div class="max-w-7xl mx-auto flex justify-between items-center px-4">
             <div class="flex items-center gap-4">
                 <img src="logo.png" alt="Front Row Fantasy Logo" class="h-12" onerror="this.src='https://via.placeholder.com/48?text=FRF'">
                 <h1 class="text-3xl font-bold">Front Row Fantasy</h1>
@@ -44,14 +56,14 @@
                     <a href="guides.html" class="px-4 py-2 hover:bg-teal-500 rounded-lg transition">Guides</a>
                     <a href="https://discord.com" class="px-4 py-2 hover:bg-teal-500 rounded-lg transition">Community</a>
                 </nav>
-                <button id="themeToggle" class="p-2 rounded-full hover:bg-teal-500 transition" title="Toggle Dark Mode" aria-label="Toggle dark mode">
+                <button id="themeToggle" class="p-2 rounded-full hover:bg-teal-500 transition" aria-label="Toggle dark mode">
                     <svg id="themeIcon" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path>
                     </svg>
                 </button>
                 <button id="mobileMenuToggle" class="md:hidden p-2 rounded-full hover:bg-teal-500 transition" aria-label="Toggle mobile menu">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
                     </svg>
                 </button>
             </div>
@@ -64,7 +76,7 @@
             <a href="https://discord.com" class="block px-4 py-2 hover:bg-teal-500 rounded-lg transition">Community</a>
         </nav>
     </header>
-    <section class="bg-teal-700 text-white py-16 text-center animate__fadeIn">
+    <section class="bg-gradient-to-r from-blue-900 to-indigo-900 text-white py-16 text-center animate__fadeIn">
         <div class="max-w-7xl mx-auto px-6">
             <h2 class="text-4xl font-bold mb-4">Your Ultimate Fantasy Football Command Center</h2>
             <p class="text-lg mb-6">Real-time stats, expert tools, and breaking news for every fantasy manager.</p>
@@ -73,12 +85,14 @@
     </section>
     <section class="max-w-7xl mx-auto p-6 bg-gray-100 dark:bg-gray-800" aria-label="Fantasy points ticker">
         <h2 class="text-xl font-bold mb-4 text-gray-900 dark:text-white text-center">Fantasy Points Ticker</h2>
+        <div id="tickerLoader" class="spinner hidden"></div>
         <div class="marquee">
             <div id="fantasyTicker" class="marquee-content"></div>
         </div>
     </section>
     <section class="max-w-7xl mx-auto p-6" aria-label="Top players">
         <h2 class="text-2xl font-bold mb-6 text-gray-900 dark:text-white text-center">Top Fantasy Players</h2>
+        <div id="playersLoader" class="spinner hidden"></div>
         <div id="topPlayers" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4"></div>
     </section>
     <main class="max-w-7xl mx-auto flex flex-col md:flex-row gap-8 p-6">
