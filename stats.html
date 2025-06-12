@@ -10,7 +10,7 @@
     <link rel="icon" href="logo.png" type="image/png">
 </head>
 <body class="bg-gray-50 dark:bg-gray-900 font-inter transition-colors duration-300" aria-label="Main content">
-    <header class="bg-navy text-white py-4 sticky top-0 z-20 shadow-lg">
+    <header class="bg-navy text-white py-4 z-20 shadow-lg">
         <div class="max-w-7xl mx-auto flex justify-between items-center px-6">
             <div class="flex items-center gap-4">
                 <img src="logo.png" alt="Front Row Fantasy Logo" class="h-12" onerror="this.src='https://via.placeholder.com/48?text=FRF'">
@@ -40,54 +40,60 @@
             <a href="index.html" class="block px-4 py-2 hover:bg-orange-600 rounded-lg transition">Home</a>
             <a href="players.html" class="block px-4 py-2 hover:bg-orange-600 rounded-lg transition">Players</a>
             <a href="stats.html" class="block px-4 py-2 hover:bg-orange-600 rounded-lg transition">Stats</a>
-            <a href="guides.html" class="block px-4 py-2 hover:bg-orange-600 rounded-lg transition">Guides</a>
-            <a href="https://discord.com" class="block px-4 py-2 hover:bg-orange-600 rounded-lg transition">Community</a>
+            <a href="guides.html" class="px-4 py-2 rounded-lg transition">Guides</a>
+            <a href="https://discord.com" class="px-4 py-2 hover:bg-orange-600 rounded-lg">Community</a>
         </nav>
     </header>
     <main class="max-w-7xl mx-auto p-6">
-        <div class="bg-white dark:bg-gray-800 p-8 rounded-xl shadow-xl animate__fadeInUp" aria-label="League stats">
-            <h2 class="text-2xl font-bold mb-6 text-gray-900 dark:text-white">2025 NFL Standings</h2>
+        <div class="bg-white dark:bg-gray-800 p-8 rounded-lg shadow-xl animate__fadeInUp" aria-label="League stats">
+            <h2 class="text-xl font-bold mb-6 text-gray-900 dark:text-white">League Standings</h2>
             <div id="standingsList" class="space-y-4"></div>
-            <div id="errorMessage" class="text-red-600 dark:text-red-400 text-center mt-6"></div>
+            <div id="errorMessage" class="text-red-600 dark:text-red-400 text-center mt-4"></div>
         </div>
     </main>
-    <footer class="bg-navy text-white text-center py-6">
-        <p>© 2025 Front Row Fantasy. All rights reserved.</p>
-    </footer>
     <script>
         const localUrl = 'players_2025.json';
 
         document.addEventListener('DOMContentLoaded', () => {
-            fetch(localUrl)
-                .then(response => response.json())
-                .then(data => {
-                    const standingsList = document.getElementById('standingsList');
-                    const teams = [...new Set(data.map(p => p.team))].filter(t => t !== 'N/A');
-                    const standings = teams.map(team => {
-                        const teamPlayers = data.filter(p => p.team === team);
-                        const totalPoints = teamPlayers.reduce((sum, p) => sum + (parseFloat(p.fantasy_points) || 0), 0);
-                        const wins = Math.floor(totalPoints / 100); // Simplified: 100 points = 1 win
-                        const losses = 17 - wins; // NFL season = 17 games
-                        return { team, wins, losses, points: totalPoints.toFixed(2) };
-                    }).sort((a, b) => b.points - a.points);
-                    standingsList.innerHTML = '';
-                    standings.forEach(team => {
-                        const div = document.createElement('div');
-                        div.className = 'bg-gray-100 dark:bg-gray-700 p-4 rounded-lg shadow-md flex justify-between items-center transform hover:scale-[1.02] transition';
-                        div.innerHTML = `
-                            <div>
-                                <span class="text-gray-900 dark:text-white font-semibold">${team.team}</span>
-                                <span class="text-gray-600 dark:text-gray-300 block">Record: ${team.wins} - ${team.losses}</span>
-                            </div>
-                            <span class="text-gray-600 dark:text-gray-300">Points: ${team.points}</span>
-                        `;
-                        standingsList.appendChild(div);
+            try {
+                fetch(localUrl)
+                    .then(response => {
+                        if (!response.ok) throw new Error('Network response was not ok');
+                        return response.json();
+                    })
+                    .then(data => {
+                        const standingsList = document.getElementById('standingsList');
+                        const teams = [...new Set(data.map(p => p.team))].filter(team => team && team !== 'N/A');
+                        const standings = teams.map(team => {
+                            const teamPlayers = data.filter(p => p.team === team);
+                            const totalPoints = teamPlayers.reduce((sum, p) => sum + (parseFloat(p.fantasy_points || 0)), 0);
+                            const wins = Math.floor(totalPoints / 100);
+                            const losses = 17 - wins;
+                            return { team, wins, losses, points: totalPoints.toFixed(2) };
+                        }).sort((a, b) => b.points - a.points);
+
+                        standingsList.innerHTML = '';
+                        standings.forEach(team => {
+                            const div = document.createElement('div');
+                            div.className = 'bg-gray-100 dark:bg-gray-700 p-4 rounded-lg shadow-md flex justify-between items-center';
+                            div.innerHTML = `
+                                <div>
+                                    <span class="text-gray-900 dark:text-white font-semibold">${team.team}</span>
+                                    <span class="text-gray-600 dark:text-gray-300 block">Record: ${team.wins} - ${team.losses}</span>
+                                </div>
+                                <span class="text-gray-600 dark:text-gray-300">Points: ${team.points}</span>
+                            `;
+                            standingsList.appendChild(div);
+                        });
+                    })
+                    .catch(error => {
+                        console.error('Error fetching standings:', error);
+                        document.getElementById('errorMessage').textContent = 'Failed to load standings data. Please try again later.';
                     });
-                })
-                .catch(error => {
-                    console.error('Error fetching standings:', error);
-                    document.getElementById('errorMessage').textContent = 'Failed to load standings.';
-                });
+            } catch (err) {
+                console.error('Unexpected error:', err);
+                document.getElementById('errorMessage').textContent = 'An unexpected error occurred while loading standings.';
+            }
         });
     </script>
 </body>
