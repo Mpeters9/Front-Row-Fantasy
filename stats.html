@@ -3,96 +3,255 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>League Stats - Front Row Fantasy</title>
+    <title>Fantasy Football Stats - Front Row Fantasy</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="styles.css">
-    <link rel="icon" href="logo.png" type="image/png">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            text-align: center;
+        }
+        th {
+            background-color: #f4f4f4;
+            cursor: pointer;
+        }
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        tr:hover {
+            background-color: #f1f1f1;
+        }
+    </style>
 </head>
-<body class="bg-gray-50 dark:bg-gray-900 font-inter transition-colors duration-300" aria-label="Main content">
-    <header class="bg-navy text-white py-4 z-20 shadow-lg">
+<body class="bg-gray-50 dark:bg-gray-900 transition-colors duration-300">
+    <header class="bg-gradient-to-r from-blue-800 to-blue-600 text-white py-4 shadow-md">
         <div class="max-w-7xl mx-auto flex justify-between items-center px-6">
             <div class="flex items-center gap-4">
-                <img src="logo.png" alt="Front Row Fantasy Logo" class="h-12" onerror="this.src='https://via.placeholder.com/48?text=FRF'">
-                <h1 class="text-3xl font-bold">Front Row Fantasy</h1>
-            </div>
-            <div class="flex items-center gap-4">
-                <nav class="hidden md:flex gap-4" aria-label="Main navigation">
-                    <a href="index.html" class="px-4 py-2 hover:bg-orange-600 rounded-lg transition">Home</a>
-                    <a href="players.html" class="px-4 py-2 hover:bg-orange-600 rounded-lg transition">Players</a>
-                    <a href="stats.html" class="px-4 py-2 hover:bg-orange-600 rounded-lg transition" aria-current="page">Stats</a>
-                    <a href="guides.html" class="px-4 py-2 hover:bg-orange-600 rounded-lg transition">Guides</a>
-                    <a href="https://discord.com" class="px-4 py-2 hover:bg-orange-600 rounded-lg transition">Community</a>
-                </nav>
-                <button id="themeToggle" class="p-2 rounded-full hover:bg-orange-600 transition" title="Toggle Dark Mode" aria-label="Toggle dark mode">
-                    <svg id="themeIcon" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
-                    </svg>
-                </button>
-                <button id="mobileMenuToggle" class="md:hidden p-2 rounded-full hover:bg-orange-600 transition" aria-label="Toggle mobile menu">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
-                    </svg>
-                </button>
+                <img src="logo.png" alt="Logo" class="h-12" onerror="this.src='https://via.placeholder.com/48?text=FRF'">
+                <h1 class="text-3xl font-bold">Fantasy Football Stats</h1>
             </div>
         </div>
-        <nav id="mobileMenu" class="hidden md:hidden bg-navy text-white px-6 py-4" aria-label="Mobile navigation">
-            <a href="index.html" class="block px-4 py-2 hover:bg-orange-600 rounded-lg transition">Home</a>
-            <a href="players.html" class="block px-4 py-2 hover:bg-orange-600 rounded-lg transition">Players</a>
-            <a href="stats.html" class="block px-4 py-2 hover:bg-orange-600 rounded-lg transition">Stats</a>
-            <a href="guides.html" class="px-4 py-2 rounded-lg transition">Guides</a>
-            <a href="https://discord.com" class="px-4 py-2 hover:bg-orange-600 rounded-lg">Community</a>
-        </nav>
     </header>
     <main class="max-w-7xl mx-auto p-6">
-        <div class="bg-white dark:bg-gray-800 p-8 rounded-lg shadow-xl animate__fadeInUp" aria-label="League stats">
-            <h2 class="text-xl font-bold mb-6 text-gray-900 dark:text-white">League Standings</h2>
-            <div id="standingsList" class="space-y-4"></div>
-            <div id="errorMessage" class="text-red-600 dark:text-red-400 text-center mt-4"></div>
-        </div>
+        <section class="bg-white dark:bg-gray-800 p-8 rounded-lg shadow-lg">
+            <h2 class="text-2xl font-bold mb-6 text-gray-900 dark:text-white">Player Stats</h2>
+            <div class="mb-4 flex gap-4">
+                <div>
+                    <label for="positionSelect" class="block text-gray-700 dark:text-gray-300">Select Position:</label>
+                    <select id="positionSelect" class="p-2 border rounded-lg bg-gray-50 dark:bg-gray-700 dark:text-white">
+                        <option value="QB">QB</option>
+                        <option value="RB">RB</option>
+                        <option value="WR">WR</option>
+                        <option value="TE">TE</option>
+                        <option value="Flex">Flex (RB/WR/TE)</option>
+                        <option value="SuperFlex">SuperFlex (QB/RB/WR/TE)</option>
+                    </select>
+                </div>
+                <button id="toggleAdvanced" class="mt-6 bg-teal-500 text-white px-4 py-2 rounded-lg hover:bg-teal-600 transition">Show Advanced Stats</button>
+            </div>
+            <div id="statsTable" class="overflow-x-auto">
+                <table class="min-w-full bg-white dark:bg-gray-800">
+                    <thead>
+                        <tr>
+                            <th class="px-4 py-2">Player</th>
+                            <th class="px-4 py-2">Team</th>
+                            <th class="px-4 py-2">Fantasy Points</th>
+                            <th class="px-4 py-2">FP/G</th>
+                        </tr>
+                    </thead>
+                    <tbody id="statsBody">
+                        <tr><td colspan="4" class="text-center py-4">Loading...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
     </main>
     <script>
-        const localUrl = 'players_2025.json';
-
         document.addEventListener('DOMContentLoaded', () => {
-            try {
-                fetch(localUrl)
-                    .then(response => {
-                        if (!response.ok) throw new Error('Network response was not ok');
-                        return response.json();
-                    })
-                    .then(data => {
-                        const standingsList = document.getElementById('standingsList');
-                        const teams = [...new Set(data.map(p => p.team))].filter(team => team && team !== 'N/A');
-                        const standings = teams.map(team => {
-                            const teamPlayers = data.filter(p => p.team === team);
-                            const totalPoints = teamPlayers.reduce((sum, p) => sum + (parseFloat(p.fantasy_points || 0)), 0);
-                            const wins = Math.floor(totalPoints / 100);
-                            const losses = 17 - wins;
-                            return { team, wins, losses, points: totalPoints.toFixed(2) };
-                        }).sort((a, b) => b.points - a.points);
+            const positionSelect = document.getElementById('positionSelect');
+            const statsBody = document.getElementById('statsBody');
+            const toggleAdvanced = document.getElementById('toggleAdvanced');
+            let playersData = [];
+            let currentPosition = 'QB';
+            let showAdvanced = false;
 
-                        standingsList.innerHTML = '';
-                        standings.forEach(team => {
-                            const div = document.createElement('div');
-                            div.className = 'bg-gray-100 dark:bg-gray-700 p-4 rounded-lg shadow-md flex justify-between items-center';
-                            div.innerHTML = `
-                                <div>
-                                    <span class="text-gray-900 dark:text-white font-semibold">${team.team}</span>
-                                    <span class="text-gray-600 dark:text-gray-300 block">Record: ${team.wins} - ${team.losses}</span>
-                                </div>
-                                <span class="text-gray-600 dark:text-gray-300">Points: ${team.points}</span>
-                            `;
-                            standingsList.appendChild(div);
-                        });
-                    })
-                    .catch(error => {
-                        console.error('Error fetching standings:', error);
-                        document.getElementById('errorMessage').textContent = 'Failed to load standings data. Please try again later.';
+            // Sample data fetch (replace with actual API call)
+            fetch('players_2025.json')
+                .then(response => response.json())
+                .then(data => {
+                    playersData = data;
+                    renderTable(currentPosition);
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    statsBody.innerHTML = '<tr><td colspan="4" class="text-center text-red-600">Failed to load data.</td></tr>';
+                });
+
+            positionSelect.addEventListener('change', (event) => {
+                currentPosition = event.target.value;
+                renderTable(currentPosition);
+            });
+
+            toggleAdvanced.addEventListener('click', () => {
+                showAdvanced = !showAdvanced;
+                toggleAdvanced.textContent = showAdvanced ? 'Hide Advanced Stats' : 'Show Advanced Stats';
+                renderTable(currentPosition);
+            });
+
+            function renderTable(position) {
+                statsBody.innerHTML = '';
+                const filteredPlayers = position === 'Flex' || position === 'SuperFlex'
+                    ? playersData.filter(p => (position === 'SuperFlex' || p.position !== 'QB'))
+                    : playersData.filter(p => p.position === position);
+
+                filteredPlayers.sort((a, b) => calculateFantasyPoints(b) - calculateFantasyPoints(a));
+
+                const columns = getColumns(position, showAdvanced);
+                const thead = document.querySelector('thead tr');
+                thead.innerHTML = '<th class="px-4 py-2">Player</th><th class="px-4 py-2">Team</th><th class="px-4 py-2">Fantasy Points</th><th class="px-4 py-2">FP/G</th>';
+                columns.forEach(col => {
+                    const th = document.createElement('th');
+                    th.className = 'px-4 py-2';
+                    th.textContent = col.label;
+                    thead.appendChild(th);
+                });
+
+                filteredPlayers.forEach(player => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td class="px-4 py-2">${player.name}</td>
+                        <td class="px-4 py-2">${player.team || 'N/A'}</td>
+                        <td class="px-4 py-2">${calculateFantasyPoints(player).toFixed(2)}</td>
+                        <td class="px-4 py-2">${(calculateFantasyPoints(player) / (player.gamesPlayed || 1)).toFixed(2)}</td>
+                    `;
+                    columns.forEach(col => {
+                        const td = document.createElement('td');
+                        td.className = 'px-4 py-2';
+                        td.textContent = player[col.key] ? player[col.key].toFixed(2) : 'N/A';
+                        row.appendChild(td);
                     });
-            } catch (err) {
-                console.error('Unexpected error:', err);
-                document.getElementById('errorMessage').textContent = 'An unexpected error occurred while loading standings.';
+                    statsBody.appendChild(row);
+                });
+            }
+
+            function calculateFantasyPoints(player) {
+                let points = 0;
+                if (player.position === 'QB') {
+                    points += (player.passingYards || 0) / 25;
+                    points += (player.passingTDs || 0) * 4;
+                    points -= (player.interceptions || 0) * 2;
+                    points += (player.rushingYards || 0) / 10;
+                    points += (player.rushingTDs || 0) * 6;
+                }
+                if (['RB', 'WR', 'TE'].includes(player.position)) {
+                    points += (player.rushingYards || 0) / 10;
+                    points += (player.rushingTDs || 0) * 6;
+                    points += player.receptions || 0;
+                    points += (player.receivingYards || 0) / 10;
+                    points += (player.receivingTDs || 0) * 6;
+                }
+                return points;
+            }
+
+            function getColumns(position, advanced) {
+                const baseColumns = {
+                    QB: [
+                        { label: 'Pass Yds', key: 'passingYards' },
+                        { label: 'Pass TDs', key: 'passingTDs' },
+                        { label: 'Int', key: 'interceptions' },
+                        { label: 'Rush Yds', key: 'rushingYards' },
+                        { label: 'Rush TDs', key: 'rushingTDs' },
+                        { label: 'Comp %', key: 'completionPercentage' },
+                        { label: 'YPA', key: 'yardsPerAttempt' },
+                        { label: 'QB Rating', key: 'qbRating' },
+                    ],
+                    RB: [
+                        { label: 'Rush Yds', key: 'rushingYards' },
+                        { label: 'Rush TDs', key: 'rushingTDs' },
+                        { label: 'Rec', key: 'receptions' },
+                        { label: 'Rec Yds', key: 'receivingYards' },
+                        { label: 'Rec TDs', key: 'receivingTDs' },
+                        { label: 'YPC', key: 'yardsPerCarry' },
+                        { label: 'YPR', key: 'yardsPerReception' },
+                        { label: 'Touches', key: 'touches' },
+                    ],
+                    WR: [
+                        { label: 'Rec', key: 'receptions' },
+                        { label: 'Rec Yds', key: 'receivingYards' },
+                        { label: 'Rec TDs', key: 'receivingTDs' },
+                        { label: 'Targets', key: 'targets' },
+                        { label: 'YPR', key: 'yardsPerReception' },
+                        { label: 'Catch %', key: 'catchRate' },
+                        { label: 'YAC', key: 'yardsAfterCatch' },
+                    ],
+                    TE: [
+                        { label: 'Rec', key: 'receptions' },
+                        { label: 'Rec Yds', key: 'receivingYards' },
+                        { label: 'Rec TDs', key: 'receivingTDs' },
+                        { label: 'Targets', key: 'targets' },
+                        { label: 'YPR', key: 'yardsPerReception' },
+                        { label: 'Catch %', key: 'catchRate' },
+                        { label: 'YAC', key: 'yardsAfterCatch' },
+                    ],
+                    Flex: [
+                        { label: 'Pos', key: 'position' },
+                        { label: 'Rush Yds', key: 'rushingYards' },
+                        { label: 'Rush TDs', key: 'rushingTDs' },
+                        { label: 'Rec', key: 'receptions' },
+                        { label: 'Rec Yds', key: 'receivingYards' },
+                        { label: 'Rec TDs', key: 'receivingTDs' },
+                    ],
+                    SuperFlex: [
+                        { label: 'Pos', key: 'position' },
+                        { label: 'Pass Yds', key: 'passingYards' },
+                        { label: 'Pass TDs', key: 'passingTDs' },
+                        { label: 'Int', key: 'interceptions' },
+                        { label: 'Rush Yds', key: 'rushingYards' },
+                        { label: 'Rush TDs', key: 'rushingTDs' },
+                        { label: 'Rec', key: 'receptions' },
+                        { label: 'Rec Yds', key: 'receivingYards' },
+                        { label: 'Rec TDs', key: 'receivingTDs' },
+                    ],
+                };
+
+                const advancedColumns = {
+                    QB: [
+                        { label: 'AYPA', key: 'adjustedYardsPerAttempt' },
+                        { label: 'CPOE', key: 'completionPercentageOverExpectation' },
+                        { label: 'Deep %', key: 'deepBallCompletionPercentage' },
+                    ],
+                    RB: [
+                        { label: 'YACo', key: 'yardsAfterContact' },
+                        { label: 'Elusive', key: 'elusiveRating' },
+                        { label: 'Break %', key: 'breakawayRunRate' },
+                    ],
+                    WR: [
+                        { label: 'YPPR', key: 'yardsPerPassRoute' },
+                        { label: 'Air Yds', key: 'airYards' },
+                        { label: 'Tgt Share', key: 'targetShare' },
+                        { label: 'RZ Tgts', key: 'redZoneTargets' },
+                    ],
+                    TE: [
+                        { label: 'YPPR', key: 'yardsPerPassRoute' },
+                        { label: 'Air Yds', key: 'airYards' },
+                        { label: 'Tgt Share', key: 'targetShare' },
+                        { label: 'RZ Tgts', key: 'redZoneTargets' },
+                    ],
+                    Flex: [
+                        { label: 'YPPR', key: 'yardsPerPassRoute' },
+                        { label: 'Tgt Share', key: 'targetShare' },
+                    ],
+                    SuperFlex: [
+                        { label: 'YPPR', key: 'yardsPerPassRoute' },
+                        { label: 'Tgt Share', key: 'targetShare' },
+                        { label: 'AYPA', key: 'adjustedYardsPerAttempt' },
+                    ],
+                };
+
+                return advanced ? [...baseColumns[position], ...advancedColumns[position]] : baseColumns[position];
             }
         });
     </script>
