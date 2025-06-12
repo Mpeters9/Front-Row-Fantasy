@@ -1,21 +1,40 @@
-/* Custom styles for enhanced design */
-.bg-navy {
-  background-color: #1e2a44;
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+    --navy: #1a2a44;
+    --orange: #f97316;
+    --teal: #2dd4bf;
 }
-.text-primary {
-  color: #f97316;
+
+body {
+    @apply bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-white;
 }
-.animate__fadeIn {
-  animation: fadeIn 1s ease-in-out;
+
+.card {
+    @apply bg-gradient-to-r from-white to-gray-100 dark:from-gray-800 dark:to-gray-700 p-4 rounded-xl shadow-md hover:shadow-xl transition transform hover:-translate-y-1;
 }
-.animate__fadeInUp {
-  animation: fadeInUp 1s ease-in-out;
+
+.button {
+    @apply bg-teal-500 text-white px-6 py-3 rounded-lg hover:bg-teal-600 transition;
 }
-@keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
+
+.link {
+    @apply text-teal-500 hover:underline;
 }
-@keyframes fadeInUp {
-  from { opacity: 0; transform: translateY(20px); }
-  to { opacity: 1; transform: translateY(0); }
+
+@media (max-width: 640px) {
+    h1 {
+        @apply text-2xl;
+    }
+    h2 {
+        @apply text-xl;
+    }
+    .card {
+        @apply p-3;
+    }
+    .button {
+        @apply px-4 py-2;
+    }
 }
