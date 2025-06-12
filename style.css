@@ -2,14 +2,8 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-    --navy: #1a2a44;
-    --orange: #f97316;
-    --teal: #2dd4bf;
-}
-
 body {
-    @apply bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-white;
+    background-color: #f0f0f0; /* Fallback if Tailwind fails */
 }
 
 .card {
