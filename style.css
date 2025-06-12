@@ -7,7 +7,7 @@ body {
 }
 
 .card {
-    @apply bg-gradient-to-r from-white to-gray-100 dark:from-gray-800 dark:to-gray-700 p-4 rounded-xl shadow-md hover:shadow-xl transition transform hover:-translate-y-1;
+    @apply bg-white dark:bg-gray-800 p-4 rounded-lg shadow-md hover:shadow-xl transition transform hover:-translate-y-1;
 }
 
 .button {
@@ -16,6 +16,19 @@ body {
 
 .link {
     @apply text-teal-500 hover:underline;
+}
+
+.marquee {
+    @apply overflow-hidden whitespace-nowrap;
+}
+
+.marquee-content {
+    @apply inline-flex gap-4 animate-marquee;
+}
+
+@keyframes marquee {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
 }
 
 @media (max-width: 640px) {
@@ -30,5 +43,8 @@ body {
     }
     .button {
         @apply px-4 py-2;
+    }
+    .marquee-content {
+        @apply gap-2;
     }
 }
