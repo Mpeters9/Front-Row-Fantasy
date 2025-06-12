@@ -1,159 +1,295 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Front Row Fantasy - Your NFL Fantasy Hub</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.min.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="styles.css">
-    <link rel="icon" href="logo.png" type="image/png">
-    <style>
-        .marquee {
-            overflow: hidden;
-            white-space: nowrap;
-            width: 100%;
-            position: relative;
+document.addEventListener('DOMContentLoaded', () => {
+    // Theme Toggle
+    const themeToggle = document.getElementById('themeToggle');
+    const themeIcon = document.getElementById('themeIcon');
+    const isDarkMode = localStorage.getItem('theme') === 'dark';
+    if (isDarkMode) {
+        document.documentElement.classList.add('dark');
+        themeIcon.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />';
+    }
+    themeToggle.addEventListener('click', () => {
+        document.documentElement.classList.toggle('dark');
+        localStorage.setItem('theme', document.documentElement.classList.contains('dark') ? 'dark' : 'light');
+        themeIcon.innerHTML = document.documentElement.classList.contains('dark')
+            ? '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />'
+            : '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />';
+    });
+
+    // Mobile Menu Toggle
+    const mobileMenuToggle = document.getElementById('mobileMenuToggle');
+    const mobileMenu = document.getElementById('mobileMenu');
+    mobileMenuToggle.addEventListener('click', () => {
+        mobileMenu.classList.toggle('hidden');
+        mobileMenuToggle.setAttribute('aria-expanded', !mobileMenu.classList.contains('hidden'));
+    });
+
+    // Mock Teams for Trade Analyzer and Matchup
+    const mockTeams = [
+        { name: 'Team Alpha', players: ['Josh Allen', 'Christian McCaffrey', 'Davante Adams', 'Travis Kelce'] },
+        { name: 'Team Beta', players: ['Patrick Mahomes', 'Derrick Henry', 'Justin Jefferson', 'George Kittle'] },
+        { name: 'Team Gamma', players: ['Lamar Jackson', 'Saquon Barkley', 'Tyreek Hill', 'Mark Andrews'] }
+    ];
+
+    // Utility to show/hide loader
+    const showLoader = (id) => document.getElementById(id)?.classList?.remove('hidden');
+    const hideLoader = (id) => document.getElementById(id)?.classList?.add('hidden');
+
+    // Fantasy Points Ticker
+    const fantasyTicker = document.getElementById('fantasyTicker');
+    if (fantasyTicker) {
+        showLoader('tickerLoader');
+        try {
+            const fetchWithTimeout = (url, timeout = 10000) => {
+                return Promise.race([
+                    fetch(url),
+                    new Promise((_, reject) => setTimeout(() => reject(new Error('Request timed out')), timeout))
+                ]);
+            };
+            fetchWithTimeout('players_2025.json')
+                .then(response => {
+                    if (!response.ok) throw new Error('Network response was not ok');
+                    return response.json();
+                })
+                .then(data => {
+                    const topPlayers = data.sort((a, b) => (parseFloat(b.fantasy_points || 0) - parseFloat(a.fantasy_points || 0))).slice(0, 10);
+                    const tickerContent = topPlayers.concat(topPlayers).map(player => `
+                        <span class="inline-flex items-center px-4 py-2 bg-teal-500 text-white rounded-lg shadow-md whitespace-nowrap">
+                            <img src="${player.image || 'https://via.placeholder.com/40'}" alt="${player.name}" class="w-10 h-10 rounded-full mr-2" loading="lazy" onerror="this.src='https://via.placeholder.com/40';">
+                            ${player.name} (${player.position} - ${player.team || 'N/A'}) - ${parseFloat(player.fantasy_points || 0).toFixed(1)} pts
+                        </span>
+                    `).join('');
+                    fantasyTicker.innerHTML = tickerContent;
+                    fantasyTicker.style.animationDuration = `${topPlayers.length * 4}s`;
+                    hideLoader('tickerLoader');
+                })
+                .catch(error => {
+                    console.error('Error loading fantasy ticker:', error);
+                    fantasyTicker.innerHTML = '<p class="text-red-600 dark:text-red-400 text-center">Failed to load fantasy ticker.</p>';
+                    hideLoader('tickerLoader');
+                });
+        } catch (error) {
+            console.error('Unexpected error:', error);
+            fantasyTicker.innerHTML = '<p class="text-red-600 dark:text-red-400 text-center">Error loading ticker.</p>';
+            hideLoader('tickerLoader');
         }
-        .marquee-content {
-            display: inline-flex;
-            gap: 1rem;
-            animation: marquee 20s linear infinite;
+    }
+
+    // Top Players
+    const topPlayersDiv = document.getElementById('topPlayers');
+    if (topPlayersDiv) {
+        showLoader('playersLoader');
+        try {
+            const fetchWithTimeout = (url, timeout = 10000) => {
+                return Promise.race([
+                    fetch(url),
+                    new Promise((_, reject) => setTimeout(() => reject(new Error('Request timed out')), timeout))
+                ]);
+            };
+            fetchWithTimeout('players_2025.json')
+                .then(response => {
+                    if (!response.ok) throw new Error('Network response was not ok');
+                    return response.json();
+                })
+                .then(data => {
+                    data.sort((a, b) => parseFloat(b.fantasy_points || 0) - parseFloat(a.fantasy_points || 0)).slice(0, 5).forEach(player => {
+                        const imageSrc = player.image || 'https://via.placeholder.com/80?text=Player';
+                        const div = document.createElement('div');
+                        div.className = 'bg-white dark:bg-gray-800 p-4 rounded-lg shadow-md hover:shadow-xl transition transform hover:-translate-y-1';
+                        div.innerHTML = `
+                            <img src="${imageSrc}" alt="${player.name}" class="h-20 w-20 rounded-full mx-auto mb-2 object-cover" loading="lazy" onerror="this.src='https://via.placeholder.com/80?text=Player';">
+                            <div class="text-gray-900 dark:text-white font-semibold text-center">${player.name}</div>
+                            <div class="text-gray-600 dark:text-gray-300 text-center text-sm">${player.position} - ${player.team || 'N/A'}</div>
+                            <div class="text-gray-600 dark:text-gray-300 text-center">${parseFloat(player.fantasy_points || 0).toFixed(2)} pts</div>
+                        `;
+                        topPlayersDiv.appendChild(div);
+                    });
+                    hideLoader('playersLoader');
+                })
+                .catch(error => {
+                    console.error('Error loading top players:', error);
+                    topPlayersDiv.innerHTML = '<p class="text-red-600 dark:text-red-400 text-center col-span-full">Failed to load top players.</p>';
+                    hideLoader('playersLoader');
+                });
+        } catch (error) {
+            console.error('Unexpected error:', error);
+            topPlayersDiv.innerHTML = '<p class="text-red-600 dark:text-red-400 text-center col-span-full">Error loading top players.</p>';
+            hideLoader('playersLoader');
         }
-        @keyframes marquee {
-            0% { transform: translateX(0); }
-            100% { transform: translateX(-50%); }
+    }
+
+    // Trade Analyzer, Waiver Wire, and Matchup Predictor
+    try {
+        const teamSelect1 = document.getElementById('team1');
+        const teamSelect2 = document.getElementById('team2');
+        const matchupSelect1 = document.getElementById('matchupTeam1');
+        const matchupSelect2 = document.getElementById('matchupTeam2');
+        mockTeams.forEach(team => {
+            const option = document.createElement('option');
+            option.value = team.name;
+            option.textContent = team.name;
+            teamSelect1?.appendChild(option.cloneNode(true));
+            teamSelect2?.appendChild(option.cloneNode(true));
+            matchupSelect1?.appendChild(option.cloneNode(true));
+            matchupSelect2?.appendChild(option);
+        });
+
+        fetch('players_2025.json')
+            .then(response => {
+                if (!response.ok) throw new Error('Network response was not OK');
+                return response.json();
+            })
+            .then(data => {
+                const waiverList = document.getElementById('waiverList');
+                if (waiverList) {
+                    waiverList.innerHTML = '<h3 class="text-lg font-semibold mb-2 text-gray-900 dark:text-white">Top Waiver Picks:</h3>';
+                    data.sort((a, b) => parseFloat(b.fantasy_points || 0) - parseFloat(a.fantasy_points || 0)).slice(0, 5).forEach(player => {
+                        const playerDiv = document.createElement('div');
+                        playerDiv.className = 'bg-white dark:bg-gray-800 p-4 rounded-lg shadow-md';
+                        playerDiv.innerHTML = `
+                            <span class="text-gray-800 dark:text-white">${player.name} (${player.position})</span>
+                            <span class="text-gray-600 dark:text-gray-300">${parseFloat(player.fantasy_points || 0).toFixed(2)} pts</span>
+                        `;
+                        waiverList.appendChild(playerDiv);
+                    });
+                }
+            })
+            .catch(error => {
+                console.error('Error loading waiver wire picks:', error);
+                if (document.getElementById('waiverList')) {
+                    document.getElementById('waiverList').innerHTML = '<p class="text-red-600 dark:text-red-400 text-center">Error loading waiver wire picks.</p>';
+                }
+            });
+
+        document.getElementById('tradeAnalyzerBtn')?.addEventListener('click', async () => {
+            try {
+                const teamName1 = document.getElementById('team1').value;
+                const teamName2 = document.getElementById('team2').value;
+                const tradeData = await fetch('players_2025.json').then(res => res.json());
+                const teamPlayers1 = mockTeams.find(t => t.name === teamName1)?.players || [];
+                const teamPlayers2 = mockTeams.find(t => t.name === teamName2)?.players || [];
+                const teamStats1 = teamPlayers1.map(p => tradeData.find(pl => pl.name === p)).filter(p => p);
+                const teamStats2 = teamPlayers2.map(p => tradeData.find(pl => pl.name === p)).filter(p => p);
+                const teamPoints1 = teamStats1.reduce((sum, p) => sum + (parseFloat(p.fantasy_points || 0)), 0);
+                const teamPoints2 = teamStats2.reduce((sum, p) => sum + (parseFloat(p.fantasy_points || 0)), 0);
+                const tradeResultDiv = document.getElementById('tradeResult');
+                if (teamPoints1 && teamPoints2) {
+                    const pointsDiff = Math.abs(teamPoints1 - teamPoints2);
+                    tradeResultDiv.innerHTML = pointsDiff < 15 ? `
+                        <p class="text-green-600 dark:text-green-400">Fair trade: ${teamName1} (${teamPoints1.toFixed(2)} pts) vs ${teamName2} (${teamPoints2.toFixed(2)} pts)</p>
+                    ` : `
+                        <p class="text-red-600 dark:text-red-400">Unbalanced trade: ${teamName1} (${teamPoints1.toFixed(2)} pts) vs ${teamName2} (${teamPoints2.toFixed(2)} pts)</p>
+                    `;
+                } else {
+                    tradeResultDiv.innerHTML = '<p class="text-red-600 dark:text-red-400">Please select both teams for trade analysis.</p>';
+                }
+            } catch (error) {
+                console.error('Error analyzing trade:', error);
+                document.getElementById('tradeResult').innerHTML = '<p class="text-red-600 dark:text-red-400">Error analyzing trade data.</p>';
+            }
+        });
+
+        document.getElementById('matchupBtn')?.addEventListener('click', async () => {
+            try {
+                const teamName1 = document.getElementById('matchupTeam1').value;
+                const teamName2 = document.getElementById('matchupTeam2').value;
+                const matchupData = await fetch('players_2025.json').then(res => res.json());
+                const teamPlayers1 = mockTeams.find(t => t.name === teamName1)?.players || [];
+                const teamPlayers2 = mockTeams.find(t => t.name === teamName2)?.players || [];
+                const teamStats1 = teamPlayers1.map(p => matchupData.find(pl => pl.name === p)).filter(p => p);
+                const teamStats2 = teamPlayers2.map(p => matchupData.find(pl => pl.name === p)).filter(p => p);
+                const teamPoints1 = teamStats1.reduce((sum, p) => sum + (parseFloat(p.fantasy_points || 0)), 0);
+                const teamPoints2 = teamStats2.reduce((sum, p) => sum + (parseFloat(p.fantasy_points || 0)), 0);
+                const matchupResultDiv = document.getElementById('matchupResult');
+                const probability1 = teamPoints1 / (teamPoints1 + teamPoints2) * 100;
+                const probability2 = teamPoints2 / (teamPoints1 + teamPoints2) * 100;
+                matchupResultDiv.innerHTML = `
+                    <p class="text-gray-900 dark:text-white">${teamName1}: ${teamPoints1.toFixed(2)} pts (${probability1.toFixed(1)}% win probability)</p>
+                    <p class="text-gray-900 dark:text-white">${teamName2}: ${teamPoints2.toFixed(2)} pts (${probability2.toFixed(1)}% win probability)</p>
+                `;
+            } catch (error) {
+                console.error('Error predicting matchup:', error);
+                document.getElementById('matchupResult').innerHTML = '<p class="text-red-600 dark:text-red-400">Error predicting matchup outcome.</p>';
+            }
+        });
+
+        // News Integration with Caching
+        const newsList = document.getElementById('newsList');
+        const loadMoreNewsBtn = document.getElementById('loadMoreNews');
+        let newsOffset = 0;
+        const newsPerLoad = 6;
+        let allNews = JSON.parse(localStorage.getItem('cachedNews')) || [];
+
+        function displayNews(articles, append = false) {
+            if (!append) newsList.innerHTML = '';
+            if (articles.length === 0) {
+                newsList.innerHTML = `<p class="text-gray-600 dark:text-gray-400">No news available.</p>`;
+                loadMoreNewsBtn.classList.add('hidden');
+                return;
+            }
+            articles.forEach(article => {
+                const div = document.createElement('div');
+                div.className = 'bg-white dark:bg-gray-800 p-4 rounded-lg shadow-md';
+                div.innerHTML = `
+                    <h4 class="text-lg font-semibold mb-2"><a href="${article.link}" target="_blank" class="text-blue-600 dark:text-blue-400 hover:underline">${article.title}</a></h4>
+                    <p class="text-gray-600 dark:text-gray-300 text-sm">${article.description || 'No summary available.'}</p>
+                `;
+                newsList.appendChild(div);
+            });
+            loadMoreNewsBtn.classList.toggle('hidden', articles.length < newsPerLoad);
         }
-        .marquee-content:hover {
-            animation-play-state: paused;
+
+        async function fetchNews() {
+            try {
+                if (allNews.length > newsOffset) {
+                    displayNews(allNews.slice(newsOffset, newsOffset + newsPerLoad));
+                    newsOffset += newsPerLoad;
+                    return;
+                }
+                const corsProxy = 'https://api.allorigins.win/raw?url=';
+                const espnUrl = corsProxy + 'https://www.espn.com/espn/rss/nfl/news';
+                const sleeperUrl = 'https://api.sleeper.app/v1/players/nfl/trending/add?limit=10';
+
+                const [espnResponse, sleeperResponse] = await Promise.all([
+                    fetch(espnUrl).then(res => res.text()),
+                    fetch(sleeperUrl).then(res => res.json())
+                ]);
+
+                const parser = new DOMParser();
+                const xml = parser.parseFromString(espnResponse, 'text/xml');
+                const espnArticles = Array.from(xml.querySelectorAll('item')).slice(0, 10).map(item => ({
+                    title: item.querySelector('title').textContent,
+                    link: item.querySelector('link').textContent,
+                    description: item.querySelector('description')?.textContent || ''
+                }));
+
+                const sleeperNews = sleeperResponse.map(player => ({
+                    title: `${player.first_name} ${player.last_name} Trending Up`,
+                    link: `https://sleeper.app/players/nfl/${player.player_id}`,
+                    description: `Added by ${player.add_count || 0} managers in the last 24 hours.`
+                }));
+
+                allNews = [...espnArticles, ...sleeperNews];
+                localStorage.setItem('cachedNews', JSON.stringify(allNews));
+                displayNews(allNews.slice(newsOffset, newsOffset + newsPerLoad));
+                newsOffset += newsPerLoad;
+            } catch (error) {
+                console.error('Error fetching news:', error);
+                newsList.innerHTML = '<p class="text-red-600 dark:text-red-400 text-center">Failed to load news.</p>';
+            }
         }
-        .spinner {
-            border: 4px solid rgba(0, 0, 0, 0.1);
-            border-left: 4px solid #2dd4bf;
-            border-radius: 50%;
-            width: 24px;
-            height: 24px;
-            animation: spin 1s linear infinite;
-            margin: 0 auto;
+
+        if (newsList && loadMoreNewsBtn) {
+            fetchNews();
+            loadMoreNewsBtn.addEventListener('click', () => {
+                if (allNews.length > newsOffset) {
+                    displayNews(allNews.slice(newsOffset, newsOffset + newsPerLoad), true);
+                    newsOffset += newsPerLoad;
+                } else {
+                    fetchNews();
+                }
+            });
         }
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-        .hidden-content {
-            display: none;
-        }
-    </style>
-</head>
-<body class="bg-gray-50 dark:bg-gray-900 font-poppins transition-colors duration-300" aria-label="Main content">
-    <header class="bg-gradient-to-r from-navy to-blue-900 text-white py-4 shadow-md">
-        <div class="max-w-7xl mx-auto flex justify-between items-center px-6">
-            <div class="flex items-center gap-4">
-                <img src="logo.png" alt="Front Row Fantasy Logo" class="h-12" onerror="this.src='https://via.placeholder.com/48?text=FRF'">
-                <h1 class="text-3xl font-bold">Front Row Fantasy</h1>
-            </div>
-            <div class="flex items-center gap-4">
-                <nav class="hidden md:flex gap-4" aria-label="Main navigation">
-                    <a href="index.html" class="px-4 py-2 hover:bg-teal-500 rounded-lg transition" aria-current="page">Home</a>
-                    <a href="players.html" class="px-4 py-2 hover:bg-teal-500 rounded-lg transition">Players</a>
-                    <a href="stats.html" class="px-4 py-2 hover:bg-teal-500 rounded-lg transition">Stats</a>
-                    <a href="guides.html" class="px-4 py-2 hover:bg-teal-500 rounded-lg transition">Guides</a>
-                    <a href="https://discord.com" class="px-4 py-2 hover:bg-teal-500 rounded-lg transition">Community</a>
-                </nav>
-                <button id="themeToggle" class="p-2 rounded-full hover:bg-teal-500 transition" title="Toggle Dark Mode" aria-label="Toggle dark mode">
-                    <svg id="themeIcon" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
-                    </svg>
-                </button>
-                <button id="mobileMenuToggle" class="md:hidden p-2 rounded-full hover:bg-teal-500 transition" aria-label="Toggle mobile menu">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
-                    </svg>
-                </button>
-            </div>
-        </div>
-        <nav id="mobileMenu" class="hidden md:hidden bg-navy text-white px-6 py-4" aria-label="Mobile navigation">
-            <a href="index.html" class="block px-4 py-2 hover:bg-teal-500 rounded-lg transition">Home</a>
-            <a href="players.html" class="block px-4 py-2 hover:bg-teal-500 rounded-lg transition">Players</a>
-            <a href="stats.html" class="block px-4 py-2 hover:bg-teal-500 rounded-lg transition">Stats</a>
-            <a href="guides.html" class="block px-4 py-2 hover:bg-teal-500 rounded-lg transition">Guides</a>
-            <a href="https://discord.com" class="block px-4 py-2 hover:bg-teal-500 rounded-lg transition">Community</a>
-        </nav>
-    </header>
-    <section class="bg-teal-500 text-white py-16 text-center animate__fadeIn">
-        <div class="max-w-7xl mx-auto px-6">
-            <h2 class="text-4xl font-bold mb-4">Your Ultimate Fantasy Football Command Center</h2>
-            <p class="text-lg mb-6">Real-time stats, expert tools, and breaking news for every fantasy manager.</p>
-            <a href="players.html" class="bg-white text-teal-500 px-6 py-3 rounded-lg hover:bg-gray-100 transition">Explore Players</a>
-        </div>
-    </section>
-    <section class="max-w-7xl mx-auto p-6 bg-gray-100 dark:bg-gray-800" aria-label="Fantasy points ticker">
-        <h2 class="text-xl font-bold mb-4 text-gray-900 dark:text-white text-center">Fantasy Points Ticker</h2>
-        <div id="tickerLoader" class="spinner"></div>
-        <div id="tickerContainer" class="marquee hidden-content">
-            <div id="fantasyTicker" class="marquee-content"></div>
-        </div>
-    </section>
-    <section class="max-w-7xl mx-auto p-6" aria-label="Top players">
-        <h2 class="text-2xl font-bold mb-6 text-gray-900 dark:text-white text-center">Top Fantasy Players</h2>
-        <div id="playersLoader" class="spinner"></div>
-        <div id="topPlayersContainer" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 hidden-content">
-            <div id="topPlayers"></div>
-        </div>
-    </section>
-    <main class="max-w-7xl mx-auto flex flex-col md:flex-row gap-8 p-6">
-        <section class="flex-1 bg-white dark:bg-gray-800 p-8 rounded-xl shadow-xl animate__fadeInUp" aria-label="Fantasy tools">
-            <h2 class="text-2xl font-bold mb-6 text-gray-900 dark:text-white">Trade Analyzer</h2>
-            <div class="flex flex-col sm:flex-row gap-4 mb-6">
-                <select id="team1" class="p-3 border rounded-lg w-full bg-gray-50 dark:bg-gray-700 dark:text-white" aria-label="Select Team 1">
-                    <option value="">Select Team 1</option>
-                </select>
-                <select id="team2" class="p-3 border rounded-lg w-full bg-gray-50 dark:bg-gray-700 dark:text-white" aria-label="Select Team 2">
-                    <option value="">Select Team 2</option>
-                </select>
-            </div>
-            <button id="tradeAnalyzerBtn" class="bg-teal-500 text-white px-6 py-3 rounded-lg hover:bg-teal-600 transition relative group" aria-label="Analyze trade">
-                Analyze Trade
-                <span class="absolute hidden group-hover:block bg-gray-800 text-white text-xs rounded py-1 px-2 -top-8 left-1/2 transform -translate-x-1/2">Compare team rosters</span>
-            </button>
-            <div id="tradeResult" class="mt-6 text-gray-900 dark:text-white"></div>
-            <h2 class="text-2xl font-bold mt-8 mb-6 text-gray-900 dark:text-white">Matchup Predictor</h2>
-            <div class="flex flex-col sm:flex-row gap-4 mb-6">
-                <select id="matchupTeam1" class="p-3 border rounded-lg w-full bg-gray-50 dark:bg-gray-700 dark:text-white" aria-label="Select Matchup Team 1">
-                    <option value="">Select Team 1</option>
-                </select>
-                <select id="matchupTeam2" class="p-3 border rounded-lg w-full bg-gray-50 dark:bg-gray-700 dark:text-white" aria-label="Select Matchup Team 2">
-                    <option value="">Select Team 2</option>
-                </select>
-            </div>
-            <button id="matchupBtn" class="bg-teal-500 text-white px-6 py-3 rounded-lg hover:bg-teal-600 transition" aria-label="Predict matchup">
-                Predict Matchup
-            </button>
-            <div id="matchupResult" class="mt-6 text-gray-900 dark:text-white"></div>
-            <h2 class="text-2xl font-bold mt-8 mb-6 text-gray-900 dark:text-white">Waiver Wire Picks</h2>
-            <div id="waiverList" class="space-y-4"></div>
-            <h2 class="text-2xl font-bold mt-8 mb-6 text-gray-900 dark:text-white">NFL & Fantasy News</h2>
-            <div id="newsList" class="space-y-4">
-                <div class="bg-gray-100 dark:bg-gray-700 p-4 rounded-lg">
-                    <h4 class="font-semibold">Loading news...</h4>
-                    <p>Fetching the latest NFL and fantasy football updates.</p>
-                </div>
-            </div>
-            <button id="loadMoreNews" class="mt-6 bg-teal-500 text-white px-6 py-3 rounded-lg hover:bg-teal-600 transition hidden" aria-label="Load more news">Load More News</button>
-        </section>
-        <aside class="w-full md:w-80 bg-white dark:bg-gray-800 p-8 rounded-xl shadow-xl animate__fadeInUp" aria-label="Quick links">
-            <h3 class="text-xl font-bold mb-6 text-gray-900 dark:text-white">Quick Links</h3>
-            <ul class="space-y-4">
-                <li><a href="guides.html" class="text-teal-500 hover:underline">Beginner Guides</a></li>
-                <li><a href="players.html" class="text-teal-500 hover:underline">Player Stats</a></li>
-                <li><a href="stats.html" class="text-teal-500 hover:underline">League Standings</a></li>
-                <li><a href="https://discord.com" class="text-teal-500 hover:underline">Join Our Discord</a></li>
-            </ul>
-        </aside>
-    </main>
-    <footer class="bg-navy text-white text-center py-6">
-        <p>© 2025 Front Row Fantasy. All rights reserved.</p>
-    </footer>
-    <script src="script.js"></script>
-</body>
-</html>
+    } catch (err) {
+        console.error('Global error:', err);
+    }
+});
