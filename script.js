@@ -30,11 +30,22 @@ document.addEventListener('DOMContentLoaded', () => {
         { name: 'Team Gamma', players: ['Lamar Jackson', 'Saquon Barkley', 'Tyreek Hill', 'Mark Andrews'] }
     ];
 
+    // Utility to show/hide loader
+    const showLoader = (id) => document.getElementById(id)?.classList?.remove('hidden');
+    const hideLoader = (id) => document.getElementById(id)?.classList?.add('hidden');
+
     // Fantasy Points Ticker
     const fantasyTicker = document.getElementById('fantasyTicker');
     if (fantasyTicker) {
+        showLoader('tickerLoader');
         try {
-            fetch('players_2025.json')
+            const fetchWithTimeout = (url, timeout = 10000) => {
+                return Promise.race([
+                    fetch(url),
+                    new Promise((_, reject) => setTimeout(() => reject(new Error('Request timed out')), timeout))
+                ]);
+            };
+            fetchWithTimeout('players_2025.json')
                 .then(response => {
                     if (!response.ok) throw new Error('Network response was not ok');
                     return response.json();
@@ -42,84 +53,113 @@ document.addEventListener('DOMContentLoaded', () => {
                 .then(data => {
                     const topPlayers = data.sort((a, b) => (parseFloat(b.fantasy_points || 0) - parseFloat(a.fantasy_points || 0))).slice(0, 10);
                     const tickerContent = topPlayers.concat(topPlayers).map(player => `
-                        <span class="inline-block px-4 py-2 mx-4 bg-teal-600 text-white rounded-lg shadow-md whitespace-nowrap">
+                        <span class="inline-block px-4 py-2 mx-4 bg-teal-500 text-white rounded-lg shadow-md whitespace-nowrap">
                             ${player.name} (${player.position} - ${player.team || 'N/A'}) - ${parseFloat(player.fantasy_points || 0).toFixed(1)} pts
                         </span>
                     `).join('');
                     fantasyTicker.innerHTML = tickerContent;
                     fantasyTicker.style.animationDuration = `${topPlayers.length * 4}s`;
+                    hideLoader('tickerLoader');
                 })
                 .catch(error => {
                     console.error('Error loading fantasy ticker:', error);
                     fantasyTicker.innerHTML = '<p class="text-red-600 dark:text-red-400 text-center">Failed to load fantasy ticker.</p>';
+                    hideLoader('tickerLoader');
                 });
         } catch (error) {
             console.error('Unexpected error:', error);
             fantasyTicker.innerHTML = '<p class="text-red-600 dark:text-red-400 text-center">Error loading ticker.</p>';
+            hideLoader('tickerLoader');
         }
     }
 
     // Top Players
     const topPlayersDiv = document.getElementById('topPlayers');
     if (topPlayersDiv) {
+        showLoader('playersLoader');
         try {
-            fetch('https://api.sleeper.app/v1/players/nfl')
-                .then(response => response.json())
-                .then(sleeperData => {
-                    const sleeperMap = new Map(Object.entries(sleeperData).map(([id, p]) => [p.full_name.toLowerCase(), {
-                        id,
-                        image: `https://sleepercdn.com/content/nfl/players/thumb/${id}.jpg`
-                    }]));
-                    fetch('players_2025.json')
-                        .then(response => {
-                            if (!response.ok) throw new Error('Network response was not ok');
-                            return response.json();
-                        })
-                        .then(data => {
-                            data.sort((a, b) => parseFloat(b.fantasy_points || 0) - parseFloat(a.fantasy_points || 0)).slice(0, 5).forEach(player => {
-                                const playerInfo = sleeperMap.get(player.name.toLowerCase()) || {};
-                                const imageSrc = playerInfo.image || 'https://via.placeholder.com/80?text=Player';
-                                const div = document.createElement('div');
-                                div.className = 'card';
-                                div.innerHTML = `
-                                    <img src="${imageSrc}" alt="${player.name}" class="h-20 w-20 rounded-full mx-auto mb-2 object-cover" loading="lazy" onload="this.classList.add('loaded')" onerror="this.src='https://via.placeholder.com/80?text=Player';">
-                                    <div class="text-gray-800 dark:text-white font-semibold text-center">${player.name}</div>
-                                    <div class="text-gray-600 dark:text-gray-400 text-center text-sm">${player.position} - ${player.team || 'N/A'}</div>
-                                    <div class="text-gray-600 dark:text-gray-400 text-center">${parseFloat(player.fantasy_points || 0).toFixed(2)} pts</div>
-                                `;
-                                topPlayersDiv.appendChild(div);
-                            });
-                        })
-                        .catch(error => {
-                            console.error('Error loading local data:', error);
-                            topPlayersDiv.innerHTML = '<p class="text-red-600 dark:text-red-400 text-center col-span-full">Failed to load top players.</p>';
+            const cachedSleeperData = localStorage.getItem('sleeperPlayers');
+            const cacheExpiry = localStorage.getItem('sleeperCacheExpiry');
+            const now = Date.now();
+            const fetchWithTimeout = (url, timeout = 10000) => {
+                return Promise.race([
+                    fetch(url),
+                    new Promise((_, reject) => setTimeout(() => reject(new Error('Request timed out')), timeout))
+                ]);
+            };
+
+            const loadPlayers = (sleeperData) => {
+                const sleeperMap = new Map(Object.entries(sleeperData).map(([id, p]) => [p.full_name?.toLowerCase(), {
+                    id,
+                    image: `https://sleepercdn.com/content/nfl/players/thumb/${id}.jpg`
+                }]));
+                fetchWithTimeout('players_2025.json')
+                    .then(response => {
+                        if (!response.ok) throw new Error('Network response was not ok');
+                        return response.json();
+                    })
+                    .then(data => {
+                        data.sort((a, b) => parseFloat(b.fantasy_points || 0) - parseFloat(a.fantasy_points || 0)).slice(0, 5).forEach(player => {
+                            const playerInfo = sleeperMap.get(player.name.toLowerCase()) || {};
+                            const imageSrc = playerInfo.image || 'https://via.placeholder.com/80?text=Player';
+                            const div = document.createElement('div');
+                            div.className = 'card';
+                            div.innerHTML = `
+                                <img src="${imageSrc}" alt="${player.name}" class="h-20 w-20 rounded-full mx-auto mb-2 object-cover" loading="lazy" onload="this.classList.add('loaded')" onerror="this.src='https://via.placeholder.com/80?text=Player';">
+                                <div class="text-gray-800 dark:text-white font-semibold text-center">${player.name}</div>
+                                <div class="text-gray-600 dark:text-gray-400 text-center text-sm">${player.position} - ${player.team || 'N/A'}</div>
+                                <div class="text-gray-600 dark:text-gray-400 text-center">${parseFloat(player.fantasy_points || 0).toFixed(2)} pts</div>
+                            `;
+                            topPlayersDiv.appendChild(div);
                         });
-                })
-                .catch(error => {
-                    console.error('Error fetching Sleeper data:', error);
-                    fetch('players_2025.json')
-                        .then(response => response.json())
-                        .then(data => {
-                            data.sort((a, b) => parseFloat(b.fantasy_points || 0) - parseFloat(a.fantasy_points || 0)).slice(0, 5).forEach(player => {
-                                const div = document.createElement('div');
-                                div.className = 'card';
-                                div.innerHTML = `
-                                    <img src="https://via.placeholder.com/80?text=Player" alt="${player.name}" class="h-20 w-20 rounded-full mx-auto mb-2 object-cover" loading="lazy" onload="this.classList.add('loaded')">
-                                    <div class="text-gray-800 dark:text-white font-semibold text-center">${player.name}</div>
-                                    <div class="text-gray-600 dark:text-gray-400 text-center text-sm">${player.position} - ${player.team || 'N/A'}</div>
-                                    <div class="text-gray-600 dark:text-gray-400 text-center">${parseFloat(player.fantasy_points || 0).toFixed(2)} pts</div>
-                                `;
-                                topPlayersDiv.appendChild(div);
+                        hideLoader('playersLoader');
+                    })
+                    .catch(error => {
+                        console.error('Error loading local data:', error);
+                        topPlayersDiv.innerHTML = '<p class="text-red-600 dark:text-red-400 text-center col-span-full">Failed to load top players.</p>';
+                        hideLoader('playersLoader');
+                    });
+            };
+
+            if (cachedSleeperData && cacheExpiry && now < parseInt(cacheExpiry)) {
+                loadPlayers(JSON.parse(cachedSleeperData));
+            } else {
+                fetchWithTimeout('https://api.sleeper.app/v1/players/nfl')
+                    .then(response => response.json())
+                    .then(sleeperData => {
+                        localStorage.setItem('sleeperPlayers', JSON.stringify(sleeperData));
+                        localStorage.setItem('sleeperCacheExpiry', now + 24 * 60 * 60 * 1000); // Cache for 24 hours
+                        loadPlayers(sleeperData);
+                    })
+                    .catch(error => {
+                        console.error('Error fetching Sleeper data:', error);
+                        fetchWithTimeout('players_2025.json')
+                            .then(response => response.json())
+                            .then(data => {
+                                data.sort((a, b) => parseFloat(b.fantasy_points || 0) - parseFloat(a.fantasy_points || 0)).slice(0, 5).forEach(player => {
+                                    const div = document.createElement('div');
+                                    div.className = 'card';
+                                    div.innerHTML = `
+                                        <img src="https://via.placeholder.com/80?text=Player" alt="${player.name}" class="h-20 w-20 rounded-full mx-auto mb-2 object-cover" loading="lazy" onload="this.classList.add('loaded')">
+                                        <div class="text-gray-800 dark:text-white font-semibold text-center">${player.name}</div>
+                                        <div class="text-gray-600 dark:text-gray-400 text-center text-sm">${player.position} - ${player.team || 'N/A'}</div>
+                                        <div class="text-gray-600 dark:text-gray-400 text-center">${parseFloat(player.fantasy_points || 0).toFixed(2)} pts</div>
+                                    `;
+                                    topPlayersDiv.appendChild(div);
+                                });
+                                hideLoader('playersLoader');
+                            })
+                            .catch(error => {
+                                console.error('Error loading fallback data:', error);
+                                topPlayersDiv.innerHTML = '<p class="text-red-600 dark:text-red-400 text-center col-span-full">Failed to load top players.</p>';
+                                hideLoader('playersLoader');
                             });
-                        })
-                        .catch(error => {
-                            console.error('Error loading fallback data:', error);
-                            topPlayersDiv.innerHTML = '<p class="text-red-600 dark:text-red-400 text-center col-span-full">Failed to load top players.</p>';
-                        });
-                });
+                    });
+            }
         } catch (error) {
             console.error('Unexpected error:', error);
             topPlayersDiv.innerHTML = '<p class="text-red-600 dark:text-red-400 text-center col-span-full">Error loading top players.</p>';
+            hideLoader('playersLoader');
         }
     }
 
@@ -130,205 +170,172 @@ document.addEventListener('DOMContentLoaded', () => {
         const matchupSelect1 = document.getElementById('matchupTeam1');
         const matchupSelect2 = document.getElementById('matchupTeam2');
         mockTeams.forEach(team => {
-            const items = document.createElement('items');
-            items.value = team.name;
-            items.textContent = team.name;
-            teamSelect1?.appendChild(items.cloneNode(true));
-            teamSelect2?.appendChild(items.cloneNode(true));
-            matchupSelect1.appendChild(items.cloneNode(true));
-            matchupSelect2?.appendChild(items);
+            const option = document.createElement('option');
+            option.value = team.name;
+            option.textContent = team.name;
+            teamSelect1?.appendChild(option.cloneNode(true));
+            teamSelect2?.appendChild(option.cloneNode(true));
+            matchupSelect1?.appendChild(option.cloneNode(true));
+            matchupSelect2?.appendChild(option);
         });
 
         fetch('players_2025.json')
             .then(response => {
-                if (!response.ok) {
-                    throw new Error('Network response was not OK');
-                return}
- response.json();
-                })
+                if (!response.ok) throw new Error('Network response was not OK');
+                return response.json();
+            })
             .then(data => {
-                .then(data => {
-                    const teamDivList = document.getElementById('waiverList');
-                    if (waiverList) {
-                        waiverList.innerHTML = '<h3 class="text-lg font-semibold mb-2 text-gray-900 dark:text-white">Top Waiver Picks:</h3>';
-                        data.sort((a, b) => parseFloat(b.fantasy_points || 0) - parseFloat(a.fantasy_points || 0)).slice(0, 5).forEach(player => {
-                            const playerDiv = document.createElement('div');
-                            playerDiv.className = 'card';
-                            playerDiv.innerHTML = `
-                                <span class="text-gray-800 dark:text-white">${player.name} (${player.position})</span>`;
-                                <span class="text-gray-700 dark:text-gray-400 text-center">${parseFloat(player.fantasy_points || 0).toFixed(2)} pts</span>`;
-                            `;
-                            waiverList.appendChild(div);
-                        });
-                    }
-                })
+                const waiverList = document.getElementById('waiverList');
+                if (waiverList) {
+                    waiverList.innerHTML = '<h3 class="text-lg font-semibold mb-2 text-gray-900 dark:text-white">Top Waiver Picks:</h3>';
+                    data.sort((a, b) => parseFloat(b.fantasy_points || 0) - parseFloat(a.fantasy_points || 0)).slice(0, 5).forEach(player => {
+                        const playerDiv = document.createElement('div');
+                        playerDiv.className = 'card';
+                        playerDiv.innerHTML = `
+                            <span class="text-gray-800 dark:text-white">${player.name} (${player.position})</span>
+                            <span class="text-gray-600 dark:text-gray-400">${parseFloat(player.fantasy_points || 0).toFixed(2)} pts</span>
+                        `;
+                        waiverList.appendChild(playerDiv);
+                    });
+                }
+            })
             .catch(error => {
-                console.error('Error loading waiver wire:', error));
-                if(document.getElementById('waiverList')) {
-                    document.getElementById('waiverList').innerHTML = '<p style="text-red-600 dark:text-red-400 text-center">Error loading waiver wire data.</p>';
+                console.error('Error loading waiver wire picks:', error);
+                if (document.getElementById('waiverList')) {
+                    document.getElementById('waiverList').innerHTML = '<p class="text-red-600 dark:text-red-400 text-center">Error loading waiver wire picks.</p>';
                 }
             });
 
-        document.getElementById('tradeAnalyzerBtn').value)?.addEventListener('click', async () => {
+        document.getElementById('tradeAnalyzerBtn')?.addEventListener('click', async () => {
             try {
-                const teamName1 = await document.getElementById('team1').value);
-                const teamName2 = document.getElementById('team2').value);
-                const tradeData = await fetch('players_2025.json').then(res => res.json()).then(res => res.json());
-teamPlayers1 = mockTeams.find(t => t.name === teamName1)?.players || [];
-                const teamPlayers1 = mockTeams.find(t => t.name === 'teamName1').value || [];
-                const teamPlayers2 = mockTeams.find(t => t.name === 'teamName2').value || [];
-                const teamStats1 = teamPlayers1.map(p => tradeData.find(t(pl => pl.name === p)).filter(p => p));
-                    const teamStats2 = teamPlayers2.map(p => tradeData.find(p => t(pl => pl.name === p)).filter(p => p.name === p);
-                    const teamPoints1 = teamStats1.reduce((sum, p) => sum + (parseFloat(p.fantasy_points || 0)), 0);
-                    const teamPoints2 = teamStats2.reduce((sum, p => sum + (parseFloat(p.fantasy_points || 0)), 0);
-                    const tradeResultDiv = document.getElementById('tradeResult');
-                    if (teamPoints1 && teamPoints2) {
-                        const pointsDiff = = Math.abs(teamPoints2 - teamPoints1);
-                        tradeResultDiv.innerHTML = `pointsDiff < 20 ?
-                            `<p class="text-green-600 dark:text-green-400">Fair trade: ${teamName1} (${teamPoints1.toFixed(2)} pts) vs ${teamName2} (${teamPoints2.toFixed(2)} pts)</p>`
-                        ` :
-                            `<p class="text-red-600 dark:text-red-400">Unbalanced trade: ${teamName1} (${teamPoints1.toFixed(2)} pts) vs ${teamName2} (${teamPoints2.toFixed(2)} pts)</p>`
-                        `;
-                    } else {
-                        tradeResultDiv.innerHTML = `<p class="text-red-600 dark:text-red-400">Please select both teams for trade analysis.</p>`;
-                    }
-                } catch(error => {
-                    console.error('Error analyzing trade:', error));
-                    document.getElementById('tradeResult').innerHTML = `<p class="text-red-600 dark:text-red-400">Error analyzing trade data.</p>`;
-                }
-            }));
-
-        document.getElementById('matchupBtn').value)?.addEventListener('click', async () => {
-            try {
-                const teamName1 = document.getElementById('matchupTeam1').value);
-                const teamName2 = document.getElementById('matchupTeam2').value);
-                const matchupData = await fetch('players_2025.json').then(res => res.json()).then(res => res.json());
-                const teamPlayers1 = mockTeams.find(t => t.name === 'teamName1')?.players || [];
-                const teamPlayers2 = mockTeams.find(t => t.name === 'teamName2')?.players || [];
-                const teamStats1 = teamPlayers1.map(p => matchupData.find(t(pl => pl.name === p)).filter(p => p));
-                    const teamStats2 = teamPlayers2.map(p => matchupData.find(t(pl => pl.name === p)).filter(p => p));
-                    const teamPoints1 = teamStats1.reduce((sum, p => sum + (parseFloat(p.fantasy_points || 0)), 0);
-                    const teamPoints2 = teamStats2.reduce((sum, p => sum + (parseFloat(p.fantasy_points || 0)), 0);
-                    const matchupResultDiv = document.getElementById('matchupResult');
-                    const probability1 = teamPoints1 / (teamPoints1 + teamPoints2) * 100;
-                    const probability2 = teamPoints2 / (teamPoints1 + teamPoints2) * 100;
-                    matchupResultDiv.innerHTML = `
-                        <p class="text-gray-900 dark:text-white">${teamName1}: ${teamPoints1.toFixed(2)} pts (${probability1.toFixed(1)}% win probability)</p>
-                        <p class="text-gray-900 dark:text-white">${teamName2}: ${teamPoints2.toFixed(2)} pts (${probability2.toFixed(1)}% win probability)</p>
+                const teamName1 = document.getElementById('team1').value;
+                const teamName2 = document.getElementById('team2').value;
+                const tradeData = await fetch('players_2025.json').then(res => res.json());
+                const teamPlayers1 = mockTeams.find(t => t.name === teamName1)?.players || [];
+                const teamPlayers2 = mockTeams.find(t => t.name === teamName2)?.players || [];
+                const teamStats1 = teamPlayers1.map(p => tradeData.find(pl => pl.name === p)).filter(p => p);
+                const teamStats2 = teamPlayers2.map(p => tradeData.find(pl => pl.name === p)).filter(p => p);
+                const teamPoints1 = teamStats1.reduce((sum, p) => sum + (parseFloat(p.fantasy_points || 0)), 0);
+                const teamPoints2 = teamStats2.reduce((sum, p) => sum + (parseFloat(p.fantasy_points || 0)), 0);
+                const tradeResultDiv = document.getElementById('tradeResult');
+                if (teamPoints1 && teamPoints2) {
+                    const pointsDiff = Math.abs(teamPoints1 - teamPoints2);
+                    tradeResultDiv.innerHTML = pointsDiff < 15 ? `
+                        <p class="text-green-600 dark:text-green-400">Fair trade: ${teamName1} (${teamPoints1.toFixed(2)} pts) vs ${teamName2} (${teamPoints2.toFixed(2)} pts)</p>
+                    ` : `
+                        <p class="text-red-600 dark:text-red-400">Unbalanced trade: ${teamName1} (${teamPoints1.toFixed(2)} pts) vs ${teamName2} (${teamPoints2.toFixed(2)} pts)</p>
                     `;
-                } catch(error => {
-                    console.error('Error predicting matchup:', error));
-                    document.getElementById('matchupResult').innerHTML = `<p class="text-red-600 dark:text-red-400">Error predicting matchup outcome.</p>`;
+                } else {
+                    tradeResultDiv.innerHTML = '<p class="text-red-600 dark:text-red-400">Please select both teams for trade analysis.</p>';
                 }
-            }));
+            } catch (error) {
+                console.error('Error analyzing trade:', error);
+                document.getElementById('tradeResult').innerHTML = '<p class="text-red-600 dark:text-red-400">Error analyzing trade data.</p>';
+            }
+        });
+
+        document.getElementById('matchupBtn')?.addEventListener('click', async () => {
+            try {
+                const teamName1 = document.getElementById('matchupTeam1').value;
+                const teamName2 = document.getElementById('matchupTeam2').value;
+                const matchupData = await fetch('players_2025.json').then(res => res.json());
+                const teamPlayers1 = mockTeams.find(t => t.name === teamName1)?.players || [];
+                const teamPlayers2 = mockTeams.find(t => t.name === teamName2)?.players || [];
+                const teamStats1 = teamPlayers1.map(p => matchupData.find(pl => pl.name === p)).filter(p => p);
+                const teamStats2 = teamPlayers2.map(p => matchupData.find(pl => pl.name === p)).filter(p => p);
+                const teamPoints1 = teamStats1.reduce((sum, p) => sum + (parseFloat(p.fantasy_points || 0)), 0);
+                const teamPoints2 = teamStats2.reduce((sum, p) => sum + (parseFloat(p.fantasy_points || 0)), 0);
+                const matchupResultDiv = document.getElementById('matchupResult');
+                const probability1 = teamPoints1 / (teamPoints1 + teamPoints2) * 100;
+                const probability2 = teamPoints2 / (teamPoints1 + teamPoints2) * 100;
+                matchupResultDiv.innerHTML = `
+                    <p class="text-gray-900 dark:text-white">${teamName1}: ${teamPoints1.toFixed(2)} pts (${probability1.toFixed(1)}% win probability)</p>
+                    <p class="text-gray-900 dark:text-white">${teamName2}: ${teamPoints2.toFixed(2)} pts (${probability2.toFixed(1)}% win probability)</p>
+                `;
+            } catch (error) {
+                console.error('Error predicting matchup:', error);
+                document.getElementById('matchupResult').innerHTML = '<p class="text-red-600 dark:text-red-400">Error predicting matchup outcome.</p>';
+            }
+        });
 
         // News Integration with Caching
         const newsList = document.getElementById('newsList');
         const loadMoreNewsBtn = document.getElementById('loadMoreNews');
         let newsOffset = 0;
         const newsPerLoad = 6;
-        let allNewsItems = JSON.parse(localStorage.getItem('cachedNewsItems')) || [];
+        let allNews = JSON.parse(localStorage.getItem('cachedNews')) || [];
 
-        function displayNewsItems(items, newsappend = false) => {
-            if (!append) {
-                newsList.innerHTML = '';
-                newsList.innerHTML = '';
-                if (items.length === 0) {
-                    newsList.innerHTML = `<p class="text-gray-600 dark:text-gray-400">No news items available.</p>`;
-                    loadMoreNewsBtn.classList.add('hidden');
-                    return;
-                }
+        function displayNews(articles, append = false) {
+            if (!append) newsList.innerHTML = '';
+            if (articles.length === 0) {
+                newsList.innerHTML = `<p class="text-gray-600 dark:text-gray-400">No news available.</p>`;
+                loadMoreNewsBtn.classList.add('hidden');
+                return;
             }
-            items.forEach(item => {
-                const itemDiv = document.createElement('div');
-                itemDiv.className = 'card';
-                itemDiv.innerHTML = `
-                    <h4 class="text-lg font-semibold mb-2"><a href="${item.link}" target="_blank" class="text-blue-600 dark:text-blue-400">Link</a></h4>
-                    <p class="text-gray-dark-600 dark:text-gray-400">${item.description || 'No description available.'}</p>
+            articles.forEach(article => {
+                const div = document.createElement('div');
+                div.className = 'card';
+                div.innerHTML = `
+                    <h4 class="text-lg font-semibold mb-2"><a href="${article.link}" target="_blank" class="text-blue-600 dark:text-blue-400 hover:underline">${article.title}</a></h4>
+                    <p class="text-gray-600 dark:text-gray-400 text-sm">${article.description || 'No summary available.'}</p>
                 `;
                 newsList.appendChild(div);
             });
-            loadMoreNewsBtn.classList.toggle('hidden', items.length < newsPerLoad);
+            loadMoreNewsBtn.classList.toggle('hidden', articles.length < newsPerLoad);
         }
 
-        async function fetchNewsItems() {
+        async function fetchNews() {
             try {
-                if (allNewsItems.length > newsOffset) {
-                    displayNewsItems(allNewsItems.slice(newsOffset, newsOffset + newsPerLoad));
+                if (allNews.length > newsOffset) {
+                    displayNews(allNews.slice(newsOffset, newsOffset + newsPerLoad));
                     newsOffset += newsPerLoad;
                     return;
                 }
-                const corsProxy = 'https://api.allorigins.win/get?url=';
-                const espnUrl = await corsProxy + 'https://www.espn.com/espn/rss/nfl/news';
+                const corsProxy = 'https://api.allorigins.win/raw?url=';
+                const espnUrl = corsProxy + 'https://www.espn.com/espn/rss/nfl/news';
                 const sleeperUrl = 'https://api.sleeper.app/v1/players/nfl/trending/add?limit=10';
 
-                const data = await Promise.all([
-                    fetch(espnUrl).then(res => res.text()).then(res => res.text()),
+                const [espnResponse, sleeperResponse] = await Promise.all([
+                    fetch(espnUrl).then(res => res.text()),
                     fetch(sleeperUrl).then(res => res.json())
-                ]).then(data => {
-                    const parser = new DOMParser(sleeperData);
-                    const xmlDoc = parser.parseFromString(data[sleeperData], 'text/xml');
-                    const espnArticles = Array.from(xmlDoc.querySelectorAll('sleeperData')).slice(0, 8).map(t(item => t(item => ({
-                        title => t(item.querySelector('title').textContent)),
-                        link => (item.tquerySelector('link').text()),
-                        description => item.querySelector(t('description')?.textContent || '',
-                    }));
+                ]);
 
-                    const sleeperNews = sleeperData[1].map(t(player => t({
-                        name: `${player.first_name} ${player.last_name}`,
-                        link: `https://sleeper.app/players/nfl/${player.player_id}`,
-                        description => t(`Added by ${player.add_count || 0} managers in the last 24 hours`),
-                    }));
+                const parser = new DOMParser();
+                const xml = parser.parseFromString(espnResponse, 'text/xml');
+                const espnArticles = Array.from(xml.querySelectorAll('item')).slice(0, 10).map(item => ({
+                    title: item.querySelector('title').textContent,
+                    link: item.querySelector('link').textContent,
+                    description: item.querySelector('description')?.textContent || ''
+                }));
 
-                    allNewsItems = [...espnArticles.slice(), ...sleeperNews];
-                    localStorage.setItem('cachedNewsItems', JSON.stringify(allNewsItems));;
-                    displayNews(allNewsItems.slice(newsOffset, newsOffset + newsItemsPerLoad));;
-                    newsOffset += newsItemsPerLoad;
-                }).catch(error => {
-                    console.error('Error:', error));
-                    newsList.innerHTML = '<p class="text-red-600 dark:text-red-400 text-center">Failed to load news.</center></p>';
-                }
-                }
+                const sleeperNews = sleeperResponse.map(player => ({
+                    title: `${player.first_name} ${player.last_name} Trending Up`,
+                    link: `https://sleeper.app/players/nfl/${player.player_id}`,
+                    description: `Added by ${player.add_count || 0} managers in the last 24 hours.`
+                }));
+
+                allNews = [...espnArticles, ...sleeperNews];
+                localStorage.setItem('cachedNews', JSON.stringify(allNews));
+                displayNews(allNews.slice(newsOffset, newsOffset + newsPerLoad));
+                newsOffset += newsPerLoad;
+            } catch (error) {
+                console.error('Error fetching news:', error);
+                newsList.innerHTML = '<p class="text-red-600 dark:text-red-400 text-center">Failed to load news.</p>';
+            }
+        }
 
         if (newsList && loadMoreNewsBtn) {
-            fetchNewsItems();
-            loadMoreNewsBtn.addEventListener('click', async () => {
-                if (allNewsItems.length > newsOffset) {
-                    displayNews(allNewsItems.slice(newsOffset, newsOffset + newsItemsPerLoad), true));
-                    newsOffset += newsItemsPerLoad;
+            fetchNews();
+            loadMoreNewsBtn.addEventListener('click', () => {
+                if (allNews.length > newsOffset) {
+                    displayNews(allNews.slice(newsOffset, newsOffset + newsPerLoad), true);
+                    newsOffset += newsPerLoad;
                 } else {
-                    await(fetchNews());
+                    fetchNews();
                 }
             });
         }
-    } catch (err) => {
-            console.error('Global unexpected error:', err));
-        }
+    } catch (err) {
+        console.error('Global error:', err);
+    }
 });
-</script>
-</body>
-</html>
-```
-
-### Testing the Site
-- **Local Testing**:
-  - Use **Live Server** in **VS Code** to open `index.html` or `http://localhost:5500` to test.
-  - Open http://localhost:5500/ to test.
-
-- **Verify Fixes**:
-  - **Images**: In `index.html`, confirm “Top Fantasy Players” shows 5 players with correct images from Sleeper or placeholders. Check DevTools (F12) for image load errors.
-  - **Design**: Verify:
-    - Poppins font for is applied.
-    - Teal Teal accents (#2dd4bf) appear on buttons/links.
-    - Header Header has gradient.
-    - Cards Cards (“Top Players” and “-guides.html) have gradients, rounded corners, and hover effects.
-    - Mobile: Test mobile view for responsiveness.
-  - **Other Features**: Ensure ticker, trade analyzer, matchup predictor, and news still work.
-
-### Notes
-- **Image Fix**: The `script.js` now maps player names to IDs from Sleeper, with `onerror` ensuring placeholders. If images still fail, please share `players_2025.json` or DevTools errors.
-- **Design**: The** improvements are initial; I’ll refine further with your answers to the design questions.
-- **GitHub Pages**: Verify deployment in **Settings > Pages**.
-- **Next Steps**: Share your design feedback to customize the look further.
-
-If issues arise, check DevTools console or **VS Code** terminal for errors. Let me know your design preferences or if you encounter issues!
