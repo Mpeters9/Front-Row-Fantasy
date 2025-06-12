@@ -9,9 +9,28 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
     <link rel="icon" href="logo.png" type="image/png">
+    <style>
+        .marquee {
+            overflow: hidden;
+            white-space: nowrap;
+            width: 100%;
+            position: relative;
+        }
+        .marquee-content {
+            display: inline-block;
+            animation: marquee 20s linear infinite;
+        }
+        @keyframes marquee {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
+        .marquee-content:hover {
+            animation-play-state: paused;
+        }
+    </style>
 </head>
 <body class="bg-gray-50 dark:bg-gray-900 font-inter transition-colors duration-300" aria-label="Main content">
-    <header class="bg-navy text-white py-4 sticky top-0 z-20 shadow-lg">
+    <header class="bg-navy text-white py-4 z-20 shadow-lg">
         <div class="max-w-7xl mx-auto flex justify-between items-center px-6">
             <div class="flex items-center gap-4">
                 <img src="logo.png" alt="Front Row Fantasy Logo" class="h-12" onerror="this.src='https://via.placeholder.com/48?text=FRF'">
@@ -50,6 +69,12 @@
             <h2 class="text-4xl font-bold mb-4">Your Ultimate Fantasy Football Command Center</h2>
             <p class="text-lg mb-6">Real-time stats, expert tools, and breaking news for every fantasy manager.</p>
             <a href="players.html" class="bg-orange-500 text-white px-6 py-3 rounded-lg hover:bg-orange-600 transition">Explore Players</a>
+        </div>
+    </section>
+    <section class="max-w-7xl mx-auto p-6 bg-gray-100 dark:bg-gray-800" aria-label="Fantasy points ticker">
+        <h2 class="text-xl font-bold mb-4 text-gray-900 dark:text-white text-center">Fantasy Points Ticker</h2>
+        <div class="marquee">
+            <div id="fantasyTicker" class="marquee-content"></div>
         </div>
     </section>
     <section class="max-w-7xl mx-auto p-6" aria-label="Top players">
