@@ -48,3 +48,8 @@ body {
         @apply gap-2;
     }
 }
+
+/* Ensure content is hidden until loaded */
+.hidden-content {
+    display: none;
+}
