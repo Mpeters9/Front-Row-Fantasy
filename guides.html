@@ -5,12 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Fantasy Football Guides - Front Row Fantasy</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
     <link rel="icon" href="logo.png" type="image/png">
 </head>
-<body class="bg-gray-50 dark:bg-gray-900 font-inter transition-colors duration-300" aria-label="Main content">
-    <header class="bg-navy text-white py-4">
+<body class="bg-gray-50 dark:bg-gray-900 font-poppins transition-colors duration-300" aria-label="Main content">
+    <header class="bg-gradient-to-r from-navy to-blue-900 text-white py-4">
         <div class="max-w-7xl mx-auto flex justify-between items-center px-6">
             <div class="flex items-center gap-4">
                 <img src="logo.png" alt="Front Row Fantasy Logo" class="h-12" onerror="this.src='https://via.placeholder.com/48?text=FRF'">
@@ -18,18 +18,18 @@
             </div>
             <div class="flex items-center gap-4">
                 <nav class="hidden md:flex gap-4" aria-label="Main navigation">
-                    <a href="index.html" class="px-4 py-2 hover:bg-orange-600 rounded-lg transition">Home</a>
-                    <a href="players.html" class="px-4 py-2 hover:bg-orange-600 rounded-lg transition">Players</a>
-                    <a href="stats.html" class="px-4 py-2 hover:bg-orange-600 rounded-lg transition">Stats</a>
-                    <a href="guides.html" class="px-4 py-2 hover:bg-orange-600 rounded-lg transition" aria-current="page">Guides</a>
-                    <a href="https://discord.com" class="px-4 py-2 hover:bg-orange-600 rounded-lg transition">Community</a>
+                    <a href="index.html" class="px-4 py-2 hover:bg-teal-500 rounded-lg transition">Home</a>
+                    <a href="players.html" class="px-4 py-2 hover:bg-teal-500 rounded-lg transition">Players</a>
+                    <a href="stats.html" class="px-4 py-2 hover:bg-teal-500 rounded-lg transition">Stats</a>
+                    <a href="guides.html" class="px-4 py-2 hover:bg-teal-500 rounded-lg transition" aria-current="page">Guides</a>
+                    <a href="https://discord.com" class="px-4 py-2 hover:bg-teal-500 rounded-lg transition">Community</a>
                 </nav>
-                <button id="themeToggle" class="p-2 rounded-full hover:bg-orange-600 transition" title="Toggle Dark Mode" aria-label="Toggle dark mode">
+                <button id="themeToggle" class="p-2 rounded-full hover:bg-teal-500 transition" title="Toggle Dark Mode" aria-label="Toggle dark mode">
                     <svg id="themeIcon" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 11-8 0 4 4 0"></path>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path>
                     </svg>
                 </button>
-                <button id="mobileMenuToggle" class="md:hidden p-2 rounded-full hover:bg-orange-600 transition" aria-label="Toggle mobile menu">
+                <button id="mobileMenuToggle" class="md:hidden p-2 rounded-full hover:bg-teal-500 transition" aria-label="Toggle mobile menu">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
                     </svg>
@@ -37,36 +37,36 @@
             </div>
         </div>
         <nav id="mobileMenu" class="hidden md:hidden bg-navy text-white px-6 py-4" aria-label="Mobile navigation">
-            <a href="index.html" class="block px-4 py-2 hover:bg-orange-600 rounded-lg transition">Home</a>
-            <a href="players.html" class="block px-4 py-2 hover:bg-orange-600 rounded-lg transition">Players</a>
-            <a href="stats.html" class="block px-4 py-2 hover:bg-orange-600 rounded-lg transition">Stats</a>
-            <a href="guides.html" class="block px-4 py-2 hover:bg-orange-600 rounded-lg transition">Guides</a>
-            <a href="https://discord.com" class="block px-4 py-2 hover:bg-orange-600 rounded-lg transition">Community</a>
+            <a href="index.html" class="block px-4 py-2 hover:bg-teal-500 rounded-lg transition">Home</a>
+            <a href="players.html" class="block px-4 py-2 hover:bg-teal-500 rounded-lg transition">Players</a>
+            <a href="stats.html" class="block px-4 py-2 hover:bg-teal-500 rounded-lg transition">Stats</a>
+            <a href="guides.html" class="block px-4 py-2 hover:bg-teal-500 rounded-lg transition">Guides</a>
+            <a href="https://discord.com" class="block px-4 py-2 hover:bg-teal-500 rounded-lg transition">Community</a>
         </nav>
     </header>
     <main class="max-w-4xl mx-auto p-6">
         <section class="guides-section bg-white dark:bg-gray-800 p-8 rounded-lg shadow-lg animate__animated animate__fadeInUp" aria-label="Fantasy football guides">
             <h2 class="text-2xl font-bold mb-6 text-gray-900 dark:text-white">Fantasy Football Guides</h2>
             <div class="space-y-6">
-                <article class="bg-gray-100 dark:bg-gray-700 p-6 rounded-lg">
-                    <h3 class="text-xl font-semibold mb-4">Beginner’s Guide to Fantasy Football</h3>
+                <article class="bg-gradient-to-r from-gray-100 to-gray-200 dark:from-gray-700 dark:to-gray-600 p-6 rounded-lg shadow-md hover:shadow-xl transition transform hover:-translate-y-1">
+                    <h3 class="text-xl font-semibold mb-4 text-gray-900 dark:text-white">Beginner’s Guide to Fantasy Football</h3>
                     <p class="text-gray-600 dark:text-gray-400 mb-4">New to fantasy football? This guide covers the basics, including how to draft, set lineups, and score points.</p>
-                    <a href="#beginner" class="text-orange-500 hover:underline">Read More</a>
+                    <a href="#beginner" class="text-teal-500 hover:underline">Read More</a>
                 </article>
-                <article class="bg-gray-100 dark:bg-gray-700 p-6 rounded-lg">
-                    <h3 class="text-xl font-semibold mb-4">Draft Strategy 101</h3>
+                <article class="bg-gradient-to-r from-gray-100 to-gray-200 dark:from-gray-700 dark:to-gray-600 p-6 rounded-lg shadow-md hover:shadow-xl transition transform hover:-translate-y-1">
+                    <h3 class="text-xl font-semibold mb-4 text-gray-900 dark:text-white">Draft Strategy 101</h3>
                     <p class="text-gray-600 dark:text-gray-400 mb-4">Learn how to build a balanced roster, target value picks, and avoid common draft mistakes.</p>
-                    <a href="#draft" class="text-orange-500 hover:underline">Read More</a>
+                    <a href="#draft" class="text-teal-500 hover:underline">Read More</a>
                 </article>
-                <article class="bg-gray-100 dark:bg-gray-700 p-6 rounded-lg">
-                    <h3 class="text-xl font-semibold mb-4">Waiver Wire Tips</h3>
+                <article class="bg-gradient-to-r from-gray-100 to-gray-200 dark:from-gray-700 dark:to-gray-600 p-6 rounded-lg shadow-md hover:shadow-xl transition transform hover:-translate-y-1">
+                    <h3 class="text-xl font-semibold mb-4 text-gray-900 dark:text-white">Waiver Wire Tips</h3>
                     <p class="text-gray-600 dark:text-gray-400 mb-4">Master the waiver wire with strategies to pick up breakout players and manage your roster effectively.</p>
-                    <a href="#waiver" class="text-orange-500 hover:underline">Read More</a>
+                    <a href="#waiver" class="text-teal-500 hover:underline">Read More</a>
                 </article>
-                <article class="bg-gray-100 dark:bg-gray-700 p-6 rounded-lg">
-                    <h3 class="text-xl font-semibold mb-4">Trade Strategies</h3>
+                <article class="bg-gradient-to-r from-gray-100 to-gray-200 dark:from-gray-700 dark:to-gray-600 p-6 rounded-lg shadow-md hover:shadow-xl transition transform hover:-translate-y-1">
+                    <h3 class="text-xl font-semibold mb-4 text-gray-900 dark:text-white">Trade Strategies</h3>
                     <p class="text-gray-600 dark:text-gray-400 mb-4">Discover how to evaluate trades, negotiate with other managers, and improve your team through smart trades.</p>
-                    <a href="#trade" class="text-orange-500 hover:underline">Read More</a>
+                    <a href="#trade" class="text-teal-500 hover:underline">Read More</a>
                 </article>
             </div>
         </section>
