@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Beginner Guides - Front Row Fantasy</title>
+    <title>Fantasy Football Guides - Front Row Fantasy</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
     <link rel="icon" href="logo.png" type="image/png">
 </head>
 <body class="bg-gray-50 dark:bg-gray-900 font-inter transition-colors duration-300" aria-label="Main content">
-    <header class="bg-navy text-white py-4 sticky top-0 z-20 shadow-lg">
+    <header class="bg-navy text-white py-4">
         <div class="max-w-7xl mx-auto flex justify-between items-center px-6">
             <div class="flex items-center gap-4">
                 <img src="logo.png" alt="Front Row Fantasy Logo" class="h-12" onerror="this.src='https://via.placeholder.com/48?text=FRF'">
@@ -26,12 +26,12 @@
                 </nav>
                 <button id="themeToggle" class="p-2 rounded-full hover:bg-orange-600 transition" title="Toggle Dark Mode" aria-label="Toggle dark mode">
                     <svg id="themeIcon" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 11-8 0 4 4 0"></path>
                     </svg>
                 </button>
-                <button id="mobileMenuToggle" class="md:flex hidden p-2 rounded-full hover:bg-orange-600 transition" aria-label="Toggle mobile menu">
+                <button id="mobileMenuToggle" class="md:hidden p-2 rounded-full hover:bg-orange-600 transition" aria-label="Toggle mobile menu">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
                     </svg>
                 </button>
             </div>
@@ -44,35 +44,32 @@
             <a href="https://discord.com" class="block px-4 py-2 hover:bg-orange-600 rounded-lg transition">Community</a>
         </nav>
     </header>
-    <main class="max-w-7xl mx-auto p-6">
-        <div class="bg-white dark:bg-gray-800 p-8 rounded-xl shadow-xl animate__fadeInUp" aria-label="Guides content">
+    <main class="max-w-4xl mx-auto p-6">
+        <section class="guides-section bg-white dark:bg-gray-800 p-8 rounded-lg shadow-lg animate__animated animate__fadeInUp" aria-label="Fantasy football guides">
             <h2 class="text-2xl font-bold mb-6 text-gray-900 dark:text-white">Fantasy Football Guides</h2>
             <div class="space-y-6">
-                <section>
-                    <h3 class="text-xl font-semibold mb-2 text-gray-900 dark:text-white">Beginner Tips</h3>
-                    <ul class="list-disc pl-6 space-y-2 text-gray-700 dark:text-gray-300">
-                        <li>Draft a balanced roster: Prioritize a QB, RB, and WR in early rounds.</li>
-                        <li>Monitor the waiver wire for breakout players each week.</li>
-                        <li>Use the Trade Analyzer to evaluate trade fairness.</li>
-                        <li>Check Matchup Predictor for weekly lineup decisions.</li>
-                    </ul>
-                </section>
-                <section>
-                    <h3 class="text-xl font-semibold mb-2 text-gray-900 dark:text-white">Advanced Strategies</h3>
-                    <ul class="list-disc pl-6 space-y-2 text-gray-700 dark:text-gray-300">
-                        <li>Stack players from the same team (e.g., QB and WR) for higher points.</li>
-                        <li>Target players with favorable playoff schedules (Weeks 15-17).</li>
-                        <li>Use Player Comparison to scout trades or waiver pickups.</li>
-                    </ul>
-                </section>
+                <article class="bg-gray-100 dark:bg-gray-700 p-6 rounded-lg">
+                    <h3 class="text-xl font-semibold mb-4">Beginner’s Guide to Fantasy Football</h3>
+                    <p class="text-gray-600 dark:text-gray-400 mb-4">New to fantasy football? This guide covers the basics, including how to draft, set lineups, and score points.</p>
+                    <a href="#beginner" class="text-orange-500 hover:underline">Read More</a>
+                </article>
+                <article class="bg-gray-100 dark:bg-gray-700 p-6 rounded-lg">
+                    <h3 class="text-xl font-semibold mb-4">Draft Strategy 101</h3>
+                    <p class="text-gray-600 dark:text-gray-400 mb-4">Learn how to build a balanced roster, target value picks, and avoid common draft mistakes.</p>
+                    <a href="#draft" class="text-orange-500 hover:underline">Read More</a>
+                </article>
+                <article class="bg-gray-100 dark:bg-gray-700 p-6 rounded-lg">
+                    <h3 class="text-xl font-semibold mb-4">Waiver Wire Tips</h3>
+                    <p class="text-gray-600 dark:text-gray-400 mb-4">Master the waiver wire with strategies to pick up breakout players and manage your roster effectively.</p>
+                    <a href="#waiver" class="text-orange-500 hover:underline">Read More</a>
+                </article>
+                <article class="bg-gray-100 dark:bg-gray-700 p-6 rounded-lg">
+                    <h3 class="text-xl font-semibold mb-4">Trade Strategies</h3>
+                    <p class="text-gray-600 dark:text-gray-400 mb-4">Discover how to evaluate trades, negotiate with other managers, and improve your team through smart trades.</p>
+                    <a href="#trade" class="text-orange-500 hover:underline">Read More</a>
+                </article>
             </div>
-            <a href="index.html" class="mt-6 inline-flex items-center text-orange-500 hover:underline" aria-label="Return to home">
-                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
-                </svg>
-                Back to Home
-            </a>
-        </div>
+        </section>
     </main>
     <footer class="bg-navy text-white text-center py-6">
         <p>© 2025 Front Row Fantasy. All rights reserved.</p>
@@ -80,334 +77,3 @@
     <script src="script.js"></script>
 </body>
 </html>
-```
-
-<xaiArtifact artifact_id="fd79e523-b7d1-458b-a6f8-f4f49185ce8a" artifact_version_id="e6d78c53-8696-4c1d-b432-ccd69a75db0c" title="stats.html" contentType="text/html">
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>League Stats - Front Row Fantasy</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="styles.css">
-    <link rel="icon" href="logo.png" type="image/png">
-</head>
-<body class="bg-gray-50 dark:bg-gray-900 font-inter transition-colors duration-300" aria-label="Main content">
-    <header class="bg-navy text-white py-4 sticky top-0 z-20 shadow-lg">
-        <div class="max-w-7xl mx-auto flex justify-between items-center px-6">
-            <div class="flex items-center gap-4">
-                <img src="logo.png" alt="Front Row Fantasy Logo" class="h-12" onerror="this.src='https://via.placeholder.com/48?text=FRF'">
-                <h1 class="text-3xl font-bold">Front Row Fantasy</h1>
-            </div>
-            <div class="flex items-center gap-4">
-                <nav class="hidden md:flex gap-4" aria-label="Main navigation">
-                    <a href="index.html" class="px-4 py-2 hover:bg-orange-600 rounded-lg transition">Home</a>
-                    <a href="players.html" class="px-4 py-2 hover:bg-orange-600 rounded-lg transition">Players</a>
-                    <a href="stats.html" class="px-4 py-2 hover:bg-orange-600-lg transition" aria-current="page">Stats</a>
-                    <a href="guides.html" class="px-4 py-2 hover:bg-orange-600 rounded-lg transition">Guides</a>
-                    <a href="https://discord.com" class="px-4 py-2 hover:bg-orange-600 rounded-lg transition">Community</a>
-                </nav>
-                <button id="themeToggle" class="p-2 rounded-full hover:bg-orange-600 transition" title="Toggle Dark Mode" aria-label="Toggle dark mode">
-                    <svg id="themeIcon" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
-                    </svg>
-                </button>
-                <button id="mobileMenuToggle" class="md:hidden p-2 rounded-full hover:bg-orange-600 transition" aria-label="Toggle mobile menu">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
-                    </svg>
-                </button>
-            </div>
-        </div>
-        <nav id="mobileMenu" class="hidden md:hidden bg-navy text-white px-6 py-4" aria-label="Mobile navigation">
-            <a href="index.html" class="block px-4 py-2 hover:bg-orange-600 rounded-lg transition">Home</a>
-            <a href="players.html" class="block px-4 py-2 hover:bg-orange-600 rounded-lg transition">Players</a>
-            <a href="stats.html" class="block px-4 py-2 hover:bg-orange-600 rounded-lg transition">Stats</a>
-            <a href="guides.html" class="block px-4 py-2 hover:bg-orange-600 rounded-lg transition">Guides</a>
-            <a href="https://discord.com" class="block px-4 py-2 hover:bg-orange-600 rounded-lg transition">Community</a>
-        </nav>
-    </header>
-    <main class="max-w-7xl mx-auto p-6">
-        <div class="bg-white dark:bg-gray-800 p-8 rounded-xl shadow-xl animate__fadeInUp" aria-label="League stats">
-            <h2 class="text-2xl font-bold mb-6 text-gray-900 dark:text-white">2025 NFL Standings</h2>
-            <div id="standingsList" class="space-y-4"></div>
-            <div id="errorMessage" class="text-red-600 dark:text-red-400 text-center mt-6"></div>
-        </div>
-    </main>
-    <footer class="bg-navy text-white text-center py-6">
-        <p>© 2025 Front Row Fantasy. All rights reserved.</p>
-    </footer>
-    <script>
-        const apiKey = 'YOUR_API_FOOTBALL_KEY'; // Replace with your API-Football key
-        const standingsUrl = 'https://v1.american-football.api-sports.io/standings?league=1&season=2025';
-
-        document.addEventListener('DOMContentLoaded', () => {
-            fetch(standingsUrl, {
-                headers: { 'x-rapidapi-key': apiKey }
-            })
-                .then(response => {
-                    if (!response.ok) throw new Error('Failed to fetch standings');
-                    return response.json();
-                })
-                .then(data => {
-                    const standingsList = document.getElementById('standingsList');
-                    const teams = data.response;
-                    standingsList.innerHTML = '';
-                    teams.forEach(team => {
-                        const div = document.createElement('div');
-                        div.className = 'bg-gray-100 dark:bg-gray-700 p-4 rounded-lg shadow-md flex justify-between items-center transform hover:scale-[1.02] transition';
-                        div.innerHTML = `
-                            <div>
-                                <span class="text-gray-900 dark:text-white font-semibold">${team.team.name}</span>
-                                <span class="text-gray-600 dark:text-gray-300 block">Record: ${team.wins || 0} - ${team.losses || 0}</span>
-                            </div>
-                            <span class="text-gray-600 dark:text-gray-300">Points: ${team.points || 'N/A'}</span>
-                        `;
-                        standingsList.appendChild(div);
-                    });
-                })
-                .catch(error => {
-                    console.error('Error fetching standings:', error);
-                    document.getElementById('errorMessage').textContent = 'Failed to load standings.';
-                });
-        });
-    </script>
-</body>
-</html>
-```
-
-<xaiArtifact artifact_id="4d09f9a2-e517-4d14-a240-ca35db46f3e0" artifact_version_id="0a1b2c3d-e4f5-6h7i-j8k9-l0m1n2o3p" contentType="text/javascript">
-document.addEventListener('DOMContentLoaded', () => {
-    // Theme Toggle
-    const themeToggle = document.getElementById('themeToggle');
-    const themeIcon = document.getElementById('themeIcon');
-    const isDarkMode = localStorage.getItem('theme') === 'dark';
-    if (isDarkMode) {
-        document.documentElement.classList.add('dark');
-        themeIcon.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 0 008.354-5.646z" />';
-    }
-    themeToggle.addEventListener('click', () => {
-        document.documentElement.classList.toggle('dark');
-        localStorage.setItem('theme', document.documentElement.classList.contains('dark') ? 'dark' : 'light');
-        themeIcon.innerHTML = document.documentElement.classList.contains('dark')
-            ? '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />'
-            : '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />';
-    });
-
-    // Mobile Menu Toggle
-    const mobileMenuToggle = document.getElementById('mobileMenuToggle');
-    const mobileMenu = document.getElementById('mobileMenu');
-    mobileMenuToggle.addEventListener('click', () => {
-        mobileMenu.classList.toggle('hidden');
-        mobileMenuToggle.setAttribute('aria-expanded', !mobileMenu.classList.contains('hidden'));
-    });
-
-    // Mock Teams for Trade Analyzer and Matchup
-    const mockTeams = [
-        { name: 'Team Alpha', players: ['Josh Allen', 'Christian McCaffrey', 'Davante Adams'] },
-        { name: 'Team Beta', players: ['Patrick Mahomes', 'Derrick Henry', 'Justin Jefferson'] },
-        { name: 'Team Gamma', players: ['Travis Kelce', 'James Cook', 'Tyreek Hill'] },
-    ];
-
-    // Trade Analyzer and Waiver Wire
-    try {
-        const team1Select = document.getElementById('team1');
-        const team2Select = document.getElementById('team2');
-        const matchup1Select = document.getElementById('matchupTeam1');
-        const matchup2Select = document.getElementById('matchupTeam2');
-        mockTeams.forEach(team => {
-            const option = document.createElement('option');
-            option.value = team.name;
-            option.textContent = team.name;
-            team1Select.appendChild(option.cloneNode(true));
-            team2Select.appendChild(option.cloneNode(true));
-            matchup1Select.appendChild(option.cloneNode(true));
-            matchup2Select.appendChild(option);
-        });
-
-        fetch('players_2025.json')
-            .then(response => response.json())
-            .then(data => {
-                const waiverList = document.getElementById('waiverList');
-                waiverList.innerHTML = '<h4 class="text-lg font-semibold mb-4 text-gray-900 dark:text-white">Top Picks:</h4>';
-                data.sort((a, b) => (b.fantasy_points || 0) - (a.fantasyPoints || 0)).slice(0, 5).forEach(player => {
-                    const div = document.createElement('div');
-                    div.className = 'bg-white dark:bg-gray-700 p-4 rounded-lg shadow-lg transform hover:scale-[1.02] transition';
-                    div.innerHTML = `
-                        <span class="text-gray-900 dark:text-white">${player.name} - ${player.position}</span>
-                        <span class="text-gray-600 dark:text-gray-300">${player.fantasyPoints || 'N/A'} pts</span>
-                    waiverList.appendChild(div);
-                });
-            })
-            .catch(error => {
-                console.error('Error fetching waiver picks:', error);
-                document.getElementById('waiverList').innerHTML = '<p class="text-red-600 dark:text-red-400">Error loading waiver picks.</p>';
-            });
-
-        document.getElementById('tradeAnalyzerBtn').addEventListener('click', async () => {
-            try {
-                const team1 = document.getElementById('team1').value;
-                const team2Name = document.getElementById('team2').value;
-                const data = await fetch('players_2025.json');
-                const players = await data.json();
-                const team1Players = mockTeams.find(t => t.name === team1Name)?.players || [];
-                const team2Players = mockTeams.find(t => t.name === team2Name)?.players || [];
-                const team1Stats = team1Players.map(p => players.find(pl => pl.name === p)).filter(p => p);
-                const team2Stats = team2Players.map(p => players.find(pl => pl.name === p)).filter(p => p);
-                const team1Points = team1Stats.reduce((sum, p) => sum + (parseFloat(p.fantasy_points || 0)), 0);
-                const team2Points = team2Stats.reduce((sum, p) => sum + (parseFloat(p.fantasy_points || 0)), 0);
-                const resultDiv = document.getElementById('tradeResult');
-                if (team1Points && team2Points) {
-                    const diff = Math.abs(team1Points - team2Points);
-                    resultDiv.innerHTML = diff < 15 ? `
-                        <p class="text-green-600 dark:text-green-400">Fair trade: ${team1Name} (${team1Points.toFixed(2)} pts) vs ${team2Name} (${team2Points.toFixed(2)} pts)</p>
-                    ` : `
-                        <p class="text-red-600 dark:text-red-400">Unbalanced trade: ${team1Name} (${team1Points.toFixed(2)} pts) vs ${team2Name} (${team2Points.toFixed(2)} pts)</p>
-                    `;
-                } else {
-                    resultDiv.innerHTML = '<p class="text-red-600 dark:text-red-400">Please select both teams.</p>';
-                }
-            } catch (error) {
-                console.error('Error analyzing trade:', error);
-                document.getElementById('tradeResult').innerHTML = '<p class="text-red-600 dark:text-red-400">Error analyzing trade.</p>';
-            }
-        });
-
-        document.getElementById('matchupBtn').addEventListener('click', async () => {
-            try {
-                const team1Name = document.getElementById('matchupTeam1').value;
-                const team2Name = document.getElementById('matchupTeam2').value;
-                const data = await fetch('players_2025.json');
-                const players = await data.json();
-                const team1Players = mockTeams.find(t => t.name === team1Name)?.players || [];
-                const team2Players = mockTeams.find(t => t.name === team2Name)?.players || [];
-                const team1Stats = team1Players.map(p => players.find(pl => pl.name === p)).filter(p => p);
-                const team2Stats = team2Players.map(p => players.find(pl => pl.name === p)).filter(p => p);
-                const team1Points = team1Stats.reduce((sum, p) => sum + (parseFloat(p.fantasy_points || 0)), 0);
-                const team2Points = team2Stats.reduce((sum, p) => sum + (parseFloat(p.fantasy_points || 0)), 0);
-                const resultDiv = document.getElementById('matchupResult');
-                const prob1 = team1Points / (team1Points + team2Points) * 100;
-                const prob2 = team2Points / (team1Points + team2Points) * 100;
-                resultDiv.innerHTML = `
-                    <p class="text-gray-900 dark:text-white">${team1Name}: ${team1Points.toFixed(2)} pts (${prob1.toFixed(1)}% win probability)</p>
-                    <p class="text-gray-900 dark:text-white">${team2Name}: ${team2Points.toFixed(2)} pts (${prob2.toFixed(1)}% win probability)</p>
-                `;
-            } catch (error) {
-                console.error('Error predicting matchup:', error);
-                document.getElementById('matchupResult').innerHTML = '<p class="text-red-600 dark:text-red-400">Error predicting matchup.</p>';
-            }
-        });
-
-        // News Integration with Caching
-        const newsList = document.getElementById('newsList');
-        const loadMoreNewsBtn = document.getElementById('loadMoreNews');
-        let newsOffset = 0;
-        const newsPerLoad = 6;
-        let allNews = JSON.parse(localStorage.getItem('cachedNews')) || [];
-
-        function displayNews(articles, append = false) {
-            if (!append) newsList.innerHTML = '';
-            if (articles.length === 0) {
-                newsList.innerHTML = `<p class="text-gray-600 dark:text-gray-300">No news available.</p>`;
-                loadMoreNewsBtn.classList.add('hidden');
-                return;
-            }
-            articles.forEach(article => {
-                const div = document.createElement('div');
-                div.className = 'bg-white dark:bg-gray-700 p-6 rounded-lg shadow-lg transform hover:shadow-xl transition';
-                div.innerHTML = `
-                    <h4 class="text-lg font-semibold mb-2"><a href="${article.link}" target="_blank" class="text-blue-600 dark:text-blue-400 hover:underline">${article.title}</a></h4>
-                    <p class="text-gray-500 dark:text-gray-400 text-sm">${article.description || 'No summary available.'}</p>
-                `;
-                newsList.appendChild(div);
-            });
-            loadMoreNewsBtn.classList.toggle('hidden', articles.length < newsPerLoad);
-        }
-
-        async function fetchNews() {
-            try {
-                if (allNews.length > 0) {
-                    displayNews(allNews.slice(newsOffset, newsOffset + newsPerLoad));
-                    newsOffset += newsPerLoad;
-                    return;
-                }
-                const corsProxy = 'https://api.allorigins.win/raw?url=';
-                const espnUrl = corsProxy + 'https://www.espn.com/espn/rss/nfl/news';
-                const sleeperUrl = 'https://api.sleeper.app/v1/players/nfl/trending/add?limit=10';
-
-                const [espnResponse, sleeperResponse] = await Promise.all([
-                    fetch(espnUrl).then(res => res.text()),
-                    fetch(sleeperUrl).then(res => res.json())
-                ]);
-
-                const parser = new DOMParser();
-                const xml = parser.parseFromString(espnResponse, 'text/xml');
-                const espnArticles = Array.from(xml.querySelectorAll('item')).slice(0, 10).map(item => ({
-                    title: item.querySelector('title').textContent,
-                    link: item.querySelector('link').textContent,
-                    description: item.querySelector('description')?.textContent || ''
-                }));
-
-                const sleeperNews = sleeperResponse.map(player => ({
-                    title: `${player.first_name} ${player.last_name} Trending Up`,
-                    link: `https://sleeper.app/players/nfl/${player.player_id}`,
-                    description: `Added by ${player.add_count || 0} managers in the last 24 hours.`
-                }));
-
-                allNews = [...espnArticles, ...sleeperNews];
-                localStorage.setItem('cachedNews', JSON.stringify(allNews));
-                displayNews(allNews.slice(newsOffset, newsOffset + newsPerLoad));
-                newsOffset += newsPerLoad;
-            } catch (error) {
-                console.error('Error fetching news:', error);
-                newsList.innerHTML = '<p class="text-red-600 dark:text-red-400">Failed to load news.</p>';
-            }
-        }
-
-        loadMoreNewsBtn.addEventListener('click', () => {
-            if (allNews.length > newsOffset) {
-                displayNews(allNews.slice(newsOffset, newsOffset + newsPerLoad), true);
-                newsOffset += newsPerLoad;
-            } else {
-                fetchNews();
-            }
-        });
-
-        fetchNews();
-    } catch (err) {
-        console.error('Global error:', err);
-    }
-});
-</script>
-```
-
-<xaiArtifactAccess artifact_id="889f9951-ce62-4f5f-b4d8-8af9d3d3833d6d" artifact_version_id="e5f6h7i8-j9k0-l1m2-n3o4-p5q6r7s8" title="players.json" contentType="application/json">
-[
-    { "name": "Josh Allen", "position": "QB", "fantasy_points": 25.4 },
-    { "name": "Patrick Mahomes", "position": "QB", "fantasy_points": 25.1 },
-    { "name": "Davante Adams", "position": "WR", "fantasy_points": 20.9 },
-    { "name": "Christian McCaffrey", "position": "RB", "fantasy_points": 20.5 },
-    { "name": "Travis Kelce", "position": "TE", "fantasy_points": 15.0 },
-    { "name": "Justin Jefferson", "position": "WR", "fantasy_points": 19.5 },
-    { "name": "Derrick Henry", "position": "RB", "fantasy_points": 15.8 }
-]
-```
-
-<xaiArtifact artifact_id="5228edc2-1047-4cb8-b836-9e135a6e16ec" artifact_version_id="4e6f2f79-4f76-4da9-b0b1-fb0a00834a07" title="players_2025.json" contentType="application/json">
-[
-    { "name": "Josh Allen", "position": "QB", "fantasy_points": 25.4 },
-    { "name": "Patrick Mahomes", "position": "QB", "fantasy_points": 25.1 },
-    { "name": "Christian McCaffrey", "position": "RB", "fantasy_points": 20.5 },
-    { "name": "Davante Adams", "position": "WR", "fantasy_points": 20.9 },
-    { "name": "Travis Kelce", "position": "TE", "fantasy_points": 15.0 },
-    { "name": "Justin Jefferson", "position": "WR", "fantasy_points": 19.1 },
-    { "name": "Derrick Henry", "position": "RB", "fantasy_points": 15.8 },
-    { "name": "James Cook", "position": "RB", "fantasy_points": 14.2 },
-    { "name": "Tyreek Hill", "position": "WR", "fantasy_points": 18.7 },
-    { "name": "Jalen Hurts", "position": "QB", "fantasy_points": 22.3 },
-    { "name": "Saquon Barkley", "position": "RB", "fantasy_points": 16.5 },
-    { "name": "Stefon Diggs", "position": "WR", "fantasy_points": 17.4 },
-    { "name": "Lamar Jackson", "position": "QB", "fantasy_points": 23.8 },
-    { "name": "George Kittle", "position": "TE", "fantasy_points": 13
