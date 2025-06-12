@@ -40,6 +40,9 @@
         @keyframes spin {
             to { transform: rotate(360deg); }
         }
+        .hidden-content {
+            display: none;
+        }
     </style>
 </head>
 <body class="bg-gray-50 dark:bg-gray-900 font-poppins transition-colors duration-300" aria-label="Main content">
@@ -87,14 +90,16 @@
     <section class="max-w-7xl mx-auto p-6 bg-gray-100 dark:bg-gray-800" aria-label="Fantasy points ticker">
         <h2 class="text-xl font-bold mb-4 text-gray-900 dark:text-white text-center">Fantasy Points Ticker</h2>
         <div id="tickerLoader" class="spinner"></div>
-        <div class="marquee">
+        <div id="tickerContainer" class="marquee hidden-content">
             <div id="fantasyTicker" class="marquee-content"></div>
         </div>
     </section>
     <section class="max-w-7xl mx-auto p-6" aria-label="Top players">
         <h2 class="text-2xl font-bold mb-6 text-gray-900 dark:text-white text-center">Top Fantasy Players</h2>
         <div id="playersLoader" class="spinner"></div>
-        <div id="topPlayers" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4"></div>
+        <div id="topPlayersContainer" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 hidden-content">
+            <div id="topPlayers"></div>
+        </div>
     </section>
     <main class="max-w-7xl mx-auto flex flex-col md:flex-row gap-8 p-6">
         <section class="flex-1 bg-white dark:bg-gray-800 p-8 rounded-xl shadow-xl animate__fadeInUp" aria-label="Fantasy tools">
