@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Front Row Fantasy - Your NFL Fantasy Hub</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.min.js"></script>
@@ -17,7 +17,8 @@
             position: relative;
         }
         .marquee-content {
-            display: inline-block;
+            display: inline-flex;
+            gap: 1rem;
             animation: marquee 20s linear infinite;
         }
         @keyframes marquee {
@@ -42,7 +43,7 @@
     </style>
 </head>
 <body class="bg-gray-50 dark:bg-gray-900 font-poppins transition-colors duration-300" aria-label="Main content">
-    <header class="bg-gradient-to-r from-navy to-blue-900 text-white py-4 shadow-md">
+    <header class="bg-gradient-to-r from-navy to-blue-900 text-white py-4 shadow-md fixed top-0 w-full z-50">
         <div class="max-w-7xl mx-auto flex justify-between items-center px-6">
             <div class="flex items-center gap-4">
                 <img src="logo.png" alt="Front Row Fantasy Logo" class="h-12" onerror="this.src='https://via.placeholder.com/48?text=FRF'">
@@ -76,11 +77,11 @@
             <a href="https://discord.com" class="block px-4 py-2 hover:bg-teal-500 rounded-lg transition">Community</a>
         </nav>
     </header>
-    <section class="bg-gradient-to-r from-blue-900 to-indigo-900 text-white py-16 text-center animate__fadeIn">
+    <section class="bg-teal-500 text-white py-16 text-center animate__fadeIn mt-16">
         <div class="max-w-7xl mx-auto px-6">
             <h2 class="text-4xl font-bold mb-4">Your Ultimate Fantasy Football Command Center</h2>
             <p class="text-lg mb-6">Real-time stats, expert tools, and breaking news for every fantasy manager.</p>
-            <a href="players.html" class="bg-teal-500 text-white px-6 py-3 rounded-lg hover:bg-teal-600 transition">Explore Players</a>
+            <a href="players.html" class="bg-white text-teal-500 px-6 py-3 rounded-lg hover:bg-gray-100 transition">Explore Players</a>
         </div>
     </section>
     <section class="max-w-7xl mx-auto p-6 bg-gray-100 dark:bg-gray-800" aria-label="Fantasy points ticker">
