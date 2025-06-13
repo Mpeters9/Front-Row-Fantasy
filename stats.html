@@ -6,24 +6,9 @@
     <title>Fantasy Football Stats - Front Row Fantasy</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <header>
-        <nav class="navbar flex justify-between max-w-7xl mx-auto px-6">
-            <div class="flex items-center gap-4">
-                <img src="logo.png" alt="Logo" class="h-12" onerror="this.src='https://via.placeholder.com/48?text=FRF'">
-                <a href="index.html" class="text-xl font-bold text-white">Front Row Fantasy</a>
-            </div>
-            <div>
-                <a href="index.html">Home</a>
-                <a href="players.html">Players</a>
-                <a href="stats.html" class="underline">Stats</a>
-                <a href="guides.html">Guides</a>
-                <a href="community.html">Community</a>
-            </div>
-        </nav>
-    </header>
     <main class="max-w-7xl mx-auto p-6">
         <section class="card">
             <h2 class="text-2xl font-bold mb-6 text-gray-900">Player Stats</h2>
@@ -87,7 +72,6 @@
             let currentPlayer = '';
             let showAdvanced = false;
 
-            // Fetch active players
             fetch('active_players.json')
                 .then(response => response.json())
                 .then(data => {
@@ -96,7 +80,6 @@
                 })
                 .catch(error => console.error('Error loading active players:', error));
 
-            // Fetch data based on selected year
             function fetchData(year) {
                 fetch(`players_${year}.json`)
                     .then(response => {
@@ -113,7 +96,6 @@
                     });
             }
 
-            // Populate player dropdown
             function populatePlayerSelect() {
                 playerSelect.innerHTML = '<option value="">All Players</option>';
                 activePlayers.forEach(player => {
@@ -302,7 +284,6 @@
                 return advanced ? [...baseColumns[position], ...advancedColumns[position]] : baseColumns[position];
             }
 
-            // Initial data fetch
             fetchData(currentYear);
         });
     </script>
