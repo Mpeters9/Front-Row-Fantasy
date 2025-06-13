@@ -27,18 +27,6 @@ body {
     @apply inline-flex gap-4 animate-marquee;
 }
 
-.navbar {
-    @apply bg-gradient-to-r from-blue-900 to-blue-500 p-4;
-}
-
-.navbar a {
-    @apply text-white mx-2 font-semibold;
-}
-
-.navbar a:hover {
-    @apply text-blue-200;
-}
-
 @keyframes marquee {
     0% { transform: translateX(0); }
     100% { transform: translateX(-50%); }
@@ -59,11 +47,5 @@ body {
     }
     .marquee-content {
         @apply gap-2;
-    }
-    .navbar {
-        @apply p-2;
-    }
-    .navbar a {
-        @apply text-sm mx-1;
     }
 }
