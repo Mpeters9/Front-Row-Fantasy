@@ -54,18 +54,17 @@ document.addEventListener('DOMContentLoaded', () => {
             .then(data => {
                 const topPlayers = data.sort((a, b) => (parseFloat(b.fantasy_points || 0) - parseFloat(a.fantasy_points || 0))).slice(0, 10);
                 const tickerContent = topPlayers.concat(topPlayers).map(player => `
-                    <span class="inline-flex items-center px-4 py-2 bg-teal-600/80 text-white rounded-lg shadow-md whitespace-nowrap min-w-[220px] mx-2">
-                        <img src="${player.image || 'https://via.placeholder.com/40'}" alt="${player.name}" class="w-10 h-10 rounded-full mr-2" loading="lazy" onerror="this.src='https://via.placeholder.com/40';">
+                    <span class="inline-flex items-center px-3 py-1 bg-teal-700/70 text-gray-200 rounded-md shadow-md whitespace-nowrap min-w-[180px]">
                         ${player.name} (${player.position} - ${player.team || 'N/A'}) - ${parseFloat(player.fantasy_points || 0).toFixed(1)} pts
                     </span>
                 `).join('');
                 fantasyTicker.innerHTML = tickerContent;
-                fantasyTicker.style.animation = `marquee ${topPlayers.length * 4}s linear infinite`;
+                fantasyTicker.style.animation = 'marquee 15s linear infinite';
                 hideLoader('tickerLoader');
             })
             .catch(error => {
                 console.error('Error loading fantasy ticker:', error);
-                fantasyTicker.innerHTML = '<p class="text-red-400 text-center">Failed to load fantasy ticker.</p>';
+                fantasyTicker.innerHTML = '<p class="text-red-400 text-center text-sm">Failed to load fantasy ticker.</p>';
                 hideLoader('tickerLoader');
             });
     }
@@ -85,14 +84,14 @@ document.addEventListener('DOMContentLoaded', () => {
             })
             .then(data => {
                 data.sort((a, b) => parseFloat(b.fantasy_points || 0) - parseFloat(a.fantasy_points || 0)).slice(0, 5).forEach(player => {
-                    const imageSrc = player.image || 'https://via.placeholder.com/80?text=Player';
                     const div = document.createElement('div');
-                    div.className = 'bg-teal-800/60 backdrop-blur-md p-6 rounded-xl shadow-lg hover:shadow-xl transition-all hover:-translate-y-2';
+                    div.className = 'bg-teal-800/50 backdrop-blur-md p-3 rounded-lg shadow-md hover:shadow-lg transition-all';
                     div.innerHTML = `
-                        <img src="${imageSrc}" alt="${player.name}" class="h-24 w-24 rounded-full mx-auto mb-4 object-cover border-2 border-teal-500">
-                        <div class="text-xl font-semibold text-teal-100">${player.name}</div>
-                        <div class="text-teal-300 text-sm">${player.position} - ${player.team || 'N/A'}</div>
-                        <div class="text-teal-200">${parseFloat(player.fantasy_points || 0).toFixed(2)} pts</div>
+                        <div class="text-center">
+                            <div class="text-lg font-medium">${player.name}</div>
+                            <div class="text-xs text-teal-300">${player.position} - ${player.team || 'N/A'}</div>
+                            <div class="text-sm">${parseFloat(player.fantasy_points || 0).toFixed(2)} pts</div>
+                        </div>
                     `;
                     topPlayersDiv.appendChild(div);
                 });
@@ -100,7 +99,7 @@ document.addEventListener('DOMContentLoaded', () => {
             })
             .catch(error => {
                 console.error('Error loading top players:', error);
-                topPlayersDiv.innerHTML = '<p class="text-red-400 text-center col-span-full">Failed to load top players.</p>';
+                topPlayersDiv.innerHTML = '<p class="text-red-400 text-center text-sm col-span-full">Failed to load top players.</p>';
                 hideLoader('playersLoader');
             });
     }
@@ -127,13 +126,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 .then(data => {
                     const waiverList = document.getElementById('waiverList');
                     if (waiverList) {
-                        waiverList.innerHTML = '<h3 class="text-2xl font-bold text-teal-100 mb-4">Top Waiver Picks:</h3>';
+                        waiverList.innerHTML = '<h3 class="text-lg font-bold text-teal-100 mb-2">Top Waiver Picks:</h3>';
                         data.sort((a, b) => parseFloat(b.fantasy_points || 0) - parseFloat(a.fantasy_points || 0)).slice(0, 5).forEach(player => {
                             const playerDiv = document.createElement('div');
-                            playerDiv.className = 'bg-teal-800/60 backdrop-blur-md p-4 rounded-xl shadow-md';
+                            playerDiv.className = 'bg-teal-800/50 backdrop-blur-md p-2 rounded-lg shadow-md';
                             playerDiv.innerHTML = `
-                                <span class="text-teal-100">${player.name} (${player.position})</span>
-                                <span class="text-teal-300">${parseFloat(player.fantasy_points || 0).toFixed(2)} pts</span>
+                                <span class="text-sm text-teal-200">${player.name} (${player.position})</span>
+                                <span class="text-xs text-teal-300">${parseFloat(player.fantasy_points || 0).toFixed(2)} pts</span>
                             `;
                             waiverList.appendChild(playerDiv);
                         });
@@ -142,7 +141,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 .catch(error => {
                     console.error('Error loading waiver wire picks:', error);
                     if (document.getElementById('waiverList')) {
-                        document.getElementById('waiverList').innerHTML = '<p class="text-red-400 text-center">Error loading waiver wire picks.</p>';
+                        document.getElementById('waiverList').innerHTML = '<p class="text-red-400 text-center text-sm">Error loading waiver wire picks.</p>';
                     }
                 });
 
@@ -161,16 +160,16 @@ document.addEventListener('DOMContentLoaded', () => {
                     if (teamPoints1 && teamPoints2) {
                         const pointsDiff = Math.abs(teamPoints1 - teamPoints2);
                         tradeResultDiv.innerHTML = pointsDiff < 15 ? `
-                            <p class="text-green-400">Fair trade: ${teamName1} (${teamPoints1.toFixed(2)} pts) vs ${teamName2} (${teamPoints2.toFixed(2)} pts)</p>
+                            <p class="text-teal-300 text-sm">Fair trade: ${teamName1} (${teamPoints1.toFixed(2)} pts) vs ${teamName2} (${teamPoints2.toFixed(2)} pts)</p>
                         ` : `
-                            <p class="text-red-400">Unbalanced trade: ${teamName1} (${teamPoints1.toFixed(2)} pts) vs ${teamName2} (${teamPoints2.toFixed(2)} pts)</p>
+                            <p class="text-red-400 text-sm">Unbalanced trade: ${teamName1} (${teamPoints1.toFixed(2)} pts) vs ${teamName2} (${teamPoints2.toFixed(2)} pts)</p>
                         `;
                     } else {
-                        tradeResultDiv.innerHTML = '<p class="text-red-400">Please select both teams for trade analysis.</p>';
+                        tradeResultDiv.innerHTML = '<p class="text-red-400 text-sm">Please select both teams for trade analysis.</p>';
                     }
                 } catch (error) {
                     console.error('Error analyzing trade:', error);
-                    document.getElementById('tradeResult').innerHTML = '<p class="text-red-400">Error analyzing trade data.</p>';
+                    document.getElementById('tradeResult').innerHTML = '<p class="text-red-400 text-sm">Error analyzing trade data.</p>';
                 }
             });
 
@@ -189,12 +188,12 @@ document.addEventListener('DOMContentLoaded', () => {
                     const probability1 = teamPoints1 / (teamPoints1 + teamPoints2) * 100;
                     const probability2 = teamPoints2 / (teamPoints1 + teamPoints2) * 100;
                     matchupResultDiv.innerHTML = `
-                        <p class="text-teal-100">${teamName1}: ${teamPoints1.toFixed(2)} pts (${probability1.toFixed(1)}% win probability)</p>
-                        <p class="text-teal-100">${teamName2}: ${teamPoints2.toFixed(2)} pts (${probability2.toFixed(1)}% win probability)</p>
+                        <p class="text-teal-300 text-sm">${teamName1}: ${teamPoints1.toFixed(2)} pts (${probability1.toFixed(1)}% win probability)</p>
+                        <p class="text-teal-300 text-sm">${teamName2}: ${teamPoints2.toFixed(2)} pts (${probability2.toFixed(1)}% win probability)</p>
                     `;
                 } catch (error) {
                     console.error('Error predicting matchup:', error);
-                    document.getElementById('matchupResult').innerHTML = '<p class="text-red-400">Error predicting matchup outcome.</p>';
+                    document.getElementById('matchupResult').innerHTML = '<p class="text-red-400 text-sm">Error predicting matchup outcome.</p>';
                 }
             });
         }
@@ -209,16 +208,16 @@ document.addEventListener('DOMContentLoaded', () => {
         function displayNews(articles, append = false) {
             if (!append) newsList.innerHTML = '';
             if (articles.length === 0) {
-                newsList.innerHTML = '<p class="text-teal-300">No news available.</p>';
+                newsList.innerHTML = '<p class="text-teal-300 text-sm">No news available.</p>';
                 loadMoreNewsBtn.classList.add('hidden');
                 return;
             }
             articles.forEach(article => {
                 const div = document.createElement('div');
-                div.className = 'bg-teal-800/60 backdrop-blur-md p-4 rounded-xl shadow-md';
+                div.className = 'bg-teal-800/50 backdrop-blur-md p-2 rounded-lg shadow-md';
                 div.innerHTML = `
-                    <h4 class="text-xl font-semibold mb-2"><a href="${article.link}" target="_blank" class="text-teal-200 hover:text-white">${article.title}</a></h4>
-                    <p class="text-teal-300 text-sm">${article.description || 'No summary available.'}</p>
+                    <h4 class="text-base font-medium mb-1"><a href="${article.link}" target="_blank" class="text-teal-200 hover:text-white">${article.title}</a></h4>
+                    <p class="text-xs text-teal-300">${article.description || 'No summary available.'}</p>
                 `;
                 newsList.appendChild(div);
             });
@@ -261,7 +260,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 newsOffset += newsPerLoad;
             } catch (error) {
                 console.error('Error fetching news:', error);
-                newsList.innerHTML = '<p class="text-red-400 text-center">Failed to load news.</p>';
+                newsList.innerHTML = '<p class="text-red-400 text-center text-sm">Failed to load news.</p>';
             }
         }
 
