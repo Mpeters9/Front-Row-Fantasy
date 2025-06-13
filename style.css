@@ -2,48 +2,44 @@
 @tailwind components;
 @tailwind utilities;
 
-body {
-    background-color: #f3f4f6;
-    font-family: 'Poppins', sans-serif;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
+@layer base {
+    html {
+        @apply font-poppins;
+    }
+    body {
+        @apply bg-gradient-to-br from-gray-900 to-gray-800 text-white;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+    }
 }
 
-.card {
-    @apply bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg;
-}
-
-.button {
-    @apply bg-teal-500 text-white px-4 py-2 rounded-lg hover:bg-teal-600 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-teal-400;
-}
-
-.link {
-    @apply text-teal-500 hover:underline;
-}
-
-.marquee {
-    @apply overflow-hidden whitespace-nowrap;
-}
-
-.marquee-content {
-    @apply inline-flex gap-4 animate-marquee;
-    min-height: 60px;
-}
-
-.navbar {
-    @apply bg-gradient-to-r from-teal-900 to-teal-500 p-4 text-white;
-}
-
-.navbar a {
-    @apply mx-2 font-semibold;
-}
-
-.navbar a:hover {
-    @apply text-teal-200;
+@layer components {
+    .card {
+        @apply bg-teal-900/40 backdrop-blur-md p-6 rounded-xl shadow-lg;
+    }
+    .button {
+        @apply bg-teal-600 text-white px-6 py-3 rounded-full shadow-md hover:bg-teal-500 hover:shadow-lg transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-teal-400;
+    }
+    .link {
+        @apply text-teal-200 hover:text-white transition-colors;
+    }
+    .marquee-container {
+        @apply overflow-hidden h-20;
+    }
+    .marquee-content {
+        @apply flex gap-6 animate-marquee;
+        min-height: 60px;
+    }
+    .navbar {
+        @apply bg-teal-900/80 backdrop-blur-md p-4 rounded-b-lg shadow-lg;
+    }
+    .navbar a {
+        @apply text-lg font-semibold text-teal-200 hover:text-white transition-colors;
+    }
 }
 
 @keyframes marquee {
-    0% { transform: translateX(100%); }
+    0% { transform: translateX(0); }
     100% { transform: translateX(-100%); }
 }
 
@@ -55,18 +51,22 @@ body {
         overflow-x: auto;
         -webkit-overflow-scrolling: touch;
         scroll-behavior: smooth;
+        padding-bottom: 10px;
     }
     .marquee-content span {
         flex-shrink: 0;
+        margin-right: 20px;
     }
 }
 
 @media (max-width: 640px) {
-    h1 { @apply text-2xl; }
-    h2 { @apply text-xl; }
+    h1 { @apply text-3xl; }
+    h2 { @apply text-2xl; }
     .card { @apply p-4; }
-    .button { @apply px-3 py-1 text-sm; }
-    .marquee-content { @apply gap-2; }
+    .button { @apply px-4 py-2 text-base; }
+    .marquee-container { @apply h-16; }
+    .marquee-content { @apply gap-3; }
     .navbar { @apply p-2; }
-    .navbar a { @apply text-sm mx-1; }
+    .navbar a { @apply text-base; }
+    #topPlayers { @apply grid-cols-1; }
 }
