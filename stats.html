@@ -3,28 +3,28 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Fantasy Football Stats - Front Row Fantasy</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="styles.css">
+    <title>Player Stats</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="style.css" rel="stylesheet">
 </head>
-<body>
-    <main class="max-w-7xl mx-auto p-6">
-        <section class="card">
-            <h2 class="text-2xl font-bold mb-6 text-gray-900">Player Stats</h2>
-            <div class="mb-4 flex gap-4 flex-wrap">
-                <div>
-                    <label for="yearSelect" class="block text-gray-700">Select Year:</label>
-                    <select id="yearSelect" class="p-2 border rounded-lg bg-gray-50">
+<body class="bg-purple-900 text-cyan-200 min-h-screen">
+    <div class="container mx-auto p-4">
+        <h1 class="text-2xl font-bold mb-4 text-center">Player Stats</h1>
+        <div class="card mb-4">
+            <div class="flex flex-col sm:flex-row gap-4">
+                <div class="flex-1">
+                    <label for="yearSelect" class="block text-sm font-medium">Select Year:</label>
+                    <select id="yearSelect" class="mt-1 block w-full bg-purple-800/50 border border-cyan-400 rounded-md p-2 text-sm">
                         <option value="2025">2025</option>
                         <option value="2024">2024</option>
                         <option value="2023">2023</option>
                         <option value="2022">2022</option>
                     </select>
                 </div>
-                <div>
-                    <label for="positionSelect" class="block text-gray-700">Select Position:</label>
-                    <select id="positionSelect" class="p-2 border rounded-lg bg-gray-50">
+                <div class="flex-1">
+                    <label for="positionSelect" class="block text-sm font-medium">Select Position:</label>
+                    <select id="positionSelect" class="mt-1 block w-full bg-purple-800/50 border border-cyan-400 rounded-md p-2 text-sm">
+                        <option value="all">All</option>
                         <option value="QB">QB</option>
                         <option value="RB">RB</option>
                         <option value="WR">WR</option>
@@ -33,259 +33,191 @@
                         <option value="SuperFlex">SuperFlex (QB/RB/WR/TE)</option>
                     </select>
                 </div>
-                <div>
-                    <label for="playerSelect" class="block text-gray-700">Select Player:</label>
-                    <select id="playerSelect" class="p-2 border rounded-lg bg-gray-50">
-                        <option value="">All Players</option>
+                <div class="flex-1">
+                    <label for="playerSelect" class="block text-sm font-medium">Select Player:</label>
+                    <select id="playerSelect" class="mt-1 block w-full bg-purple-800/50 border border-cyan-400 rounded-md p-2 text-sm">
+                        <option value="all">All Players</option>
                     </select>
                 </div>
-                <button id="toggleAdvanced" class="button mt-6">Show Advanced Stats</button>
             </div>
-            <div id="statsTable" class="overflow-x-auto">
-                <table class="min-w-full">
-                    <thead>
-                        <tr>
-                            <th class="px-4 py-2">Player</th>
-                            <th class="px-4 py-2">Team</th>
-                            <th class="px-4 py-2">Fantasy Points</th>
-                            <th class="px-4 py-2">FP/G</th>
-                        </tr>
-                    </thead>
-                    <tbody id="statsBody">
-                        <tr><td colspan="4" class="text-center py-4">Loading...</td></tr>
-                    </tbody>
-                </table>
+            <div class="mt-2">
+                <input type="checkbox" id="advancedStatsCheckbox" class="mr-2">
+                <label for="advancedStatsCheckbox" class="text-sm">Show Advanced Stats</label>
             </div>
-        </section>
-    </main>
+        </div>
+        <div class="overflow-x-auto">
+            <table id="statsTable" class="w-full bg-purple-800/50 backdrop-blur-md rounded-lg shadow-md text-sm">
+                <thead>
+                    <tr class="bg-purple-700/60">
+                        <th class="p-2">Player</th>
+                        <th class="p-2">Team</th>
+                        <th class="p-2">Fantasy Points</th>
+                        <th class="p-2">FP/G</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td colspan="4" class="p-2 text-center">Loading...</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const yearSelect = document.getElementById('yearSelect');
-            const positionSelect = document.getElementById('positionSelect');
-            const playerSelect = document.getElementById('playerSelect');
-            const statsBody = document.getElementById('statsBody');
-            const toggleAdvanced = document.getElementById('toggleAdvanced');
-            let playersData = [];
-            let activePlayers = [];
-            let currentYear = '2025';
-            let currentPosition = 'QB';
-            let currentPlayer = '';
-            let showAdvanced = false;
+        const yearSelect = document.getElementById('yearSelect');
+        const positionSelect = document.getElementById('positionSelect');
+        const playerSelect = document.getElementById('playerSelect');
+        const advancedStatsCheckbox = document.getElementById('advancedStatsCheckbox');
+        const statsTable = document.getElementById('statsTable');
 
-            fetch('active_players.json')
-                .then(response => response.json())
-                .then(data => {
-                    activePlayers = data;
-                    populatePlayerSelect();
-                })
-                .catch(error => console.error('Error loading active players:', error));
+        let currentYearData = [];
+        let currentYear = '2025';
 
-            function fetchData(year) {
-                fetch(`players_${year}.json`)
-                    .then(response => {
-                        if (!response.ok) throw new Error('Network response was not ok');
-                        return response.json();
-                    })
-                    .then(data => {
-                        playersData = data;
-                        renderTable(currentPosition, currentPlayer);
-                    })
-                    .catch(error => {
-                        console.error('Error:', error);
-                        statsBody.innerHTML = '<tr><td colspan="4" class="text-center text-red-600">Failed to load data.</td></tr>';
-                    });
+        async function loadYearData(year) {
+            try {
+                const response = await fetch(`players_${year}.json`);
+                if (!response.ok) throw new Error(`Failed to load players_${year}.json`);
+                currentYearData = await response.json();
+                currentYear = year;
+                populatePlayerDropdown();
+                updateTable();
+            } catch (error) {
+                console.error('Error loading year data:', error);
+                statsTable.querySelector('tbody').innerHTML = '<tr><td colspan="4" class="p-2 text-center text-red-400">Failed to load player data.</td></tr>';
+            }
+        }
+
+        function populatePlayerDropdown() {
+            playerSelect.innerHTML = '<option value="all">All Players</option>';
+            currentYearData.forEach(player => {
+                const option = document.createElement('option');
+                option.value = player.name;
+                option.textContent = player.name;
+                playerSelect.appendChild(option);
+            });
+        }
+
+        function calculateFantasyPoints(player) {
+            if (player.position === 'QB') {
+                const passingYardsPoints = (player.passingYards || 0) / 25;
+                const passingTDsPoints = (player.passingTDs || 0) * 4;
+                const interceptionsPoints = (player.interceptions || 0) * -2;
+                const rushingYardsPoints = (player.rushingYards || 0) / 10;
+                const rushingTDsPoints = (player.rushingTDs || 0) * 6;
+                return passingYardsPoints + passingTDsPoints + interceptionsPoints + rushingYardsPoints + rushingTDsPoints;
+            } else if (['RB', 'WR', 'TE'].includes(player.position)) {
+                const rushingYardsPoints = (player.rushingYards || 0) / 10;
+                const rushingTDsPoints = (player.rushingTDs || 0) * 6;
+                const receivingYardsPoints = (player.receivingYards || 0) / 10;
+                const receivingTDsPoints = (player.receivingTDs || 0) * 6;
+                const receptionsPoints = (player.receptions || 0) * 1;
+                return rushingYardsPoints + rushingTDsPoints + receivingYardsPoints + receivingTDsPoints + receptionsPoints;
+            }
+            return 0;
+        }
+
+        function updateTable() {
+            const selectedPosition = positionSelect.value;
+            const selectedPlayer = playerSelect.value;
+            const showAdvanced = advancedStatsCheckbox.checked && ['QB', 'RB', 'WR', 'TE'].includes(selectedPosition);
+
+            let filteredPlayers = currentYearData;
+            if (selectedPosition === 'Flex') {
+                filteredPlayers = filteredPlayers.filter(p => ['RB', 'WR', 'TE'].includes(p.position));
+            } else if (selectedPosition === 'SuperFlex') {
+                filteredPlayers = filteredPlayers.filter(p => ['QB', 'RB', 'WR', 'TE'].includes(p.position));
+            } else if (selectedPosition !== 'all') {
+                filteredPlayers = filteredPlayers.filter(p => p.position === selectedPosition);
+            }
+            if (selectedPlayer !== 'all') {
+                filteredPlayers = filteredPlayers.filter(p => p.name === selectedPlayer);
             }
 
-            function populatePlayerSelect() {
-                playerSelect.innerHTML = '<option value="">All Players</option>';
-                activePlayers.forEach(player => {
-                    const option = document.createElement('option');
-                    option.value = player.name;
-                    option.textContent = `${player.name} (${player.position})`;
-                    playerSelect.appendChild(option);
-                });
-            }
-
-            yearSelect.addEventListener('change', (event) => {
-                currentYear = event.target.value;
-                fetchData(currentYear);
-            });
-
-            positionSelect.addEventListener('change', (event) => {
-                currentPosition = event.target.value;
-                renderTable(currentPosition, currentPlayer);
-            });
-
-            playerSelect.addEventListener('change', (event) => {
-                currentPlayer = event.target.value;
-                renderTable(currentPosition, currentPlayer);
-            });
-
-            toggleAdvanced.addEventListener('click', () => {
-                showAdvanced = !showAdvanced;
-                toggleAdvanced.textContent = showAdvanced ? 'Hide Advanced Stats' : 'Show Advanced Stats';
-                renderTable(currentPosition, currentPlayer);
-            });
-
-            function renderTable(position, player) {
-                statsBody.innerHTML = '';
-                let filteredPlayers = playersData.filter(p => {
-                    const posMatch = position === 'Flex' || position === 'SuperFlex'
-                        ? (position === 'SuperFlex' || p.position !== 'QB')
-                        : p.position === position;
-                    const playerMatch = !player || p.name === player;
-                    return posMatch && playerMatch;
-                });
-
-                filteredPlayers.sort((a, b) => calculateFantasyPoints(b) - calculateFantasyPoints(a));
-
-                const columns = getColumns(position, showAdvanced);
-                const thead = document.querySelector('thead tr');
-                thead.innerHTML = '<th class="px-4 py-2">Player</th><th class="px-4 py-2">Team</th><th class="px-4 py-2">Fantasy Points</th><th class="px-4 py-2">FP/G</th>';
-                columns.forEach(col => {
-                    const th = document.createElement('th');
-                    th.className = 'px-4 py-2';
-                    th.textContent = col.label;
-                    thead.appendChild(th);
-                });
-
-                filteredPlayers.forEach(player => {
-                    const row = document.createElement('tr');
-                    row.innerHTML = `
-                        <td class="px-4 py-2">${player.name}</td>
-                        <td class="px-4 py-2">${player.team || 'N/A'}</td>
-                        <td class="px-4 py-2">${calculateFantasyPoints(player).toFixed(2)}</td>
-                        <td class="px-4 py-2">${(calculateFantasyPoints(player) / (player.gamesPlayed || 1)).toFixed(2)}</td>
-                    `;
-                    columns.forEach(col => {
-                        const td = document.createElement('td');
-                        td.className = 'px-4 py-2';
-                        td.textContent = player[col.key] ? player[col.key].toFixed(2) : 'N/A';
-                        row.appendChild(td);
-                    });
-                    statsBody.appendChild(row);
-                });
-            }
-
-            function calculateFantasyPoints(player) {
-                let points = 0;
-                if (player.position === 'QB') {
-                    points += (player.passingYards || 0) / 25;
-                    points += (player.passingTDs || 0) * 4;
-                    points -= (player.interceptions || 0) * 2;
-                    points += (player.rushingYards || 0) / 10;
-                    points += (player.rushingTDs || 0) * 6;
+            const tableRows = filteredPlayers.map(player => {
+                const fantasyPoints = currentYear === '2025' ? player.fantasy_points : calculateFantasyPoints(player);
+                const games = currentYear === '2025' ? 17 : (player.gamesPlayed || 17);
+                const fpPerGame = fantasyPoints / games;
+                let row = `<tr>
+                    <td class="p-2">${player.name}</td>
+                    <td class="p-2">${player.team}</td>
+                    <td class="p-2">${fantasyPoints.toFixed(1)}</td>
+                    <td class="p-2">${fpPerGame.toFixed(1)}</td>
+                </tr>`;
+                if (showAdvanced && player.stats && currentYear !== '2025') {
+                    if (player.position === 'QB') {
+                        row = row.replace('</tr>', `
+                            <td class="p-2">${player.stats.passingYards || 'N/A'}</td>
+                            <td class="p-2">${player.stats.passingTDs || 'N/A'}</td>
+                            <td class="p-2">${player.stats.interceptions || 'N/A'}</td>
+                            </tr>`);
+                    } else if (player.position === 'RB') {
+                        row = row.replace('</tr>', `
+                            <td class="p-2">${player.stats.rushingYards || 'N/A'}</td>
+                            <td class="p-2">${player.stats.rushingTDs || 'N/A'}</td>
+                            <td class="p-2">${player.stats.receptions || 'N/A'}</td>
+                            </tr>`);
+                    } else if (player.position === 'WR' || player.position === 'TE') {
+                        row = row.replace('</tr>', `
+                            <td class="p-2">${player.stats.receivingYards || 'N/A'}</td>
+                            <td class="p-2">${player.stats.receivingTDs || 'N/A'}</td>
+                            <td class="p-2">${player.stats.receptions || 'N/A'}</td>
+                            </tr>`);
+                    }
+                } else if (currentYear === '2025') {
+                    row = row.replace('</tr>', `
+                        <td class="p-2">${player.stats.total_yards}</td>
+                        <td class="p-2">${player.stats.total_touchdowns}</td>
+                        </tr>`);
                 }
-                if (['RB', 'WR', 'TE'].includes(player.position)) {
-                    points += (player.rushingYards || 0) / 10;
-                    points += (player.rushingTDs || 0) * 6;
-                    points += player.receptions || 0;
-                    points += (player.receivingYards || 0) / 10;
-                    points += (player.receivingTDs || 0) * 6;
+                return row;
+            }).join('');
+
+            let header = `<tr class="bg-purple-700/60">
+                <th class="p-2">Player</th>
+                <th class="p-2">Team</th>
+                <th class="p-2">Fantasy Points</th>
+                <th class="p-2">FP/G</th>
+            </tr>`;
+            if (showAdvanced && currentYear !== '2025' && filteredPlayers.length > 0) {
+                const pos = filteredPlayers[0].position;
+                if (pos === 'QB') {
+                    header = header.replace('</tr>', `
+                        <th class="p-2">Passing Yards</th>
+                        <th class="p-2">Passing TDs</th>
+                        <th class="p-2">Interceptions</th>
+                        </tr>`);
+                } else if (pos === 'RB') {
+                    header = header.replace('</tr>', `
+                        <th class="p-2">Rushing Yards</th>
+                        <th class="p-2">Rushing TDs</th>
+                        <th class="p-2">Receptions</th>
+                        </tr>`);
+                } else if (pos === 'WR' || pos === 'TE') {
+                    header = header.replace('</tr>', `
+                        <th class="p-2">Receiving Yards</th>
+                        <th class="p-2">Receiving TDs</th>
+                        <th class="p-2">Receptions</th>
+                        </tr>`);
                 }
-                return points;
+            } else if (currentYear === '2025') {
+                header = header.replace('</tr>', `
+                    <th class="p-2">Total Yards</th>
+                    <th class="p-2">Total Touchdowns</th>
+                    </tr>`);
             }
 
-            function getColumns(position, advanced) {
-                const baseColumns = {
-                    QB: [
-                        { label: 'Pass Yds', key: 'passingYards' },
-                        { label: 'Pass TDs', key: 'passingTDs' },
-                        { label: 'Int', key: 'interceptions' },
-                        { label: 'Rush Yds', key: 'rushingYards' },
-                        { label: 'Rush TDs', key: 'rushingTDs' },
-                        { label: 'Comp %', key: 'completionPercentage' },
-                        { label: 'YPA', key: 'yardsPerAttempt' },
-                        { label: 'QB Rating', key: 'qbRating' },
-                    ],
-                    RB: [
-                        { label: 'Rush Yds', key: 'rushingYards' },
-                        { label: 'Rush TDs', key: 'rushingTDs' },
-                        { label: 'Rec', key: 'receptions' },
-                        { label: 'Rec Yds', key: 'receivingYards' },
-                        { label: 'Rec TDs', key: 'receivingTDs' },
-                        { label: 'YPC', key: 'yardsPerCarry' },
-                        { label: 'YPR', key: 'yardsPerReception' },
-                        { label: 'Touches', key: 'touches' },
-                    ],
-                    WR: [
-                        { label: 'Rec', key: 'receptions' },
-                        { label: 'Rec Yds', key: 'receivingYards' },
-                        { label: 'Rec TDs', key: 'receivingTDs' },
-                        { label: 'Targets', key: 'targets' },
-                        { label: 'YPR', key: 'yardsPerReception' },
-                        { label: 'Catch %', key: 'catchRate' },
-                        { label: 'YAC', key: 'yardsAfterCatch' },
-                    ],
-                    TE: [
-                        { label: 'Rec', key: 'receptions' },
-                        { label: 'Rec Yds', key: 'receivingYards' },
-                        { label: 'Rec TDs', key: 'receivingTDs' },
-                        { label: 'Targets', key: 'targets' },
-                        { label: 'YPR', key: 'yardsPerReception' },
-                        { label: 'Catch %', key: 'catchRate' },
-                        { label: 'YAC', key: 'yardsAfterCatch' },
-                    ],
-                    Flex: [
-                        { label: 'Pos', key: 'position' },
-                        { label: 'Rush Yds', key: 'rushingYards' },
-                        { label: 'Rush TDs', key: 'rushingTDs' },
-                        { label: 'Rec', key: 'receptions' },
-                        { label: 'Rec Yds', key: 'receivingYards' },
-                        { label: 'Rec TDs', key: 'receivingTDs' },
-                    ],
-                    SuperFlex: [
-                        { label: 'Pos', key: 'position' },
-                        { label: 'Pass Yds', key: 'passingYards' },
-                        { label: 'Pass TDs', key: 'passingTDs' },
-                        { label: 'Int', key: 'interceptions' },
-                        { label: 'Rush Yds', key: 'rushingYards' },
-                        { label: 'Rush TDs', key: 'rushingTDs' },
-                        { label: 'Rec', key: 'receptions' },
-                        { label: 'Rec Yds', key: 'receivingYards' },
-                        { label: 'Rec TDs', key: 'receivingTDs' },
-                    ],
-                };
+            statsTable.innerHTML = `<thead>${header}</thead><tbody>${tableRows || '<tr><td colspan="6" class="p-2 text-center">No players found.</td></tr>'}</tbody>`;
+        }
 
-                const advancedColumns = {
-                    QB: [
-                        { label: 'AYPA', key: 'adjustedYardsPerAttempt' },
-                        { label: 'CPOE', key: 'completionPercentageOverExpectation' },
-                        { label: 'Deep %', key: 'deepBallCompletionPercentage' },
-                    ],
-                    RB: [
-                        { label: 'YACo', key: 'yardsAfterContact' },
-                        { label: 'Elusive', key: 'elusiveRating' },
-                        { label: 'Break %', key: 'breakawayRunRate' },
-                    ],
-                    WR: [
-                        { label: 'YPPR', key: 'yardsPerPassRoute' },
-                        { label: 'Air Yds', key: 'airYards' },
-                        { label: 'Tgt Share', key: 'targetShare' },
-                        { label: 'RZ Tgts', key: 'redZoneTargets' },
-                    ],
-                    TE: [
-                        { label: 'YPPR', key: 'yardsPerPassRoute' },
-                        { label: 'Air Yds', key: 'airYards' },
-                        { label: 'Tgt Share', key: 'targetShare' },
-                        { label: 'RZ Tgts', key: 'redZoneTargets' },
-                    ],
-                    Flex: [
-                        { label: 'YPPR', key: 'yardsPerPassRoute' },
-                        { label: 'Tgt Share', key: 'targetShare' },
-                    ],
-                    SuperFlex: [
-                        { label: 'YPPR', key: 'yardsPerPassRoute' },
-                        { label: 'Tgt Share', key: 'targetShare' },
-                        { label: 'AYPA', key: 'adjustedYardsPerAttempt' },
-                    ],
-                };
-
-                return advanced ? [...baseColumns[position], ...advancedColumns[position]] : baseColumns[position];
-            }
-
-            fetchData(currentYear);
+        positionSelect.addEventListener('change', () => {
+            const selected = positionSelect.value;
+            advancedStatsCheckbox.disabled = !['QB', 'RB', 'WR', 'TE'].includes(selected);
+            if (advancedStatsCheckbox.disabled) advancedStatsCheckbox.checked = false;
+            updateTable();
         });
+        yearSelect.addEventListener('change', () => loadYearData(yearSelect.value));
+        playerSelect.addEventListener('change', updateTable);
+        advancedStatsCheckbox.addEventListener('change', updateTable);
+
+        loadYearData('2025');
     </script>
 </body>
 </html>
