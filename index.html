@@ -24,17 +24,20 @@
         .teal-button:hover {
             background-color: #E0F2F1;
         }
+        .navbar {
+            background-color: #26A69A;
+            padding: 1rem;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        .navbar a {
+            color: #FFFFFF;
+        }
     </style>
 </head>
 <body class="bg-navy-900 text-white min-h-screen flex flex-col" style="background-color: #1A2A44;">
-    <header class="teal-banner">
-        <h1 class="text-3xl font-bold">Your Ultimate Fantasy Football Command Center</h1>
-        <p class="mt-2 text-lg">Real-time stats, expert tools, and breaking news for every fantasy manager.</p>
-        <a href="stats.html" class="teal-button mt-4 inline-block">Explore Players</a>
-    </header>
-    <header class="navbar sticky top-[8rem] z-10">
+    <header class="navbar sticky top-0 z-10">
         <nav class="container mx-auto flex justify-between items-center p-4">
-            <a href="index.html" class="text-xl font-bold text-white">Front Row Fantasy</a>
+            <a href="index.html" class="text-xl font-bold">Front Row Fantasy</a>
             <div class="flex items-center space-x-4">
                 <button id="themeToggle" class="button flex items-center" aria-label="Toggle theme">
                     <svg id="themeIcon" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -46,58 +49,63 @@
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
                     </svg>
                 </button>
-                <div id="mobileMenu" class="hidden sm:flex sm:space-x-4 flex-col sm:flex-row absolute sm:static top-16 left-0 w-full sm:w-auto bg-teal-800/70 sm:bg-transparent p-4 sm:p-0">
-                    <a href="index.html" class="link">Home</a>
-                    <a href="stats.html" class="link">Stats</a>
+                <div id="mobileMenu" class="hidden sm:flex sm:space-x-4 flex-col sm:flex-row absolute sm:static top-16 left-0 w-full sm:w-auto bg-teal-800/70 sm:bg-teal-800 p-4 sm:p-0">
+                    <a href="index.html" class="link hover:text-teal-100">Home</a>
+                    <a href="stats.html" class="link hover:text-teal-100">Stats</a>
                 </div>
             </div>
         </nav>
+    </header>
+    <header class="teal-banner">
+        <h1 class="text-3xl font-bold">Your Ultimate Fantasy Football Command Center</h1>
+        <p class="mt-2 text-lg">Real-time stats, expert tools, and breaking news for every fantasy manager.</p>
+        <a href="stats.html" class="teal-button mt-4 inline-block">Explore Players</a>
     </header>
     <main class="container mx-auto p-4 flex-grow">
         <div class="marquee-container mb-4">
             <div id="tickerLoader" class="hidden text-center text-teal-800">Loading...</div>
             <div id="fantasyTicker" class="marquee-content"></div>
         </div>
-        <section class="card mb-4">
-            <h2 class="text-xl font-bold mb-2 text-teal-800">Top Players</h2>
-            <div id="playersLoader" class="hidden text-center text-teal-800">Loading...</div>
+        <section class="card mb-4" style="background-color: #26A69A; color: #1A2A44;">
+            <h2 class="text-xl font-bold mb-2">Top Players</h2>
+            <div id="playersLoader" class="hidden text-center">Loading...</div>
             <div id="topPlayers" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-2"></div>
         </section>
-        <section class="card mb-4">
-            <h2 class="text-xl font-bold mb-2 text-teal-800">Trade Analyzer</h2>
+        <section class="card mb-4" style="background-color: #26A69A; color: #1A2A44;">
+            <h2 class="text-xl font-bold mb-2">Trade Analyzer</h2>
             <div class="flex flex-col sm:flex-row gap-4 mb-2">
-                <select id="team1" class="bg-teal-100 border border-teal-300 rounded-md p-2 text-sm flex-1">
+                <select id="team1" class="bg-white border border-teal-300 rounded-md p-2 text-sm text-teal-800 flex-1">
                     <option value="">Select Team 1</option>
                 </select>
-                <select id="team2" class="bg-teal-100 border border-teal-300 rounded-md p-2 text-sm flex-1">
+                <select id="team2" class="bg-white border border-teal-300 rounded-md p-2 text-sm text-teal-800 flex-1">
                     <option value="">Select Team 2</option>
                 </select>
             </div>
-            <button id="tradeAnalyzerBtn" class="button">Analyze Trade</button>
+            <button id="tradeAnalyzerBtn" class="button" style="background: linear-gradient(to right, #1A2A44, #26A69A); color: #FFFFFF;">Analyze Trade</button>
             <div id="tradeResult" class="mt-2"></div>
         </section>
-        <section class="card mb-4">
-            <h2 class="text-xl font-bold mb-2 text-teal-800">Matchup Predictor</h2>
+        <section class="card mb-4" style="background-color: #26A69A; color: #1A2A44;">
+            <h2 class="text-xl font-bold mb-2">Matchup Predictor</h2>
             <div class="flex flex-col sm:flex-row gap-4 mb-2">
-                <select id="matchupTeam1" class="bg-teal-100 border border-teal-300 rounded-md p-2 text-sm flex-1">
+                <select id="matchupTeam1" class="bg-white border border-teal-300 rounded-md p-2 text-sm text-teal-800 flex-1">
                     <option value="">Select Team 1</option>
                 </select>
-                <select id="matchupTeam2" class="bg-teal-100 border border-teal-300 rounded-md p-2 text-sm flex-1">
+                <select id="matchupTeam2" class="bg-white border border-teal-300 rounded-md p-2 text-sm text-teal-800 flex-1">
                     <option value="">Select Team 2</option>
                 </select>
             </div>
-            <button id="matchupBtn" class="button">Predict Matchup</button>
+            <button id="matchupBtn" class="button" style="background: linear-gradient(to right, #1A2A44, #26A69A); color: #FFFFFF;">Predict Matchup</button>
             <div id="matchupResult" class="mt-2"></div>
         </section>
-        <section class="card mb-4">
-            <h2 class="text-xl font-bold mb-2 text-teal-800">Waiver Wire Picks</h2>
+        <section class="card mb-4" style="background-color: #26A69A; color: #1A2A44;">
+            <h2 class="text-xl font-bold mb-2">Waiver Wire Picks</h2>
             <div id="waiverList"></div>
         </section>
-        <section class="card">
-            <h2 class="text-xl font-bold mb-2 text-teal-800">NFL & Fantasy News</h2>
-            <div id="newsLoader" class="hidden text-center text-teal-800">Loading...</div>
+        <section class="card" style="background-color: #26A69A; color: #1A2A44;">
+            <h2 class="text-xl font-bold mb-2">NFL & Fantasy News</h2>
+            <div id="newsLoader" class="hidden text-center">Loading...</div>
             <div id="newsList"></div>
-            <button id="loadMoreNews" class="button mt-2 hidden">Load More</button>
+            <button id="loadMoreNews" class="button mt-2 hidden" style="background: linear-gradient(to right, #1A2A44, #26A69A); color: #FFFFFF;">Load More</button>
         </section>
     </main>
     <footer class="bg-teal-800 text-white p-4 text-center text-sm">
