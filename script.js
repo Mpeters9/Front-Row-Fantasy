@@ -38,56 +38,54 @@ document.addEventListener('DOMContentLoaded', () => {
     const showLoader = (id) => document.getElementById(id)?.classList?.remove('hidden');
     const hideLoader = (id) => document.getElementById(id)?.classList?.add('hidden');
 
-    // Fantasy Points Ticker with Sleeper API
+    // Load players_2025.json once for reuse
+    let players2025 = [];
+    fetch('players_2025.json')
+        .then(response => {
+            if (!response.ok) throw new Error('Failed to load players_2025.json');
+            return response.json();
+        })
+        .then(data => {
+            players2025 = data;
+            loadFantasyTicker();
+            // Other features can use players2025 after this point
+        })
+        .catch(error => {
+            console.error('Error loading players_2025.json:', error);
+            loadFantasyTicker(true); // Load with fallback
+        });
+
+    // Fantasy Points Ticker with players_2025.json
     const fantasyTicker = document.getElementById('fantasyTicker');
-    if (fantasyTicker) {
+    function loadFantasyTicker(fallback = false) {
+        if (!fantasyTicker) return;
         showLoader('tickerLoader');
-        const fetchWithTimeout = (url, timeout = 10000) => Promise.race([
-            fetch(url),
-            new Promise((_, reject) => setTimeout(() => reject(new Error('Request timed out')), timeout))
-        ]);
-        fetchWithTimeout('https://api.sleeper.app/v1/players/nfl')
-            .then(response => {
-                if (!response.ok) throw new Error('Network response was not ok');
-                return response.json();
-            })
-            .then(data => {
-                const players = Object.values(data).filter(player => player.fantasy_positions && player.team).slice(0, 10);
-                const tickerContent = players.concat(players).map(player => {
-                    const points = (player.stats?.2025?.pts_ppr || 0) + (player.stats?.2025?.rec || 0) * 1; // Approx. PPR points
-                    return `
-                        <span class="inline-flex items-center px-2 py-1 bg-purple-700/60 text-cyan-200 rounded-md shadow-md whitespace-nowrap min-w-[160px]">
-                            ${player.full_name} (${player.fantasy_positions[0]} - ${player.team}) - ${points.toFixed(1)} pts
-                        </span>
-                    `;
-                }).join('');
-                fantasyTicker.innerHTML = tickerContent;
-                fantasyTicker.style.animation = 'marquee 15s linear infinite';
-                hideLoader('tickerLoader');
-            })
-            .catch(error => {
-                console.error('Error loading fantasy ticker:', error);
-                fantasyTicker.innerHTML = '<p class="text-red-400 text-center text-xs">Failed to load fantasy ticker. Using fallback.</p>';
-                fantasyTicker.innerHTML = '<span class="inline-flex items-center px-2 py-1 bg-purple-700/60 text-cyan-200 rounded-md shadow-md whitespace-nowrap min-w-[160px]">Patrick Mahomes (QB - KC) - 25.5 pts</span><span class="inline-flex items-center px-2 py-1 bg-purple-700/60 text-cyan-200 rounded-md shadow-md whitespace-nowrap min-w-[160px]">Christian McCaffrey (RB - SF) - 18.2 pts</span>';
-                hideLoader('tickerLoader');
-            });
+        if (fallback || players2025.length === 0) {
+            fantasyTicker.innerHTML = '<p class="text-red-400 text-center text-xs">Failed to load fantasy ticker. Using fallback.</p>';
+            fantasyTicker.innerHTML += '<span class="inline-flex items-center px-2 py-1 bg-purple-700/60 text-cyan-200 rounded-md shadow-md whitespace-nowrap min-w-[160px]">Patrick Mahomes (QB - KC) - 25.1 pts</span>';
+            hideLoader('tickerLoader');
+            return;
+        }
+        const tickerContent = players2025.concat(players2025).map(player => {
+            return `
+                <span class="inline-flex items-center px-2 py-1 bg-purple-700/60 text-cyan-200 rounded-md shadow-md whitespace-nowrap min-w-[160px]">
+                    ${player.name} (${player.position} - ${player.team}) - ${player.fantasy_points.toFixed(1)} pts
+                </span>
+            `;
+        }).join('');
+        fantasyTicker.innerHTML = tickerContent;
+        fantasyTicker.style.animation = 'marquee 15s linear infinite';
+        hideLoader('tickerLoader');
     }
 
-    // Top Players with Sleeper API
+    // Top Players with Sleeper API (unchanged)
     const topPlayersDiv = document.getElementById('topPlayers');
     if (topPlayersDiv) {
         showLoader('playersLoader');
-        const fetchWithTimeout = (url, timeout = 10000) => Promise.race([
-            fetch(url),
-            new Promise((_, reject) => setTimeout(() => reject(new Error('Request timed out')), timeout))
-        ]);
-        fetchWithTimeout('https://api.sleeper.app/v1/players/nfl')
-            .then(response => {
-                if (!response.ok) throw new Error('Network response was not ok');
-                return response.json();
-            })
+        fetch('https://api.sleeper.app/v1/players/nfl')
+            .then(response => response.ok ? response.json() : Promise.reject('Network error'))
             .then(data => {
-                const players = Object.values(data).filter(player => player.fantasy_positions && player.team).sort((a, b) => {
+                const players = Object.values(data).filter(p => p.fantasy_positions && p.team).sort((a, b) => {
                     const pointsA = (a.stats?.2025?.pts_ppr || 0) + (a.stats?.2025?.rec || 0) * 1;
                     const pointsB = (b.stats?.2025?.pts_ppr || 0) + (b.stats?.2025?.rec || 0) * 1;
                     return pointsB - pointsA;
@@ -128,16 +126,14 @@ document.addEventListener('DOMContentLoaded', () => {
                 [teamSelect1, teamSelect2, matchupSelect1, matchupSelect2].forEach(select => select.appendChild(option.cloneNode(true)));
             });
 
+            // Waiver Wire with Sleeper API (unchanged)
             fetch('https://api.sleeper.app/v1/players/nfl')
-                .then(response => {
-                    if (!response.ok) throw new Error('Network response was not OK');
-                    return response.json();
-                })
+                .then(response => response.ok ? response.json() : Promise.reject('Network error'))
                 .then(data => {
                     const waiverList = document.getElementById('waiverList');
                     if (waiverList) {
                         waiverList.innerHTML = '<h3 class="text-base font-bold text-cyan-300 mb-1">Top Waiver Picks:</h3>';
-                        const players = Object.values(data).filter(player => player.fantasy_positions && player.team).sort((a, b) => {
+                        const players = Object.values(data).filter(p => p.fantasy_positions && p.team).sort((a, b) => {
                             const pointsA = (a.stats?.2025?.pts_ppr || 0) + (a.stats?.2025?.rec || 0) * 1;
                             const pointsB = (b.stats?.2025?.pts_ppr || 0) + (b.stats?.2025?.rec || 0) * 1;
                             return pointsB - pointsA;
@@ -156,65 +152,61 @@ document.addEventListener('DOMContentLoaded', () => {
                 })
                 .catch(error => {
                     console.error('Error loading waiver wire picks:', error);
-                    if (document.getElementById('waiverList')) {
-                        document.getElementById('waiverList').innerHTML = '<p class="text-red-400 text-center text-xs">Error loading waiver wire picks.</p>';
-                    }
+                    document.getElementById('waiverList').innerHTML = '<p class="text-red-400 text-center text-xs">Error loading waiver wire picks.</p>';
                 });
 
-            document.getElementById('tradeAnalyzerBtn')?.addEventListener('click', async () => {
-                try {
-                    const teamName1 = teamSelect1.value;
-                    const teamName2 = teamSelect2.value;
-                    const tradeData = await fetch('https://api.sleeper.app/v1/players/nfl').then(res => res.json());
-                    const teamPlayers1 = mockTeams.find(t => t.name === teamName1)?.players || [];
-                    const teamPlayers2 = mockTeams.find(t => t.name === teamName2)?.players || [];
-                    const teamStats1 = teamPlayers1.map(p => Object.values(tradeData).find(pl => pl.full_name === p)).filter(p => p);
-                    const teamStats2 = teamPlayers2.map(p => Object.values(tradeData).find(pl => pl.full_name === p)).filter(p => p);
-                    const teamPoints1 = teamStats1.reduce((sum, p) => sum + ((p.stats?.2025?.pts_ppr || 0) + (p.stats?.2025?.rec || 0) * 1), 0);
-                    const teamPoints2 = teamStats2.reduce((sum, p) => sum + ((p.stats?.2025?.pts_ppr || 0) + (p.stats?.2025?.rec || 0) * 1), 0);
-                    const tradeResultDiv = document.getElementById('tradeResult');
-                    if (teamPoints1 && teamPoints2) {
-                        const pointsDiff = Math.abs(teamPoints1 - teamPoints2);
-                        tradeResultDiv.innerHTML = pointsDiff < 15 ? `
-                            <p class="text-cyan-300 text-xs">Fair trade: ${teamName1} (${teamPoints1.toFixed(2)} pts) vs ${teamName2} (${teamPoints2.toFixed(2)} pts)</p>
-                        ` : `
-                            <p class="text-red-400 text-xs">Unbalanced trade: ${teamName1} (${teamPoints1.toFixed(2)} pts) vs ${teamName2} (${teamPoints2.toFixed(2)} pts)</p>
-                        `;
-                    } else {
-                        tradeResultDiv.innerHTML = '<p class="text-red-400 text-xs">Please select both teams for trade analysis.</p>';
-                    }
-                } catch (error) {
-                    console.error('Error analyzing trade:', error);
-                    document.getElementById('tradeResult').innerHTML = '<p class="text-red-400 text-xs">Error analyzing trade data.</p>';
+            // Trade Analyzer with players_2025.json
+            document.getElementById('tradeAnalyzerBtn')?.addEventListener('click', () => {
+                const teamName1 = teamSelect1.value;
+                const teamName2 = teamSelect2.value;
+                const teamPlayers1 = mockTeams.find(t => t.name === teamName1)?.players || [];
+                const teamPlayers2 = mockTeams.find(t => t.name === teamName2)?.players || [];
+                const teamPoints1 = teamPlayers1.reduce((sum, p) => {
+                    const player = players2025.find(pl => pl.name === p);
+                    return sum + (player ? player.fantasy_points : 0);
+                }, 0);
+                const teamPoints2 = teamPlayers2.reduce((sum, p) => {
+                    const player = players2025.find(pl => pl.name === p);
+                    return sum + (player ? player.fantasy_points : 0);
+                }, 0);
+                const tradeResultDiv = document.getElementById('tradeResult');
+                if (teamPoints1 && teamPoints2) {
+                    const pointsDiff = Math.abs(teamPoints1 - teamPoints2);
+                    tradeResultDiv.innerHTML = pointsDiff < 15 ? `
+                        <p class="text-cyan-300 text-xs">Fair trade: ${teamName1} (${teamPoints1.toFixed(2)} pts) vs ${teamName2} (${teamPoints2.toFixed(2)} pts)</p>
+                    ` : `
+                        <p class="text-red-400 text-xs">Unbalanced trade: ${teamName1} (${teamPoints1.toFixed(2)} pts) vs ${teamName2} (${teamPoints2.toFixed(2)} pts)</p>
+                    `;
+                } else {
+                    tradeResultDiv.innerHTML = '<p class="text-red-400 text-xs">Please select both teams for trade analysis.</p>';
                 }
             });
 
-            document.getElementById('matchupBtn')?.addEventListener('click', async () => {
-                try {
-                    const teamName1 = matchupSelect1.value;
-                    const teamName2 = matchupSelect2.value;
-                    const matchupData = await fetch('https://api.sleeper.app/v1/players/nfl').then(res => res.json());
-                    const teamPlayers1 = mockTeams.find(t => t.name === teamName1)?.players || [];
-                    const teamPlayers2 = mockTeams.find(t => t.name === teamName2)?.players || [];
-                    const teamStats1 = teamPlayers1.map(p => Object.values(matchupData).find(pl => pl.full_name === p)).filter(p => p);
-                    const teamStats2 = teamPlayers2.map(p => Object.values(matchupData).find(pl => pl.name === p)).filter(p => p);
-                    const teamPoints1 = teamStats1.reduce((sum, p) => sum + ((p.stats?.2025?.pts_ppr || 0) + (p.stats?.2025?.rec || 0) * 1), 0);
-                    const teamPoints2 = teamStats2.reduce((sum, p) => sum + ((p.stats?.2025?.pts_ppr || 0) + (p.stats?.2025?.rec || 0) * 1), 0);
-                    const matchupResultDiv = document.getElementById('matchupResult');
-                    const probability1 = teamPoints1 / (teamPoints1 + teamPoints2) * 100;
-                    const probability2 = teamPoints2 / (teamPoints1 + teamPoints2) * 100;
-                    matchupResultDiv.innerHTML = `
-                        <p class="text-cyan-300 text-xs">${teamName1}: ${teamPoints1.toFixed(2)} pts (${probability1.toFixed(1)}% win probability)</p>
-                        <p class="text-cyan-300 text-xs">${teamName2}: ${teamPoints2.toFixed(2)} pts (${probability2.toFixed(1)}% win probability)</p>
-                    `;
-                } catch (error) {
-                    console.error('Error predicting matchup:', error);
-                    document.getElementById('matchupResult').innerHTML = '<p class="text-red-400 text-xs">Error predicting matchup outcome.</p>';
-                }
+            // Matchup Predictor with players_2025.json
+            document.getElementById('matchupBtn')?.addEventListener('click', () => {
+                const teamName1 = matchupSelect1.value;
+                const teamName2 = matchupSelect2.value;
+                const teamPlayers1 = mockTeams.find(t => t.name === teamName1)?.players || [];
+                const teamPlayers2 = mockTeams.find(t => t.name === teamName2)?.players || [];
+                const teamPoints1 = teamPlayers1.reduce((sum, p) => {
+                    const player = players2025.find(pl => pl.name === p);
+                    return sum + (player ? player.fantasy_points : 0);
+                }, 0);
+                const teamPoints2 = teamPlayers2.reduce((sum, p) => {
+                    const player = players2025.find(pl => pl.name === p);
+                    return sum + (player ? player.fantasy_points : 0);
+                }, 0);
+                const matchupResultDiv = document.getElementById('matchupResult');
+                const probability1 = teamPoints1 / (teamPoints1 + teamPoints2) * 100;
+                const probability2 = teamPoints2 / (teamPoints1 + teamPoints2) * 100;
+                matchupResultDiv.innerHTML = `
+                    <p class="text-cyan-300 text-xs">${teamName1}: ${teamPoints1.toFixed(2)} pts (${probability1.toFixed(1)}% win probability)</p>
+                    <p class="text-cyan-300 text-xs">${teamName2}: ${teamPoints2.toFixed(2)} pts (${probability2.toFixed(1)}% win probability)</p>
+                `;
             });
         }
 
-        // News Integration with Sleeper API Trending
+        // News Integration with Sleeper API Trending (unchanged)
         const newsList = document.getElementById('newsList');
         const loadMoreNewsBtn = document.getElementById('loadMoreNews');
         let newsOffset = 0;
