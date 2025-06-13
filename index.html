@@ -10,45 +10,48 @@
 </head>
 <body>
     <header>
-        <nav class="flex justify-between max-w-7xl mx-auto px-6 py-4 bg-gradient-to-r from-blue-900 to-blue-500 text-white">
+        <nav class="navbar flex justify-between max-w-7xl mx-auto">
             <div class="flex items-center gap-4">
                 <img src="logo.png" alt="Logo" class="h-12" onerror="this.src='https://via.placeholder.com/48?text=FRF'">
                 <a href="index.html" class="text-xl font-bold">Front Row Fantasy</a>
             </div>
             <div>
-                <a href="index.html" class="mx-2 font-semibold underline">Home</a>
-                <a href="players.html" class="mx-2 font-semibold">Players</a>
-                <a href="stats.html" class="mx-2 font-semibold">Stats</a>
-                <a href="guides.html" class="mx-2 font-semibold">Guides</a>
-                <a href="community.html" class="mx-2 font-semibold">Community</a>
+                <a href="index.html" class="underline">Home</a>
+                <a href="players.html">Players</a>
+                <a href="stats.html">Stats</a>
+                <a href="guides.html">Guides</a>
+                <a href="community.html">Community</a>
             </div>
         </nav>
     </header>
     <main class="max-w-7xl mx-auto p-6">
-        <section class="bg-white p-8 rounded-lg shadow-lg mt-6">
+        <section class="card">
             <h2 class="text-2xl font-bold mb-6 text-gray-900">Your Ultimate Fantasy Football Command Center</h2>
             <p class="text-gray-700">Real-time stats, expert tools, and breaking news for every fantasy manager.</p>
-            <a href="players.html" class="mt-4 inline-block bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700">Explore Players</a>
+            <a href="players.html" class="button mt-4">Explore Players</a>
         </section>
 
-        <section class="bg-white p-8 rounded-lg shadow-lg mt-6">
+        <section class="card mt-6">
             <h2 class="text-2xl font-bold mb-6 text-gray-900">Fantasy Points Ticker</h2>
-            <div id="ticker" class="bg-gray-100 p-4 rounded-lg">
-                <p>Loading ticker...</p>
+            <div class="marquee">
+                <div class="marquee-content" id="ticker">
+                    <span>Player A: 25 pts</span>
+                    <span>Player B: 18 pts</span>
+                    <span>Player C: 22 pts</span>
+                </div>
             </div>
         </section>
 
-        <section class="bg-white p-8 rounded-lg shadow-lg mt-6">
+        <section class="card mt-6">
             <h2 class="text-2xl font-bold mb-6 text-gray-900">Top Fantasy Players</h2>
             <div id="topPlayers" class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div class="bg-gray-50 p-4 rounded-lg">Loading players...</div>
-                <div class="bg-gray-50 p-4 rounded-lg">Loading players...</div>
+                <!-- Dynamic content will be inserted here -->
             </div>
         </section>
 
-        <section class="bg-white p-8 rounded-lg shadow-lg mt-6">
+        <section class="card mt-6">
             <h2 class="text-2xl font-bold mb-6 text-gray-900">Trade Analyzer</h2>
-            <div class="flex gap-4">
+            <div class="flex gap-4 flex-wrap">
                 <select id="team1" class="p-2 border rounded-lg bg-gray-50">
                     <option value="">Select Team 1</option>
                 </select>
@@ -56,13 +59,13 @@
                     <option value="">Select Team 2</option>
                 </select>
             </div>
-            <div class="mt-4 flex gap-2">
-                <button class="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600">Analyze Trade</button>
-                <button class="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600">Compare team rosters</button>
+            <div class="mt-4 flex gap-2 flex-wrap">
+                <button class="button bg-green-500 hover:bg-green-600">Analyze Trade</button>
+                <button class="button bg-blue-500 hover:bg-blue-600">Compare team rosters</button>
             </div>
 
             <h2 class="text-2xl font-bold mt-6 mb-6 text-gray-900">Matchup Predictor</h2>
-            <div class="flex gap-4">
+            <div class="flex gap-4 flex-wrap">
                 <select id="matchupTeam1" class="p-2 border rounded-lg bg-gray-50">
                     <option value="">Select Team 1</option>
                 </select>
@@ -71,18 +74,18 @@
                 </select>
             </div>
             <div class="mt-4">
-                <button class="bg-purple-500 text-white px-4 py-2 rounded-lg hover:bg-purple-600">Predict Matchup</button>
+                <button class="button bg-purple-500 hover:bg-purple-600">Predict Matchup</button>
             </div>
         </section>
 
-        <section class="bg-white p-8 rounded-lg shadow-lg mt-6">
+        <section class="card mt-6">
             <h2 class="text-2xl font-bold mb-6 text-gray-900">Waiver Wire Picks</h2>
             <div id="waiverPicks" class="bg-gray-50 p-4 rounded-lg">
                 <p>Loading waiver picks...</p>
             </div>
         </section>
 
-        <section class="bg-white p-8 rounded-lg shadow-lg mt-6">
+        <section class="card mt-6">
             <h2 class="text-2xl font-bold mb-6 text-gray-900">NFL & Fantasy News</h2>
             <div id="newsFeed" class="space-y-4">
                 <div class="bg-gray-50 p-4 rounded-lg">
@@ -90,21 +93,55 @@
                     <p class="text-sm text-gray-500">Fetching the latest NFL and fantasy football updates.</p>
                 </div>
             </div>
-            <button class="mt-4 bg-gray-500 text-white px-4 py-2 rounded-lg hover:bg-gray-600">Load More News</button>
+            <button class="button mt-4 bg-gray-500 hover:bg-gray-600">Load More News</button>
         </section>
 
-        <section class="bg-white p-8 rounded-lg shadow-lg mt-6">
+        <section class="card mt-6">
             <h2 class="text-2xl font-bold mb-6 text-gray-900">Quick Links</h2>
             <ul class="list-disc pl-5 text-gray-700">
-                <li><a href="guides.html" class="text-blue-600 hover:underline">Beginner Guides</a></li>
-                <li><a href="stats.html" class="text-blue-600 hover:underline">Player Stats</a></li>
-                <li><a href="#" class="text-blue-600 hover:underline">League Standings</a></li>
-                <li><a href="https://discord.gg/example" class="text-blue-600 hover:underline">Join Our Discord</a></li>
+                <li><a href="guides.html" class="link">Beginner Guides</a></li>
+                <li><a href="stats.html" class="link">Player Stats</a></li>
+                <li><a href="#" class="link">League Standings</a></li>
+                <li><a href="https://discord.gg/example" class="link">Join Our Discord</a></li>
             </ul>
         </section>
     </main>
     <footer class="bg-gray-800 text-white text-center p-4 mt-6">
         <p>© 2025 Front Row Fantasy. All rights reserved.</p>
     </footer>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Ticker animation update
+            const ticker = document.getElementById('ticker');
+            if (ticker) {
+                const items = ['Player A: 25 pts', 'Player B: 18 pts', 'Player C: 22 pts'];
+                let index = 0;
+                setInterval(() => {
+                    ticker.innerHTML = items.map(item => `<span>${item}</span>`).join('');
+                    index = (index + 1) % items.length;
+                }, 3000);
+            }
+
+            // Top Fantasy Players
+            const topPlayers = document.getElementById('topPlayers');
+            if (topPlayers) {
+                fetch('players.json')
+                    .then(response => response.json())
+                    .then(data => {
+                        const players = data.slice(0, 2); // Top 2 players
+                        topPlayers.innerHTML = players.map(player => `
+                            <div class="bg-gray-50 p-4 rounded-lg">
+                                <p class="font-bold">${player.name}</p>
+                                <p>Fantasy Points: ${player.points}</p>
+                            </div>
+                        `).join('');
+                    })
+                    .catch(error => {
+                        console.error('Error loading players:', error);
+                        topPlayers.innerHTML = '<div class="bg-gray-50 p-4 rounded-lg">Failed to load players.</div>';
+                    });
+            }
+        });
+    </script>
 </body>
 </html>
