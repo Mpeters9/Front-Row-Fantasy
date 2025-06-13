@@ -3,114 +3,289 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Home - Front Row Fantasy</title>
+    <title>Fantasy Football Stats - Front Row Fantasy</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <header>
-        <nav class="navbar flex justify-between max-w-7xl mx-auto px-6">
-            <div class="flex items-center gap-4">
-                <img src="logo.png" alt="Logo" class="h-12" onerror="this.src='https://via.placeholder.com/48?text=FRF'">
-                <a href="index.html" class="text-xl font-bold text-white">Front Row Fantasy</a>
-            </div>
-            <div>
-                <a href="index.html" class="underline">Home</a>
-                <a href="players.html">Players</a>
-                <a href="stats.html">Stats</a>
-                <a href="guides.html">Guides</a>
-                <a href="community.html">Community</a>
-            </div>
-        </nav>
-    </header>
     <main class="max-w-7xl mx-auto p-6">
         <section class="card">
-            <h2 class="text-2xl font-bold mb-6 text-gray-900">Your Ultimate Fantasy Football Command Center</h2>
-            <p class="text-gray-700">Real-time stats, expert tools, and breaking news for every fantasy manager.</p>
-            <a href="players.html" class="button mt-4">Explore Players</a>
-        </section>
-
-        <section class="card mt-6">
-            <h2 class="text-2xl font-bold mb-6 text-gray-900">Fantasy Points Ticker</h2>
-            <div class="marquee">
-                <div class="marquee-content" id="ticker">
-                    <span>Loading ticker...</span>
+            <h2 class="text-2xl font-bold mb-6 text-gray-900">Player Stats</h2>
+            <div class="mb-4 flex gap-4 flex-wrap">
+                <div>
+                    <label for="yearSelect" class="block text-gray-700">Select Year:</label>
+                    <select id="yearSelect" class="p-2 border rounded-lg bg-gray-50">
+                        <option value="2025">2025</option>
+                        <option value="2024">2024</option>
+                        <option value="2023">2023</option>
+                        <option value="2022">2022</option>
+                    </select>
                 </div>
-            </div>
-        </section>
-
-        <section class="card mt-6">
-            <h2 class="text-2xl font-bold mb-6 text-gray-900">Top Fantasy Players</h2>
-            <div id="topPlayers" class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div class="card">Loading players...</div>
-                <div class="card">Loading players...</div>
-            </div>
-        </section>
-
-        <section class="card mt-6">
-            <h2 class="text-2xl font-bold mb-6 text-gray-900">Trade Analyzer</h2>
-            <div class="flex gap-4 flex-wrap">
-                <select id="team1" class="p-2 border rounded-lg bg-gray-50">
-                    <option value="">Select Team 1</option>
-                </select>
-                <select id="team2" class="p-2 border rounded-lg bg-gray-50">
-                    <option value="">Select Team 2</option>
-                </select>
-            </div>
-            <div class="mt-4 flex gap-2 flex-wrap">
-                <button class="button bg-green-500 hover:bg-green-600">Analyze Trade</button>
-                <button class="button bg-blue-500 hover:bg-blue-600">Compare team rosters</button>
-            </div>
-
-            <h2 class="text-2xl font-bold mt-6 mb-6 text-gray-900">Matchup Predictor</h2>
-            <div class="flex gap-4 flex-wrap">
-                <select id="matchupTeam1" class="p-2 border rounded-lg bg-gray-50">
-                    <option value="">Select Team 1</option>
-                </select>
-                <select id="matchupTeam2" class="p-2 border rounded-lg bg-gray-50">
-                    <option value="">Select Team 2</option>
-                </select>
-            </div>
-            <div class="mt-4">
-                <button class="button bg-purple-500 hover:bg-purple-600">Predict Matchup</button>
-            </div>
-        </section>
-
-        <section class="card mt-6">
-            <h2 class="text-2xl font-bold mb-6 text-gray-900">Waiver Wire Picks</h2>
-            <div id="waiverPicks" class="card">
-                <p>Loading waiver picks...</p>
-            </div>
-        </section>
-
-        <section class="card mt-6">
-            <h2 class="text-2xl font-bold mb-6 text-gray-900">NFL & Fantasy News</h2>
-            <div id="newsFeed" class="space-y-4">
-                <div class="card">
-                    <p>Loading news...</p>
-                    <p class="text-sm text-gray-500">Fetching the latest NFL and fantasy football updates.</p>
+                <div>
+                    <label for="positionSelect" class="block text-gray-700">Select Position:</label>
+                    <select id="positionSelect" class="p-2 border rounded-lg bg-gray-50">
+                        <option value="QB">QB</option>
+                        <option value="RB">RB</option>
+                        <option value="WR">WR</option>
+                        <option value="TE">TE</option>
+                        <option value="Flex">Flex (RB/WR/TE)</option>
+                        <option value="SuperFlex">SuperFlex (QB/RB/WR/TE)</option>
+                    </select>
                 </div>
+                <div>
+                    <label for="playerSelect" class="block text-gray-700">Select Player:</label>
+                    <select id="playerSelect" class="p-2 border rounded-lg bg-gray-50">
+                        <option value="">All Players</option>
+                    </select>
+                </div>
+                <button id="toggleAdvanced" class="button mt-6">Show Advanced Stats</button>
             </div>
-            <button class="button mt-4 bg-gray-500 hover:bg-gray-600">Load More News</button>
-        </section>
-
-        <section class="card mt-6">
-            <h2 class="text-2xl font-bold mb-6 text-gray-900">Quick Links</h2>
-            <ul class="list-disc pl-5 text-gray-700">
-                <li><a href="guides.html" class="link">Beginner Guides</a></li>
-                <li><a href="stats.html" class="link">Player Stats</a></li>
-                <li><a href="#" class="link">League Standings</a></li>
-                <li><a href="https://discord.gg/example" class="link">Join Our Discord</a></li>
-            </ul>
+            <div id="statsTable" class="overflow-x-auto">
+                <table class="min-w-full">
+                    <thead>
+                        <tr>
+                            <th class="px-4 py-2">Player</th>
+                            <th class="px-4 py-2">Team</th>
+                            <th class="px-4 py-2">Fantasy Points</th>
+                            <th class="px-4 py-2">FP/G</th>
+                        </tr>
+                    </thead>
+                    <tbody id="statsBody">
+                        <tr><td colspan="4" class="text-center py-4">Loading...</td></tr>
+                    </tbody>
+                </table>
+            </div>
         </section>
     </main>
-    <footer class="bg-gray-800 text-white text-center p-4 mt-6">
-        <p>© 2025 Front Row Fantasy. All rights reserved.</p>
-    </footer>
     <script>
-        // Placeholder scripts for dynamic content (to be implemented)
-        console.log("Page loaded");
+        document.addEventListener('DOMContentLoaded', () => {
+            const yearSelect = document.getElementById('yearSelect');
+            const positionSelect = document.getElementById('positionSelect');
+            const playerSelect = document.getElementById('playerSelect');
+            const statsBody = document.getElementById('statsBody');
+            const toggleAdvanced = document.getElementById('toggleAdvanced');
+            let playersData = [];
+            let activePlayers = [];
+            let currentYear = '2025';
+            let currentPosition = 'QB';
+            let currentPlayer = '';
+            let showAdvanced = false;
+
+            fetch('active_players.json')
+                .then(response => response.json())
+                .then(data => {
+                    activePlayers = data;
+                    populatePlayerSelect();
+                })
+                .catch(error => console.error('Error loading active players:', error));
+
+            function fetchData(year) {
+                fetch(`players_${year}.json`)
+                    .then(response => {
+                        if (!response.ok) throw new Error('Network response was not ok');
+                        return response.json();
+                    })
+                    .then(data => {
+                        playersData = data;
+                        renderTable(currentPosition, currentPlayer);
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        statsBody.innerHTML = '<tr><td colspan="4" class="text-center text-red-600">Failed to load data.</td></tr>';
+                    });
+            }
+
+            function populatePlayerSelect() {
+                playerSelect.innerHTML = '<option value="">All Players</option>';
+                activePlayers.forEach(player => {
+                    const option = document.createElement('option');
+                    option.value = player.name;
+                    option.textContent = `${player.name} (${player.position})`;
+                    playerSelect.appendChild(option);
+                });
+            }
+
+            yearSelect.addEventListener('change', (event) => {
+                currentYear = event.target.value;
+                fetchData(currentYear);
+            });
+
+            positionSelect.addEventListener('change', (event) => {
+                currentPosition = event.target.value;
+                renderTable(currentPosition, currentPlayer);
+            });
+
+            playerSelect.addEventListener('change', (event) => {
+                currentPlayer = event.target.value;
+                renderTable(currentPosition, currentPlayer);
+            });
+
+            toggleAdvanced.addEventListener('click', () => {
+                showAdvanced = !showAdvanced;
+                toggleAdvanced.textContent = showAdvanced ? 'Hide Advanced Stats' : 'Show Advanced Stats';
+                renderTable(currentPosition, currentPlayer);
+            });
+
+            function renderTable(position, player) {
+                statsBody.innerHTML = '';
+                let filteredPlayers = playersData.filter(p => {
+                    const posMatch = position === 'Flex' || position === 'SuperFlex'
+                        ? (position === 'SuperFlex' || p.position !== 'QB')
+                        : p.position === position;
+                    const playerMatch = !player || p.name === player;
+                    return posMatch && playerMatch;
+                });
+
+                filteredPlayers.sort((a, b) => calculateFantasyPoints(b) - calculateFantasyPoints(a));
+
+                const columns = getColumns(position, showAdvanced);
+                const thead = document.querySelector('thead tr');
+                thead.innerHTML = '<th class="px-4 py-2">Player</th><th class="px-4 py-2">Team</th><th class="px-4 py-2">Fantasy Points</th><th class="px-4 py-2">FP/G</th>';
+                columns.forEach(col => {
+                    const th = document.createElement('th');
+                    th.className = 'px-4 py-2';
+                    th.textContent = col.label;
+                    thead.appendChild(th);
+                });
+
+                filteredPlayers.forEach(player => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td class="px-4 py-2">${player.name}</td>
+                        <td class="px-4 py-2">${player.team || 'N/A'}</td>
+                        <td class="px-4 py-2">${calculateFantasyPoints(player).toFixed(2)}</td>
+                        <td class="px-4 py-2">${(calculateFantasyPoints(player) / (player.gamesPlayed || 1)).toFixed(2)}</td>
+                    `;
+                    columns.forEach(col => {
+                        const td = document.createElement('td');
+                        td.className = 'px-4 py-2';
+                        td.textContent = player[col.key] ? player[col.key].toFixed(2) : 'N/A';
+                        row.appendChild(td);
+                    });
+                    statsBody.appendChild(row);
+                });
+            }
+
+            function calculateFantasyPoints(player) {
+                let points = 0;
+                if (player.position === 'QB') {
+                    points += (player.passingYards || 0) / 25;
+                    points += (player.passingTDs || 0) * 4;
+                    points -= (player.interceptions || 0) * 2;
+                    points += (player.rushingYards || 0) / 10;
+                    points += (player.rushingTDs || 0) * 6;
+                }
+                if (['RB', 'WR', 'TE'].includes(player.position)) {
+                    points += (player.rushingYards || 0) / 10;
+                    points += (player.rushingTDs || 0) * 6;
+                    points += player.receptions || 0;
+                    points += (player.receivingYards || 0) / 10;
+                    points += (player.receivingTDs || 0) * 6;
+                }
+                return points;
+            }
+
+            function getColumns(position, advanced) {
+                const baseColumns = {
+                    QB: [
+                        { label: 'Pass Yds', key: 'passingYards' },
+                        { label: 'Pass TDs', key: 'passingTDs' },
+                        { label: 'Int', key: 'interceptions' },
+                        { label: 'Rush Yds', key: 'rushingYards' },
+                        { label: 'Rush TDs', key: 'rushingTDs' },
+                        { label: 'Comp %', key: 'completionPercentage' },
+                        { label: 'YPA', key: 'yardsPerAttempt' },
+                        { label: 'QB Rating', key: 'qbRating' },
+                    ],
+                    RB: [
+                        { label: 'Rush Yds', key: 'rushingYards' },
+                        { label: 'Rush TDs', key: 'rushingTDs' },
+                        { label: 'Rec', key: 'receptions' },
+                        { label: 'Rec Yds', key: 'receivingYards' },
+                        { label: 'Rec TDs', key: 'receivingTDs' },
+                        { label: 'YPC', key: 'yardsPerCarry' },
+                        { label: 'YPR', key: 'yardsPerReception' },
+                        { label: 'Touches', key: 'touches' },
+                    ],
+                    WR: [
+                        { label: 'Rec', key: 'receptions' },
+                        { label: 'Rec Yds', key: 'receivingYards' },
+                        { label: 'Rec TDs', key: 'receivingTDs' },
+                        { label: 'Targets', key: 'targets' },
+                        { label: 'YPR', key: 'yardsPerReception' },
+                        { label: 'Catch %', key: 'catchRate' },
+                        { label: 'YAC', key: 'yardsAfterCatch' },
+                    ],
+                    TE: [
+                        { label: 'Rec', key: 'receptions' },
+                        { label: 'Rec Yds', key: 'receivingYards' },
+                        { label: 'Rec TDs', key: 'receivingTDs' },
+                        { label: 'Targets', key: 'targets' },
+                        { label: 'YPR', key: 'yardsPerReception' },
+                        { label: 'Catch %', key: 'catchRate' },
+                        { label: 'YAC', key: 'yardsAfterCatch' },
+                    ],
+                    Flex: [
+                        { label: 'Pos', key: 'position' },
+                        { label: 'Rush Yds', key: 'rushingYards' },
+                        { label: 'Rush TDs', key: 'rushingTDs' },
+                        { label: 'Rec', key: 'receptions' },
+                        { label: 'Rec Yds', key: 'receivingYards' },
+                        { label: 'Rec TDs', key: 'receivingTDs' },
+                    ],
+                    SuperFlex: [
+                        { label: 'Pos', key: 'position' },
+                        { label: 'Pass Yds', key: 'passingYards' },
+                        { label: 'Pass TDs', key: 'passingTDs' },
+                        { label: 'Int', key: 'interceptions' },
+                        { label: 'Rush Yds', key: 'rushingYards' },
+                        { label: 'Rush TDs', key: 'rushingTDs' },
+                        { label: 'Rec', key: 'receptions' },
+                        { label: 'Rec Yds', key: 'receivingYards' },
+                        { label: 'Rec TDs', key: 'receivingTDs' },
+                    ],
+                };
+
+                const advancedColumns = {
+                    QB: [
+                        { label: 'AYPA', key: 'adjustedYardsPerAttempt' },
+                        { label: 'CPOE', key: 'completionPercentageOverExpectation' },
+                        { label: 'Deep %', key: 'deepBallCompletionPercentage' },
+                    ],
+                    RB: [
+                        { label: 'YACo', key: 'yardsAfterContact' },
+                        { label: 'Elusive', key: 'elusiveRating' },
+                        { label: 'Break %', key: 'breakawayRunRate' },
+                    ],
+                    WR: [
+                        { label: 'YPPR', key: 'yardsPerPassRoute' },
+                        { label: 'Air Yds', key: 'airYards' },
+                        { label: 'Tgt Share', key: 'targetShare' },
+                        { label: 'RZ Tgts', key: 'redZoneTargets' },
+                    ],
+                    TE: [
+                        { label: 'YPPR', key: 'yardsPerPassRoute' },
+                        { label: 'Air Yds', key: 'airYards' },
+                        { label: 'Tgt Share', key: 'targetShare' },
+                        { label: 'RZ Tgts', key: 'redZoneTargets' },
+                    ],
+                    Flex: [
+                        { label: 'YPPR', key: 'yardsPerPassRoute' },
+                        { label: 'Tgt Share', key: 'targetShare' },
+                    ],
+                    SuperFlex: [
+                        { label: 'YPPR', key: 'yardsPerPassRoute' },
+                        { label: 'Tgt Share', key: 'targetShare' },
+                        { label: 'AYPA', key: 'adjustedYardsPerAttempt' },
+                    ],
+                };
+
+                return advanced ? [...baseColumns[position], ...advancedColumns[position]] : baseColumns[position];
+            }
+
+            fetchData(currentYear);
+        });
     </script>
 </body>
 </html>
