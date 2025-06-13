@@ -3,16 +3,16 @@
 @tailwind utilities;
 
 body {
-    background-color: #f0f0f0;
+    background-color: #f3f4f6;
     font-family: 'Poppins', sans-serif;
 }
 
 .card {
-    @apply bg-white dark:bg-gray-800 p-4 rounded-lg shadow-md hover:shadow-xl transition transform hover:-translate-y-1;
+    @apply bg-white p-8 rounded-lg shadow-lg;
 }
 
 .button {
-    @apply bg-teal-500 text-white px-6 py-3 rounded-lg hover:bg-teal-600 transition;
+    @apply bg-teal-500 text-white px-4 py-2 rounded-lg hover:bg-teal-600 transition;
 }
 
 .link {
@@ -27,25 +27,29 @@ body {
     @apply inline-flex gap-4 animate-marquee;
 }
 
+.navbar {
+    @apply bg-gradient-to-r from-teal-900 to-teal-500 p-4 text-white;
+}
+
+.navbar a {
+    @apply mx-2 font-semibold;
+}
+
+.navbar a:hover {
+    @apply text-teal-200;
+}
+
 @keyframes marquee {
-    0% { transform: translateX(0); }
-    100% { transform: translateX(-50%); }
+    0% { transform: translateX(100%); }
+    100% { transform: translateX(-100%); }
 }
 
 @media (max-width: 640px) {
-    h1 {
-        @apply text-2xl;
-    }
-    h2 {
-        @apply text-xl;
-    }
-    .card {
-        @apply p-3;
-    }
-    .button {
-        @apply px-4 py-2;
-    }
-    .marquee-content {
-        @apply gap-2;
-    }
+    h1 { @apply text-2xl; }
+    h2 { @apply text-xl; }
+    .card { @apply p-4; }
+    .button { @apply px-3 py-1; }
+    .marquee-content { @apply gap-2; }
+    .navbar { @apply p-2; }
+    .navbar a { @apply text-sm mx-1; }
 }
