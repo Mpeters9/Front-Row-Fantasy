@@ -10,17 +10,17 @@
 </head>
 <body>
     <header>
-        <nav class="navbar flex justify-between max-w-7xl mx-auto">
+        <nav class="navbar flex justify-between max-w-7xl mx-auto px-6 py-4 bg-gradient-to-r from-teal-900 to-teal-500 text-white">
             <div class="flex items-center gap-4">
                 <img src="logo.png" alt="Logo" class="h-12" onerror="this.src='https://via.placeholder.com/48?text=FRF'">
                 <a href="index.html" class="text-xl font-bold">Front Row Fantasy</a>
             </div>
             <div>
-                <a href="index.html" class="underline">Home</a>
-                <a href="players.html">Players</a>
-                <a href="stats.html">Stats</a>
-                <a href="guides.html">Guides</a>
-                <a href="community.html">Community</a>
+                <a href="index.html" class="mx-2 font-semibold underline">Home</a>
+                <a href="players.html" class="mx-2 font-semibold">Players</a>
+                <a href="stats.html" class="mx-2 font-semibold">Stats</a>
+                <a href="guides.html" class="mx-2 font-semibold">Guides</a>
+                <a href="community.html" class="mx-2 font-semibold">Community</a>
             </div>
         </nav>
     </header>
@@ -35,9 +35,9 @@
             <h2 class="text-2xl font-bold mb-6 text-gray-900">Fantasy Points Ticker</h2>
             <div class="marquee">
                 <div class="marquee-content" id="ticker">
-                    <span>Player A: 25 pts</span>
-                    <span>Player B: 18 pts</span>
-                    <span>Player C: 22 pts</span>
+                    <span>Patrick Mahomes: 25.5 pts</span>
+                    <span>Christian McCaffrey: 18.2 pts</span>
+                    <span>Tyreek Hill: 22.1 pts</span>
                 </div>
             </div>
         </section>
@@ -45,7 +45,14 @@
         <section class="card mt-6">
             <h2 class="text-2xl font-bold mb-6 text-gray-900">Top Fantasy Players</h2>
             <div id="topPlayers" class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <!-- Dynamic content will be inserted here -->
+                <div class="bg-gray-50 p-4 rounded-lg">
+                    <p class="font-bold">Patrick Mahomes</p>
+                    <p>Fantasy Points: 25.5</p>
+                </div>
+                <div class="bg-gray-50 p-4 rounded-lg">
+                    <p class="font-bold">Christian McCaffrey</p>
+                    <p>Fantasy Points: 18.2</p>
+                </div>
             </div>
         </section>
 
@@ -80,17 +87,20 @@
 
         <section class="card mt-6">
             <h2 class="text-2xl font-bold mb-6 text-gray-900">Waiver Wire Picks</h2>
-            <div id="waiverPicks" class="bg-gray-50 p-4 rounded-lg">
-                <p>Loading waiver picks...</p>
+            <div id="waiverPicks" class="space-y-4">
+                <div class="bg-gray-50 p-4 rounded-lg">
+                    <p class="font-bold">Player A</p>
+                    <p>Position: RB, Points: 15.3</p>
+                </div>
             </div>
         </section>
 
         <section class="card mt-6">
             <h2 class="text-2xl font-bold mb-6 text-gray-900">NFL & Fantasy News</h2>
-            <div id="newsFeed" class="space-y-4">
+            <div id="newsList" class="space-y-4">
                 <div class="bg-gray-50 p-4 rounded-lg">
-                    <p>Loading news...</p>
-                    <p class="text-sm text-gray-500">Fetching the latest NFL and fantasy football updates.</p>
+                    <p class="font-bold">Latest NFL Update</p>
+                    <p class="text-sm text-gray-500">Check back for the latest news!</p>
                 </div>
             </div>
             <button class="button mt-4 bg-gray-500 hover:bg-gray-600">Load More News</button>
@@ -102,7 +112,7 @@
                 <li><a href="guides.html" class="link">Beginner Guides</a></li>
                 <li><a href="stats.html" class="link">Player Stats</a></li>
                 <li><a href="#" class="link">League Standings</a></li>
-                <li><a href="https://discord.gg/example" class="link">Join Our Discord</a></li>
+                <li><a href="https://discord.com" class="link">Join Our Discord</a></li>
             </ul>
         </section>
     </main>
@@ -111,35 +121,18 @@
     </footer>
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            // Ticker animation update
             const ticker = document.getElementById('ticker');
             if (ticker) {
-                const items = ['Player A: 25 pts', 'Player B: 18 pts', 'Player C: 22 pts'];
+                const items = [
+                    'Patrick Mahomes: 25.5 pts',
+                    'Christian McCaffrey: 18.2 pts',
+                    'Tyreek Hill: 22.1 pts'
+                ];
                 let index = 0;
                 setInterval(() => {
                     ticker.innerHTML = items.map(item => `<span>${item}</span>`).join('');
                     index = (index + 1) % items.length;
                 }, 3000);
-            }
-
-            // Top Fantasy Players
-            const topPlayers = document.getElementById('topPlayers');
-            if (topPlayers) {
-                fetch('players.json')
-                    .then(response => response.json())
-                    .then(data => {
-                        const players = data.slice(0, 2); // Top 2 players
-                        topPlayers.innerHTML = players.map(player => `
-                            <div class="bg-gray-50 p-4 rounded-lg">
-                                <p class="font-bold">${player.name}</p>
-                                <p>Fantasy Points: ${player.points}</p>
-                            </div>
-                        `).join('');
-                    })
-                    .catch(error => {
-                        console.error('Error loading players:', error);
-                        topPlayers.innerHTML = '<div class="bg-gray-50 p-4 rounded-lg">Failed to load players.</div>';
-                    });
             }
         });
     </script>
