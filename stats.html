@@ -1,43 +1,4 @@
-<script type="text/javascript">
-        var gk_isXlsx = false;
-        var gk_xlsxFileLookup = {};
-        var gk_fileData = {};
-        function filledCell(cell) {
-          return cell !== '' && cell != null;
-        }
-        function loadFileData(filename) {
-        if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
-            try {
-                var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
-                var firstSheetName = workbook.SheetNames[0];
-                var worksheet = workbook.Sheets[firstSheetName];
-
-                // Convert sheet to JSON to filter blank rows
-                var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
-                // Filter out blank rows (rows where all cells are empty, null, or undefined)
-                var filteredData = jsonData.filter(row => row.some(filledCell));
-
-                // Heuristic to find the header row by ignoring rows with fewer filled cells than the next row
-                var headerRowIndex = filteredData.findIndex((row, index) =>
-                  row.filter(filledCell).length >= filteredData[index + 1]?.filter(filledCell).length
-                );
-                // Fallback
-                if (headerRowIndex === -1 || headerRowIndex > 25) {
-                  headerRowIndex = 0;
-                }
-
-                // Convert filtered JSON back to CSV
-                var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex)); // Create a new sheet from filtered array of arrays
-                csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
-                return csv;
-            } catch (e) {
-                console.error(e);
-                return "";
-            }
-        }
-        return gk_fileData[filename] || "";
-        }
-        </script><!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -45,30 +6,41 @@
     <title>Fantasy Football Stats - Front Row Fantasy</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
     <style>
-        body { font-family: 'Poppins', sans-serif; }
-        th, td { border: 1px solid #ddd; text-align: center; }
-        th { background-color: #f4f4f4; cursor: pointer; }
-        tr:nth-child(even) { background-color: #f9f9f9; }
-        tr:hover { background-color: #f1f1f1; }
+        body { font-family: 'Poppins', sans-serif; background-color: #f4f4f9; color: #333; }
+        .navbar { background: linear-gradient(to right, #1e3a8a, #3b82f6); padding: 1rem; }
+        .navbar a { color: white; margin: 0 1rem; text-decoration: none; font-weight: 600; }
+        .navbar a:hover { color: #93c5fd; }
+        th, td { border: 1px solid #ddd; text-align: center; padding: 8px; }
+        th { background-color: #e0e7ff; cursor: pointer; }
+        tr:nth-child(even) { background-color: #f9fafb; }
+        tr:hover { background-color: #e5e7eb; }
     </style>
 </head>
-<body class="bg-gray-50 dark:bg-gray-900 transition-colors duration-300">
-    <header class="bg-gradient-to-r from-blue-800 to-blue-600 text-white py-4 shadow-md">
-        <div class="max-w-7xl mx-auto flex justify-between items-center px-6">
+<body>
+    <header>
+        <nav class="navbar flex justify-between max-w-7xl mx-auto px-6">
             <div class="flex items-center gap-4">
                 <img src="logo.png" alt="Logo" class="h-12" onerror="this.src='https://via.placeholder.com/48?text=FRF'">
-                <h1 class="text-3xl font-bold">Fantasy Football Stats</h1>
+                <a href="index.html" class="text-xl font-bold text-white">Front Row Fantasy</a>
             </div>
-        </div>
+            <div>
+                <a href="index.html">Home</a>
+                <a href="players.html">Players</a>
+                <a href="stats.html" class="underline">Stats</a>
+                <a href="guides.html">Guides</a>
+                <a href="community.html">Community</a>
+            </div>
+        </nav>
     </header>
     <main class="max-w-7xl mx-auto p-6">
-        <section class="bg-white dark:bg-gray-800 p-8 rounded-lg shadow-lg">
-            <h2 class="text-2xl font-bold mb-6 text-gray-900 dark:text-white">Player Stats</h2>
+        <section class="bg-white p-8 rounded-lg shadow-lg mt-6">
+            <h2 class="text-2xl font-bold mb-6 text-gray-900">Player Stats</h2>
             <div class="mb-4 flex gap-4">
                 <div>
-                    <label for="yearSelect" class="block text-gray-700 dark:text-gray-300">Select Year:</label>
-                    <select id="yearSelect" class="p-2 border rounded-lg bg-gray-50 dark:bg-gray-700 dark:text-white">
+                    <label for="yearSelect" class="block text-gray-700">Select Year:</label>
+                    <select id="yearSelect" class="p-2 border rounded-lg bg-gray-50">
                         <option value="2025">2025</option>
                         <option value="2024">2024</option>
                         <option value="2023">2023</option>
@@ -76,8 +48,8 @@
                     </select>
                 </div>
                 <div>
-                    <label for="positionSelect" class="block text-gray-700 dark:text-gray-300">Select Position:</label>
-                    <select id="positionSelect" class="p-2 border rounded-lg bg-gray-50 dark:bg-gray-700 dark:text-white">
+                    <label for="positionSelect" class="block text-gray-700">Select Position:</label>
+                    <select id="positionSelect" class="p-2 border rounded-lg bg-gray-50">
                         <option value="QB">QB</option>
                         <option value="RB">RB</option>
                         <option value="WR">WR</option>
@@ -87,15 +59,15 @@
                     </select>
                 </div>
                 <div>
-                    <label for="playerSelect" class="block text-gray-700 dark:text-gray-300">Select Player:</label>
-                    <select id="playerSelect" class="p-2 border rounded-lg bg-gray-50 dark:bg-gray-700 dark:text-white">
+                    <label for="playerSelect" class="block text-gray-700">Select Player:</label>
+                    <select id="playerSelect" class="p-2 border rounded-lg bg-gray-50">
                         <option value="">All Players</option>
                     </select>
                 </div>
                 <button id="toggleAdvanced" class="mt-6 bg-teal-500 text-white px-4 py-2 rounded-lg hover:bg-teal-600 transition">Show Advanced Stats</button>
             </div>
             <div id="statsTable" class="overflow-x-auto">
-                <table class="min-w-full bg-white dark:bg-gray-800">
+                <table class="min-w-full bg-white">
                     <thead>
                         <tr>
                             <th class="px-4 py-2">Player</th>
