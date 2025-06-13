@@ -8,113 +8,113 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet" crossorigin="anonymous">
     <link rel="stylesheet" href="styles.css">
 </head>
-<body class="bg-gray-900 text-gray-200 font-poppins min-h-screen">
+<body class="bg-purple-900 text-cyan-200 font-poppins min-h-screen">
     <header class="relative">
-        <nav class="flex justify-between items-center max-w-7xl mx-auto px-6 py-4 bg-teal-800/70 backdrop-blur-md rounded-b-lg shadow-md">
-            <div class="flex items-center gap-4">
-                <img src="logo.png" alt="Logo" class="h-10 transition-transform hover:scale-105" onerror="this.src='https://via.placeholder.com/40?text=FRF'">
-                <a href="index.html" class="text-xl font-semibold text-teal-300 hover:text-teal-100 transition-colors">Front Row Fantasy</a>
+        <nav class="flex justify-between items-center max-w-6xl mx-auto px-4 py-3 bg-purple-800/70 backdrop-blur-md rounded-b-lg shadow-md">
+            <div class="flex items-center gap-3">
+                <img src="logo.png" alt="Logo" class="h-9 transition-transform hover:scale-105" onerror="this.src='https://via.placeholder.com/36?text=FRF'">
+                <a href="index.html" class="text-lg font-semibold text-cyan-300 hover:text-cyan-100 transition-colors">Front Row Fantasy</a>
             </div>
-            <div class="hidden md:flex space-x-5">
-                <a href="index.html" class="text-sm font-medium text-teal-200 hover:text-white">Home</a>
-                <a href="players.html" class="text-sm font-medium text-teal-200 hover:text-white">Players</a>
-                <a href="stats.html" class="text-sm font-medium text-teal-200 hover:text-white">Stats</a>
-                <a href="guides.html" class="text-sm font-medium text-teal-200 hover:text-white">Guides</a>
-                <a href="community.html" class="text-sm font-medium text-teal-200 hover:text-white">Community</a>
+            <div class="hidden md:flex space-x-4">
+                <a href="index.html" class="text-sm font-medium text-cyan-200 hover:text-white">Home</a>
+                <a href="players.html" class="text-sm font-medium text-cyan-200 hover:text-white">Players</a>
+                <a href="stats.html" class="text-sm font-medium text-cyan-200 hover:text-white">Stats</a>
+                <a href="guides.html" class="text-sm font-medium text-cyan-200 hover:text-white">Guides</a>
+                <a href="community.html" class="text-sm font-medium text-cyan-200 hover:text-white">Community</a>
             </div>
-            <button id="themeToggle" class="p-2 bg-teal-700 rounded-full hover:bg-teal-600 focus:outline-none focus:ring-2 focus:ring-teal-400 transition-all">
+            <button id="themeToggle" class="p-1.5 bg-purple-700 rounded-full hover:bg-purple-600 focus:outline-none focus:ring-2 focus:ring-cyan-400 transition-all">
                 <svg id="themeIcon" class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
                 </svg>
             </button>
         </nav>
-        <div id="mobileMenu" class="hidden fixed top-16 right-6 bg-teal-800/80 backdrop-blur-md p-3 rounded-lg shadow-md md:hidden z-50">
-            <a href="index.html" class="block text-sm text-teal-200 hover:text-white py-1.5">Home</a>
-            <a href="players.html" class="block text-sm text-teal-200 hover:text-white py-1.5">Players</a>
-            <a href="stats.html" class="block text-sm text-teal-200 hover:text-white py-1.5">Stats</a>
-            <a href="guides.html" class="block text-sm text-teal-200 hover:text-white py-1.5">Guides</a>
-            <a href="community.html" class="block text-sm text-teal-200 hover:text-white py-1.5">Community</a>
+        <div id="mobileMenu" class="hidden fixed top-14 right-4 bg-purple-800/80 backdrop-blur-md p-2 rounded-lg shadow-md md:hidden z-50">
+            <a href="index.html" class="block text-sm text-cyan-200 hover:text-white py-1">Home</a>
+            <a href="players.html" class="block text-sm text-cyan-200 hover:text-white py-1">Players</a>
+            <a href="stats.html" class="block text-sm text-cyan-200 hover:text-white py-1">Stats</a>
+            <a href="guides.html" class="block text-sm text-cyan-200 hover:text-white py-1">Guides</a>
+            <a href="community.html" class="block text-sm text-cyan-200 hover:text-white py-1">Community</a>
         </div>
-        <button id="mobileMenuToggle" class="md:hidden fixed top-4 right-4 p-2 bg-teal-700 rounded-full hover:bg-teal-600 focus:outline-none focus:ring-2 focus:ring-teal-400 transition-all" aria-expanded="false">
+        <button id="mobileMenuToggle" class="md:hidden fixed top-3 right-3 p-1.5 bg-purple-700 rounded-full hover:bg-purple-600 focus:outline-none focus:ring-2 focus:ring-cyan-400 transition-all" aria-expanded="false">
             <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7" />
             </svg>
         </button>
     </header>
-    <main class="max-w-6xl mx-auto px-4 py-8">
-        <section class="bg-teal-800/50 backdrop-blur-md rounded-lg p-5 shadow-md mb-8">
-            <h1 class="text-3xl font-bold text-teal-100 mb-3">Your Ultimate Fantasy Football Command Center</h1>
-            <p class="text-sm text-teal-200 mb-4">Real-time stats, expert tools, and breaking news for every fantasy manager.</p>
-            <a href="players.html" class="inline-block bg-teal-600 hover:bg-teal-500 text-white font-medium py-2 px-4 rounded-lg shadow-md hover:shadow-lg transition-all">Explore Players</a>
+    <main class="max-w-6xl mx-auto px-4 py-6">
+        <section class="bg-purple-800/50 backdrop-blur-md rounded-lg p-4 shadow-md mb-6">
+            <h1 class="text-2xl font-bold text-cyan-300 mb-2">Your Ultimate Fantasy Football Command Center</h1>
+            <p class="text-sm text-cyan-400 mb-3">Real-time stats, expert tools, and breaking news for every fantasy manager.</p>
+            <a href="players.html" class="inline-block bg-gradient-to-r from-purple-700 to-cyan-500 text-white font-medium py-2 px-3 rounded-lg shadow-md hover:shadow-lg transition-all">Explore Players</a>
         </section>
 
-        <section class="bg-teal-800/40 backdrop-blur-md rounded-lg p-4 shadow-md mb-6">
-            <h2 class="text-2xl font-bold text-teal-100 mb-3">Fantasy Points Ticker</h2>
-            <div class="marquee-container h-14 overflow-hidden">
-                <div class="marquee-content flex gap-4" id="fantasyTicker">
+        <section class="bg-purple-800/40 backdrop-blur-md rounded-lg p-3 shadow-md mb-5">
+            <h2 class="text-xl font-bold text-cyan-300 mb-2">Fantasy Points Ticker</h2>
+            <div class="marquee-container h-12 overflow-hidden">
+                <div class="marquee-content flex gap-3" id="fantasyTicker">
                     <span>Patrick Mahomes: 25.5 pts</span>
                     <span>Christian McCaffrey: 18.2 pts</span>
                     <span>Tyreek Hill: 22.1 pts</span>
                 </div>
             </div>
-            <div id="tickerLoader" class="hidden text-center text-teal-200 text-sm">Loading ticker...</div>
+            <div id="tickerLoader" class="hidden text-center text-cyan-400 text-xs">Loading ticker...</div>
         </section>
 
-        <section class="bg-teal-800/40 backdrop-blur-md rounded-lg p-4 shadow-md mb-6">
-            <h2 class="text-2xl font-bold text-teal-100 mb-3">Top Fantasy Players</h2>
-            <div id="topPlayers" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+        <section class="bg-purple-800/40 backdrop-blur-md rounded-lg p-3 shadow-md mb-5">
+            <h2 class="text-xl font-bold text-cyan-300 mb-2">Top Fantasy Players</h2>
+            <div id="topPlayers" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
                 <!-- Dynamic content loaded by JavaScript -->
             </div>
-            <div id="playersLoader" class="hidden text-center text-teal-200 text-sm">Loading players...</div>
+            <div id="playersLoader" class="hidden text-center text-cyan-400 text-xs">Loading players...</div>
         </section>
 
-        <section class="bg-teal-800/40 backdrop-blur-md rounded-lg p-4 shadow-md mb-6">
-            <h2 class="text-2xl font-bold text-teal-100 mb-3">Trade Analyzer</h2>
-            <div class="flex gap-3 flex-wrap mb-3">
-                <select id="team1" class="p-2 border rounded-lg bg-teal-700/50 text-gray-200 focus:outline-none focus:ring-2 focus:ring-teal-500">
+        <section class="bg-purple-800/40 backdrop-blur-md rounded-lg p-3 shadow-md mb-5">
+            <h2 class="text-xl font-bold text-cyan-300 mb-2">Trade Analyzer</h2>
+            <div class="flex gap-2 flex-wrap mb-2">
+                <select id="team1" class="p-1.5 border rounded-lg bg-purple-700/50 text-cyan-200 focus:outline-none focus:ring-2 focus:ring-cyan-500 text-sm">
                     <option value="">Select Team 1</option>
                 </select>
-                <select id="team2" class="p-2 border rounded-lg bg-teal-700/50 text-gray-200 focus:outline-none focus:ring-2 focus:ring-teal-500">
+                <select id="team2" class="p-1.5 border rounded-lg bg-purple-700/50 text-cyan-200 focus:outline-none focus:ring-2 focus:ring-cyan-500 text-sm">
                     <option value="">Select Team 2</option>
                 </select>
             </div>
-            <div id="tradeResult" class="mb-3 text-sm"></div>
-            <div class="flex gap-3 flex-wrap">
-                <button id="tradeAnalyzerBtn" class="bg-teal-600 hover:bg-teal-500 text-white font-medium py-2 px-4 rounded-lg shadow-md hover:shadow-lg transition-all">Analyze Trade</button>
-                <button class="bg-teal-600 hover:bg-teal-500 text-white font-medium py-2 px-4 rounded-lg shadow-md hover:shadow-lg transition-all">Compare Rosters</button>
+            <div id="tradeResult" class="mb-2 text-xs"></div>
+            <div class="flex gap-2 flex-wrap">
+                <button id="tradeAnalyzerBtn" class="bg-gradient-to-r from-purple-700 to-cyan-500 text-white font-medium py-1.5 px-3 rounded-lg shadow-md hover:shadow-lg transition-all text-sm">Analyze Trade</button>
+                <button class="bg-gradient-to-r from-purple-700 to-cyan-500 text-white font-medium py-1.5 px-3 rounded-lg shadow-md hover:shadow-lg transition-all text-sm">Compare Rosters</button>
             </div>
 
-            <h2 class="text-2xl font-bold mt-6 mb-3 text-teal-100">Matchup Predictor</h2>
-            <div class="flex gap-3 flex-wrap mb-3">
-                <select id="matchupTeam1" class="p-2 border rounded-lg bg-teal-700/50 text-gray-200 focus:outline-none focus:ring-2 focus:ring-teal-500">
+            <h2 class="text-xl font-bold mt-4 mb-2 text-cyan-300">Matchup Predictor</h2>
+            <div class="flex gap-2 flex-wrap mb-2">
+                <select id="matchupTeam1" class="p-1.5 border rounded-lg bg-purple-700/50 text-cyan-200 focus:outline-none focus:ring-2 focus:ring-cyan-500 text-sm">
                     <option value="">Select Team 1</option>
                 </select>
-                <select id="matchupTeam2" class="p-2 border rounded-lg bg-teal-700/50 text-gray-200 focus:outline-none focus:ring-2 focus:ring-teal-500">
+                <select id="matchupTeam2" class="p-1.5 border rounded-lg bg-purple-700/50 text-cyan-200 focus:outline-none focus:ring-2 focus:ring-cyan-500 text-sm">
                     <option value="">Select Team 2</option>
                 </select>
             </div>
-            <div id="matchupResult" class="mb-3 text-sm"></div>
-            <button id="matchupBtn" class="bg-teal-600 hover:bg-teal-500 text-white font-medium py-2 px-4 rounded-lg shadow-md hover:shadow-lg transition-all">Predict Matchup</button>
+            <div id="matchupResult" class="mb-2 text-xs"></div>
+            <button id="matchupBtn" class="bg-gradient-to-r from-purple-700 to-cyan-500 text-white font-medium py-1.5 px-3 rounded-lg shadow-md hover:shadow-lg transition-all text-sm">Predict Matchup</button>
         </section>
 
-        <section class="bg-teal-800/40 backdrop-blur-md rounded-lg p-4 shadow-md mb-6">
-            <h2 class="text-2xl font-bold text-teal-100 mb-3">Waiver Wire Picks</h2>
-            <div id="waiverList" class="space-y-3">
+        <section class="bg-purple-800/40 backdrop-blur-md rounded-lg p-3 shadow-md mb-5">
+            <h2 class="text-xl font-bold text-cyan-300 mb-2">Waiver Wire Picks</h2>
+            <div id="waiverList" class="space-y-2">
                 <!-- Dynamic content loaded by JavaScript -->
             </div>
         </section>
 
-        <section class="bg-teal-800/40 backdrop-blur-md rounded-lg p-4 shadow-md mb-6">
-            <h2 class="text-2xl font-bold text-teal-100 mb-3">NFL & Fantasy News</h2>
-            <div id="newsList" class="space-y-3">
+        <section class="bg-purple-800/40 backdrop-blur-md rounded-lg p-3 shadow-md mb-5">
+            <h2 class="text-xl font-bold text-cyan-300 mb-2">NFL & Fantasy News</h2>
+            <div id="newsList" class="space-y-2">
                 <!-- Dynamic content loaded by JavaScript -->
             </div>
-            <button id="loadMoreNews" class="bg-teal-600 hover:bg-teal-500 text-white font-medium py-2 px-4 rounded-lg shadow-md hover:shadow-lg transition-all">Load More News</button>
+            <button id="loadMoreNews" class="bg-gradient-to-r from-purple-700 to-cyan-500 text-white font-medium py-1.5 px-3 rounded-lg shadow-md hover:shadow-lg transition-all text-sm">Load More News</button>
         </section>
 
-        <section class="bg-teal-800/40 backdrop-blur-md rounded-lg p-4 shadow-md">
-            <h2 class="text-2xl font-bold text-teal-100 mb-3">Quick Links</h2>
-            <ul class="list-disc pl-5 text-teal-200 space-y-2 text-sm">
+        <section class="bg-purple-800/40 backdrop-blur-md rounded-lg p-3 shadow-md">
+            <h2 class="text-xl font-bold text-cyan-300 mb-2">Quick Links</h2>
+            <ul class="list-disc pl-4 text-cyan-400 space-y-1 text-sm">
                 <li><a href="guides.html" class="hover:text-white transition-colors">Beginner Guides</a></li>
                 <li><a href="stats.html" class="hover:text-white transition-colors">Player Stats</a></li>
                 <li><a href="#" class="hover:text-white transition-colors">League Standings</a></li>
@@ -122,8 +122,8 @@
             </ul>
         </section>
     </main>
-    <footer class="bg-teal-800/70 backdrop-blur-md text-teal-200 text-center p-3 mt-6">
-        <p class="text-sm">© 2025 Front Row Fantasy. All rights reserved.</p>
+    <footer class="bg-purple-800/70 backdrop-blur-md text-cyan-400 text-center p-2 mt-5">
+        <p class="text-xs">© 2025 Front Row Fantasy. All rights reserved.</p>
     </footer>
     <script src="script.js"></script>
 </body>
