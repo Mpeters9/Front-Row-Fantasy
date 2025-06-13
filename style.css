@@ -1,10 +1,41 @@
-/* Existing styles like @tailwind directives remain unchanged */
-/* Add this to ensure the ticker scrolls properly */
-#fantasyTicker {
-    display: flex;
-    gap: 0.75rem; /* Matches Tailwind's gap-3 */
-    flex-wrap: nowrap;
-    animation: marquee 15s linear infinite;
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+    html {
+        @apply font-poppins;
+    }
+    body {
+        @apply bg-navy-900 text-white;
+        background-color: #1A2A44;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+    }
+}
+
+@layer components {
+    .card {
+        @apply bg-teal-800/40 backdrop-blur-md p-3 rounded-lg shadow-md;
+    }
+    .button {
+        @apply bg-gradient-to-r from-teal-700 to-teal-500 text-white px-3 py-1.5 rounded-lg shadow-md hover:shadow-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-teal-500;
+    }
+    .link {
+        @apply text-teal-200 hover:text-white transition-colors;
+    }
+    .marquee-container {
+        @apply overflow-hidden h-12;
+    }
+    .marquee-content {
+        @apply flex gap-3 animate-marquee;
+    }
+    .navbar {
+        @apply bg-teal-800/70 backdrop-blur-md p-3 rounded-b-lg shadow-md;
+    }
+    .navbar a {
+        @apply text-sm font-medium text-teal-200 hover:text-white transition-colors;
+    }
 }
 
 @keyframes marquee {
@@ -12,8 +43,34 @@
     100% { transform: translateX(-100%); }
 }
 
-/* Ensure container hides overflow */
-.marquee-container {
-    overflow: hidden;
-    height: 3rem; /* Matches h-12 in Tailwind */
+.marquee-content {
+    animation: marquee 15s linear infinite;
+}
+
+@supports (-webkit-overflow-scrolling: touch) {
+    .marquee-content {
+        animation: none;
+        display: flex;
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        scroll-behavior: smooth;
+        padding-bottom: 5px;
+    }
+    .marquee-content span {
+        flex-shrink: 0;
+        margin-right: 10px;
+    }
+}
+
+@media (max-width: 640px) {
+    h1 { @apply text-xl; }
+    h2 { @apply text-lg; }
+    .card { @apply p-2; }
+    .button { @apply px-2 py-1 text-xs; }
+    .marquee-container { @apply h-10; }
+    .marquee-content { @apply gap-2; }
+    .navbar { @apply p-2; }
+    .navbar a { @apply text-xs; }
+    #topPlayers { @apply grid-cols-1; }
 }
