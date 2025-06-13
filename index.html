@@ -5,17 +5,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Front Row Fantasy</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet" crossorigin="anonymous">
     <link rel="stylesheet" href="styles.css">
 </head>
-<body>
+<body class="bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-white transition-colors duration-300">
     <header>
         <nav class="navbar flex justify-between max-w-7xl mx-auto px-6 py-4 bg-gradient-to-r from-teal-900 to-teal-500 text-white">
             <div class="flex items-center gap-4">
                 <img src="logo.png" alt="Logo" class="h-12" onerror="this.src='https://via.placeholder.com/48?text=FRF'">
                 <a href="index.html" class="text-xl font-bold">Front Row Fantasy</a>
             </div>
-            <div>
+            <div class="hidden md:flex">
                 <a href="index.html" class="mx-2 font-semibold underline">Home</a>
                 <a href="players.html" class="mx-2 font-semibold">Players</a>
                 <a href="stats.html" class="mx-2 font-semibold">Stats</a>
@@ -23,19 +23,19 @@
                 <a href="community.html" class="mx-2 font-semibold">Community</a>
             </div>
         </nav>
-        <button id="themeToggle" class="fixed top-4 right-4 z-50 p-2 bg-teal-500 text-white rounded-full hover:bg-teal-600">
+        <button id="themeToggle" class="fixed top-4 right-4 z-50 p-2 bg-teal-500 text-white rounded-full hover:bg-teal-600 focus:outline-none focus:ring-2 focus:ring-teal-400">
             <svg id="themeIcon" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
             </svg>
         </button>
-        <div id="mobileMenu" class="hidden fixed top-16 right-4 bg-teal-500 text-white p-4 rounded-lg shadow-lg">
+        <div id="mobileMenu" class="hidden fixed top-16 right-4 bg-teal-500 text-white p-4 rounded-lg shadow-lg md:hidden">
             <a href="index.html" class="block mb-2">Home</a>
             <a href="players.html" class="block mb-2">Players</a>
             <a href="stats.html" class="block mb-2">Stats</a>
             <a href="guides.html" class="block mb-2">Guides</a>
             <a href="community.html" class="block mb-2">Community</a>
         </div>
-        <button id="mobileMenuToggle" class="md:hidden fixed top-4 right-4 z-50 p-2 bg-teal-500 text-white rounded-full hover:bg-teal-600" aria-expanded="false">
+        <button id="mobileMenuToggle" class="md:hidden fixed top-4 right-16 z-50 p-2 bg-teal-500 text-white rounded-full hover:bg-teal-600 focus:outline-none focus:ring-2 focus:ring-teal-400" aria-expanded="false">
             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7" />
             </svg>
@@ -43,38 +43,38 @@
     </header>
     <main class="max-w-7xl mx-auto p-6">
         <section class="card">
-            <h2 class="text-2xl font-bold mb-6 text-gray-900">Your Ultimate Fantasy Football Command Center</h2>
-            <p class="text-gray-700">Real-time stats, expert tools, and breaking news for every fantasy manager.</p>
+            <h2 class="text-2xl font-bold mb-6 text-gray-900 dark:text-white">Your Ultimate Fantasy Football Command Center</h2>
+            <p class="text-gray-700 dark:text-gray-300">Real-time stats, expert tools, and breaking news for every fantasy manager.</p>
             <a href="players.html" class="button mt-4">Explore Players</a>
         </section>
 
         <section class="card mt-6">
-            <h2 class="text-2xl font-bold mb-6 text-gray-900">Fantasy Points Ticker</h2>
-            <div class="marquee">
-                <div class="marquee-content" id="fantasyTicker">
+            <h2 class="text-2xl font-bold mb-6 text-gray-900 dark:text-white">Fantasy Points Ticker</h2>
+            <div class="marquee h-16 overflow-hidden">
+                <div class="marquee-content flex gap-4" id="fantasyTicker">
                     <span>Patrick Mahomes: 25.5 pts</span>
                     <span>Christian McCaffrey: 18.2 pts</span>
                     <span>Tyreek Hill: 22.1 pts</span>
                 </div>
             </div>
-            <div id="tickerLoader" class="hidden text-center text-gray-500">Loading ticker...</div>
+            <div id="tickerLoader" class="hidden text-center text-gray-500 dark:text-gray-400">Loading ticker...</div>
         </section>
 
         <section class="card mt-6">
-            <h2 class="text-2xl font-bold mb-6 text-gray-900">Top Fantasy Players</h2>
-            <div id="topPlayers" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <h2 class="text-2xl font-bold mb-6 text-gray-900 dark:text-white">Top Fantasy Players</h2>
+            <div id="topPlayers" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 <!-- Dynamic content loaded by JavaScript -->
             </div>
-            <div id="playersLoader" class="hidden text-center text-gray-500">Loading players...</div>
+            <div id="playersLoader" class="hidden text-center text-gray-500 dark:text-gray-400">Loading players...</div>
         </section>
 
         <section class="card mt-6">
-            <h2 class="text-2xl font-bold mb-6 text-gray-900">Trade Analyzer</h2>
+            <h2 class="text-2xl font-bold mb-6 text-gray-900 dark:text-white">Trade Analyzer</h2>
             <div class="flex gap-4 flex-wrap">
-                <select id="team1" class="p-2 border rounded-lg bg-gray-50">
+                <select id="team1" class="p-2 border rounded-lg bg-gray-50 dark:bg-gray-700 dark:text-white">
                     <option value="">Select Team 1</option>
                 </select>
-                <select id="team2" class="p-2 border rounded-lg bg-gray-50">
+                <select id="team2" class="p-2 border rounded-lg bg-gray-50 dark:bg-gray-700 dark:text-white">
                     <option value="">Select Team 2</option>
                 </select>
             </div>
@@ -84,12 +84,12 @@
                 <button class="button bg-blue-500 hover:bg-blue-600">Compare team rosters</button>
             </div>
 
-            <h2 class="text-2xl font-bold mt-6 mb-6 text-gray-900">Matchup Predictor</h2>
+            <h2 class="text-2xl font-bold mt-6 mb-6 text-gray-900 dark:text-white">Matchup Predictor</h2>
             <div class="flex gap-4 flex-wrap">
-                <select id="matchupTeam1" class="p-2 border rounded-lg bg-gray-50">
+                <select id="matchupTeam1" class="p-2 border rounded-lg bg-gray-50 dark:bg-gray-700 dark:text-white">
                     <option value="">Select Team 1</option>
                 </select>
-                <select id="matchupTeam2" class="p-2 border rounded-lg bg-gray-50">
+                <select id="matchupTeam2" class="p-2 border rounded-lg bg-gray-50 dark:bg-gray-700 dark:text-white">
                     <option value="">Select Team 2</option>
                 </select>
             </div>
@@ -100,14 +100,14 @@
         </section>
 
         <section class="card mt-6">
-            <h2 class="text-2xl font-bold mb-6 text-gray-900">Waiver Wire Picks</h2>
+            <h2 class="text-2xl font-bold mb-6 text-gray-900 dark:text-white">Waiver Wire Picks</h2>
             <div id="waiverList" class="space-y-4">
                 <!-- Dynamic content loaded by JavaScript -->
             </div>
         </section>
 
         <section class="card mt-6">
-            <h2 class="text-2xl font-bold mb-6 text-gray-900">NFL & Fantasy News</h2>
+            <h2 class="text-2xl font-bold mb-6 text-gray-900 dark:text-white">NFL & Fantasy News</h2>
             <div id="newsList" class="space-y-4">
                 <!-- Dynamic content loaded by JavaScript -->
             </div>
@@ -115,8 +115,8 @@
         </section>
 
         <section class="card mt-6">
-            <h2 class="text-2xl font-bold mb-6 text-gray-900">Quick Links</h2>
-            <ul class="list-disc pl-5 text-gray-700">
+            <h2 class="text-2xl font-bold mb-6 text-gray-900 dark:text-white">Quick Links</h2>
+            <ul class="list-disc pl-5 text-gray-700 dark:text-gray-300">
                 <li><a href="guides.html" class="link">Beginner Guides</a></li>
                 <li><a href="stats.html" class="link">Player Stats</a></li>
                 <li><a href="#" class="link">League Standings</a></li>
