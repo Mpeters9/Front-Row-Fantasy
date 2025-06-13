@@ -3,239 +3,132 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>2025 Fantasy Football Players - Front Row Fantasy</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.min.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="styles.css">
-    <link rel="icon" href="logo.png" type="image/png">
+    <title>Players - Front Row Fantasy</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="style.css" rel="stylesheet">
+    <style>
+        .teal-banner {
+            background-color: #26A69A;
+            color: #FFFFFF;
+            padding: 2rem 1rem;
+            text-align: center;
+        }
+        .teal-button {
+            background-color: #FFFFFF;
+            color: #26A69A;
+            padding: 0.5rem 1rem;
+            border-radius: 0.375rem;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            transition: background-color 0.3s;
+        }
+        .teal-button:hover {
+            background-color: #E0F2F1;
+        }
+        .navbar {
+            background-color: #26A69A;
+            padding: 1rem;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        .navbar a {
+            color: #FFFFFF;
+        }
+    </style>
 </head>
-<body class="bg-gray-50 dark:bg-gray-900 font-inter transition-colors duration-300" aria-label="Main content">
-    <header class="bg-navy text-white py-4 z-20 shadow-lg">
-        <div class="max-w-7xl mx-auto flex justify-between items-center px-6">
-            <div class="flex items-center gap-4">
-                <img src="logo.png" alt="Front Row Fantasy Logo" class="h-12" onerror="this.src='https://via.placeholder.com/48?text=FRF'">
-                <h1 class="text-3xl font-bold">Front Row Fantasy</h1>
-            </div>
-            <div class="flex items-center gap-4">
-                <nav class="hidden md:flex gap-4" aria-label="Main navigation">
-                    <a href="index.html" class="px-4 py-2 hover:bg-orange-600 rounded-lg transition">Home</a>
-                    <a href="players.html" class="px-4 py-2 hover:bg-orange-600 rounded-lg transition" aria-current="page">Players</a>
-                    <a href="stats.html" class="px-4 py-2 hover:bg-orange-600 rounded-lg transition">Stats</a>
-                    <a href="guides.html" class="px-4 py-2 hover:bg-orange-600 rounded-lg transition">Guides</a>
-                    <a href="https://discord.com" class="px-4 py-2 hover:bg-orange-600 rounded-lg transition">Community</a>
-                </nav>
-                <button id="themeToggle" class="p-2 rounded-full hover:bg-orange-600 transition" title="Toggle Dark Mode" aria-label="Toggle dark mode">
-                    <svg id="themeIcon" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+<body class="bg-navy-900 text-white min-h-screen flex flex-col font-sans" style="background-color: #1A2A44;">
+    <header class="navbar sticky top-0 z-10">
+        <nav class="container mx-auto flex justify-between items-center p-4">
+            <a href="index.html" class="text-xl font-bold">Front Row Fantasy</a>
+            <div class="flex items-center space-x-4">
+                <button id="themeToggle" class="button flex items-center" aria-label="Toggle theme">
+                    <svg id="themeIcon" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
                     </svg>
                 </button>
-                <button id="mobileMenuToggle" class="md:hidden p-2 rounded-full hover:bg-orange-600 transition" aria-label="Toggle mobile menu">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <button id="mobileMenuToggle" class="sm:hidden button" aria-expanded="false" aria-label="Toggle mobile menu">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
                     </svg>
                 </button>
+                <div id="mobileMenu" class="hidden sm:flex sm:space-x-4 flex-col sm:flex-row absolute sm:static top-16 left-0 w-full sm:w-auto bg-teal-800/70 sm:bg-teal-800 p-4 sm:p-0">
+                    <a href="index.html" class="link hover:text-teal-100">Home</a>
+                    <a href="guides.html" class="link hover:text-teal-100">Guides</a>
+                    <a href="community.html" class="link hover:text-teal-100">Community</a>
+                    <a href="players.html" class="link hover:text-teal-100">Players</a>
+                    <a href="stats.html" class="link hover:text-teal-100">Stats</a>
+                </div>
             </div>
-        </div>
-        <nav id="mobileMenu" class="hidden md:hidden bg-navy text-white px-6 py-4" aria-label="Mobile navigation">
-            <a href="index.html" class="block px-4 py-2 hover:bg-orange-600 rounded-lg transition">Home</a>
-            <a href="players.html" class="block px-4 py-2 hover:bg-orange-600 rounded-lg transition">Players</a>
-            <a href="stats.html" class="block px-4 py-2 hover:bg-orange-600 rounded-lg transition">Stats</a>
-            <a href="guides.html" class="block px-4 py-2 hover:bg-orange-600 rounded-lg transition">Guides</a>
-            <a href="https://discord.com" class="block px-4 py-2 hover:bg-orange-600 rounded-lg transition">Community</a>
         </nav>
     </header>
-    <main class="max-w-7xl mx-auto p-6">
-        <div class="bg-white dark:bg-gray-800 p-8 rounded-xl shadow-xl relative animate__fadeInUp" aria-label="Player list">
-            <h2 class="text-2xl font-bold mb-6 text-gray-900 dark:text-white">2025 NFL Players</h2>
-            <div class="flex flex-col sm:flex-row gap-4 mb-6">
-                <input id="searchInput" type="text" placeholder="Search players..." class="p-3 border rounded-lg w-full bg-gray-50 dark:bg-gray-700 dark:text-white" aria-label="Search players">
-                <select id="positionFilter" class="p-3 border rounded-lg bg-gray-50 dark:bg-gray-700 dark:text-white" aria-label="Filter by position">
-                    <option value="">All Positions</option>
-                    <option value="QB">QB</option>
-                    <option value="RB">RB</option>
-                    <option value="WR">WR</option>
-                    <option value="TE">TE</option>
-                </select>
-                <select id="sortBy" class="p-3 border rounded-lg bg-gray-50 dark:bg-gray-700 dark:text-white" aria-label="Sort players">
-                    <option value="name">Sort by Name</option>
-                    <option value="position">Sort by Position</option>
-                    <option value="points">Sort by Fantasy Points</option>
-                </select>
-            </div>
-            <div class="flex flex-col sm:flex-row gap-4 mb-6">
-                <select id="comparePlayer1" class="p-3 border rounded-lg w-full bg-gray-50 dark:bg-gray-700 dark:text-white" aria-label="Select Player 1 for comparison">
-                    <option value="">Select Player 1</option>
-                </select>
-                <select id="comparePlayer2" class="p-3 border rounded-lg w-full bg-gray-50 dark:bg-gray-700 dark:text-white" aria-label="Select Player 2 for comparison">
-                    <option value="">Select Player 2</option>
-                </select>
-                <button id="compareBtn" class="bg-orange-500 text-white px-6 py-3 rounded-lg hover:bg-orange-600 transition" aria-label="Compare players">
-                    Compare Players
-                </button>
-            </div>
-            <canvas id="playerChart" class="hidden mt-6" aria-hidden="true"></canvas>
-            <div id="loadingSpinner" class="hidden absolute inset-0 flex items-center justify-center bg-gray-600 bg-opacity-50">
-                <div class="w-24 h-24 border-4 border-orange-600 border-t-transparent rounded-full animate-spin"></div>
-            </div>
-            <ul id="playerList" class="space-y-4" aria-label="Player list"></ul>
-            <div id="errorMessage" class="text-red-600 dark:text-red-400 text-center mt-6"></div>
+    <header class="teal-banner">
+        <h1 class="text-4xl font-bold md:text-5xl">Player Directory</h1>
+        <p class="mt-2 text-lg md:text-xl">Browse and explore all NFL players for the 2025 season.</p>
+    </header>
+    <main class="container mx-auto p-4 flex-grow">
+        <div class="mb-4">
+            <input type="text" id="playerSearch" class="w-full p-2 rounded-md bg-white text-teal-800 border border-teal-300 focus:outline-none focus:ring-2 focus:ring-teal-500" placeholder="Search players...">
         </div>
+        <section class="card mb-6" style="background-color: #26A69A; color: #1A2A44;">
+            <h2 class="text-2xl font-bold mb-3 md:text-3xl">All Players</h2>
+            <div id="playersLoader" class="hidden text-center">Loading...</div>
+            <div id="allPlayers" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4"></div>
+        </section>
     </main>
-    <footer class="bg-navy text-white text-center py-6">
-        <p>© 2025 Front Row Fantasy. All rights reserved.</p>
+    <footer class="bg-teal-800 text-white p-4 text-center text-sm">
+        <div class="mb-2">
+            <a href="index.html" class="hover:text-teal-100 mx-2">Home</a>
+            <a href="guides.html" class="hover:text-teal-100 mx-2">Guides</a>
+            <a href="community.html" class="hover:text-teal-100 mx-2">Community</a>
+            <a href="players.html" class="hover:text-teal-100 mx-2">Players</a>
+            <a href="stats.html" class="hover:text-teal-100 mx-2">Stats</a>
+        </div>
+        © 2025 Front Row Fantasy. All rights reserved.
     </footer>
+    <script src="script.js"></script>
     <script>
-        const sleeperUrl = 'https://api.sleeper.app/v1/players/nfl';
-        const localUrl = 'players_2025.json';
-        let allPlayers = [];
+        document.addEventListener('DOMContentLoaded', () => {
+            const allPlayersDiv = document.getElementById('allPlayers');
+            const playersLoader = document.getElementById('playersLoader');
+            const playerSearch = document.getElementById('playerSearch');
 
-        function displayPlayers(players) {
-            const playerList = document.getElementById('playerList');
-            playerList.innerHTML = '';
-            players.forEach(player => {
-                const name = player.name;
-                const position = player.position;
-                const team = player.team || 'N/A';
-                const points = player.fantasy_points || 'N/A';
-                const image = player.image || 'https://via.placeholder.com/photo';
-                const li = document.createElement('li');
-                li.className = 'bg-gray-100 dark:bg-gray-700 p-4 rounded-lg shadow-md flex items-center gap-4 transform hover:scale-[1.02] transition duration-300';
-                li.innerHTML = `
-                    <img src="${image}" alt="${name}" class="h-10 w-10 rounded-full object-cover lazy-load" loading="lazy">
-                    <div class="flex-1">
-                        <span class="text-gray-900 dark:text-white font-semibold">${name} - ${position} (${team})</span>
-                        <span class="text-gray-600 dark:text-gray-300 block">${points} pts</span>
-                    </div>
-                `;
-                playerList.appendChild(li);
-            });
-            const compare1 = document.getElementById('comparePlayer1');
-            const compare2 = document.getElementById('comparePlayer2');
-            compare1.innerHTML = '<option value="">Select Player 1</option>';
-            compare2.innerHTML = '<option value="">Select Player 2</option>';
-            players.forEach(player => {
-                const option = document.createElement('option');
-                option.value = player.name;
-                option.textContent = `${player.name} (${player.position})`;
-                compare1.appendChild(option.cloneNode(true));
-                compare2.appendChild(option);
-            });
-        }
-
-        function sortPlayers(players, sortBy) {
-            if (sortBy === 'name') {
-                return players.sort((a, b) => a.name.localeCompare(b.name));
-            } else if (sortBy === 'position') {
-                return players.sort((a, b) => a.position.localeCompare(b.position));
-            } else if (sortBy === 'points') {
-                return players.sort((a, b) => parseFloat(b.fantasy_points || 0) - parseFloat(a.fantasy_points || 0));
+            async function loadPlayers() {
+                if (!allPlayersDiv) return;
+                playersLoader.classList.remove('hidden');
+                try {
+                    const response = await fetch('players_2025.json', { cache: 'no-store' });
+                    if (!response.ok) throw new Error('Failed to load players_2025.json');
+                    const players = await response.json();
+                    allPlayersDiv.innerHTML = '';
+                    players.forEach(player => {
+                        const div = document.createElement('div');
+                        div.className = 'bg-teal-800/50 backdrop-blur-md p-2 rounded-lg shadow-md hover:shadow-lg transition-all';
+                        div.innerHTML = `
+                            <div class="text-center">
+                                <div class="text-sm font-medium">${player.name}</div>
+                                <div class="text-xs text-teal-200">${player.position} - ${player.team}</div>
+                                <div class="text-xs">${player.fantasy_points.toFixed(1)} pts</div>
+                            </div>
+                        `;
+                        allPlayersDiv.appendChild(div);
+                    });
+                } catch (error) {
+                    console.error('Players error:', error);
+                    allPlayersDiv.innerHTML = '<p class="text-red-400 text-center text-xs">Failed to load players.</p>';
+                } finally {
+                    playersLoader.classList.add('hidden');
+                }
             }
-            return players;
-        }
 
-        function filterPlayers() {
-            const search = document.getElementById('searchInput').value.toLowerCase();
-            const position = document.getElementById('positionFilter').value;
-            const sortBy = document.getElementById('sortBy').value;
-            let filtered = allPlayers.filter(player => {
-                const name = player.name.toLowerCase();
-                const pos = player.position;
-                return (!search || name.includes(search)) && (!position || pos === position);
-            });
-            filtered = sortPlayers(filtered, sortBy);
-            displayPlayers(filtered);
-        }
-
-        document.getElementById('searchInput').addEventListener('input', filterPlayers);
-        document.getElementById('positionFilter').addEventListener('change', filterPlayers);
-        document.getElementById('sortBy').addEventListener('change', filterPlayers);
-
-        document.getElementById('compareBtn').addEventListener('click', () => {
-            const p1Name = document.getElementById('comparePlayer1').value;
-            const p2Name = document.getElementById('comparePlayer2').value;
-            const player1 = allPlayers.find(p => p.name === p1Name);
-            const player2 = allPlayers.find(p => p.name === p2Name);
-            if (player1 && player2) {
-                const ctx = document.getElementById('playerChart').getContext('2d');
-                document.getElementById('playerChart').classList.remove('hidden');
-                new Chart(ctx, {
-                    type: 'bar',
-                    data: {
-                        labels: ['Fantasy Points', 'Total Yards', 'Touchdowns'],
-                        datasets: [
-                            {
-                                label: player1.name,
-                                data: [
-                                    parseFloat(player1.fantasy_points || 0),
-                                    parseFloat(player1.stats?.total_yards || 0),
-                                    parseFloat(player1.stats?.total_touchdowns || 0)
-                                ],
-                                backgroundColor: 'rgba(255, 159, 64, 0.6)',
-                                borderColor: 'rgba(255, 159, 64, 1)',
-                                borderWidth: 1
-                            },
-                            {
-                                label: player2.name,
-                                data: [
-                                    parseFloat(player2.fantasy_points || 0),
-                                    parseFloat(player2.stats?.total_yards || 0),
-                                    parseFloat(player2.stats?.total_touchdowns || 0)
-                                ],
-                                backgroundColor: 'rgba(54, 162, 235, 0.6)',
-                                borderColor: 'rgba(54, 162, 235, 1)',
-                                borderWidth: 1
-                            }
-                        ]
-                    },
-                    options: {
-                        responsive: true,
-                        scales: { y: { beginAtZero: true } },
-                        plugins: { legend: { display: true } }
-                    }
+            playerSearch.addEventListener('input', () => {
+                const searchTerm = playerSearch.value.toLowerCase();
+                const playerElements = allPlayersDiv.getElementsByTagName('div');
+                Array.from(playerElements).forEach(element => {
+                    const name = element.querySelector('div:nth-child(1)').textContent.toLowerCase();
+                    element.style.display = name.includes(searchTerm) ? 'block' : 'none';
                 });
-            }
-        });
-
-        document.getElementById('loadingSpinner').classList.remove('hidden');
-        fetch(sleeperUrl)
-            .then(response => response.json())
-            .then(sleeperData => {
-                const sleeperMap = new Map(Object.entries(sleeperData).map(([id, p]) => [p.full_name, {
-                    image: `https://sleepercdn.com/content/nfl/players/thumb/${id}.jpg`,
-                    position: p.position
-                }]));
-                fetch(localUrl)
-                    .then(response => response.json())
-                    .then(data => {
-                        allPlayers = data.map(player => ({
-                            ...player,
-                            image: sleeperMap.get(player.name)?.image || 'https://via.placeholder.com/40'
-                        }));
-                        document.getElementById('loadingSpinner').classList.add('hidden');
-                        filterPlayers();
-                    })
-                    .catch(error => {
-                        console.error('Error fetching local data:', error);
-                        document.getElementById('loadingSpinner').classList.add('hidden');
-                        document.getElementById('errorMessage').textContent = 'Failed to load player data.';
-                    });
-            })
-            .catch(error => {
-                console.error('Error fetching Sleeper data:', error);
-                fetch(localUrl)
-                    .then(response => response.json())
-                    .then(data => {
-                        allPlayers = data;
-                        document.getElementById('loadingSpinner').classList.add('hidden');
-                        filterPlayers();
-                    })
-                    .catch(err => {
-                        console.error('Error fetching local data:', err);
-                        document.getElementById('loadingSpinner').classList.add('hidden');
-                        document.getElementById('errorMessage').textContent = 'Failed to load player data.';
-                    });
             });
+
+            loadPlayers();
+        });
     </script>
 </body>
 </html>
