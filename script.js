@@ -87,7 +87,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 div.className = 'bg-teal-800/50 backdrop-blur-md p-2 rounded-lg shadow-md hover:shadow-lg transition-all';
                 div.innerHTML = `
                     <div class="text-center">
-                        <div class="text-sm font-medium text-white">${player.full_name}</div>
+                        <div class="text-sm font-medium">${player.full_name}</div>
                         <div class="text-xs text-teal-200">${player.fantasy_positions[0]} - ${player.team}</div>
                         <div class="text-xs">${points.toFixed(2)} pts</div>
                     </div>
