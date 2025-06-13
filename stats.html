@@ -1,75 +1,116 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-
-@layer base {
-    html {
-        @apply font-poppins;
-    }
-    body {
-        @apply bg-teal-900 text-white;
-        -webkit-font-smoothing: antialiased;
-        -moz-osx-font-smoothing: grayscale;
-    }
-}
-
-@layer components {
-    .card {
-        @apply bg-teal-800/40 backdrop-blur-md p-3 rounded-lg shadow-md;
-    }
-    .button {
-        @apply bg-gradient-to-r from-teal-700 to-teal-500 text-white px-3 py-1.5 rounded-lg shadow-md hover:shadow-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-teal-500;
-    }
-    .link {
-        @apply text-teal-200 hover:text-white transition-colors;
-    }
-    .marquee-container {
-        @apply overflow-hidden h-12;
-    }
-    .marquee-content {
-        @apply flex gap-3 animate-marquee;
-    }
-    .navbar {
-        @apply bg-teal-800/70 backdrop-blur-md p-3 rounded-b-lg shadow-md hidden;
-    }
-    .navbar a {
-        @apply text-sm font-medium text-teal-200 hover:text-white transition-colors;
-    }
-}
-
-@keyframes marquee {
-    0% { transform: translateX(100%); }
-    100% { transform: translateX(-100%); }
-}
-
-.marquee-content {
-    animation: marquee 15s linear infinite;
-}
-
-@supports (-webkit-overflow-scrolling: touch) {
-    .marquee-content {
-        animation: none;
-        display: flex;
-        flex-wrap: nowrap;
-        overflow-x: auto;
-        -webkit-overflow-scrolling: touch;
-        scroll-behavior: smooth;
-        padding-bottom: 5px;
-    }
-    .marquee-content span {
-        flex-shrink: 0;
-        margin-right: 10px;
-    }
-}
-
-@media (max-width: 640px) {
-    h1 { @apply text-xl; }
-    h2 { @apply text-lg; }
-    .card { @apply p-2; }
-    .button { @apply px-2 py-1 text-xs; }
-    .marquee-container { @apply h-10; }
-    .marquee-content { @apply gap-2; }
-    .navbar { @apply p-2; }
-    .navbar a { @apply text-xs; }
-    #topPlayers { @apply grid-cols-1; }
-}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Player Stats - Front Row Fantasy</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="style.css" rel="stylesheet">
+    <style>
+        .teal-banner {
+            background-color: #26A69A;
+            color: #FFFFFF;
+            padding: 2rem 1rem;
+            text-align: center;
+        }
+        .teal-button {
+            background-color: #FFFFFF;
+            color: #26A69A;
+            padding: 0.5rem 1rem;
+            border-radius: 0.375rem;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            transition: background-color 0.3s;
+        }
+        .teal-button:hover {
+            background-color: #E0F2F1;
+        }
+    </style>
+</head>
+<body class="bg-navy-900 text-white min-h-screen flex flex-col" style="background-color: #1A2A44;">
+    <header class="teal-banner">
+        <h1 class="text-3xl font-bold">Your Ultimate Fantasy Football Command Center</h1>
+        <p class="mt-2 text-lg">Real-time stats, expert tools, and breaking news for every fantasy manager.</p>
+        <a href="stats.html" class="teal-button mt-4 inline-block">Explore Players</a>
+    </header>
+    <header class="navbar sticky top-[8rem] z-10">
+        <nav class="container mx-auto flex justify-between items-center p-4">
+            <a href="index.html" class="text-xl font-bold text-white">Front Row Fantasy</a>
+            <div class="flex items-center space-x-4">
+                <button id="themeToggle" class="button flex items-center" aria-label="Toggle theme">
+                    <svg id="themeIcon" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+                    </svg>
+                </button>
+                <button id="mobileMenuToggle" class="sm:hidden button" aria-expanded="false" aria-label="Toggle mobile menu">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                    </svg>
+                </button>
+                <div id="mobileMenu" class="hidden sm:flex sm:space-x-4 flex-col sm:flex-row absolute sm:static top-16 left-0 w-full sm:w-auto bg-teal-800/70 sm:bg-transparent p-4 sm:p-0">
+                    <a href="index.html" class="link">Home</a>
+                    <a href="stats.html" class="link">Stats</a>
+                </div>
+            </div>
+        </nav>
+    </header>
+    <main class="container mx-auto p-4 flex-grow">
+        <div class="card mb-4">
+            <div class="flex flex-col sm:flex-row gap-4">
+                <div class="flex-1">
+                    <label for="yearSelect" class="block text-sm font-medium text-teal-800">Select Year:</label>
+                    <select id="yearSelect" class="mt-1 block w-full bg-teal-100 border border-teal-300 rounded-md p-2 text-sm">
+                        <option value="2025">2025</option>
+                        <option value="2024">2024</option>
+                        <option value="2023">2023</option>
+                        <option value="2022">2022</option>
+                    </select>
+                </div>
+                <div class="flex-1">
+                    <label for="positionSelect" class="block text-sm font-medium text-teal-800">Select Position:</label>
+                    <select id="positionSelect" class="mt-1 block w-full bg-teal-100 border border-teal-300 rounded-md p-2 text-sm">
+                        <option value="all">All</option>
+                        <option value="QB">QB</option>
+                        <option value="RB">RB</option>
+                        <option value="WR">WR</option>
+                        <option value="TE">TE</option>
+                        <option value="Flex">Flex (RB/WR/TE)</option>
+                        <option value="SuperFlex">SuperFlex (QB/RB/WR/TE)</option>
+                    </select>
+                </div>
+                <div class="flex-1">
+                    <label for="playerSelect" class="block text-sm font-medium text-teal-800">Select Player:</label>
+                    <select id="playerSelect" class="mt-1 block w-full bg-teal-100 border border-teal-300 rounded-md p-2 text-sm">
+                        <option value="all">All Players</option>
+                    </select>
+                </div>
+            </div>
+            <div class="mt-2">
+                <input type="checkbox" id="advancedStatsCheckbox" class="mr-2">
+                <label for="advancedStatsCheckbox" class="text-sm text-teal-800">Show Advanced Stats</label>
+            </div>
+        </div>
+        <div id="statsLoader" class="hidden text-center text-teal-800 mb-4">Loading...</div>
+        <div class="overflow-x-auto">
+            <table id="statsTable" class="w-full bg-teal-800/50 backdrop-blur-md rounded-lg shadow-md text-sm">
+                <thead>
+                    <tr class="bg-teal-700/60">
+                        <th class="p-2 text-white">Player</th>
+                        <th class="p-2 text-white">Team</th>
+                        <th class="p-2 text-white">Fantasy Points</th>
+                        <th class="p-2 text-white">FP/G</th>
+                        <th class="p-2 text-white">Total Yards</th>
+                        <th class="p-2 text-white">Total Touchdowns</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td colspan="6" class="p-2 text-center">Loading...</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </main>
+    <footer class="bg-teal-800 text-white p-4 text-center text-sm">
+        © 2025 Front Row Fantasy. All rights reserved.
+    </footer>
+    <script src="script.js"></script>
+</body>
+</html>
