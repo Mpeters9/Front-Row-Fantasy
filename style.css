@@ -7,7 +7,7 @@
         @apply font-poppins;
     }
     body {
-        @apply bg-gradient-to-br from-gray-900 to-gray-800 text-white;
+        @apply bg-gray-900 text-gray-200;
         -webkit-font-smoothing: antialiased;
         -moz-osx-font-smoothing: grayscale;
     }
@@ -15,32 +15,35 @@
 
 @layer components {
     .card {
-        @apply bg-teal-900/40 backdrop-blur-md p-6 rounded-xl shadow-lg;
+        @apply bg-teal-800/40 backdrop-blur-md p-4 rounded-lg shadow-md;
     }
     .button {
-        @apply bg-teal-600 text-white px-6 py-3 rounded-full shadow-md hover:bg-teal-500 hover:shadow-lg transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-teal-400;
+        @apply bg-teal-600 text-white px-4 py-2 rounded-lg shadow-md hover:bg-teal-500 hover:shadow-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-teal-500;
     }
     .link {
         @apply text-teal-200 hover:text-white transition-colors;
     }
     .marquee-container {
-        @apply overflow-hidden h-20;
+        @apply overflow-hidden h-14;
     }
     .marquee-content {
-        @apply flex gap-6 animate-marquee;
-        min-height: 60px;
+        @apply flex gap-4 animate-marquee;
     }
     .navbar {
-        @apply bg-teal-900/80 backdrop-blur-md p-4 rounded-b-lg shadow-lg;
+        @apply bg-teal-800/70 backdrop-blur-md p-4 rounded-b-lg shadow-md;
     }
     .navbar a {
-        @apply text-lg font-semibold text-teal-200 hover:text-white transition-colors;
+        @apply text-sm font-medium text-teal-200 hover:text-white transition-colors;
     }
 }
 
 @keyframes marquee {
-    0% { transform: translateX(0); }
+    0% { transform: translateX(100%); }
     100% { transform: translateX(-100%); }
+}
+
+.marquee-content {
+    animation: marquee 15s linear infinite;
 }
 
 @supports (-webkit-overflow-scrolling: touch) {
@@ -51,22 +54,22 @@
         overflow-x: auto;
         -webkit-overflow-scrolling: touch;
         scroll-behavior: smooth;
-        padding-bottom: 10px;
+        padding-bottom: 5px;
     }
     .marquee-content span {
         flex-shrink: 0;
-        margin-right: 20px;
+        margin-right: 15px;
     }
 }
 
 @media (max-width: 640px) {
-    h1 { @apply text-3xl; }
-    h2 { @apply text-2xl; }
-    .card { @apply p-4; }
-    .button { @apply px-4 py-2 text-base; }
-    .marquee-container { @apply h-16; }
-    .marquee-content { @apply gap-3; }
+    h1 { @apply text-2xl; }
+    h2 { @apply text-xl; }
+    .card { @apply p-3; }
+    .button { @apply px-3 py-1 text-sm; }
+    .marquee-container { @apply h-12; }
+    .marquee-content { @apply gap-2; }
     .navbar { @apply p-2; }
-    .navbar a { @apply text-base; }
+    .navbar a { @apply text-xs; }
     #topPlayers { @apply grid-cols-1; }
 }
