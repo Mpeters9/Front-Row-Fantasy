@@ -6,17 +6,7 @@
     <title>Fantasy Football Stats - Front Row Fantasy</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="styles.css">
-    <style>
-        body { font-family: 'Poppins', sans-serif; background-color: #f4f4f9; color: #333; }
-        .navbar { background: linear-gradient(to right, #1e3a8a, #3b82f6); padding: 1rem; }
-        .navbar a { color: white; margin: 0 1rem; text-decoration: none; font-weight: 600; }
-        .navbar a:hover { color: #93c5fd; }
-        th, td { border: 1px solid #ddd; text-align: center; padding: 8px; }
-        th { background-color: #e0e7ff; cursor: pointer; }
-        tr:nth-child(even) { background-color: #f9fafb; }
-        tr:hover { background-color: #e5e7eb; }
-    </style>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <header>
@@ -35,9 +25,9 @@
         </nav>
     </header>
     <main class="max-w-7xl mx-auto p-6">
-        <section class="bg-white p-8 rounded-lg shadow-lg mt-6">
+        <section class="card">
             <h2 class="text-2xl font-bold mb-6 text-gray-900">Player Stats</h2>
-            <div class="mb-4 flex gap-4">
+            <div class="mb-4 flex gap-4 flex-wrap">
                 <div>
                     <label for="yearSelect" class="block text-gray-700">Select Year:</label>
                     <select id="yearSelect" class="p-2 border rounded-lg bg-gray-50">
@@ -64,10 +54,10 @@
                         <option value="">All Players</option>
                     </select>
                 </div>
-                <button id="toggleAdvanced" class="mt-6 bg-teal-500 text-white px-4 py-2 rounded-lg hover:bg-teal-600 transition">Show Advanced Stats</button>
+                <button id="toggleAdvanced" class="button mt-6">Show Advanced Stats</button>
             </div>
             <div id="statsTable" class="overflow-x-auto">
-                <table class="min-w-full bg-white">
+                <table class="min-w-full">
                     <thead>
                         <tr>
                             <th class="px-4 py-2">Player</th>
