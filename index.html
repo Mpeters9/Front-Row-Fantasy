@@ -3,127 +3,151 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Front Row Fantasy</title>
+    <title>Front Row Fantasy - Your NFL Fantasy Hub</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
+    <link rel="icon" href="logo.png" type="image/png">
+    <style>
+        .marquee {
+            overflow: hidden;
+            white-space: nowrap;
+            width: 100%;
+            position: relative;
+        }
+        .marquee-content {
+            display: inline-flex;
+            gap: 1rem;
+            animation: marquee 20s linear infinite;
+        }
+        @keyframes marquee {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
+        .marquee-content:hover {
+            animation-play-state: paused;
+        }
+        .spinner {
+            border: 4px solid rgba(0, 0, 0, 0.1);
+            border-left: 4px solid #2dd4bf;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
 </head>
-<body class="bg-purple-900 text-cyan-200 font-poppins min-h-screen">
-    <header class="relative">
-        <nav class="flex justify-between items-center max-w-6xl mx-auto px-4 py-3 bg-purple-800/70 backdrop-blur-md rounded-b-lg shadow-md">
-            <div class="flex items-center gap-3">
-                <img src="logo.png" alt="Logo" class="h-9 transition-transform hover:scale-105" onerror="this.src='https://via.placeholder.com/36?text=FRF'">
-                <a href="index.html" class="text-lg font-semibold text-cyan-300 hover:text-cyan-100 transition-colors">Front Row Fantasy</a>
+<body class="bg-gray-50 dark:bg-gray-900 font-poppins transition-colors duration-300" aria-label="Main content">
+    <header class="bg-gradient-to-r from-navy to-blue-900 text-white py-4 shadow-md">
+        <div class="max-w-7xl mx-auto flex justify-between items-center px-6">
+            <div class="flex items-center gap-4">
+                <img src="logo.png" alt="Front Row Fantasy Logo" class="h-12" onerror="this.src='https://via.placeholder.com/48?text=FRF'">
+                <h1 class="text-3xl font-bold">Front Row Fantasy</h1>
             </div>
-            <div class="hidden md:flex space-x-4">
-                <a href="index.html" class="text-sm font-medium text-cyan-200 hover:text-white">Home</a>
-                <a href="players.html" class="text-sm font-medium text-cyan-200 hover:text-white">Players</a>
-                <a href="stats.html" class="text-sm font-medium text-cyan-200 hover:text-white">Stats</a>
-                <a href="guides.html" class="text-sm font-medium text-cyan-200 hover:text-white">Guides</a>
-                <a href="community.html" class="text-sm font-medium text-cyan-200 hover:text-white">Community</a>
+            <div class="flex items-center gap-4">
+                <nav class="hidden md:flex gap-4" aria-label="Main navigation">
+                    <a href="index.html" class="px-4 py-2 hover:bg-teal-500 rounded-lg transition" aria-current="page">Home</a>
+                    <a href="players.html" class="px-4 py-2 hover:bg-teal-500 rounded-lg transition">Players</a>
+                    <a href="stats.html" class="px-4 py-2 hover:bg-teal-500 rounded-lg transition">Stats</a>
+                    <a href="guides.html" class="px-4 py-2 hover:bg-teal-500 rounded-lg transition">Guides</a>
+                    <a href="https://discord.com" class="px-4 py-2 hover:bg-teal-500 rounded-lg transition">Community</a>
+                </nav>
+                <button id="themeToggle" class="p-2 rounded-full hover:bg-teal-500 transition" title="Toggle Dark Mode" aria-label="Toggle dark mode">
+                    <svg id="themeIcon" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+                    </svg>
+                </button>
+                <button id="mobileMenuToggle" class="md:hidden p-2 rounded-full hover:bg-teal-500 transition" aria-label="Toggle mobile menu">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                    </svg>
+                </button>
             </div>
-            <button id="themeToggle" class="p-1.5 bg-purple-700 rounded-full hover:bg-purple-600 focus:outline-none focus:ring-2 focus:ring-cyan-400 transition-all">
-                <svg id="themeIcon" class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
-                </svg>
-            </button>
-        </nav>
-        <div id="mobileMenu" class="hidden fixed top-14 right-4 bg-purple-800/80 backdrop-blur-md p-2 rounded-lg shadow-md md:hidden z-50">
-            <a href="index.html" class="block text-sm text-cyan-200 hover:text-white py-1">Home</a>
-            <a href="players.html" class="block text-sm text-cyan-200 hover:text-white py-1">Players</a>
-            <a href="stats.html" class="block text-sm text-cyan-200 hover:text-white py-1">Stats</a>
-            <a href="guides.html" class="block text-sm text-cyan-200 hover:text-white py-1">Guides</a>
-            <a href="community.html" class="block text-sm text-cyan-200 hover:text-white py-1">Community</a>
         </div>
-        <button id="mobileMenuToggle" class="md:hidden fixed top-3 right-3 p-1.5 bg-purple-700 rounded-full hover:bg-purple-600 focus:outline-none focus:ring-2 focus:ring-cyan-400 transition-all" aria-expanded="false">
-            <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7" />
-            </svg>
-        </button>
+        <nav id="mobileMenu" class="hidden md:hidden bg-navy text-white px-6 py-4" aria-label="Mobile navigation">
+            <a href="index.html" class="block px-4 py-2 hover:bg-teal-500 rounded-lg transition">Home</a>
+            <a href="players.html" class="block px-4 py-2 hover:bg-teal-500 rounded-lg transition">Players</a>
+            <a href="stats.html" class="block px-4 py-2 hover:bg-teal-500 rounded-lg transition">Stats</a>
+            <a href="guides.html" class="block px-4 py-2 hover:bg-teal-500 rounded-lg transition">Guides</a>
+            <a href="https://discord.com" class="block px-4 py-2 hover:bg-teal-500 rounded-lg transition">Community</a>
+        </nav>
     </header>
-    <main class="max-w-6xl mx-auto px-4 py-6">
-        <section class="bg-purple-800/50 backdrop-blur-md rounded-lg p-4 shadow-md mb-6">
-            <h1 class="text-2xl font-bold text-cyan-300 mb-2">Your Ultimate Fantasy Football Command Center</h1>
-            <p class="text-sm text-cyan-400 mb-3">Real-time stats, expert tools, and breaking news for every fantasy manager.</p>
-            <a href="players.html" class="inline-block bg-gradient-to-r from-purple-700 to-cyan-500 text-white font-medium py-2 px-3 rounded-lg shadow-md hover:shadow-lg transition-all">Explore Players</a>
-        </section>
-
-        <section class="bg-purple-800/40 backdrop-blur-md rounded-lg p-3 shadow-md mb-5">
-            <h2 class="text-xl font-bold text-cyan-300 mb-2">Fantasy Points Ticker</h2>
-            <div class="marquee-container h-12 overflow-hidden">
-                <div class="marquee-content flex gap-3" id="fantasyTicker">
-                    <span>Patrick Mahomes: 25.5 pts</span>
-                    <span>Christian McCaffrey: 18.2 pts</span>
-                    <span>Tyreek Hill: 22.1 pts</span>
+    <section class="bg-teal-500 text-white py-16 text-center animate__fadeIn">
+        <div class="max-w-7xl mx-auto px-6">
+            <h2 class="text-4xl font-bold mb-4">Your Ultimate Fantasy Football Command Center</h2>
+            <p class="text-lg mb-6">Real-time stats, expert tools, and breaking news for every fantasy manager.</p>
+            <a href="players.html" class="bg-white text-teal-500 px-6 py-3 rounded-lg hover:bg-gray-100 transition">Explore Players</a>
+        </div>
+    </section>
+    <section class="max-w-7xl mx-auto p-6 bg-gray-100 dark:bg-gray-800" aria-label="Fantasy points ticker">
+        <h2 class="text-xl font-bold mb-4 text-gray-900 dark:text-white text-center">Fantasy Points Ticker</h2>
+        <div id="tickerLoader" class="spinner"></div>
+        <div class="marquee">
+            <div id="fantasyTicker" class="marquee-content"></div>
+        </div>
+    </section>
+    <section class="max-w-7xl mx-auto p-6" aria-label="Top players">
+        <h2 class="text-2xl font-bold mb-6 text-gray-900 dark:text-white text-center">Top Fantasy Players</h2>
+        <div id="playersLoader" class="spinner"></div>
+        <div id="topPlayers" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4"></div>
+    </section>
+    <main class="max-w-7xl mx-auto flex flex-col md:flex-row gap-8 p-6">
+        <section class="flex-1 bg-white dark:bg-gray-800 p-8 rounded-xl shadow-xl animate__fadeInUp" aria-label="Fantasy tools">
+            <h2 class="text-2xl font-bold mb-6 text-gray-900 dark:text-white">Trade Analyzer</h2>
+            <div class="flex flex-col sm:flex-row gap-4 mb-6">
+                <select id="team1" class="p-3 border rounded-lg w-full bg-gray-50 dark:bg-gray-700 dark:text-white" aria-label="Select Team 1">
+                    <option value="">Select Team 1</option>
+                </select>
+                <select id="team2" class="p-3 border rounded-lg w-full bg-gray-50 dark:bg-gray-700 dark:text-white" aria-label="Select Team 2">
+                    <option value="">Select Team 2</option>
+                </select>
+            </div>
+            <button id="tradeAnalyzerBtn" class="bg-teal-500 text-white px-6 py-3 rounded-lg hover:bg-teal-600 transition relative group" aria-label="Analyze trade">
+                Analyze Trade
+                <span class="absolute hidden group-hover:block bg-gray-800 text-white text-xs rounded py-1 px-2 -top-8 left-1/2 transform -translate-x-1/2">Compare team rosters</span>
+            </button>
+            <div id="tradeResult" class="mt-6 text-gray-900 dark:text-white"></div>
+            <h2 class="text-2xl font-bold mt-8 mb-6 text-gray-900 dark:text-white">Matchup Predictor</h2>
+            <div class="flex flex-col sm:flex-row gap-4 mb-6">
+                <select id="matchupTeam1" class="p-3 border rounded-lg w-full bg-gray-50 dark:bg-gray-700 dark:text-white" aria-label="Select Matchup Team 1">
+                    <option value="">Select Team 1</option>
+                </select>
+                <select id="matchupTeam2" class="p-3 border rounded-lg w-full bg-gray-50 dark:bg-gray-700 dark:text-white" aria-label="Select Matchup Team 2">
+                    <option value="">Select Team 2</option>
+                </select>
+            </div>
+            <button id="matchupBtn" class="bg-teal-500 text-white px-6 py-3 rounded-lg hover:bg-teal-600 transition" aria-label="Predict matchup">
+                Predict Matchup
+            </button>
+            <div id="matchupResult" class="mt-6 text-gray-900 dark:text-white"></div>
+            <h2 class="text-2xl font-bold mt-8 mb-6 text-gray-900 dark:text-white">Waiver Wire Picks</h2>
+            <div id="waiverList" class="space-y-4"></div>
+            <h2 class="text-2xl font-bold mt-8 mb-6 text-gray-900 dark:text-white">NFL & Fantasy News</h2>
+            <div id="newsList" class="space-y-4">
+                <div class="bg-gray-100 dark:bg-gray-700 p-4 rounded-lg">
+                    <h4 class="font-semibold">Loading news...</h4>
+                    <p>Fetching the latest NFL and fantasy football updates.</p>
                 </div>
             </div>
-            <div id="tickerLoader" class="hidden text-center text-cyan-400 text-xs">Loading ticker...</div>
+            <button id="loadMoreNews" class="mt-6 bg-teal-500 text-white px-6 py-3 rounded-lg hover:bg-teal-600 transition hidden" aria-label="Load more news">Load More News</button>
         </section>
-
-        <section class="bg-purple-800/40 backdrop-blur-md rounded-lg p-3 shadow-md mb-5">
-            <h2 class="text-xl font-bold text-cyan-300 mb-2">Top Fantasy Players</h2>
-            <div id="topPlayers" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
-                <!-- Dynamic content loaded by JavaScript -->
-            </div>
-            <div id="playersLoader" class="hidden text-center text-cyan-400 text-xs">Loading players...</div>
-        </section>
-
-        <section class="bg-purple-800/40 backdrop-blur-md rounded-lg p-3 shadow-md mb-5">
-            <h2 class="text-xl font-bold text-cyan-300 mb-2">Trade Analyzer</h2>
-            <div class="flex gap-2 flex-wrap mb-2">
-                <select id="team1" class="p-1.5 border rounded-lg bg-purple-700/50 text-cyan-200 focus:outline-none focus:ring-2 focus:ring-cyan-500 text-sm">
-                    <option value="">Select Team 1</option>
-                </select>
-                <select id="team2" class="p-1.5 border rounded-lg bg-purple-700/50 text-cyan-200 focus:outline-none focus:ring-2 focus:ring-cyan-500 text-sm">
-                    <option value="">Select Team 2</option>
-                </select>
-            </div>
-            <div id="tradeResult" class="mb-2 text-xs"></div>
-            <div class="flex gap-2 flex-wrap">
-                <button id="tradeAnalyzerBtn" class="bg-gradient-to-r from-purple-700 to-cyan-500 text-white font-medium py-1.5 px-3 rounded-lg shadow-md hover:shadow-lg transition-all text-sm">Analyze Trade</button>
-                <button class="bg-gradient-to-r from-purple-700 to-cyan-500 text-white font-medium py-1.5 px-3 rounded-lg shadow-md hover:shadow-lg transition-all text-sm">Compare Rosters</button>
-            </div>
-
-            <h2 class="text-xl font-bold mt-4 mb-2 text-cyan-300">Matchup Predictor</h2>
-            <div class="flex gap-2 flex-wrap mb-2">
-                <select id="matchupTeam1" class="p-1.5 border rounded-lg bg-purple-700/50 text-cyan-200 focus:outline-none focus:ring-2 focus:ring-cyan-500 text-sm">
-                    <option value="">Select Team 1</option>
-                </select>
-                <select id="matchupTeam2" class="p-1.5 border rounded-lg bg-purple-700/50 text-cyan-200 focus:outline-none focus:ring-2 focus:ring-cyan-500 text-sm">
-                    <option value="">Select Team 2</option>
-                </select>
-            </div>
-            <div id="matchupResult" class="mb-2 text-xs"></div>
-            <button id="matchupBtn" class="bg-gradient-to-r from-purple-700 to-cyan-500 text-white font-medium py-1.5 px-3 rounded-lg shadow-md hover:shadow-lg transition-all text-sm">Predict Matchup</button>
-        </section>
-
-        <section class="bg-purple-800/40 backdrop-blur-md rounded-lg p-3 shadow-md mb-5">
-            <h2 class="text-xl font-bold text-cyan-300 mb-2">Waiver Wire Picks</h2>
-            <div id="waiverList" class="space-y-2">
-                <!-- Dynamic content loaded by JavaScript -->
-            </div>
-        </section>
-
-        <section class="bg-purple-800/40 backdrop-blur-md rounded-lg p-3 shadow-md mb-5">
-            <h2 class="text-xl font-bold text-cyan-300 mb-2">NFL & Fantasy News</h2>
-            <div id="newsList" class="space-y-2">
-                <!-- Dynamic content loaded by JavaScript -->
-            </div>
-            <button id="loadMoreNews" class="bg-gradient-to-r from-purple-700 to-cyan-500 text-white font-medium py-1.5 px-3 rounded-lg shadow-md hover:shadow-lg transition-all text-sm">Load More News</button>
-        </section>
-
-        <section class="bg-purple-800/40 backdrop-blur-md rounded-lg p-3 shadow-md">
-            <h2 class="text-xl font-bold text-cyan-300 mb-2">Quick Links</h2>
-            <ul class="list-disc pl-4 text-cyan-400 space-y-1 text-sm">
-                <li><a href="guides.html" class="hover:text-white transition-colors">Beginner Guides</a></li>
-                <li><a href="stats.html" class="hover:text-white transition-colors">Player Stats</a></li>
-                <li><a href="#" class="hover:text-white transition-colors">League Standings</a></li>
-                <li><a href="https://discord.com" class="hover:text-white transition-colors">Join Our Discord</a></li>
+        <aside class="w-full md:w-80 bg-white dark:bg-gray-800 p-8 rounded-xl shadow-xl animate__fadeInUp" aria-label="Quick links">
+            <h3 class="text-xl font-bold mb-6 text-gray-900 dark:text-white">Quick Links</h3>
+            <ul class="space-y-4">
+                <li><a href="guides.html" class="text-teal-500 hover:underline">Beginner Guides</a></li>
+                <li><a href="players.html" class="text-teal-500 hover:underline">Player Stats</a></li>
+                <li><a href="stats.html" class="text-teal-500 hover:underline">League Standings</a></li>
+                <li><a href="https://discord.com" class="text-teal-500 hover:underline">Join Our Discord</a></li>
             </ul>
-        </section>
+        </aside>
     </main>
-    <footer class="bg-purple-800/70 backdrop-blur-md text-cyan-400 text-center p-2 mt-5">
-        <p class="text-xs">© 2025 Front Row Fantasy. All rights reserved.</p>
+    <footer class="bg-navy text-white text-center py-6">
+        <p>© 2025 Front Row Fantasy. All rights reserved.</p>
     </footer>
     <script src="script.js"></script>
 </body>
