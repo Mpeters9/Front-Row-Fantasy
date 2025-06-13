@@ -4,7 +4,7 @@
 
 @layer base {
     html {
-        @apply font-poppins;
+        font-family: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     }
     body {
         @apply bg-navy-900 text-white;
@@ -16,19 +16,19 @@
 
 @layer components {
     .card {
-        @apply bg-teal-700/60 backdrop-blur-md p-3 rounded-lg shadow-md;
+        @apply bg-teal-700/60 backdrop-blur-md p-4 rounded-lg shadow-md;
     }
     .button {
-        @apply bg-gradient-to-r from-teal-800 to-teal-500 text-white px-3 py-1.5 rounded-lg shadow-md hover:shadow-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-teal-500;
+        @apply bg-gradient-to-r from-teal-800 to-teal-500 text-white px-4 py-2 rounded-lg shadow-md hover:shadow-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-teal-500;
     }
     .link {
         @apply text-teal-200 hover:text-teal-100 transition-colors;
     }
     .marquee-container {
-        @apply overflow-hidden h-12;
+        @apply overflow-hidden h-12 md:h-14;
     }
     .marquee-content {
-        @apply flex gap-3 animate-marquee;
+        @apply flex gap-4 animate-marquee;
     }
     .navbar {
         @apply bg-teal-700 p-3 shadow-md;
@@ -64,13 +64,14 @@
 }
 
 @media (max-width: 640px) {
-    h1 { @apply text-xl; }
-    h2 { @apply text-lg; }
+    h1 { @apply text-2xl md:text-4xl; }
+    h2 { @apply text-xl md:text-2xl; }
     .card { @apply p-2; }
-    .button { @apply px-2 py-1 text-xs; }
+    .button { @apply px-2 py-1 text-sm; }
     .marquee-container { @apply h-10; }
     .marquee-content { @apply gap-2; }
     .navbar { @apply p-2; }
     .navbar a { @apply text-xs; }
-    #topPlayers { @apply grid-cols-1; }
+    #topPlayers, #allPlayers { @apply grid-cols-1; }
+    .teal-banner { @apply p-3; }
 }
