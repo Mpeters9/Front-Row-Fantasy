@@ -16,13 +16,13 @@
 
 @layer components {
     .card {
-        @apply bg-teal-800/40 backdrop-blur-md p-3 rounded-lg shadow-md;
+        @apply bg-teal-700/60 backdrop-blur-md p-3 rounded-lg shadow-md;
     }
     .button {
-        @apply bg-gradient-to-r from-teal-700 to-teal-500 text-white px-3 py-1.5 rounded-lg shadow-md hover:shadow-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-teal-500;
+        @apply bg-gradient-to-r from-teal-800 to-teal-500 text-white px-3 py-1.5 rounded-lg shadow-md hover:shadow-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-teal-500;
     }
     .link {
-        @apply text-teal-200 hover:text-white transition-colors;
+        @apply text-teal-200 hover:text-teal-100 transition-colors;
     }
     .marquee-container {
         @apply overflow-hidden h-12;
@@ -31,10 +31,10 @@
         @apply flex gap-3 animate-marquee;
     }
     .navbar {
-        @apply bg-teal-800/70 backdrop-blur-md p-3 rounded-b-lg shadow-md;
+        @apply bg-teal-700 p-3 shadow-md;
     }
     .navbar a {
-        @apply text-sm font-medium text-teal-200 hover:text-white transition-colors;
+        @apply text-sm font-medium text-white hover:text-teal-100 transition-colors;
     }
 }
 
