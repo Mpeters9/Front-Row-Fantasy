@@ -22,6 +22,7 @@
         .nav-sticky { position: sticky; top: 0; z-index: 1000; background-color: #ECEFF1; padding: 1rem 0; }
         .nav-sticky a:hover { color: #26A69A; text-decoration: underline; }
         .loading { text-align: center; padding: 20px; }
+        .filter-section { margin-bottom: 1rem; padding: 1rem; background-color: #E0F2F1; border-radius: 8px; }
     </style>
 </head>
 <body class="text-black dark:text-white transition-colors duration-300" aria-label="Main content">
@@ -77,11 +78,30 @@
         <section class="grid grid-cols-1 md:grid-cols-3 gap-6">
             <div class="bg-teal-800 text-white p-4 rounded-lg" style="background-color: #00695C; color: #FFFFFF;">
                 <h3 class="text-lg font-semibold">Trade Analyzer</h3>
+                <div class="filter-section">
+                    <label for="leagueType" class="block mb-2">League Type:</label>
+                    <select id="leagueType" class="w-full p-2 rounded bg-gray-700 text-white" style="background-color: #263238; color: #FFFFFF;">
+                        <option value="redraft">Redraft</option>
+                        <option value="dynasty">Dynasty</option>
+                    </select>
+                    <label for="scoring" class="block mt-2 mb-2">Scoring:</label>
+                    <select id="scoring" class="w-full p-2 rounded bg-gray-700 text-white" style="background-color: #263238; color: #FFFFFF;">
+                        <option value="standard">Standard</option>
+                        <option value="halfppr">Half PPR</option>
+                        <option value="ppr">PPR</option>
+                    </select>
+                    <label for="positionValue" class="block mt-2 mb-2">Position Value:</label>
+                    <select id="positionValue" class="w-full p-2 rounded bg-gray-700 text-white" style="background-color: #263238; color: #FFFFFF;">
+                        <option value="neutral">Neutral</option>
+                        <option value="rbBoost">RB Boost</option>
+                        <option value="wrBoost">WR Boost</option>
+                    </select>
+                </div>
                 <select class="w-full mt-2 p-2 rounded bg-gray-700 text-white" id="team1Select" style="background-color: #263238; color: #FFFFFF;">
-                    <option value="">Select Team 1</option>
+                    <option value="">Select Player 1</option>
                 </select>
                 <select class="w-full mt-2 p-2 rounded bg-gray-700 text-white" id="team2Select" style="background-color: #263238; color: #FFFFFF;">
-                    <option value="">Select Team 2</option>
+                    <option value="">Select Player 2</option>
                 </select>
                 <button class="mt-4 w-full bg-teal-600 text-white px-4 py-2 rounded hover:bg-teal-700" id="analyzeTradeBtn" style="background-color: #26A69A; color: #FFFFFF;">Analyze Trade</button>
                 <p id="tradeResult" class="mt-2 text-center"></p>
