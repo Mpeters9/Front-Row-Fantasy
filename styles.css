@@ -19,12 +19,13 @@ body {
 }
 
 .marquee {
-    background-color: #26A69A;
+    background-color: #26A69A; /* Consistent teal background */
     padding: 8px 0;
     border-radius: 8px;
-    overflow: hidden;
+    overflow: hidden; /* Ensure no overflow artifacts */
     position: relative;
     width: 100%;
+    display: block; /* Ensure consistent block rendering */
 }
 
 .marquee-content {
@@ -32,19 +33,19 @@ body {
     font-size: 1rem;
     font-weight: 600;
     color: #FFFFFF;
-    min-width: 100%; /* Reset to match single content width */
+    min-width: 100%;
     animation: marquee 40s linear infinite;
 }
 
 .marquee-content b {
     font-size: 1.2rem;
-    color: #FFD700;
+    font-weight: bold;
     margin-right: 0.5rem;
 }
 
 @keyframes marquee {
     0% { transform: translateX(0); }
-    100% { transform: translateX(-100%); } /* Full width translation for seamless loop */
+    100% { transform: translateX(-100%); }
 }
 
 .marquee-content.paused {
