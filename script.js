@@ -47,13 +47,15 @@ document.addEventListener('DOMContentLoaded', () => {
         // Group by position and format with position label at the start of each group
         let content = '';
         let currentPosition = null;
-        sortedData.forEach(player => {
+        sortedData.forEach((player, index) => {
             if (player.position !== currentPosition) {
                 if (currentPosition !== null) content += '<br>'; // Add line break between groups
-                content += `<span>${player.position}:</span>`;
+                content += `${player.position}: `;
                 currentPosition = player.position;
+            } else if (index > 0) {
+                content += ', ';
             }
-            content += `<span>${player.name} (${player.team}) - ${player.points} pts</span>`;
+            content += `${player.name} (${player.team}) - ${player.points} pts`;
         });
 
         tickerContent.innerHTML = content;
