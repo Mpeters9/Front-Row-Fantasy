@@ -44,16 +44,16 @@ document.addEventListener('DOMContentLoaded', () => {
             return b.points - a.points;
         });
 
-        // Group by position and format with position label at the start of each group in a single line
+        // Group by position and format as a single continuous line
         let content = '';
         let currentPosition = null;
         sortedData.forEach((player, index) => {
             if (player.position !== currentPosition) {
-                if (currentPosition !== null) content += ', ';
+                if (currentPosition !== null) content += ' '; // Space between groups
                 content += `${player.position}: `;
                 currentPosition = player.position;
-            } else if (index > 0) {
-                content += ', ';
+            } else {
+                content += ' '; // Space between players in the same group
             }
             content += `${player.name} (${player.team}) - ${player.points} pts`;
         });
