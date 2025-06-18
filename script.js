@@ -7,14 +7,19 @@ document.addEventListener('DOMContentLoaded', () => {
         try {
             const response = await fetch('https://api.sleeper.app/v1/players/nfl/trending/add?lookback_hours=24&limit=10');
             const data = await response.json();
-            if (data && data.length) {
-                tickerContent.innerHTML = data.map(item => `<span>${item.position}: ${item.first_name} ${item.last_name} - ${item.add_count} adds</span>`).join('');
+            if (data && Array.isArray(data) && data.length) {
+                tickerContent.innerHTML = data.map(item => {
+                    if (item.position && item.first_name && item.last_name && item.add_count) {
+                        return `<span>${item.position}: ${item.first_name} ${item.last_name} - ${item.add_count} adds</span>`;
+                    }
+                    return '<span>Invalid data format</span>';
+                }).join('');
             } else {
-                tickerContent.innerHTML = '<span>No data available</span>';
+                tickerContent.innerHTML = '<span>No trending data available</span>';
             }
         } catch (error) {
             console.error('Error fetching fantasy points:', error);
-            tickerContent.innerHTML = '<span>Failed to load data</span>';
+            tickerContent.innerHTML = '<span>Failed to load fantasy points data</span>';
         }
     }
 
@@ -37,9 +42,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const leagueTypeSelect = document.getElementById('leagueType');
     const scoringSelect = document.getElementById('scoring');
     const positionValueSelect = document.getElementById('positionValue');
-    const platformSelect = document.getElementById('platform');
 
-    // Mock data for players (replace with API data)
+    // Mock data for players (fallback)
     const mockPlayers = [
         { id: '1', name: 'Christian McCaffrey', position: 'RB', redraftValue: 25, dynastyValue: 30 },
         { id: '2', name: 'De’Von Achane', position: 'RB', redraftValue: 18, dynastyValue: 22 },
@@ -48,18 +52,15 @@ document.addEventListener('DOMContentLoaded', () => {
         { id: '5', name: 'Drake London', position: 'WR', redraftValue: 14, dynastyValue: 17 }
     ];
 
-    async function fetchPlayers(platform) {
-        if (platform === 'sleeper') {
-            try {
-                const response = await fetch('https://api.sleeper.app/v1/players/nfl');
-                const data = await response.json();
-                return Object.values(data).filter(player => player.fantasy_positions && player.team).slice(0, 50);
-            } catch (error) {
-                console.error('Error fetching Sleeper players:', error);
-                return mockPlayers;
-            }
-        } else {
-            tradeResult.textContent = `Player data for ${platform} not yet implemented.`;
+    async function fetchPlayers() {
+        try {
+            const response = await fetch('https://api.sleeper.app/v1/players/nfl');
+            if (!response.ok) throw new Error('Sleeper API request failed');
+            const data = await response.json();
+            return Object.values(data).filter(player => player.fantasy_positions && player.team).slice(0, 50);
+        } catch (error) {
+            console.error('Error fetching Sleeper players:', error);
+            tradeResult.textContent = 'Failed to fetch players. Using mock data.';
             return mockPlayers;
         }
     }
@@ -70,32 +71,32 @@ document.addEventListener('DOMContentLoaded', () => {
         const url = `https://api.fantasynerds.com/v1/nfl/adp?apikey=${apikey}&teams=${teams}&format=${format}`;
         try {
             const response = await fetch(url);
+            if (!response.ok) throw new Error('Fantasy Nerds API request failed');
             const data = await response.json();
             return data.players || [];
         } catch (error) {
             console.error('Error fetching ADP:', error);
+            tradeResult.textContent = 'Failed to fetch ADP data. Using mock values.';
             return mockPlayers.map(p => ({ name: p.name, redraftValue: p.redraftValue, dynastyValue: p.dynastyValue }));
         }
     }
 
-    async function fetchTransactions(leagueId, platform) {
-        if (platform === 'sleeper') {
-            try {
-                const url = `https://api.sleeper.app/v1/league/${leagueId}/transactions/1`;
-                const response = await fetch(url);
-                const data = await response.json();
-                return data.filter(tx => tx.type === 'trade').slice(0, 5);
-            } catch (error) {
-                console.error('Error fetching Sleeper transactions:', error);
-                return [];
-            }
-        } else {
+    async function fetchTransactions(leagueId) {
+        try {
+            const url = `https://api.sleeper.app/v1/league/${leagueId}/transactions/1`;
+            const response = await fetch(url);
+            if (!response.ok) throw new Error('Sleeper transaction API request failed');
+            const data = await response.json();
+            return data.filter(tx => tx.type === 'trade').slice(0, 5);
+        } catch (error) {
+            console.error('Error fetching Sleeper transactions:', error);
+            tradeResult.textContent = 'Failed to fetch transactions. Check league ID or API access.';
             return [];
         }
     }
 
-    async function populatePlayers(platform) {
-        const players = await fetchPlayers(platform);
+    async function populatePlayers() {
+        const players = await fetchPlayers();
         const adpData = await fetchADP(leagueTypeSelect.value);
         const options = players.map(player => {
             const adp = adpData.find(p => p.name === (player.full_name || player.name)) || { redraftValue: 10, dynastyValue: 10 };
@@ -105,8 +106,8 @@ document.addEventListener('DOMContentLoaded', () => {
         team2Select.innerHTML = '<option value="">Select Player 2</option>' + options;
     }
 
-    async function displayRecentTrades(leagueId, platform) {
-        const transactions = await fetchTransactions(leagueId, platform);
+    async function displayRecentTrades(leagueId) {
+        const transactions = await fetchTransactions(leagueId);
         recentTrades.innerHTML = transactions.length ? transactions.map(tx => {
             const players = Object.entries(tx.adds || {}).map(([playerId]) => {
                 const player = mockPlayers.find(p => p.id === playerId) || { name: 'Unknown Player' };
@@ -129,12 +130,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
     syncLeagueBtn.addEventListener('click', async () => {
         const leagueId = leagueIdInput.value;
-        const platform = platformSelect.value;
-        if (platform === 'sleeper' && leagueId) {
-            await populatePlayers(platform);
-            await displayRecentTrades(leagueId, platform);
-        } else if (platform !== 'sleeper') {
-            tradeResult.textContent = 'Only Sleeper platform is supported at this time.';
+        if (leagueId) {
+            tradeResult.textContent = 'Syncing league...';
+            await populatePlayers();
+            await displayRecentTrades(leagueId);
+            tradeResult.textContent = 'League synced successfully.';
         } else {
             tradeResult.textContent = 'Please enter a valid League ID.';
         }
@@ -177,6 +177,7 @@ document.addEventListener('DOMContentLoaded', () => {
     async function fetchMatchupTeams() {
         try {
             const response = await fetch('https://api.sleeper.app/v1/league/1180205990138392576/rosters');
+            if (!response.ok) throw new Error('Matchup teams API request failed');
             const data = await response.json();
             if (data && data.length) {
                 matchupTeam1Select.innerHTML = '<option value="">Select Team 1</option>' + data.map(team => `<option value="${team.roster_id}">${team.owner_id}</option>`).join('');
