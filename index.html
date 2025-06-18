@@ -11,8 +11,8 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
-        .marquee { overflow: hidden; position: relative; width: 100%; background: linear-gradient(90deg, #00695C, #26A69A); padding: 10px 0; border-radius: 8px; }
-        .marquee-content { display: flex; gap: 2rem; animation: marquee 15s linear infinite; white-space: nowrap; font-size: 1.25rem; font-weight: 600; color: #FFFFFF; }
+        .marquee { overflow: hidden; position: relative; width: 100%; background: linear-gradient(90deg, #00695C, #26A69A); padding: 15px 0; border-radius: 8px; }
+        .marquee-content { display: flex; gap: 2.5rem; animation: marquee 15s linear infinite; white-space: nowrap; font-size: 1.5rem; font-weight: 600; color: #FFFFFF; }
         @keyframes marquee { 0% { transform: translateX(100%); } 100% { transform: translateX(-100%); } }
         .marquee-content.paused { animation-play-state: paused; }
         .spinner { border: 4px solid rgba(0, 0, 0, 0.1); border-left: 4px solid #26A69A; border-radius: 50%; width: 24px; height: 24px; animation: spin 1s linear infinite; margin: 0 auto; }
@@ -21,6 +21,7 @@
         .dark body { background-color: #1A1A1A; color: #F5F5F5; }
         .nav-sticky { position: sticky; top: 0; z-index: 1000; background-color: #ECEFF1; padding: 1rem 0; }
         .nav-sticky a:hover { color: #26A69A; text-decoration: underline; }
+        .loading { text-align: center; padding: 20px; }
     </style>
 </head>
 <body class="text-black dark:text-white transition-colors duration-300" aria-label="Main content">
@@ -35,6 +36,16 @@
             </nav>
         </div>
     </header>
+
+    <section class="marquee mb-6">
+        <div class="bg-teal-800 text-white p-2 rounded flex justify-between items-center" style="background-color: #00695C; color: #FFFFFF;">
+            <span class="text-xl font-bold">Fantasy Points Ticker</span>
+            <button id="pauseButton" class="text-teal-300 hover:text-white px-3 py-1 rounded" style="color: #B2DFDB; background-color: #004D40;">Pause</button>
+        </div>
+        <div class="marquee-content bg-teal-800 text-white p-3" id="tickerContent" style="background-color: #00695C; color: #FFFFFF;">
+            <span class="loading">Loading fantasy points...</span>
+        </div>
+    </section>
 
     <main class="max-w-7xl mx-auto px-4 py-6">
         <section class="bg-teal-600 text-white p-4 rounded-lg text-center mb-6" style="background-color: #26A69A; color: #FFFFFF;">
@@ -63,40 +74,27 @@
             <button class="mt-6 bg-teal-600 text-white px-6 py-2 rounded hover:bg-teal-700" style="background-color: #26A69A; color: #FFFFFF;">Join Now</button>
         </section>
 
-        <section class="marquee mb-6">
-            <div class="bg-teal-800 text-white p-2 rounded flex justify-between items-center" style="background-color: #00695C; color: #FFFFFF;">
-                <span class="text-xl font-bold">Fantasy Points Ticker</span>
-                <button id="pauseButton" class="text-teal-300 hover:text-white px-3 py-1 rounded" style="color: #B2DFDB; background-color: #004D40;">Pause</button>
-            </div>
-            <div class="marquee-content bg-teal-800 text-white p-3" id="tickerContent" style="background-color: #00695C; color: #FFFFFF;">
-                <!-- Dynamic content will be inserted here via JavaScript -->
-            </div>
-        </section>
-
         <section class="grid grid-cols-1 md:grid-cols-3 gap-6">
             <div class="bg-teal-800 text-white p-4 rounded-lg" style="background-color: #00695C; color: #FFFFFF;">
                 <h3 class="text-lg font-semibold">Trade Analyzer</h3>
-                <select class="w-full mt-2 p-2 rounded bg-gray-700 text-white" style="background-color: #263238; color: #FFFFFF;">
-                    <option>Select Team 1</option>
-                    <!-- Options will be populated dynamically -->
+                <select class="w-full mt-2 p-2 rounded bg-gray-700 text-white" id="team1Select" style="background-color: #263238; color: #FFFFFF;">
+                    <option value="">Select Team 1</option>
                 </select>
-                <select class="w-full mt-2 p-2 rounded bg-gray-700 text-white" style="background-color: #263238; color: #FFFFFF;">
-                    <option>Select Team 2</option>
-                    <!-- Options will be populated dynamically -->
+                <select class="w-full mt-2 p-2 rounded bg-gray-700 text-white" id="team2Select" style="background-color: #263238; color: #FFFFFF;">
+                    <option value="">Select Team 2</option>
                 </select>
-                <button class="mt-4 w-full bg-teal-600 text-white px-4 py-2 rounded hover:bg-teal-700" style="background-color: #26A69A; color: #FFFFFF;">Analyze Trade</button>
+                <button class="mt-4 w-full bg-teal-600 text-white px-4 py-2 rounded hover:bg-teal-700" id="analyzeTradeBtn" style="background-color: #26A69A; color: #FFFFFF;">Analyze Trade</button>
+                <p id="tradeResult" class="mt-2 text-center"></p>
             </div>
             <div class="bg-teal-800 text-white p-4 rounded-lg" style="background-color: #00695C; color: #FFFFFF;">
                 <h3 class="text-lg font-semibold">Matchup Predictor</h3>
-                <select class="w-full mt-2 p-2 rounded bg-gray-700 text-white" style="background-color: #263238; color: #FFFFFF;">
-                    <option>Select Team 1</option>
-                    <!-- Options will be populated dynamically -->
+                <select class="w-full mt-2 p-2 rounded bg-gray-700 text-white" id="matchupTeam1Select" style="background-color: #263238; color: #FFFFFF;">
+                    <option value="">Select Team 1</option>
                 </select>
-                <select class="w-full mt-2 p-2 rounded bg-gray-700 text-white" style="background-color: #263238; color: #FFFFFF;">
-                    <option>Select Team 2</option>
-                    <!-- Options will be populated dynamically -->
+                <select class="w-full mt-2 p-2 rounded bg-gray-700 text-white" id="matchupTeam2Select" style="background-color: #263238; color: #FFFFFF;">
+                    <option value="">Select Team 2</option>
                 </select>
-                <button class="mt-4 w-full bg-teal-600 text-white px-4 py-2 rounded hover:bg-teal-700" style="background-color: #26A69A; color: #FFFFFF;">Predict Matchup</button>
+                <button class="mt-4 w-full bg-teal-600 text-white px-4 py-2 rounded hover:bg-teal-700" id="predictMatchupBtn" style="background-color: #26A69A; color: #FFFFFF;">Predict Matchup</button>
                 <p id="predictionResult" class="mt-2 text-center"></p>
             </div>
             <div class="bg-teal-800 text-white p-4 rounded-lg" style="background-color: #00695C; color: #FFFFFF;">
