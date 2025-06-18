@@ -35,7 +35,7 @@ body {
     font-size: 1rem;
     font-weight: 600;
     color: #FFFFFF;
-    min-width: 100%; /* Ensure content triggers scrolling */
+    min-width: 100%;
 }
 
 @keyframes marquee {
@@ -80,12 +80,12 @@ body {
 }
 
 .trade-analyzer {
-    background-color: #00695C !important; /* Force background to apply */
-    color: #FFFFFF;
+    background-color: #00695C !important;
+    color: #FFFFFF !important;
     padding: 1rem;
     border-radius: 8px;
-    position: relative; /* Ensure stacking context */
-    z-index: 1; /* Prevent overlap issues */
+    position: relative;
+    z-index: 1;
 }
 
 .trade-analyzer h3 {
@@ -106,7 +106,7 @@ body {
     width: 100%;
     padding: 0.5rem;
     border-radius: 4px;
-    background-color: #263238;
+    background-color: #263238 !important;
     color: #FFFFFF !important;
     margin-bottom: 1rem;
 }
@@ -142,7 +142,7 @@ body {
 .trade-analyzer .filter-section {
     margin-bottom: 1rem;
     padding: 1rem;
-    background-color: #1E2A33 !important; /* Force background to apply */
+    background-color: #1E2A33 !important;
     border-radius: 8px;
     color: #FFFFFF !important;
 }
