@@ -79,22 +79,25 @@
             <div class="bg-teal-800 text-white p-4 rounded-lg" style="background-color: #00695C; color: #FFFFFF;">
                 <h3 class="text-lg font-semibold">Trade Analyzer</h3>
                 <div class="filter-section">
-                    <label for="leagueType" class="block mb-2">League Type:</label>
+                    <label for="leagueId" class="block text-sm font-medium mb-2">Sleeper League ID:</label>
+                    <input type="text" id="leagueId" class="w-full p-2 rounded bg-gray-700 text-white" style="background-color: #263238; color: #FFFFFF;">
+                    <button id="syncLeague" class="mt-2 w-full bg-teal-600 text-white px-4 py-2 rounded hover:bg-teal-700" style="background-color: #26A69A; color: #FFFFFF;">Sync League</button>
+                    <label for="leagueType" class="block text-sm font-medium mt-2 mb-2">League Type:</label>
                     <select id="leagueType" class="w-full p-2 rounded bg-gray-700 text-white" style="background-color: #263238; color: #FFFFFF;">
                         <option value="redraft">Redraft</option>
                         <option value="dynasty">Dynasty</option>
                     </select>
-                    <label for="scoring" class="block mt-2 mb-2">Scoring:</label>
+                    <label for="scoring" class="block text-sm font-medium mt-2 mb-2">Scoring:</label>
                     <select id="scoring" class="w-full p-2 rounded bg-gray-700 text-white" style="background-color: #263238; color: #FFFFFF;">
                         <option value="standard">Standard</option>
                         <option value="halfppr">Half PPR</option>
                         <option value="ppr">PPR</option>
                     </select>
-                    <label for="positionValue" class="block mt-2 mb-2">Position Value:</label>
+                    <label for="positionValue" class="block text-sm font-medium mt-2 mb-2">Position Value:</label>
                     <select id="positionValue" class="w-full p-2 rounded bg-gray-700 text-white" style="background-color: #263238; color: #FFFFFF;">
                         <option value="neutral">Neutral</option>
-                        <option value="rbBoost">RB Boost</option>
-                        <option value="wrBoost">WR Boost</option>
+                        <option value="qbBoost">QB Boost (Superflex)</option>
+                        <option value="teBoost">TE Boost (Premium)</option>
                     </select>
                 </div>
                 <select class="w-full mt-2 p-2 rounded bg-gray-700 text-white" id="team1Select" style="background-color: #263238; color: #FFFFFF;">
@@ -105,6 +108,7 @@
                 </select>
                 <button class="mt-4 w-full bg-teal-600 text-white px-4 py-2 rounded hover:bg-teal-700" id="analyzeTradeBtn" style="background-color: #26A69A; color: #FFFFFF;">Analyze Trade</button>
                 <p id="tradeResult" class="mt-2 text-center"></p>
+                <div id="recentTrades" class="mt-4 text-sm"></div>
             </div>
             <div class="bg-teal-800 text-white p-4 rounded-lg" style="background-color: #00695C; color: #FFFFFF;">
                 <h3 class="text-lg font-semibold">Matchup Predictor</h3>
