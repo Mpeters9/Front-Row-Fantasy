@@ -18,13 +18,15 @@ document.addEventListener('DOMContentLoaded', () => {
             { position: 'WR', name: 'Davante Adams', team: 'LV', points: 20.9 },
             { position: 'WR', name: 'Tyreek Hill', team: 'MIA', points: 19.8 },
             { position: 'WR', name: 'Justin Jefferson', team: 'MIN', points: 19.2 },
+            { position: 'WR', name: 'Stefon Diggs', team: 'BUF', points: 18.3 },
             { position: 'WR', name: 'Cooper Kupp', team: 'LA', points: 17.4 },
             { position: 'WR', name: 'Ja’Marr Chase', team: 'CIN', points: 16.5 },
-            { position: 'WR', name: 'Stefon Diggs', team: 'BUF', points: 18.3 },
             { position: 'WR', name: 'Deebo Samuel', team: 'SF', points: 15.6 },
             { position: 'TE', name: 'Travis Kelce', team: 'KC', points: 18.9 },
             { position: 'TE', name: 'George Kittle', team: 'SF', points: 17.1 },
             { position: 'TE', name: 'Dallas Goedert', team: 'PHI', points: 15.3 },
+            { position: 'K', name: 'Justin Tucker', team: 'BAL', points: 12.5 },
+            { position: 'K', name: 'Harrison Butker', team: 'KC', points: 11.8 },
             { position: 'QB', name: 'Kyler Murray', team: 'ARI', points: 20.4 },
             { position: 'QB', name: 'Dak Prescott', team: 'DAL', points: 20.1 },
             { position: 'QB', name: 'Russell Wilson', team: 'DEN', points: 18.0 },
@@ -33,9 +35,9 @@ document.addEventListener('DOMContentLoaded', () => {
             { position: 'RB', name: 'Jonathan Taylor', team: 'IND', points: 15.9 }
         ];
 
-        // Sort by position (QB, RB, WR, TE) and then by points descending
+        // Sort by position (QB, RB, WR, TE, K) and then by points descending
         const sortedData = mockData.sort((a, b) => {
-            const positionOrder = { QB: 1, RB: 2, WR: 3, TE: 4 };
+            const positionOrder = { QB: 1, RB: 2, WR: 3, TE: 4, K: 5 };
             if (positionOrder[a.position] !== positionOrder[b.position]) {
                 return positionOrder[a.position] - positionOrder[b.position];
             }
