@@ -96,7 +96,7 @@ body {
     font-size: 0.875rem;
     font-weight: 500;
     margin-bottom: 0.5rem;
-    color: #FFFFFF !important;
+    color: #FFFFFF; /* Bright white for visibility */
 }
 
 .trade-analyzer input, .trade-analyzer select {
@@ -104,17 +104,17 @@ body {
     padding: 0.5rem;
     border-radius: 4px;
     background-color: #263238;
-    color: #FFFFFF !important;
+    color: #FFFFFF;
     margin-bottom: 1rem;
 }
 
 .trade-analyzer select option {
-    color: #FFFFFF !important;
-    background-color: #37474F !important;
+    color: #FFFFFF !important; /* Ensure dropdown options are white */
+    background-color: #37474F !important; /* Lighter gray background for contrast */
 }
 
 .trade-analyzer select option:checked {
-    background-color: #26A69A !important;
+    background-color: #26A69A !important; /* Highlight selected option */
 }
 
 .trade-analyzer button {
@@ -139,7 +139,6 @@ body {
 .trade-analyzer .filter-section {
     margin-bottom: 1rem;
     padding: 1rem;
-    background-color: #1E2A33; /* Darker background for contrast */
+    background-color: #2E3A44; /* Lighter background for filter section */
     border-radius: 8px;
-    color: #FFFFFF !important; /* Ensure all text is white */
 }
