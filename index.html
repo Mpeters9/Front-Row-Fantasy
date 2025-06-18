@@ -25,7 +25,7 @@
     <header class="bg-gray-100 text-teal-600 py-3 shadow-md" role="banner">
         <div class="max-w-7xl mx-auto flex justify-between items-center px-4">
             <div class="flex items-center gap-3">
-                <img src="logo.png" alt="Front Row Fantasy Logo" class="h-10">
+                <img src="FRF.jpg" alt="Front Row Fantasy Logo" class="h-10">
                 <h1 class="text-xl font-bold">Front Row Fantasy</h1>
             </div>
             <nav class="space-x-4">
@@ -70,7 +70,16 @@
             </div>
             <div class="bg-teal-800 text-white p-4 rounded-lg">
                 <h3 class="text-lg font-semibold">Matchup Predictor</h3>
-                <!-- Add matchup predictor content here -->
+                <select class="w-full mt-2 p-2 rounded bg-gray-700 text-white">
+                    <option>Select Team 1</option>
+                    <!-- Options will be populated dynamically -->
+                </select>
+                <select class="w-full mt-2 p-2 rounded bg-gray-700 text-white">
+                    <option>Select Team 2</option>
+                    <!-- Options will be populated dynamically -->
+                </select>
+                <button class="mt-4 w-full bg-teal-600 text-white px-4 py-2 rounded hover:bg-teal-700">Predict Matchup</button>
+                <p id="predictionResult" class="mt-2 text-center"></p>
             </div>
             <div class="bg-teal-800 text-white p-4 rounded-lg">
                 <h3 class="text-lg font-semibold">Quick Links</h3>
@@ -85,23 +94,7 @@
     </main>
 
     <footer class="bg-gray-100 text-teal-600 py-4 text-center mt-6">
-        <p>&copy; 2025 Front Row Fantasy. All rights reserved.</p>
+        <p>© 2025 Front Row Fantasy. All rights reserved.</p>
     </footer>
 
-    <script>
-        // Placeholder for ticker content (to be replaced with real data)
-        const tickerContent = document.getElementById('tickerContent');
-        const pauseButton = document.getElementById('pauseButton');
-        const sampleData = ['QB: Mahomes - 25 pts', 'RB: McCaffrey - 18 pts', 'WR: Jefferson - 22 pts'];
-        tickerContent.innerHTML = sampleData.map(item => `<span>${item}</span>`).join('');
-
-        pauseButton.addEventListener('click', () => {
-            const isPaused = tickerContent.classList.toggle('paused');
-            pauseButton.textContent = isPaused ? 'Play' : 'Pause';
-        });
-
-        // Dark mode toggle (optional, can be triggered by a button if added)
-        const toggleDarkMode = () => {
-            document.body.classList.toggle('dark');
-        };
-    </script>
+    <script src="script.js"></script>
