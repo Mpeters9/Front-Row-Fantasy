@@ -19,10 +19,11 @@ body {
 }
 
 .marquee {
-    background-color: #00695C; /* Solid color to remove gradient flicker */
+    background-color: #00695C;
     padding: 8px 0;
     border-radius: 8px;
     overflow: hidden;
+    overflow-x: hidden; /* Prevent content wrap */
     position: relative;
     width: 100%;
 }
@@ -35,7 +36,7 @@ body {
     font-size: 1rem;
     font-weight: 600;
     color: #FFFFFF;
-    min-width: 200%;
+    min-width: 300%; /* Increased to ensure seamless scrolling */
 }
 
 @keyframes marquee {
