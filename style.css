@@ -35,6 +35,7 @@ body {
     font-size: 1rem;
     font-weight: 600;
     color: #FFFFFF;
+    min-width: 100%; /* Ensure content triggers scrolling */
 }
 
 @keyframes marquee {
@@ -79,10 +80,12 @@ body {
 }
 
 .trade-analyzer {
-    background-color: #00695C;
+    background-color: #00695C !important; /* Force background to apply */
     color: #FFFFFF;
     padding: 1rem;
     border-radius: 8px;
+    position: relative; /* Ensure stacking context */
+    z-index: 1; /* Prevent overlap issues */
 }
 
 .trade-analyzer h3 {
@@ -139,7 +142,7 @@ body {
 .trade-analyzer .filter-section {
     margin-bottom: 1rem;
     padding: 1rem;
-    background-color: #1E2A33;
+    background-color: #1E2A33 !important; /* Force background to apply */
     border-radius: 8px;
     color: #FFFFFF !important;
 }
