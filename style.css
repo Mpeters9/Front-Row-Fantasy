@@ -2,40 +2,39 @@
 @tailwind components;
 @tailwind utilities;
 
-@layer base {
-    html {
-        font-family: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-    }
-    body {
-        @apply bg-navy-900 text-white;
-        background-color: #1A2A44;
-        -webkit-font-smoothing: antialiased;
-        -moz-osx-font-smoothing: grayscale;
-    }
+body {
+    background-color: #F5F5F5;
 }
 
-@layer components {
-    .card {
-        @apply bg-teal-700/60 backdrop-blur-md p-4 rounded-lg shadow-md;
-    }
-    .button {
-        @apply bg-gradient-to-r from-teal-800 to-teal-500 text-white px-4 py-2 rounded-lg shadow-md hover:shadow-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-teal-500;
-    }
-    .link {
-        @apply text-teal-200 hover:text-teal-100 transition-colors;
-    }
-    .marquee-container {
-        @apply overflow-hidden h-12 md:h-14;
-    }
-    .marquee-content {
-        @apply flex gap-4 animate-marquee;
-    }
-    .navbar {
-        @apply bg-teal-700 p-3 shadow-md;
-    }
-    .navbar a {
-        @apply text-sm font-medium text-white hover:text-teal-100 transition-colors;
-    }
+.card {
+    @apply bg-white dark:bg-gray-800 p-4 rounded-lg shadow-md hover:shadow-xl transition transform hover:-translate-y-1;
+}
+
+.button {
+    @apply bg-teal-500 text-white px-6 py-3 rounded-lg hover:bg-teal-600 transition;
+}
+
+.link {
+    @apply text-teal-500 hover:underline;
+}
+
+.marquee {
+    background: linear-gradient(90deg, #00695C, #26A69A);
+    padding: 8px 0;
+    border-radius: 8px;
+    overflow: hidden;
+    position: relative;
+    width: 100%;
+}
+
+.marquee-content {
+    display: flex;
+    gap: 1.5rem;
+    animation: marquee 15s linear infinite;
+    white-space: nowrap;
+    font-size: 1rem;
+    font-weight: 600;
+    color: #FFFFFF;
 }
 
 @keyframes marquee {
@@ -43,35 +42,103 @@
     100% { transform: translateX(-100%); }
 }
 
-.marquee-content {
-    animation: marquee 15s linear infinite;
+.marquee-content.paused {
+    animation-play-state: paused;
 }
 
-@supports (-webkit-overflow-scrolling: touch) {
-    .marquee-content {
-        animation: none;
-        display: flex;
-        flex-wrap: nowrap;
-        overflow-x: auto;
-        -webkit-overflow-scrolling: touch;
-        scroll-behavior: smooth;
-        padding-bottom: 5px;
-    }
-    .marquee-content span {
-        flex-shrink: 0;
-        margin-right: 10px;
-    }
+.spinner {
+    border: 4px solid rgba(0, 0, 0, 0.1);
+    border-left: 4px solid #26A69A;
+    border-radius: 50%;
+    width: 24px;
+    height: 24px;
+    animation: spin 1s linear infinite;
+    margin: 0 auto;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
 }
 
 @media (max-width: 640px) {
-    h1 { @apply text-2xl md:text-4xl; }
-    h2 { @apply text-xl md:text-2xl; }
-    .card { @apply p-2; }
-    .button { @apply px-2 py-1 text-sm; }
-    .marquee-container { @apply h-10; }
-    .marquee-content { @apply gap-2; }
-    .navbar { @apply p-2; }
-    .navbar a { @apply text-xs; }
-    #topPlayers, #allPlayers { @apply grid-cols-1; }
-    .teal-banner { @apply p-3; }
+    h1 {
+        @apply text-2xl;
+    }
+    h2 {
+        @apply text-xl;
+    }
+    .card {
+        @apply p-3;
+    }
+    .button {
+        @apply px-4 py-2;
+    }
+    .marquee-content {
+        @apply gap-2;
+    }
+}
+
+.trade-analyzer {
+    background-color: #00695C;
+    color: #FFFFFF;
+    padding: 1rem;
+    border-radius: 8px;
+}
+
+.trade-analyzer h3 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+}
+
+.trade-analyzer label {
+    display: block;
+    font-size: 0.875rem;
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+    color: #FFFFFF; /* Bright white for visibility */
+}
+
+.trade-analyzer input, .trade-analyzer select {
+    width: 100%;
+    padding: 0.5rem;
+    border-radius: 4px;
+    background-color: #263238;
+    color: #FFFFFF;
+    margin-bottom: 1rem;
+}
+
+.trade-analyzer select option {
+    color: #FFFFFF !important; /* Ensure dropdown options are white */
+    background-color: #37474F !important; /* Lighter gray background for contrast */
+}
+
+.trade-analyzer select option:checked {
+    background-color: #26A69A !important; /* Highlight selected option */
+}
+
+.trade-analyzer button {
+    width: 100%;
+    padding: 0.5rem 1rem;
+    background-color: #26A69A;
+    color: #FFFFFF;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.trade-analyzer button:hover {
+    background-color: #00796B;
+}
+
+.trade-analyzer p {
+    text-align: center;
+    margin-top: 1rem;
+}
+
+.trade-analyzer .filter-section {
+    margin-bottom: 1rem;
+    padding: 1rem;
+    background-color: #2E3A44; /* Lighter background for filter section */
+    border-radius: 8px;
 }
