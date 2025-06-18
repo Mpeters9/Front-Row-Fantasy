@@ -36,14 +36,32 @@ analyzeTradeButton.addEventListener('click', () => {
     }
 });
 
-// Matchup Predictor (placeholder functionality)
-const matchupPredictor = document.querySelector('.matchup-predictor');
-matchupPredictor.innerHTML = '<p>Select teams to predict matchup. (Placeholder: Add your predictor logic here)</p>';
+// Matchup Predictor functionality
+const matchupSelects = document.querySelectorAll('.matchup-predictor select');
+const predictButton = document.querySelector('.matchup-predictor button');
+const predictionResult = document.getElementById('predictionResult');
+
+matchupSelects.forEach(select => {
+    teamOptions.forEach(option => {
+        const opt = document.createElement('option');
+        opt.value = option.toLowerCase().replace(' ', '-');
+        opt.textContent = option;
+        select.appendChild(opt);
+    });
+});
+
+predictButton.addEventListener('click', () => {
+    const team1 = matchupSelects[0].value;
+    const team2 = matchupSelects[1].value;
+    if (team1 && team2 && team1 !== team2) {
+        const prediction = Math.random() > 0.5 ? `${team1} is predicted to win!` : `${team2} is predicted to win!`;
+        predictionResult.textContent = prediction;
+    } else {
+        predictionResult.textContent = 'Please select two different teams.';
+    }
+});
 
 // Dark mode toggle (optional, can be triggered by a button if added)
 const toggleDarkMode = () => {
     document.body.classList.toggle('dark');
 };
-
-// Example: Add event listener for a dark mode button if you include one
-// document.getElementById('darkModeToggle').addEventListener('click', toggleDarkMode);
