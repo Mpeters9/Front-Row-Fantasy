@@ -10,126 +10,131 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="styles.css">
+    <style>
+        .marquee { overflow: hidden; position: relative; width: 100%; background: linear-gradient(90deg, #00695C, #26A69A); padding: 8px 0; border-radius: 8px; }
+        .marquee-content { display: flex; gap: 1.5rem; animation: marquee 15s linear infinite; white-space: nowrap; font-size: 1rem; font-weight: 600; color: #FFFFFF; }
+        @keyframes marquee { 0% { transform: translateX(100%); } 100% { transform: translateX(-100%); } }
+        .marquee-content.paused { animation-play-state: paused; }
+        .spinner { border: 4px solid rgba(0, 0, 0, 0.1); border-left: 4px solid #26A69A; border-radius: 50%; width: 24px; height: 24px; animation: spin 1s linear infinite; margin: 0 auto; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        body { background-color: #F5F5F5; font-family: 'Poppins', sans-serif; transition: background-color 0.3s; color: #1A1A1A; }
+        .dark body { background-color: #1A1A1A; color: #F5F5F5; }
+        .nav-sticky { position: sticky; top: 0; z-index: 1000; background-color: #ECEFF1; padding: 1rem 0; }
+        .nav-sticky a:hover { color: #26A69A; text-decoration: underline; }
+        .loading { text-align: center; padding: 20px; }
+        .filter-section { margin-bottom: 1rem; padding: 1rem; background-color: #E0F2F1; border-radius: 8px; }
+    </style>
 </head>
 <body class="text-black dark:text-white transition-colors duration-300" aria-label="Main content">
     <header class="bg-gray-100 shadow-md py-3" role="banner">
         <div class="max-w-7xl mx-auto px-4 flex justify-between items-center">
-            <h1 class="text-2xl font-bold text-teal-600">Front Row Fantasy</h1>
+            <h1 class="text-2xl font-bold text-teal-600" style="color: #26A69A;">Front Row Fantasy</h1>
             <nav class="space-x-4">
-                <a href="#home" class="hover:underline">Home</a>
-                <a href="#about" class="hover:underline">About</a>
-                <a href="#games" class="hover:underline">Games</a>
-                <a href="#contact" class="hover:underline">Contact</a>
+                <a href="#home" class="hover:underline" style="color: #26A69A;">Home</a>
+                <a href="#about" class="hover:underline" style="color: #26A69A;">About</a>
+                <a href="#games" class="hover:underline" style="color: #26A69A;">Games</a>
+                <a href="#contact" class="hover:underline" style="color: #26A69A;">Contact</a>
             </nav>
         </div>
     </header>
 
     <section class="marquee mb-6">
-        <div class="bg-teal-800 text-white p-2 rounded flex justify-between items-center">
+        <div class="bg-teal-800 text-white p-2 rounded flex justify-between items-center" style="background-color: #00695C; color: #FFFFFF;">
             <span class="text-xl font-bold">Fantasy Points Ticker</span>
-            <button id="pauseButton" class="text-teal-300 hover:text-white px-3 py-1 rounded">Pause</button>
+            <button id="pauseButton" class="text-teal-300 hover:text-white px-3 py-1 rounded" style="color: #B2DFDB; background-color: #004D40;">Pause</button>
         </div>
-        <div class="marquee-content bg-teal-800 text-white p-3" id="tickerContent">
+        <div class="marquee-content bg-teal-800 text-white p-3" id="tickerContent" style="background-color: #00695C; color: #FFFFFF;">
             <span class="loading">Loading fantasy points...</span>
         </div>
     </section>
 
     <main class="max-w-7xl mx-auto px-4 py-6">
-        <section class="bg-teal-600 text-white p-4 rounded-lg text-center mb-6">
+        <section class="bg-teal-600 text-white p-4 rounded-lg text-center mb-6" style="background-color: #26A69A; color: #FFFFFF;">
             <h2 class="text-2xl font-semibold">Your Ultimate Fantasy Football Command Center</h2>
             <p class="mt-2">Real-time stats, expert tools, and breaking news for every fantasy manager.</p>
-            <button class="mt-4 bg-white text-teal-600 px-4 py-2 rounded hover:bg-gray-200">Explore Players</button>
+            <button class="mt-4 bg-white text-teal-600 px-4 py-2 rounded hover:bg-gray-200" style="color: #26A69A;">Explore Players</button>
         </section>
 
-        <section class="bg-white p-6 rounded-lg shadow-md mb-6">
+        <section class="bg-white p-6 rounded-lg shadow-md mb-6" style="background-color: #FFFFFF; color: #1A1A1A;">
             <h2 class="text-2xl font-semibold text-center mb-4">Welcome to Front Row Fantasy</h2>
             <p class="text-center mb-4">Dive into the ultimate fantasy football experience with real-time updates, expert tools, and a vibrant community. Whether you're a beginner or a seasoned pro, we’ve got you covered!</p>
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div class="p-4 bg-teal-100 rounded">
+                <div class="p-4 bg-teal-100 rounded" style="background-color: #E0F2F1;">
                     <h3 class="text-lg font-semibold">Latest Stats</h3>
                     <p>Stay updated with the latest player performances.</p>
                 </div>
-                <div class="p-4 bg-teal-100 rounded">
+                <div class="p-4 bg-teal-100 rounded" style="background-color: #E0F2F1;">
                     <h3 class="text-lg font-semibold">Expert Tools</h3>
                     <p>Analyze trades and predict matchups with ease.</p>
                 </div>
-                <div class="p-4 bg-teal-100 rounded">
+                <div class="p-4 bg-teal-100 rounded" style="background-color: #E0F2F1;">
                     <h3 class="text-lg font-semibold">Community</h3>
                     <p>Join our Discord to connect with fellow fans.</p>
                 </div>
             </div>
-            <button class="mt-6 bg-teal-600 text-white px-6 py-2 rounded hover:bg-teal-700">Join Now</button>
+            <button class="mt-6 bg-teal-600 text-white px-6 py-2 rounded hover:bg-teal-700" style="background-color: #26A69A; color: #FFFFFF;">Join Now</button>
         </section>
 
         <section class="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div class="trade-analyzer">
-                <h3>Trade Analyzer</h3>
+            <div class="bg-teal-800 text-white p-4 rounded-lg" style="background-color: #00695C; color: #FFFFFF;">
+                <h3 class="text-lg font-semibold">Trade Analyzer</h3>
                 <div class="filter-section">
-                    <label for="platform">Platform:</label>
-                    <select id="platform">
-                        <option value="sleeper">Sleeper</option>
-                        <option value="yahoo">Yahoo</option>
-                        <option value="espn">ESPN</option>
-                    </select>
-                    <label for="leagueId">League ID:</label>
-                    <input type="text" id="leagueId" value="1180205990138392576">
-                    <button id="syncLeague">Sync League</button>
-                    <label for="leagueType">League Type:</label>
-                    <select id="leagueType">
+                    <label for="leagueId" class="block text-sm font-medium mb-2">Sleeper League ID:</label>
+                    <input type="text" id="leagueId" class="w-full p-2 rounded bg-gray-700 text-white" style="background-color: #263238; color: #FFFFFF;">
+                    <button id="syncLeague" class="mt-2 w-full bg-teal-600 text-white px-4 py-2 rounded hover:bg-teal-700" style="background-color: #26A69A; color: #FFFFFF;">Sync League</button>
+                    <label for="leagueType" class="block text-sm font-medium mt-2 mb-2">League Type:</label>
+                    <select id="leagueType" class="w-full p-2 rounded bg-gray-700 text-white" style="background-color: #263238; color: #FFFFFF;">
                         <option value="redraft">Redraft</option>
                         <option value="dynasty">Dynasty</option>
                     </select>
-                    <label for="scoring">Scoring:</label>
-                    <select id="scoring">
+                    <label for="scoring" class="block text-sm font-medium mt-2 mb-2">Scoring:</label>
+                    <select id="scoring" class="w-full p-2 rounded bg-gray-700 text-white" style="background-color: #263238; color: #FFFFFF;">
                         <option value="standard">Standard</option>
                         <option value="halfppr">Half PPR</option>
                         <option value="ppr">PPR</option>
                     </select>
-                    <label for="positionValue">Position Value:</label>
-                    <select id="positionValue">
+                    <label for="positionValue" class="block text-sm font-medium mt-2 mb-2">Position Value:</label>
+                    <select id="positionValue" class="w-full p-2 rounded bg-gray-700 text-white" style="background-color: #263238; color: #FFFFFF;">
                         <option value="neutral">Neutral</option>
                         <option value="qbBoost">QB Boost (Superflex)</option>
                         <option value="teBoost">TE Boost (Premium)</option>
                     </select>
                 </div>
-                <select id="team1Select">
+                <select class="w-full mt-2 p-2 rounded bg-gray-700 text-white" id="team1Select" style="background-color: #263238; color: #FFFFFF;">
                     <option value="">Select Player 1</option>
                 </select>
-                <select id="team2Select">
+                <select class="w-full mt-2 p-2 rounded bg-gray-700 text-white" id="team2Select" style="background-color: #263238; color: #FFFFFF;">
                     <option value="">Select Player 2</option>
                 </select>
-                <button id="analyzeTradeBtn">Analyze Trade</button>
-                <p id="tradeResult"></p>
-                <div id="recentTrades"></div>
+                <button class="mt-4 w-full bg-teal-600 text-white px-4 py-2 rounded hover:bg-teal-700" id="analyzeTradeBtn" style="background-color: #26A69A; color: #FFFFFF;">Analyze Trade</button>
+                <p id="tradeResult" class="mt-2 text-center"></p>
+                <div id="recentTrades" class="mt-4 text-sm"></div>
             </div>
-            <div class="bg-teal-800 text-white p-4 rounded-lg">
+            <div class="bg-teal-800 text-white p-4 rounded-lg" style="background-color: #00695C; color: #FFFFFF;">
                 <h3 class="text-lg font-semibold">Matchup Predictor</h3>
-                <select class="w-full mt-2 p-2 rounded bg-gray-700 text-white" id="matchupTeam1Select">
+                <select class="w-full mt-2 p-2 rounded bg-gray-700 text-white" id="matchupTeam1Select" style="background-color: #263238; color: #FFFFFF;">
                     <option value="">Select Team 1</option>
                 </select>
-                <select class="w-full mt-2 p-2 rounded bg-gray-700 text-white" id="matchupTeam2Select">
+                <select class="w-full mt-2 p-2 rounded bg-gray-700 text-white" id="matchupTeam2Select" style="background-color: #263238; color: #FFFFFF;">
                     <option value="">Select Team 2</option>
                 </select>
-                <button class="mt-4 w-full bg-teal-600 text-white px-4 py-2 rounded hover:bg-teal-700" id="predictMatchupBtn">Predict Matchup</button>
+                <button class="mt-4 w-full bg-teal-600 text-white px-4 py-2 rounded hover:bg-teal-700" id="predictMatchupBtn" style="background-color: #26A69A; color: #FFFFFF;">Predict Matchup</button>
                 <p id="predictionResult" class="mt-2 text-center"></p>
             </div>
-            <div class="bg-teal-800 text-white p-4 rounded-lg">
+            <div class="bg-teal-800 text-white p-4 rounded-lg" style="background-color: #00695C; color: #FFFFFF;">
                 <h3 class="text-lg font-semibold">Quick Links</h3>
                 <ul class="mt-2 space-y-2">
-                    <li><a href="#beginner-guides" class="text-teal-300 hover:underline">Beginner Guides</a></li>
-                    <li><a href="#player-stats" class="text-teal-300 hover:underline">Player Stats</a></li>
-                    <li><a href="#league-standings" class="text-teal-300 hover:underline">League Standings</a></li>
-                    <li><a href="#discord" class="text-teal-300 hover:underline">Join Our Discord</a></li>
+                    <li><a href="#beginner-guides" class="text-teal-300 hover:underline" style="color: #B2DFDB;">Beginner Guides</a></li>
+                    <li><a href="#player-stats" class="text-teal-300 hover:underline" style="color: #B2DFDB;">Player Stats</a></li>
+                    <li><a href="#league-standings" class="text-teal-300 hover:underline" style="color: #B2DFDB;">League Standings</a></li>
+                    <li><a href="#discord" class="text-teal-300 hover:underline" style="color: #B2DFDB;">Join Our Discord</a></li>
                 </ul>
             </div>
         </section>
     </main>
 
-    <footer class="bg-gray-100 text-teal-600 py-4 text-center mt-6">
+    <footer class="bg-gray-100 text-teal-600 py-4 text-center mt-6" style="background-color: #ECEFF1; color: #26A69A;">
         <p>© 2025 Front Row Fantasy. All rights reserved.</p>
     </footer>
 
     <script src="script.js"></script>
-</body>
-</html>
