@@ -5,55 +5,55 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function populateTicker() {
         const mockData = [
-            { position: 'QB', name: 'Josh Allen', team: 'BUF', points: 25.4 },
-            { position: 'QB', name: 'Patrick Mahomes', team: 'KC', points: 25.1 },
-            { position: 'QB', name: 'Lamar Jackson', team: 'BAL', points: 23.8 },
-            { position: 'QB', name: 'Jalen Hurts', team: 'PHI', points: 22.3 },
-            { position: 'QB', name: 'Joe Burrow', team: 'CIN', points: 21.6 },
-            { position: 'RB', name: 'Christian McCaffrey', team: 'SF', points: 20.5 },
-            { position: 'RB', name: 'Austin Ekeler', team: 'LAC', points: 19.5 },
-            { position: 'RB', name: 'Alvin Kamara', team: 'NO', points: 18.6 },
-            { position: 'RB', name: 'Nick Chubb', team: 'CLE', points: 17.7 },
-            { position: 'RB', name: 'Saquon Barkley', team: 'NYG', points: 16.8 },
-            { position: 'WR', name: 'Davante Adams', team: 'LV', points: 20.9 },
-            { position: 'WR', name: 'Tyreek Hill', team: 'MIA', points: 19.8 },
-            { position: 'WR', name: 'Justin Jefferson', team: 'MIN', points: 19.2 },
-            { position: 'WR', name: 'Stefon Diggs', team: 'BUF', points: 18.3 },
-            { position: 'WR', name: 'Cooper Kupp', team: 'LA', points: 17.4 },
-            { position: 'WR', name: 'Ja’Marr Chase', team: 'CIN', points: 16.5 },
-            { position: 'WR', name: 'Deebo Samuel', team: 'SF', points: 15.6 },
-            { position: 'TE', name: 'Travis Kelce', team: 'KC', points: 18.9 },
-            { position: 'TE', name: 'George Kittle', team: 'SF', points: 17.1 },
-            { position: 'TE', name: 'Dallas Goedert', team: 'PHI', points: 15.3 },
-            { position: 'K', name: 'Justin Tucker', team: 'BAL', points: 12.5 },
-            { position: 'K', name: 'Harrison Butker', team: 'KC', points: 11.8 },
-            { position: 'QB', name: 'Kyler Murray', team: 'ARI', points: 20.4 },
-            { position: 'QB', name: 'Dak Prescott', team: 'DAL', points: 20.1 },
-            { position: 'QB', name: 'Russell Wilson', team: 'DEN', points: 18.0 },
-            { position: 'QB', name: 'Justin Herbert', team: 'LAC', points: 16.2 },
-            { position: 'QB', name: 'Trevor Lawrence', team: 'JAX', points: 15.0 },
-            { position: 'RB', name: 'Jonathan Taylor', team: 'IND', points: 15.9 }
+            { position: 'Quarterback', name: 'Josh Allen', team: 'BUF', points: 25.4 },
+            { position: 'Quarterback', name: 'Patrick Mahomes', team: 'KC', points: 25.1 },
+            { position: 'Quarterback', name: 'Lamar Jackson', team: 'BAL', points: 23.8 },
+            { position: 'Quarterback', name: 'Jalen Hurts', team: 'PHI', points: 22.3 },
+            { position: 'Quarterback', name: 'Joe Burrow', team: 'CIN', points: 21.6 },
+            { position: 'Running Back', name: 'Christian McCaffrey', team: 'SF', points: 20.5 },
+            { position: 'Running Back', name: 'Austin Ekeler', team: 'LAC', points: 19.5 },
+            { position: 'Running Back', name: 'Alvin Kamara', team: 'NO', points: 18.6 },
+            { position: 'Running Back', name: 'Nick Chubb', team: 'CLE', points: 17.7 },
+            { position: 'Running Back', name: 'Saquon Barkley', team: 'NYG', points: 16.8 },
+            { position: 'Wide Receiver', name: 'Davante Adams', team: 'LV', points: 20.9 },
+            { position: 'Wide Receiver', name: 'Tyreek Hill', team: 'MIA', points: 19.8 },
+            { position: 'Wide Receiver', name: 'Justin Jefferson', team: 'MIN', points: 19.2 },
+            { position: 'Wide Receiver', name: 'Stefon Diggs', team: 'BUF', points: 18.3 },
+            { position: 'Wide Receiver', name: 'Cooper Kupp', team: 'LA', points: 17.4 },
+            { position: 'Wide Receiver', name: 'Ja’Marr Chase', team: 'CIN', points: 16.5 },
+            { position: 'Wide Receiver', name: 'Deebo Samuel', team: 'SF', points: 15.6 },
+            { position: 'Tight End', name: 'Travis Kelce', team: 'KC', points: 18.9 },
+            { position: 'Tight End', name: 'George Kittle', team: 'SF', points: 17.1 },
+            { position: 'Tight End', name: 'Dallas Goedert', team: 'PHI', points: 15.3 },
+            { position: 'Kicker', name: 'Justin Tucker', team: 'BAL', points: 12.5 },
+            { position: 'Kicker', name: 'Harrison Butker', team: 'KC', points: 11.8 },
+            { position: 'Quarterback', name: 'Kyler Murray', team: 'ARI', points: 20.4 },
+            { position: 'Quarterback', name: 'Dak Prescott', team: 'DAL', points: 20.1 },
+            { position: 'Quarterback', name: 'Russell Wilson', team: 'DEN', points: 18.0 },
+            { position: 'Quarterback', name: 'Justin Herbert', team: 'LAC', points: 16.2 },
+            { position: 'Quarterback', name: 'Trevor Lawrence', team: 'JAX', points: 15.0 },
+            { position: 'Running Back', name: 'Jonathan Taylor', team: 'IND', points: 15.9 }
         ];
 
-        // Sort by position (QB, RB, WR, TE, K) and then by points descending
+        // Sort by position (Quarterback, Running Back, Wide Receiver, Tight End, Kicker) and then by points descending
         const sortedData = mockData.sort((a, b) => {
-            const positionOrder = { QB: 1, RB: 2, WR: 3, TE: 4, K: 5 };
+            const positionOrder = { Quarterback: 1, 'Running Back': 2, 'Wide Receiver': 3, 'Tight End': 4, Kicker: 5 };
             if (positionOrder[a.position] !== positionOrder[b.position]) {
                 return positionOrder[a.position] - positionOrder[b.position];
             }
             return b.points - a.points;
         });
 
-        // Group by position and format as a single continuous line
+        // Group by position and format as a single continuous line with bolded positions
         let content = '';
         let currentPosition = null;
         sortedData.forEach((player, index) => {
             if (player.position !== currentPosition) {
-                if (currentPosition !== null) content += ' '; // Space between groups
-                content += `${player.position}: `;
+                if (currentPosition !== null) content += ' ';
+                content += `<b>${player.position}:</b> `;
                 currentPosition = player.position;
             } else {
-                content += ' '; // Space between players in the same group
+                content += ' ';
             }
             content += `${player.name} (${player.team}) - ${player.points} pts`;
         });
@@ -86,11 +86,11 @@ document.addEventListener('DOMContentLoaded', () => {
     const platformSelect = document.getElementById('platform');
 
     const mockPlayers = [
-        { id: '1', name: 'Christian McCaffrey', position: 'RB', redraftValue: 25, dynastyValue: 30 },
-        { id: '2', name: 'De’Von Achane', position: 'RB', redraftValue: 18, dynastyValue: 22 },
-        { id: '3', name: 'Nico Collins', position: 'WR', redraftValue: 15, dynastyValue: 18 },
-        { id: '4', name: 'Ashton Jeanty', position: 'RB', redraftValue: 12, dynastyValue: 20 },
-        { id: '5', name: 'Drake London', position: 'WR', redraftValue: 14, dynastyValue: 17 }
+        { id: '1', name: 'Christian McCaffrey', position: 'Running Back', redraftValue: 25, dynastyValue: 30 },
+        { id: '2', name: 'De’Von Achane', position: 'Running Back', redraftValue: 18, dynastyValue: 22 },
+        { id: '3', name: 'Nico Collins', position: 'Wide Receiver', redraftValue: 15, dynastyValue: 18 },
+        { id: '4', name: 'Ashton Jeanty', position: 'Running Back', redraftValue: 12, dynastyValue: 20 },
+        { id: '5', name: 'Drake London', position: 'Wide Receiver', redraftValue: 14, dynastyValue: 17 }
     ];
 
     async function fetchPlayers(platform) {
@@ -173,8 +173,8 @@ document.addEventListener('DOMContentLoaded', () => {
         let baseValue = leagueType === 'dynasty' ? parseFloat(option.dataset.dynasty) : parseFloat(option.dataset.redraft);
         let scoringModifier = scoring === 'ppr' ? 1.2 : scoring === 'halfppr' ? 1.1 : 1;
         let positionModifier = 1;
-        if (positionValue === 'qbBoost' && option.dataset.position === 'QB') positionModifier = 1.3;
-        if (positionValue === 'teBoost' && option.dataset.position === 'TE') positionModifier = 1.5;
+        if (positionValue === 'qbBoost' && option.dataset.position === 'Quarterback') positionModifier = 1.3;
+        if (positionValue === 'teBoost' && option.dataset.position === 'Tight End') positionModifier = 1.5;
         return Math.round(baseValue * scoringModifier * positionModifier);
     }
 
