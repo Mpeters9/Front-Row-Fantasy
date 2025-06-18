@@ -44,7 +44,19 @@ document.addEventListener('DOMContentLoaded', () => {
             return b.points - a.points;
         });
 
-        tickerContent.innerHTML = sortedData.map(player => `<span>${player.position}: ${player.name} (${player.team}) - ${player.points} pts</span>`).join('');
+        // Group by position and format with position label at the start of each group
+        let content = '';
+        let currentPosition = null;
+        sortedData.forEach(player => {
+            if (player.position !== currentPosition) {
+                if (currentPosition !== null) content += '<br>'; // Add line break between groups
+                content += `<span>${player.position}:</span>`;
+                currentPosition = player.position;
+            }
+            content += `<span>${player.name} (${player.team}) - ${player.points} pts</span>`;
+        });
+
+        tickerContent.innerHTML = content;
         if (getComputedStyle(tickerContent).animationPlayState === 'paused') {
             console.log('Ticker animation is paused or not applied');
         }
