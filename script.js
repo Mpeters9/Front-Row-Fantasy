@@ -10,29 +10,39 @@ document.addEventListener('DOMContentLoaded', () => {
             { position: 'QB', name: 'Lamar Jackson', team: 'BAL', points: 23.8 },
             { position: 'QB', name: 'Jalen Hurts', team: 'PHI', points: 22.3 },
             { position: 'QB', name: 'Joe Burrow', team: 'CIN', points: 21.6 },
-            { position: 'WR', name: 'Davante Adams', team: 'LV', points: 20.9 },
             { position: 'RB', name: 'Christian McCaffrey', team: 'SF', points: 20.5 },
+            { position: 'RB', name: 'Austin Ekeler', team: 'LAC', points: 19.5 },
+            { position: 'RB', name: 'Alvin Kamara', team: 'NO', points: 18.6 },
+            { position: 'RB', name: 'Nick Chubb', team: 'CLE', points: 17.7 },
+            { position: 'RB', name: 'Saquon Barkley', team: 'NYG', points: 16.8 },
+            { position: 'WR', name: 'Davante Adams', team: 'LV', points: 20.9 },
+            { position: 'WR', name: 'Tyreek Hill', team: 'MIA', points: 19.8 },
+            { position: 'WR', name: 'Justin Jefferson', team: 'MIN', points: 19.2 },
+            { position: 'WR', name: 'Cooper Kupp', team: 'LA', points: 17.4 },
+            { position: 'WR', name: 'Ja’Marr Chase', team: 'CIN', points: 16.5 },
+            { position: 'WR', name: 'Stefon Diggs', team: 'BUF', points: 18.3 },
+            { position: 'WR', name: 'Deebo Samuel', team: 'SF', points: 15.6 },
+            { position: 'TE', name: 'Travis Kelce', team: 'KC', points: 18.9 },
+            { position: 'TE', name: 'George Kittle', team: 'SF', points: 17.1 },
+            { position: 'TE', name: 'Dallas Goedert', team: 'PHI', points: 15.3 },
             { position: 'QB', name: 'Kyler Murray', team: 'ARI', points: 20.4 },
             { position: 'QB', name: 'Dak Prescott', team: 'DAL', points: 20.1 },
-            { position: 'WR', name: 'Tyreek Hill', team: 'MIA', points: 19.8 },
-            { position: 'RB', name: 'Austin Ekeler', team: 'LAC', points: 19.5 },
-            { position: 'WR', name: 'Justin Jefferson', team: 'MIN', points: 19.2 },
-            { position: 'TE', name: 'Travis Kelce', team: 'KC', points: 18.9 },
-            { position: 'RB', name: 'Alvin Kamara', team: 'NO', points: 18.6 },
-            { position: 'WR', name: 'Stefon Diggs', team: 'BUF', points: 18.3 },
             { position: 'QB', name: 'Russell Wilson', team: 'DEN', points: 18.0 },
-            { position: 'RB', name: 'Nick Chubb', team: 'CLE', points: 17.7 },
-            { position: 'WR', name: 'Cooper Kupp', team: 'LA', points: 17.4 },
-            { position: 'TE', name: 'George Kittle', team: 'SF', points: 17.1 },
-            { position: 'RB', name: 'Saquon Barkley', team: 'NYG', points: 16.8 },
-            { position: 'WR', name: 'Ja’Marr Chase', team: 'CIN', points: 16.5 },
             { position: 'QB', name: 'Justin Herbert', team: 'LAC', points: 16.2 },
-            { position: 'RB', name: 'Jonathan Taylor', team: 'IND', points: 15.9 },
-            { position: 'WR', name: 'Deebo Samuel', team: 'SF', points: 15.6 },
-            { position: 'TE', name: 'Dallas Goedert', team: 'PHI', points: 15.3 },
-            { position: 'QB', name: 'Trevor Lawrence', team: 'JAX', points: 15.0 }
+            { position: 'QB', name: 'Trevor Lawrence', team: 'JAX', points: 15.0 },
+            { position: 'RB', name: 'Jonathan Taylor', team: 'IND', points: 15.9 }
         ];
-        tickerContent.innerHTML = mockData.map(player => `<span>${player.position}: ${player.name} (${player.team}) - ${player.points} pts</span>`).join('');
+
+        // Sort by position (QB, RB, WR, TE) and then by points descending
+        const sortedData = mockData.sort((a, b) => {
+            const positionOrder = { QB: 1, RB: 2, WR: 3, TE: 4 };
+            if (positionOrder[a.position] !== positionOrder[b.position]) {
+                return positionOrder[a.position] - positionOrder[b.position];
+            }
+            return b.points - a.points;
+        });
+
+        tickerContent.innerHTML = sortedData.map(player => `<span>${player.position}: ${player.name} (${player.team}) - ${player.points} pts</span>`).join('');
         if (getComputedStyle(tickerContent).animationPlayState === 'paused') {
             console.log('Ticker animation is paused or not applied');
         }
