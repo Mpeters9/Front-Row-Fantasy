@@ -10,131 +10,496 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
-    <style>
-        .marquee { overflow: hidden; position: relative; width: 100%; background: linear-gradient(90deg, #00695C, #26A69A); padding: 8px 0; border-radius: 8px; }
-        .marquee-content { display: flex; gap: 1.5rem; animation: marquee 15s linear infinite; white-space: nowrap; font-size: 1rem; font-weight: 600; color: #FFFFFF; }
-        @keyframes marquee { 0% { transform: translateX(100%); } 100% { transform: translateX(-100%); } }
-        .marquee-content.paused { animation-play-state: paused; }
-        .spinner { border: 4px solid rgba(0, 0, 0, 0.1); border-left: 4px solid #26A69A; border-radius: 50%; width: 24px; height: 24px; animation: spin 1s linear infinite; margin: 0 auto; }
-        @keyframes spin { to { transform: rotate(360deg); } }
-        body { background-color: #F5F5F5; font-family: 'Poppins', sans-serif; transition: background-color 0.3s; color: #1A1A1A; }
-        .dark body { background-color: #1A1A1A; color: #F5F5F5; }
-        .nav-sticky { position: sticky; top: 0; z-index: 1000; background-color: #ECEFF1; padding: 1rem 0; }
-        .nav-sticky a:hover { color: #26A69A; text-decoration: underline; }
-        .loading { text-align: center; padding: 20px; }
-        .filter-section { margin-bottom: 1rem; padding: 1rem; background-color: #E0F2F1; border-radius: 8px; }
-    </style>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body class="text-black dark:text-white transition-colors duration-300" aria-label="Main content">
     <header class="bg-gray-100 shadow-md py-3" role="banner">
         <div class="max-w-7xl mx-auto px-4 flex justify-between items-center">
-            <h1 class="text-2xl font-bold text-teal-600" style="color: #26A69A;">Front Row Fantasy</h1>
+            <h1 class="text-2xl font-bold text-teal-600">Front Row Fantasy</h1>
             <nav class="space-x-4">
-                <a href="#home" class="hover:underline" style="color: #26A69A;">Home</a>
-                <a href="#about" class="hover:underline" style="color: #26A69A;">About</a>
-                <a href="#games" class="hover:underline" style="color: #26A69A;">Games</a>
-                <a href="#contact" class="hover:underline" style="color: #26A69A;">Contact</a>
+                <a href="#home" class="hover:underline">Home</a>
+                <a href="#about" class="hover:underline">About</a>
+                <a href="#games" class="hover:underline">Games</a>
+                <a href="#contact" class="hover:underline">Contact</a>
             </nav>
         </div>
     </header>
 
     <section class="marquee mb-6">
-        <div class="bg-teal-800 text-white p-2 rounded flex justify-between items-center" style="background-color: #00695C; color: #FFFFFF;">
+        <div class="bg-teal-800 text-white p-2 rounded flex justify-between items-center">
             <span class="text-xl font-bold">Fantasy Points Ticker</span>
-            <button id="pauseButton" class="text-teal-300 hover:text-white px-3 py-1 rounded" style="color: #B2DFDB; background-color: #004D40;">Pause</button>
+            <button id="pauseButton" class="text-teal-300 hover:text-white px-3 py-1 rounded">Pause</button>
         </div>
-        <div class="marquee-content bg-teal-800 text-white p-3" id="tickerContent" style="background-color: #00695C; color: #FFFFFF;">
+        <div class="marquee-content bg-teal-800 text-white p-3" id="tickerContent">
             <span class="loading">Loading fantasy points...</span>
         </div>
     </section>
 
     <main class="max-w-7xl mx-auto px-4 py-6">
-        <section class="bg-teal-600 text-white p-4 rounded-lg text-center mb-6" style="background-color: #26A69A; color: #FFFFFF;">
+        <section class="bg-teal-600 text-white p-4 rounded-lg text-center mb-6">
             <h2 class="text-2xl font-semibold">Your Ultimate Fantasy Football Command Center</h2>
             <p class="mt-2">Real-time stats, expert tools, and breaking news for every fantasy manager.</p>
-            <button class="mt-4 bg-white text-teal-600 px-4 py-2 rounded hover:bg-gray-200" style="color: #26A69A;">Explore Players</button>
+            <button class="mt-4 bg-white text-teal-600 px-4 py-2 rounded hover:bg-gray-200">Explore Players</button>
         </section>
 
-        <section class="bg-white p-6 rounded-lg shadow-md mb-6" style="background-color: #FFFFFF; color: #1A1A1A;">
+        <section class="bg-white p-6 rounded-lg shadow-md mb-6">
             <h2 class="text-2xl font-semibold text-center mb-4">Welcome to Front Row Fantasy</h2>
             <p class="text-center mb-4">Dive into the ultimate fantasy football experience with real-time updates, expert tools, and a vibrant community. Whether you're a beginner or a seasoned pro, we’ve got you covered!</p>
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div class="p-4 bg-teal-100 rounded" style="background-color: #E0F2F1;">
+                <div class="p-4 bg-teal-100 rounded">
                     <h3 class="text-lg font-semibold">Latest Stats</h3>
                     <p>Stay updated with the latest player performances.</p>
                 </div>
-                <div class="p-4 bg-teal-100 rounded" style="background-color: #E0F2F1;">
+                <div class="p-4 bg-teal-100 rounded">
                     <h3 class="text-lg font-semibold">Expert Tools</h3>
                     <p>Analyze trades and predict matchups with ease.</p>
                 </div>
-                <div class="p-4 bg-teal-100 rounded" style="background-color: #E0F2F1;">
+                <div class="p-4 bg-teal-100 rounded">
                     <h3 class="text-lg font-semibold">Community</h3>
                     <p>Join our Discord to connect with fellow fans.</p>
                 </div>
             </div>
-            <button class="mt-6 bg-teal-600 text-white px-6 py-2 rounded hover:bg-teal-700" style="background-color: #26A69A; color: #FFFFFF;">Join Now</button>
+            <button class="mt-6 bg-teal-600 text-white px-6 py-2 rounded hover:bg-teal-700">Join Now</button>
         </section>
 
         <section class="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div class="bg-teal-800 text-white p-4 rounded-lg" style="background-color: #00695C; color: #FFFFFF;">
-                <h3 class="text-lg font-semibold">Trade Analyzer</h3>
+            <div class="trade-analyzer">
+                <h3>Trade Analyzer</h3>
                 <div class="filter-section">
-                    <label for="leagueId" class="block text-sm font-medium mb-2">Sleeper League ID:</label>
-                    <input type="text" id="leagueId" class="w-full p-2 rounded bg-gray-700 text-white" style="background-color: #263238; color: #FFFFFF;">
-                    <button id="syncLeague" class="mt-2 w-full bg-teal-600 text-white px-4 py-2 rounded hover:bg-teal-700" style="background-color: #26A69A; color: #FFFFFF;">Sync League</button>
-                    <label for="leagueType" class="block text-sm font-medium mt-2 mb-2">League Type:</label>
-                    <select id="leagueType" class="w-full p-2 rounded bg-gray-700 text-white" style="background-color: #263238; color: #FFFFFF;">
+                    <label for="platform">Platform:</label>
+                    <select id="platform">
+                        <option value="sleeper">Sleeper</option>
+                        <option value="yahoo">Yahoo</option>
+                        <option value="espn">ESPN</option>
+                    </select>
+                    <label for="leagueId">League ID:</label>
+                    <input type="text" id="leagueId">
+                    <button id="syncLeague">Sync League</button>
+                    <label for="leagueType">League Type:</label>
+                    <select id="leagueType">
                         <option value="redraft">Redraft</option>
                         <option value="dynasty">Dynasty</option>
                     </select>
-                    <label for="scoring" class="block text-sm font-medium mt-2 mb-2">Scoring:</label>
-                    <select id="scoring" class="w-full p-2 rounded bg-gray-700 text-white" style="background-color: #263238; color: #FFFFFF;">
+                    <label for="scoring">Scoring:</label>
+                    <select id="scoring">
                         <option value="standard">Standard</option>
                         <option value="halfppr">Half PPR</option>
                         <option value="ppr">PPR</option>
                     </select>
-                    <label for="positionValue" class="block text-sm font-medium mt-2 mb-2">Position Value:</label>
-                    <select id="positionValue" class="w-full p-2 rounded bg-gray-700 text-white" style="background-color: #263238; color: #FFFFFF;">
+                    <label for="positionValue">Position Value:</label>
+                    <select id="positionValue">
                         <option value="neutral">Neutral</option>
                         <option value="qbBoost">QB Boost (Superflex)</option>
                         <option value="teBoost">TE Boost (Premium)</option>
                     </select>
                 </div>
-                <select class="w-full mt-2 p-2 rounded bg-gray-700 text-white" id="team1Select" style="background-color: #263238; color: #FFFFFF;">
+                <select id="team1Select">
                     <option value="">Select Player 1</option>
                 </select>
-                <select class="w-full mt-2 p-2 rounded bg-gray-700 text-white" id="team2Select" style="background-color: #263238; color: #FFFFFF;">
+                <select id="team2Select">
                     <option value="">Select Player 2</option>
                 </select>
-                <button class="mt-4 w-full bg-teal-600 text-white px-4 py-2 rounded hover:bg-teal-700" id="analyzeTradeBtn" style="background-color: #26A69A; color: #FFFFFF;">Analyze Trade</button>
-                <p id="tradeResult" class="mt-2 text-center"></p>
-                <div id="recentTrades" class="mt-4 text-sm"></div>
+                <button id="analyzeTradeBtn">Analyze Trade</button>
+                <p id="tradeResult"></p>
+                <div id="recentTrades"></div>
             </div>
-            <div class="bg-teal-800 text-white p-4 rounded-lg" style="background-color: #00695C; color: #FFFFFF;">
+            <div class="bg-teal-800 text-white p-4 rounded-lg">
                 <h3 class="text-lg font-semibold">Matchup Predictor</h3>
-                <select class="w-full mt-2 p-2 rounded bg-gray-700 text-white" id="matchupTeam1Select" style="background-color: #263238; color: #FFFFFF;">
+                <select class="w-full mt-2 p-2 rounded bg-gray-700 text-white" id="matchupTeam1Select">
                     <option value="">Select Team 1</option>
                 </select>
-                <select class="w-full mt-2 p-2 rounded bg-gray-700 text-white" id="matchupTeam2Select" style="background-color: #263238; color: #FFFFFF;">
+                <select class="w-full mt-2 p-2 rounded bg-gray-700 text-white" id="matchupTeam2Select">
                     <option value="">Select Team 2</option>
                 </select>
-                <button class="mt-4 w-full bg-teal-600 text-white px-4 py-2 rounded hover:bg-teal-700" id="predictMatchupBtn" style="background-color: #26A69A; color: #FFFFFF;">Predict Matchup</button>
+                <button class="mt-4 w-full bg-teal-600 text-white px-4 py-2 rounded hover:bg-teal-700" id="predictMatchupBtn">Predict Matchup</button>
                 <p id="predictionResult" class="mt-2 text-center"></p>
             </div>
-            <div class="bg-teal-800 text-white p-4 rounded-lg" style="background-color: #00695C; color: #FFFFFF;">
+            <div class="bg-teal-800 text-white p-4 rounded-lg">
                 <h3 class="text-lg font-semibold">Quick Links</h3>
                 <ul class="mt-2 space-y-2">
-                    <li><a href="#beginner-guides" class="text-teal-300 hover:underline" style="color: #B2DFDB;">Beginner Guides</a></li>
-                    <li><a href="#player-stats" class="text-teal-300 hover:underline" style="color: #B2DFDB;">Player Stats</a></li>
-                    <li><a href="#league-standings" class="text-teal-300 hover:underline" style="color: #B2DFDB;">League Standings</a></li>
-                    <li><a href="#discord" class="text-teal-300 hover:underline" style="color: #B2DFDB;">Join Our Discord</a></li>
+                    <li><a href="#beginner-guides" class="text-teal-300 hover:underline">Beginner Guides</a></li>
+                    <li><a href="#player-stats" class="text-teal-300 hover:underline">Player Stats</a></li>
+                    <li><a href="#league-standings" class="text-teal-300 hover:underline">League Standings</a></li>
+                    <li><a href="#discord" class="text-teal-300 hover:underline">Join Our Discord</a></li>
                 </ul>
             </div>
         </section>
     </main>
 
-    <footer class="bg-gray-100 text-teal-600 py-4 text-center mt-6" style="background-color: #ECEFF1; color: #26A69A;">
+    <footer class="bg-gray-100 text-teal-600 py-4 text-center mt-6">
         <p>© 2025 Front Row Fantasy. All rights reserved.</p>
     </footer>
 
     <script src="script.js"></script>
+</body>
+</html>
+```
+
+##### `styles.css`
+```css
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+    background-color: #F5F5F5;
+}
+
+.card {
+    @apply bg-white dark:bg-gray-800 p-4 rounded-lg shadow-md hover:shadow-xl transition transform hover:-translate-y-1;
+}
+
+.button {
+    @apply bg-teal-500 text-white px-6 py-3 rounded-lg hover:bg-teal-600 transition;
+}
+
+.link {
+    @apply text-teal-500 hover:underline;
+}
+
+.marquee {
+    background: linear-gradient(90deg, #00695C, #26A69A);
+    padding: 8px 0;
+    border-radius: 8px;
+    overflow: hidden;
+    position: relative;
+    width: 100%;
+}
+
+.marquee-content {
+    display: flex;
+    gap: 1.5rem;
+    animation: marquee 15s linear infinite;
+    white-space: nowrap;
+    font-size: 1rem;
+    font-weight: 600;
+    color: #FFFFFF;
+}
+
+@keyframes marquee {
+    0% { transform: translateX(100%); }
+    100% { transform: translateX(-100%); }
+}
+
+.marquee-content.paused {
+    animation-play-state: paused;
+}
+
+.spinner {
+    border: 4px solid rgba(0, 0, 0, 0.1);
+    border-left: 4px solid #26A69A;
+    border-radius: 50%;
+    width: 24px;
+    height: 24px;
+    animation: spin 1s linear infinite;
+    margin: 0 auto;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+@media (max-width: 640px) {
+    h1 {
+        @apply text-2xl;
+    }
+    h2 {
+        @apply text-xl;
+    }
+    .card {
+        @apply p-3;
+    }
+    .button {
+        @apply px-4 py-2;
+    }
+    .marquee-content {
+        @apply gap-2;
+    }
+}
+
+.trade-analyzer {
+    background-color: #00695C;
+    color: #FFFFFF;
+    padding: 1rem;
+    border-radius: 8px;
+}
+
+.trade-analyzer h3 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+}
+
+.trade-analyzer label {
+    display: block;
+    font-size: 0.875rem;
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+    color: #FFFFFF !important;
+}
+
+.trade-analyzer input, .trade-analyzer select {
+    width: 100%;
+    padding: 0.5rem;
+    border-radius: 4px;
+    background-color: #263238;
+    color: #FFFFFF !important;
+    margin-bottom: 1rem;
+}
+
+.trade-analyzer select option {
+    color: #FFFFFF !important;
+    background-color: #37474F !important;
+}
+
+.trade-analyzer select option:checked {
+    background-color: #26A69A !important;
+}
+
+.trade-analyzer button {
+    width: 100%;
+    padding: 0.5rem 1rem;
+    background-color: #26A69A;
+    color: #FFFFFF;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.trade-analyzer button:hover {
+    background-color: #00796B;
+}
+
+.trade-analyzer p {
+    text-align: center;
+    margin-top: 1rem;
+}
+
+.trade-analyzer .filter-section {
+    margin-bottom: 1rem;
+    padding: 1rem;
+    background-color: #1E2A33; /* Darker background for contrast */
+    border-radius: 8px;
+    color: #FFFFFF !important; /* Ensure all text is white */
+}
+```
+
+##### `script.js`
+```javascript
+document.addEventListener('DOMContentLoaded', () => {
+    // Fantasy Points Ticker
+    const tickerContent = document.getElementById('tickerContent');
+    const pauseButton = document.getElementById('pauseButton');
+
+    async function fetchFantasyPoints() {
+        try {
+            const response = await fetch('https://api.sleeper.app/v1/players/nfl/trending/add?lookback_hours=24&limit=10');
+            const data = await response.json();
+            if (data && data.length) {
+                tickerContent.innerHTML = data.map(item => `<span>${item.position}: ${item.first_name} ${item.last_name} - ${item.add_count} adds</span>`).join('');
+            } else {
+                tickerContent.innerHTML = '<span>No data available</span>';
+            }
+        } catch (error) {
+            console.error('Error fetching fantasy points:', error);
+            tickerContent.innerHTML = '<span>Failed to load data</span>';
+        }
+    }
+
+    pauseButton.addEventListener('click', () => {
+        const isPaused = tickerContent.classList.toggle('paused');
+        pauseButton.textContent = isPaused ? 'Play' : 'Pause';
+    });
+
+    setInterval(fetchFantasyPoints, 30000);
+    fetchFantasyPoints();
+
+    // Trade Analyzer
+    const leagueIdInput = document.getElementById('leagueId');
+    const syncLeagueBtn = document.getElementById('syncLeague');
+    const team1Select = document.getElementById('team1Select');
+    const team2Select = document.getElementById('team2Select');
+    const analyzeTradeBtn = document.getElementById('analyzeTradeBtn');
+    const tradeResult = document.getElementById('tradeResult');
+    const recentTrades = document.getElementById('recentTrades');
+    const leagueTypeSelect = document.getElementById('leagueType');
+    const scoringSelect = document.getElementById('scoring');
+    const positionValueSelect = document.getElementById('positionValue');
+    const platformSelect = document.getElementById('platform');
+
+    // Mock data for players (replace with API data)
+    const mockPlayers = [
+        { id: '1', name: 'Christian McCaffrey', position: 'RB', redraftValue: 25, dynastyValue: 30 },
+        { id: '2', name: 'De’Von Achane', position: 'RB', redraftValue: 18, dynastyValue: 22 },
+        { id: '3', name: 'Nico Collins', position: 'WR', redraftValue: 15, dynastyValue: 18 },
+        { id: '4', name: 'Ashton Jeanty', position: 'RB', redraftValue: 12, dynastyValue: 20 },
+        { id: '5', name: 'Drake London', position: 'WR', redraftValue: 14, dynastyValue: 17 }
+    ];
+
+    async function fetchPlayers(platform) {
+        if (platform === 'sleeper') {
+            try {
+                const response = await fetch('https://api.sleeper.app/v1/players/nfl');
+                const data = await response.json();
+                return Object.values(data).filter(player => player.fantasy_positions && player.team).slice(0, 50);
+            } catch (error) {
+                console.error('Error fetching Sleeper players:', error);
+                return mockPlayers;
+            }
+        } else {
+            // Placeholder for Yahoo/ESPN APIs
+            tradeResult.textContent = `Player data for ${platform} not yet implemented.`;
+            return mockPlayers;
+        }
+    }
+
+    async function fetchTransactions(leagueId, platform) {
+        if (platform === 'sleeper') {
+            try {
+                const url = `https://api.sleeper.app/v1/league/${leagueId}/transactions/1`;
+                const response = await fetch(url);
+                const data = await response.json();
+                return data.filter(tx => tx.type === 'trade').slice(0, 5);
+            } catch (error) {
+                console.error('Error fetching Sleeper transactions:', error);
+                return [];
+            }
+        } else {
+            // Placeholder for Yahoo/ESPN APIs
+            return [];
+        }
+    }
+
+    async function populatePlayers(platform) {
+        const players = await fetchPlayers(platform);
+        const options = players.map(player => `<option value="${player.player_id || player.id}">${player.full_name || player.name} (${player.position})</option>`).join('');
+        team1Select.innerHTML = '<option value="">Select Player 1</option>' + options;
+        team2Select.innerHTML = '<option value="">Select Player 2</option>' + options;
+    }
+
+    async function displayRecentTrades(leagueId, platform) {
+        const transactions = await fetchTransactions(leagueId, platform);
+        recentTrades.innerHTML = transactions.length ? transactions.map(tx => {
+            const players = Object.entries(tx.adds || {}).map(([playerId]) => {
+                const player = mockPlayers.find(p => p.id === playerId) || { name: 'Unknown Player' };
+                return player.name;
+            }).join(', ');
+            return `<p class="mt-2">Trade: ${players} exchanged between rosters ${tx.roster_ids.join(' and ')}</p>`;
+        }).join('') : '<p>No recent trades found.</p>';
+    }
+
+    function getPlayerValue(playerId, leagueType, scoring, positionValue) {
+        const option = team1Select.querySelector(`option[value="${playerId}"]`) || team2Select.querySelector(`option[value="${playerId}"]`);
+        if (!option) return 0;
+        const player = mockPlayers.find(p => p.id === playerId) || { redraftValue: 10, dynastyValue: 10 };
+        let baseValue = leagueType === 'dynasty' ? player.dynastyValue : player.redraftValue;
+        let scoringModifier = scoring === 'ppr' ? 1.2 : scoring === 'halfppr' ? 1.1 : 1;
+        let positionModifier = 1;
+        if (positionValue === 'qbBoost' && player.position === 'QB') positionModifier = 1.3;
+        if (positionValue === 'teBoost' && player.position === 'TE') positionModifier = 1.5;
+        return Math.round(baseValue * scoringModifier * positionModifier);
+    }
+
+    syncLeagueBtn.addEventListener('click', async () => {
+        const leagueId = leagueIdInput.value;
+        const platform = platformSelect.value;
+        if (platform === 'sleeper' && leagueId) {
+            await populatePlayers(platform);
+            await displayRecentTrades(leagueId, platform);
+        } else if (platform !== 'sleeper') {
+            tradeResult.textContent = 'Only Sleeper platform is supported at this time.';
+        } else {
+            tradeResult.textContent = 'Please enter a valid League ID.';
+        }
+    });
+
+    analyzeTradeBtn.addEventListener('click', () => {
+        const player1Id = team1Select.value;
+        const player2Id = team2Select.value;
+        const leagueType = leagueTypeSelect.value;
+        const scoring = scoringSelect.value;
+        const positionValue = positionValueSelect.value;
+
+        if (player1Id && player2Id && player1Id !== player2Id) {
+            const value1 = getPlayerValue(player1Id, leagueType, scoring, positionValue);
+            const value2 = getPlayerValue(player2Id, leagueType, scoring, positionValue);
+            const player1Name = team1Select.options[team1Select.selectedIndex].text;
+            const player2Name = team2Select.options[team2Select.selectedIndex].text;
+            if (value1 > value2) {
+                tradeResult.textContent = `${player1Name} is valued higher (${value1} vs ${value2}). Consider this trade if you need ${player2Name}'s position or future potential.`;
+            } else if (value2 > value1) {
+                tradeResult.textContent = `${player2Name} is valued higher (${value2} vs ${value1}). Consider this trade if you need ${player1Name}'s position or future potential.`;
+            } else {
+                tradeResult.textContent = 'The trade is balanced in value. Evaluate based on team needs.';
+            }
+        } else {
+            tradeResult.textContent = 'Please select two different players.';
+        }
+    });
+
+    leagueTypeSelect.addEventListener('change', () => analyzeTradeBtn.click());
+    scoringSelect.addEventListener('change', () => analyzeTradeBtn.click());
+    positionValueSelect.addEventListener('change', () => analyzeTradeBtn.click());
+
+    // Matchup Predictor (Placeholder)
+    const matchupTeam1Select = document.getElementById('matchupTeam1Select');
+    const matchupTeam2Select = document.getElementById('matchupTeam2Select');
+    const predictMatchupBtn = document.getElementById('predictMatchupBtn');
+    const predictionResult = document.getElementById('predictionResult');
+
+    async function fetchMatchupTeams() {
+        try {
+            const response = await fetch('https://api.sleeper.app/v1/league/1234567890/rosters'); // Placeholder
+            const data = await response.json();
+            if (data && data.length) {
+                matchupTeam1Select.innerHTML = '<option value="">Select Team 1</option>' + data.map(team => `<option value="${team.roster_id}">${team.owner_id}</option>`).join('');
+                matchupTeam2Select.innerHTML = '<option value="">Select Team 2</option>' + data.map(team => `<option value="${team.roster_id}">${team.owner_id}</option>`).join('');
+            }
+        } catch (error) {
+            console.error('Error fetching matchup teams:', error);
+            matchupTeam1Select.innerHTML = '<option value="">Error loading teams</option>';
+            matchupTeam2Select.innerHTML = '<option value="">Error loading teams</option>';
+        }
+    }
+
+    predictMatchupBtn.addEventListener('click', async () => {
+        const team1 = matchupTeam1Select.value;
+        const team2 = matchupTeam2Select.value;
+        if (team1 && team2 && team1 !== team2) {
+            predictionResult.textContent = 'Prediction not available (placeholder).';
+        } else {
+            predictionResult.textContent = 'Please select two different teams.';
+        }
+    });
+
+    fetchMatchupTeams();
+
+    // Dark mode toggle
+    const toggleDarkMode = () => {
+        document.body.classList.toggle('dark');
+    };
+});
+```
+
+### Survey Section: Detailed Implementation and Future Steps
+
+#### Background and Context
+The trade analyzer section of your fantasy football website, "Front Row Fantasy," is designed to help users evaluate player trades across various league formats, inspired by tools like [FantasyCalc](https://fantasycalc.com/trade-calculator). The initial issue was poor font visibility in the filter categories (e.g., "League Type", "Scoring", "Position Value"), where labels and dropdown options were hard to read due to low contrast. Additionally, you requested the ability to select different fantasy platforms (Sleeper, Yahoo, ESPN) to pull data from their respective APIs, enhancing the site's versatility for users across multiple platforms.
+
+#### Font Visibility Issue
+The trade analyzer's filter section had labels and dropdown options that were difficult to read, likely due to a combination of dark gray text and a light gray background (`#2E3A44`). This low contrast made it challenging for users to interact with the filters, especially in varying lighting conditions or for those with visual impairments. The analysis of the provided image confirmed that labels appeared in dark gray, and selected values in dropdowns were in a lighter gray, both on a light gray background, resulting in poor readability.
+
+To address this, the `styles.css` was updated to:
+- Set all text within the `.filter-section` to bright white (`#FFFFFF`) for maximum contrast.
+- Darken the filter section background to `#1E2A33` to enhance readability while maintaining the dark theme.
+- Explicitly style dropdown options with white text on a darker background (`#37474F`) to ensure visibility across browsers, overriding any default browser styles.
+
+These changes align with WCAG Level AA accessibility guidelines, aiming for a contrast ratio of at least 4.5:1 for normal text, ensuring a better user experience.
+
+#### Platform Selection Implementation
+To support multiple fantasy platforms, a "Platform" dropdown was added to the trade analyzer's filter section, allowing users to choose between Sleeper, Yahoo, and ESPN. The implementation currently focuses on Sleeper due to its accessible API, with placeholders for Yahoo and ESPN to be integrated later. Key features include:
+- **Sleeper Support**: Users can input a Sleeper league ID to sync their league, fetching player data via the [Sleeper Players API](https://docs.sleeper.com/#players) and transaction history via the [Sleeper Transactions API](https://docs.sleeper.com/#transactions).
+- **Yahoo/ESPN Placeholder**: Selecting Yahoo or ESPN displays a message indicating that these platforms are not yet supported, preparing the structure for future API integration.
+- **Extensibility**: The `fetchPlayers` and `fetchTransactions` functions in `script.js` are designed to handle different platforms, with conditional logic to switch API endpoints based on the selected platform.
+
+The trade analyzer uses mock player data for now, with plans to integrate real data from the [Fantasy Nerds API](https://www.fantasynerds.com/) for ADP values and Sleeper's transaction history to estimate trade values. Filters for redraft/dynasty, scoring
