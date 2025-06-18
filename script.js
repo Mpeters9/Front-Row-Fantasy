@@ -5,25 +5,47 @@ document.addEventListener('DOMContentLoaded', () => {
 
     async function fetchFantasyPoints() {
         try {
-            const response = await fetch('https://api.sleeper.app/v1/players/nfl/trending/add?lookback_hours=24&limit=10');
-            const data = await response.json();
-            if (data && Array.isArray(data) && data.length) {
-                const validItems = data.filter(item => item.position && item.first_name && item.last_name && item.add_count);
-                if (validItems.length) {
-                    tickerContent.innerHTML = validItems.map(item => `<span>${item.position}: ${item.first_name} ${item.last_name} - ${item.add_count} adds</span>`).join('') || '<span>No valid data</span>';
-                } else {
-                    tickerContent.innerHTML = '<span>No valid trending data</span>';
-                }
-            } else {
-                tickerContent.innerHTML = '<span>No trending data available</span>';
-            }
+            const mockData = [
+                { position: 'QB', name: 'Josh Allen', team: 'BUF', points: 25.4 },
+                { position: 'QB', name: 'Patrick Mahomes', team: 'KC', points: 25.1 },
+                { position: 'QB', name: 'Lamar Jackson', team: 'BAL', points: 23.8 },
+                { position: 'QB', name: 'Jalen Hurts', team: 'PHI', points: 22.3 },
+                { position: 'QB', name: 'Joe Burrow', team: 'CIN', points: 21.6 },
+                { position: 'WR', name: 'Davante Adams', team: 'LV', points: 20.9 },
+                { position: 'RB', name: 'Christian McCaffrey', team: 'SF', points: 20.5 },
+                { position: 'QB', name: 'Kyler Murray', team: 'ARI', points: 20.4 },
+                { position: 'QB', name: 'Dak Prescott', team: 'DAL', points: 20.1 },
+                { position: 'WR', name: 'Tyreek Hill', team: 'MIA', points: 19.8 },
+                { position: 'RB', name: 'Austin Ekeler', team: 'LAC', points: 19.5 },
+                { position: 'WR', name: 'Justin Jefferson', team: 'MIN', points: 19.2 },
+                { position: 'TE', name: 'Travis Kelce', team: 'KC', points: 18.9 },
+                { position: 'RB', name: 'Alvin Kamara', team: 'NO', points: 18.6 },
+                { position: 'WR', name: 'Stefon Diggs', team: 'BUF', points: 18.3 },
+                { position: 'QB', name: 'Russell Wilson', team: 'DEN', points: 18.0 },
+                { position: 'RB', name: 'Nick Chubb', team: 'CLE', points: 17.7 },
+                { position: 'WR', name: 'Cooper Kupp', team: 'LA', points: 17.4 },
+                { position: 'TE', name: 'George Kittle', team: 'SF', points: 17.1 },
+                { position: 'RB', name: 'Saquon Barkley', team: 'NYG', points: 16.8 },
+                { position: 'WR', name: 'Ja’Marr Chase', team: 'CIN', points: 16.5 },
+                { position: 'QB', name: 'Justin Herbert', team: 'LAC', points: 16.2 },
+                { position: 'RB', name: 'Jonathan Taylor', team: 'IND', points: 15.9 },
+                { position: 'WR', name: 'Deebo Samuel', team: 'SF', points: 15.6 },
+                { position: 'TE', name: 'Dallas Goedert', team: 'PHI', points: 15.3 },
+                { position: 'QB', name: 'Trevor Lawrence', team: 'JAX', points: 15.0 },
+                { position: 'RB', name: 'Derrick Henry', team: 'TEN', points: 14.7 },
+                { position: 'WR', name: 'A.J. Brown', team: 'PHI', points: 14.4 },
+                { position: 'TE', name: 'T.J. Hockenson', team: 'MIN', points: 14.1 },
+                { position: 'RB', name: 'Joe Mixon', team: 'CIN', points: 13.8 },
+                { position: 'WR', name: 'CeeDee Lamb', team: 'DAL', points: 13.5 },
+                { position: 'QB', name: 'Deshaun Watson', team: 'CLE', points: 13.2 },
+                { position: 'RB', name: 'Aaron Jones', team: 'GB', points: 12.9 },
+                { position: 'WR', name: 'Terry McLaurin', team: 'WAS', points: 12.6 },
+                { position: 'TE', name: 'Mark Andrews', team: 'BAL', points: 12.3 }
+            ];
+            tickerContent.innerHTML = mockData.map(player => `<span>${player.position}: ${player.name} (${player.team}) - ${player.points} pts</span>`).join('');
         } catch (error) {
             console.error('Error fetching fantasy points:', error);
             tickerContent.innerHTML = '<span>Failed to load fantasy points data</span>';
-        }
-        // Ensure scrolling with fallback content
-        if (!tickerContent.innerHTML.includes('adds')) {
-            tickerContent.innerHTML += '<span> - Check back later for updates...</span>';
         }
     }
 
@@ -46,8 +68,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const leagueTypeSelect = document.getElementById('leagueType');
     const scoringSelect = document.getElementById('scoring');
     const positionValueSelect = document.getElementById('positionValue');
+    const platformSelect = document.getElementById('platform');
 
-    // Mock data for players (fallback)
     const mockPlayers = [
         { id: '1', name: 'Christian McCaffrey', position: 'RB', redraftValue: 25, dynastyValue: 30 },
         { id: '2', name: 'De’Von Achane', position: 'RB', redraftValue: 18, dynastyValue: 22 },
@@ -56,15 +78,20 @@ document.addEventListener('DOMContentLoaded', () => {
         { id: '5', name: 'Drake London', position: 'WR', redraftValue: 14, dynastyValue: 17 }
     ];
 
-    async function fetchPlayers() {
-        try {
-            const response = await fetch('https://api.sleeper.app/v1/players/nfl');
-            if (!response.ok) throw new Error('Sleeper API request failed');
-            const data = await response.json();
-            return Object.values(data).filter(player => player.fantasy_positions && player.team).slice(0, 50);
-        } catch (error) {
-            console.error('Error fetching Sleeper players:', error);
-            tradeResult.textContent = 'Failed to fetch players. Using mock data.';
+    async function fetchPlayers(platform) {
+        if (platform === 'sleeper') {
+            try {
+                const response = await fetch('https://api.sleeper.app/v1/players/nfl');
+                if (!response.ok) throw new Error('Sleeper API request failed');
+                const data = await response.json();
+                return Object.values(data).filter(player => player.fantasy_positions && player.team).slice(0, 50);
+            } catch (error) {
+                console.error('Error fetching Sleeper players:', error);
+                tradeResult.textContent = 'Failed to fetch players. Using mock data.';
+                return mockPlayers;
+            }
+        } else {
+            tradeResult.textContent = `Player data for ${platform} not yet implemented. Using mock data.`;
             return mockPlayers;
         }
     }
@@ -85,22 +112,26 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    async function fetchTransactions(leagueId) {
-        try {
-            const url = `https://api.sleeper.app/v1/league/${leagueId}/transactions/1`;
-            const response = await fetch(url);
-            if (!response.ok) throw new Error('Sleeper transaction API request failed');
-            const data = await response.json();
-            return data.filter(tx => tx.type === 'trade').slice(0, 5);
-        } catch (error) {
-            console.error('Error fetching Sleeper transactions:', error);
-            tradeResult.textContent = 'Failed to fetch transactions. Check league ID or API access.';
+    async function fetchTransactions(leagueId, platform) {
+        if (platform === 'sleeper') {
+            try {
+                const url = `https://api.sleeper.app/v1/league/${leagueId}/transactions/1`;
+                const response = await fetch(url);
+                if (!response.ok) throw new Error('Sleeper transaction API request failed');
+                const data = await response.json();
+                return data.filter(tx => tx.type === 'trade').slice(0, 5);
+            } catch (error) {
+                console.error('Error fetching Sleeper transactions:', error);
+                tradeResult.textContent = 'Failed to fetch transactions. Check league ID or API access.';
+                return [];
+            }
+        } else {
             return [];
         }
     }
 
-    async function populatePlayers() {
-        const players = await fetchPlayers();
+    async function populatePlayers(platform) {
+        const players = await fetchPlayers(platform);
         const adpData = await fetchADP(leagueTypeSelect.value);
         const options = players.map(player => {
             const adp = adpData.find(p => p.name === (player.full_name || player.name)) || { redraftValue: 10, dynastyValue: 10 };
@@ -110,8 +141,8 @@ document.addEventListener('DOMContentLoaded', () => {
         team2Select.innerHTML = '<option value="">Select Player 2</option>' + options;
     }
 
-    async function displayRecentTrades(leagueId) {
-        const transactions = await fetchTransactions(leagueId);
+    async function displayRecentTrades(leagueId, platform) {
+        const transactions = await fetchTransactions(leagueId, platform);
         recentTrades.innerHTML = transactions.length ? transactions.map(tx => {
             const players = Object.entries(tx.adds || {}).map(([playerId]) => {
                 const player = mockPlayers.find(p => p.id === playerId) || { name: 'Unknown Player' };
@@ -134,11 +165,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
     syncLeagueBtn.addEventListener('click', async () => {
         const leagueId = leagueIdInput.value;
-        if (leagueId) {
+        const platform = platformSelect.value;
+        if (platform === 'sleeper' && leagueId) {
             tradeResult.textContent = 'Syncing league...';
-            await populatePlayers();
-            await displayRecentTrades(leagueId);
+            await populatePlayers(platform);
+            await displayRecentTrades(leagueId, platform);
             tradeResult.textContent = 'League synced successfully.';
+        } else if (platform !== 'sleeper') {
+            tradeResult.textContent = 'Only Sleeper platform is supported at this time.';
         } else {
             tradeResult.textContent = 'Please enter a valid League ID.';
         }
@@ -149,65 +183,4 @@ document.addEventListener('DOMContentLoaded', () => {
         const player2Id = team2Select.value;
         const leagueType = leagueTypeSelect.value;
         const scoring = scoringSelect.value;
-        const positionValue = positionValueSelect.value;
-
-        if (player1Id && player2Id && player1Id !== player2Id) {
-            const value1 = getPlayerValue(player1Id, leagueType, scoring, positionValue);
-            const value2 = getPlayerValue(player2Id, leagueType, scoring, positionValue);
-            const player1Name = team1Select.options[team1Select.selectedIndex].text;
-            const player2Name = team2Select.options[team2Select.selectedIndex].text;
-            if (value1 > value2) {
-                tradeResult.textContent = `${player1Name} is valued higher (${value1} vs ${value2}). Consider this trade if you need ${player2Name}'s position or future potential.`;
-            } else if (value2 > value1) {
-                tradeResult.textContent = `${player2Name} is valued higher (${value2} vs ${value1}). Consider this trade if you need ${player1Name}'s position or future potential.`;
-            } else {
-                tradeResult.textContent = 'The trade is balanced in value. Evaluate based on team needs.';
-            }
-        } else {
-            tradeResult.textContent = 'Please select two different players.';
-        }
-    });
-
-    leagueTypeSelect.addEventListener('change', () => analyzeTradeBtn.click());
-    scoringSelect.addEventListener('change', () => analyzeTradeBtn.click());
-    positionValueSelect.addEventListener('change', () => analyzeTradeBtn.click());
-
-    // Matchup Predictor (Placeholder)
-    const matchupTeam1Select = document.getElementById('matchupTeam1Select');
-    const matchupTeam2Select = document.getElementById('matchupTeam2Select');
-    const predictMatchupBtn = document.getElementById('predictMatchupBtn');
-    const predictionResult = document.getElementById('predictionResult');
-
-    async function fetchMatchupTeams() {
-        try {
-            const response = await fetch('https://api.sleeper.app/v1/league/1180205990138392576/rosters');
-            if (!response.ok) throw new Error('Matchup teams API request failed');
-            const data = await response.json();
-            if (data && data.length) {
-                matchupTeam1Select.innerHTML = '<option value="">Select Team 1</option>' + data.map(team => `<option value="${team.roster_id}">${team.owner_id}</option>`).join('');
-                matchupTeam2Select.innerHTML = '<option value="">Select Team 2</option>' + data.map(team => `<option value="${team.roster_id}">${team.owner_id}</option>`).join('');
-            }
-        } catch (error) {
-            console.error('Error fetching matchup teams:', error);
-            matchupTeam1Select.innerHTML = '<option value="">Error loading teams</option>';
-            matchupTeam2Select.innerHTML = '<option value="">Error loading teams</option>';
-        }
-    }
-
-    predictMatchupBtn.addEventListener('click', async () => {
-        const team1 = matchupTeam1Select.value;
-        const team2 = matchupTeam2Select.value;
-        if (team1 && team2 && team1 !== team2) {
-            predictionResult.textContent = 'Prediction not available (placeholder).';
-        } else {
-            predictionResult.textContent = 'Please select two different teams.';
-        }
-    });
-
-    fetchMatchupTeams();
-
-    // Dark mode toggle
-    const toggleDarkMode = () => {
-        document.body.classList.toggle('dark');
-    };
-});
+        const positionValue = positionValue
