@@ -34,6 +34,7 @@ body {
     font-weight: 600;
     color: #FFFFFF;
     min-width: 400%; /* Increased to prevent wrapping with longer content */
+    animation: marquee 25s linear infinite; /* Restore scrolling animation */
 }
 
 @keyframes marquee {
