@@ -23,7 +23,7 @@ body {
     padding: 8px 0;
     border-radius: 8px;
     overflow: hidden;
-    overflow-x: hidden; /* Prevent content wrap */
+    overflow-x: hidden;
     position: relative;
     width: 100%;
 }
@@ -31,12 +31,12 @@ body {
 .marquee-content {
     display: flex;
     gap: 1.5rem;
-    animation: marquee 15s linear infinite;
+    animation: marquee 25s linear infinite; /* Increased to 25s for slower scroll */
     white-space: nowrap;
     font-size: 1rem;
     font-weight: 600;
     color: #FFFFFF;
-    min-width: 300%; /* Increased to ensure seamless scrolling */
+    min-width: 300%;
 }
 
 @keyframes marquee {
