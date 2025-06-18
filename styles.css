@@ -19,7 +19,7 @@ body {
 }
 
 .marquee {
-    background-color: #00695C;
+    background-color: #26A69A; /* Vibrant teal color */
     padding: 8px 0;
     border-radius: 8px;
     overflow: hidden;
@@ -32,19 +32,19 @@ body {
     font-size: 1rem;
     font-weight: 600;
     color: #FFFFFF;
-    min-width: 500%;
-    animation: marquee 40s linear infinite; /* Slowed down to 40 seconds */
+    min-width: 200%; /* Adjusted for duplicated content */
+    animation: marquee 40s linear infinite;
 }
 
 .marquee-content b {
-    font-size: 1.2rem; /* Slightly larger for emphasis */
-    color: #FFD700; /* Gold color to stand out */
-    margin-right: 0.5rem; /* Space between position and player name */
+    font-size: 1.2rem;
+    color: #FFD700; /* Gold for position emphasis */
+    margin-right: 0.5rem;
 }
 
 @keyframes marquee {
     0% { transform: translateX(0); }
-    100% { transform: translateX(-100%); }
+    100% { transform: translateX(-50%); } /* Half the width for seamless loop with duplicate */
 }
 
 .marquee-content.paused {
