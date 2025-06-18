@@ -35,11 +35,11 @@ body {
     font-size: 1rem;
     font-weight: 600;
     color: #FFFFFF;
-    min-width: 300%; /* Increased to ensure scrolling */
+    min-width: 200%; /* Ensures content exceeds container width for scrolling */
 }
 
 @keyframes marquee {
-    0% { transform: translateX(100%); }
+    0% { transform: translateX(0); }
     100% { transform: translateX(-100%); }
 }
 
