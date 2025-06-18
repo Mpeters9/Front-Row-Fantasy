@@ -24,27 +24,20 @@ document.addEventListener('DOMContentLoaded', () => {
             { position: 'Wide Receiver', name: 'Deebo Samuel', team: 'SF', points: 15.6 },
             { position: 'Tight End', name: 'Travis Kelce', team: 'KC', points: 18.9 },
             { position: 'Tight End', name: 'George Kittle', team: 'SF', points: 17.1 },
-            { position: 'Tight End', name: 'Dallas Goedert', team: 'PHI', points: 15.3 },
-            { position: 'Kicker', name: 'Justin Tucker', team: 'BAL', points: 12.5 },
-            { position: 'Kicker', name: 'Harrison Butker', team: 'KC', points: 11.8 },
-            { position: 'Quarterback', name: 'Kyler Murray', team: 'ARI', points: 20.4 },
-            { position: 'Quarterback', name: 'Dak Prescott', team: 'DAL', points: 20.1 },
-            { position: 'Quarterback', name: 'Russell Wilson', team: 'DEN', points: 18.0 },
-            { position: 'Quarterback', name: 'Justin Herbert', team: 'LAC', points: 16.2 },
-            { position: 'Quarterback', name: 'Trevor Lawrence', team: 'JAX', points: 15.0 },
-            { position: 'Running Back', name: 'Jonathan Taylor', team: 'IND', points: 15.9 }
+            { position: 'Tight End', name: 'Dallas Goedert', team: 'PHI', points: 15.3 }
+            // Removed Kicker and additional Quarterbacks to avoid clutter, focusing on active offensive players
         ];
 
-        // Sort by position (Quarterback, Running Back, Wide Receiver, Tight End, Kicker) and then by points descending
+        // Sort by position (Quarterback, Running Back, Wide Receiver, Tight End) and then by points descending
         const sortedData = mockData.sort((a, b) => {
-            const positionOrder = { Quarterback: 1, 'Running Back': 2, 'Wide Receiver': 3, 'Tight End': 4, Kicker: 5 };
+            const positionOrder = { Quarterback: 1, 'Running Back': 2, 'Wide Receiver': 3, 'Tight End': 4 };
             if (positionOrder[a.position] !== positionOrder[b.position]) {
                 return positionOrder[a.position] - positionOrder[b.position];
             }
             return b.points - a.points;
         });
 
-        // Group by position and format as a single continuous line with bolded positions, duplicated for seamless looping
+        // Group by position and format as a single continuous line with bolded positions
         let content = '';
         let currentPosition = null;
         sortedData.forEach((player, index) => {
@@ -57,8 +50,6 @@ document.addEventListener('DOMContentLoaded', () => {
             }
             content += `${player.name} (${player.team}) - ${player.points} pts`;
         });
-        // Duplicate content for seamless looping
-        content += ' ' + content;
 
         tickerContent.innerHTML = content;
         if (getComputedStyle(tickerContent).animationPlayState === 'paused') {
@@ -88,28 +79,32 @@ document.addEventListener('DOMContentLoaded', () => {
     const platformSelect = document.getElementById('platform');
 
     const mockPlayers = [
-        { id: '1', name: 'Christian McCaffrey', position: 'Running Back', redraftValue: 25, dynastyValue: 30 },
-        { id: '2', name: 'De’Von Achane', position: 'Running Back', redraftValue: 18, dynastyValue: 22 },
-        { id: '3', name: 'Nico Collins', position: 'Wide Receiver', redraftValue: 15, dynastyValue: 18 },
-        { id: '4', name: 'Ashton Jeanty', position: 'Running Back', redraftValue: 12, dynastyValue: 20 },
-        { id: '5', name: 'Drake London', position: 'Wide Receiver', redraftValue: 14, dynastyValue: 17 }
+        { id: '1', name: 'Christian McCaffrey', position: 'Running Back', redraftValue: 25, dynastyValue: 30, status: 'active' },
+        { id: '2', name: 'De’Von Achane', position: 'Running Back', redraftValue: 18, dynastyValue: 22, status: 'active' },
+        { id: '3', name: 'Nico Collins', position: 'Wide Receiver', redraftValue: 15, dynastyValue: 18, status: 'active' },
+        { id: '4', name: 'Ashton Jeanty', position: 'Running Back', redraftValue: 12, dynastyValue: 20, status: 'active' },
+        { id: '5', name: 'Drake London', position: 'Wide Receiver', redraftValue: 14, dynastyValue: 17, status: 'active' },
+        { id: '6', name: 'Josh Allen', position: 'Quarterback', redraftValue: 25, dynastyValue: 28, status: 'active' },
+        { id: '7', name: 'Travis Kelce', position: 'Tight End', redraftValue: 18, dynastyValue: 20, status: 'active' }
+        // Excluded Kicker, Defense, and inactive players
     ];
 
     async function fetchPlayers(platform) {
         if (platform === 'sleeper') {
             try {
-                const response = await fetch('https://api.sleeper.app/v1/players/nfl');
+                const response = await fetch(`https://api.sleeper.app/v1/league/1191563061576404992/rosters`);
                 if (!response.ok) throw new Error('Sleeper API request failed');
                 const data = await response.json();
-                return Object.values(data).filter(player => player.fantasy_positions && player.team).slice(0, 50);
+                // Simulate fetching active offensive players
+                return mockPlayers.filter(player => player.status === 'active' && ['Quarterback', 'Running Back', 'Wide Receiver', 'Tight End'].includes(player.position));
             } catch (error) {
                 console.error('Error fetching Sleeper players:', error);
                 tradeResult.textContent = 'Failed to fetch players. Using mock data.';
-                return mockPlayers;
+                return mockPlayers.filter(player => player.status === 'active' && ['Quarterback', 'Running Back', 'Wide Receiver', 'Tight End'].includes(player.position));
             }
         } else {
             tradeResult.textContent = `Player data for ${platform} not yet implemented. Using mock data.`;
-            return mockPlayers;
+            return mockPlayers.filter(player => player.status === 'active' && ['Quarterback', 'Running Back', 'Wide Receiver', 'Tight End'].includes(player.position));
         }
     }
 
@@ -151,8 +146,8 @@ document.addEventListener('DOMContentLoaded', () => {
         const players = await fetchPlayers(platform);
         const adpData = await fetchADP(leagueTypeSelect.value);
         const options = players.map(player => {
-            const adp = adpData.find(p => p.name === (player.full_name || player.name)) || { redraftValue: 10, dynastyValue: 10 };
-            return `<option value="${player.player_id || player.id}" data-position="${player.fantasy_positions ? player.fantasy_positions[0] : player.position}" data-redraft="${adp.redraftValue || 10}" data-dynasty="${adp.dynastyValue || 10}">${player.full_name || player.name} (${player.fantasy_positions ? player.fantasy_positions[0] : player.position})</option>`;
+            const adp = adpData.find(p => p.name === player.name) || { redraftValue: 10, dynastyValue: 10 };
+            return `<option value="${player.id}" data-position="${player.position}" data-redraft="${adp.redraftValue || 10}" data-dynasty="${adp.dynastyValue || 10}">${player.name} (${player.position})</option>`;
         }).join('');
         team1Select.innerHTML = '<option value="">Select Player 1</option>' + options;
         team2Select.innerHTML = '<option value="">Select Player 2</option>' + options;
