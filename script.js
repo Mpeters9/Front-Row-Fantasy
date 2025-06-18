@@ -44,7 +44,7 @@ document.addEventListener('DOMContentLoaded', () => {
             return b.points - a.points;
         });
 
-        // Group by position and format as a single continuous line with bolded positions
+        // Group by position and format as a single continuous line with bolded positions, duplicated for seamless looping
         let content = '';
         let currentPosition = null;
         sortedData.forEach((player, index) => {
@@ -57,6 +57,8 @@ document.addEventListener('DOMContentLoaded', () => {
             }
             content += `${player.name} (${player.team}) - ${player.points} pts`;
         });
+        // Duplicate content for seamless looping
+        content += ' ' + content;
 
         tickerContent.innerHTML = content;
         if (getComputedStyle(tickerContent).animationPlayState === 'paused') {
