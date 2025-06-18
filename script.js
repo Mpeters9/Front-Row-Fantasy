@@ -4,8 +4,7 @@ const pauseButton = document.getElementById('pauseButton');
 
 async function fetchFantasyPoints() {
     try {
-        // Placeholder for API call - replace with actual API endpoint
-        const response = await fetch('https://api.example.com/fantasy-points'); // Example API
+        const response = await fetch('https://api.example.com/fantasy-points');
         const data = await response.json();
         if (data && data.points) {
             tickerContent.innerHTML = data.points.map(item => `<span>${item.position}: ${item.player} - ${item.points} pts</span>`).join('');
@@ -31,53 +30,71 @@ const team1Select = document.getElementById('team1Select');
 const team2Select = document.getElementById('team2Select');
 const analyzeTradeBtn = document.getElementById('analyzeTradeBtn');
 const tradeResult = document.getElementById('tradeResult');
+const leagueTypeSelect = document.getElementById('leagueType');
+const scoringSelect = document.getElementById('scoring');
+const positionValueSelect = document.getElementById('positionValue');
 
-// Mock data for teams (replace with API data)
-const mockTeams = [
-    { id: '1', name: 'Team A' },
-    { id: '2', name: 'Team B' },
-    { id: '3', name: 'Team C' },
-    { id: '4', name: 'Team D' },
-    { id: '5', name: 'Team E' }
+// Mock data for players (replace with API data)
+const mockPlayers = [
+    { id: '1', name: 'Christian McCaffrey', position: 'RB', redraftValue: 25, dynastyValue: 30 },
+    { id: '2', name: 'De’Von Achane', position: 'RB', redraftValue: 18, dynastyValue: 22 },
+    { id: '3', name: 'Nico Collins', position: 'WR', redraftValue: 15, dynastyValue: 18 },
+    { id: '4', name: 'Ashton Jeanty', position: 'RB', redraftValue: 12, dynastyValue: 20 },
+    { id: '5', name: 'Drake London', position: 'WR', redraftValue: 14, dynastyValue: 17 }
 ];
 
-function populateTeams() {
-    team1Select.innerHTML = '<option value="">Select Team 1</option>' + mockTeams.map(team => `<option value="${team.id}">${team.name}</option>`).join('');
-    team2Select.innerHTML = '<option value="">Select Team 2</option>' + mockTeams.map(team => `<option value="${team.id}">${team.name}</option>`).join('');
+function populatePlayers() {
+    const options = mockPlayers.map(player => `<option value="${player.id}">${player.name} (${player.position})</option>`).join('');
+    team1Select.innerHTML = '<option value="">Select Player 1</option>' + options;
+    team2Select.innerHTML = '<option value="">Select Player 2</option>' + options;
 }
 
-async function fetchTradeAnalysis(team1Id, team2Id) {
-    try {
-        // Placeholder for API call - replace with actual API endpoint
-        // const response = await fetch(`https://api.example.com/trade-analyze?team1=${team1Id}&team2=${team2Id}`);
-        // const data = await response.json();
-        // return data.analysis || 'Trade analysis not available';
+function getPlayerValue(playerId, leagueType, scoringModifier = 1, positionModifier = 1) {
+    const player = mockPlayers.find(p => p.id === playerId);
+    if (!player) return 0;
+    let baseValue = leagueType === 'dynasty' ? player.dynastyValue : player.redraftValue;
+    return Math.round(baseValue * scoringModifier * positionModifier);
+}
 
-        // Mock trade analysis (replace with real API logic)
-        const team1 = mockTeams.find(team => team.id === team1Id);
-        const team2 = mockTeams.find(team => team.id === team2Id);
-        if (team1 && team2) {
-            return `Trade analysis: ${team1.name} gains an edge with better overall stats compared to ${team2.name}.`;
+async function analyzeTrade() {
+    const player1Id = team1Select.value;
+    const player2Id = team2Select.value;
+    const leagueType = leagueTypeSelect.value;
+    const scoring = scoringSelect.value;
+    const positionValue = positionValueSelect.value;
+
+    if (player1Id && player2Id && player1Id !== player2Id) {
+        let scoringModifier = 1;
+        if (scoring === 'ppr') scoringModifier = 1.2;
+        else if (scoring === 'halfppr') scoringModifier = 1.1;
+
+        let positionModifier = 1;
+        if (positionValue === 'rbBoost') positionModifier = 1.3; // Boost for RBs
+        else if (positionValue === 'wrBoost') positionModifier = 1.2; // Boost for WRs
+
+        const value1 = getPlayerValue(player1Id, leagueType, scoringModifier, positionModifier);
+        const value2 = getPlayerValue(player2Id, leagueType, scoringModifier, positionModifier);
+
+        if (value1 > value2) {
+            tradeResult.textContent = `${mockPlayers.find(p => p.id === player1Id).name} is valued higher (${value1} vs ${value2}). Consider this trade if you need ${mockPlayers.find(p => p.id === player2Id).name}'s position or future potential.`;
+        } else if (value2 > value1) {
+            tradeResult.textContent = `${mockPlayers.find(p => p.id === player2Id).name} is valued higher (${value2} vs ${value1}). Consider this trade if you need ${mockPlayers.find(p => p.id === player1Id).name}'s position or future potential.`;
+        } else {
+            tradeResult.textContent = 'The trade is balanced in value. Evaluate based on team needs.';
         }
-        return 'No analysis available';
-    } catch (error) {
-        console.error('Error fetching trade analysis:', error);
-        return 'Failed to analyze trade';
+    } else {
+        tradeResult.textContent = 'Please select two different players.';
     }
 }
 
-analyzeTradeBtn.addEventListener('click', async () => {
-    const team1 = team1Select.value;
-    const team2 = team2Select.value;
-    if (team1 && team2 && team1 !== team2) {
-        const analysis = await fetchTradeAnalysis(team1, team2);
-        tradeResult.textContent = analysis;
-    } else {
-        tradeResult.textContent = 'Please select two different teams.';
-    }
-});
+analyzeTradeBtn.addEventListener('click', analyzeTrade);
 
-populateTeams();
+populatePlayers();
+
+// Add filters to index.html (to be implemented in next step)
+leagueTypeSelect.addEventListener('change', analyzeTrade);
+scoringSelect.addEventListener('change', analyzeTrade);
+positionValueSelect.addEventListener('change', analyzeTrade);
 
 // Matchup Predictor
 const matchupTeam1Select = document.getElementById('matchupTeam1Select');
@@ -87,7 +104,7 @@ const predictionResult = document.getElementById('predictionResult');
 
 async function fetchMatchupTeams() {
     try {
-        const response = await fetch('https://api.example.com/teams'); // Reuse teams API
+        const response = await fetch('https://api.example.com/teams');
         const data = await response.json();
         if (data && data.teams) {
             matchupTeam1Select.innerHTML = '<option value="">Select Team 1</option>' + data.teams.map(team => `<option value="${team.id}">${team.name}</option>`).join('');
@@ -119,7 +136,7 @@ predictMatchupBtn.addEventListener('click', async () => {
 
 fetchMatchupTeams();
 
-// Dark mode toggle (optional, can be triggered by a button if added)
+// Dark mode toggle
 const toggleDarkMode = () => {
     document.body.classList.toggle('dark');
 };
