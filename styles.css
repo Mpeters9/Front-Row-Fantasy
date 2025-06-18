@@ -22,8 +22,7 @@ body {
     background-color: #00695C;
     padding: 8px 0;
     border-radius: 8px;
-    overflow: hidden;
-    overflow-x: hidden;
+    overflow: hidden; /* Removed overflow-x: hidden */
     position: relative;
     width: 100%;
 }
@@ -33,8 +32,8 @@ body {
     font-size: 1rem;
     font-weight: 600;
     color: #FFFFFF;
-    min-width: 400%; /* Increased to prevent wrapping with longer content */
-    animation: marquee 25s linear infinite; /* Restore scrolling animation */
+    min-width: 500%; /* Increased to ensure content exceeds container width */
+    animation: marquee 25s linear infinite; /* Scrolling animation */
 }
 
 @keyframes marquee {
