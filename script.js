@@ -8,18 +8,22 @@ document.addEventListener('DOMContentLoaded', () => {
             const response = await fetch('https://api.sleeper.app/v1/players/nfl/trending/add?lookback_hours=24&limit=10');
             const data = await response.json();
             if (data && Array.isArray(data) && data.length) {
-                tickerContent.innerHTML = data.map(item => {
-                    if (item.position && item.first_name && item.last_name && item.add_count) {
-                        return `<span>${item.position}: ${item.first_name} ${item.last_name} - ${item.add_count} adds</span>`;
-                    }
-                    return '<span>Invalid data format</span>';
-                }).join('');
+                const validItems = data.filter(item => item.position && item.first_name && item.last_name && item.add_count);
+                if (validItems.length) {
+                    tickerContent.innerHTML = validItems.map(item => `<span>${item.position}: ${item.first_name} ${item.last_name} - ${item.add_count} adds</span>`).join('') || '<span>No valid data</span>';
+                } else {
+                    tickerContent.innerHTML = '<span>No valid trending data</span>';
+                }
             } else {
                 tickerContent.innerHTML = '<span>No trending data available</span>';
             }
         } catch (error) {
             console.error('Error fetching fantasy points:', error);
             tickerContent.innerHTML = '<span>Failed to load fantasy points data</span>';
+        }
+        // Ensure scrolling with fallback content
+        if (!tickerContent.innerHTML.includes('adds')) {
+            tickerContent.innerHTML += '<span> - Check back later for updates...</span>';
         }
     }
 
