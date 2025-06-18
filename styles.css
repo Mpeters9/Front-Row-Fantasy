@@ -29,14 +29,11 @@ body {
 }
 
 .marquee-content {
-    display: flex;
-    gap: 1.5rem;
-    animation: marquee 25s linear infinite; /* Increased to 25s for slower scroll */
-    white-space: nowrap;
+    white-space: nowrap; /* Ensure no wrapping */
     font-size: 1rem;
     font-weight: 600;
     color: #FFFFFF;
-    min-width: 300%;
+    min-width: 400%; /* Increased to prevent wrapping with longer content */
 }
 
 @keyframes marquee {
