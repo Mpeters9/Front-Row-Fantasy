@@ -1,148 +1,223 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+document.addEventListener('DOMContentLoaded', () => {
+    // Fantasy Points Ticker
+    const tickerContent = document.getElementById('tickerContent');
+    const pauseButton = document.getElementById('pauseButton');
 
-body {
-    background-color: #F5F5F5;
-}
-
-.card {
-    @apply bg-white dark:bg-gray-800 p-4 rounded-lg shadow-md hover:shadow-xl transition transform hover:-translate-y-1;
-}
-
-.button {
-    @apply bg-teal-500 text-white px-6 py-3 rounded-lg hover:bg-teal-600 transition;
-}
-
-.link {
-    @apply text-teal-500 hover:underline;
-}
-
-.marquee {
-    background: linear-gradient(90deg, #00695C, #26A69A);
-    padding: 8px 0;
-    border-radius: 8px;
-    overflow: hidden;
-    position: relative;
-    width: 100%;
-}
-
-.marquee-content {
-    display: flex;
-    gap: 1.5rem;
-    animation: marquee 15s linear infinite;
-    white-space: nowrap;
-    font-size: 1rem;
-    font-weight: 600;
-    color: #FFFFFF;
-    min-width: 100%;
-}
-
-@keyframes marquee {
-    0% { transform: translateX(100%); }
-    100% { transform: translateX(-100%); }
-}
-
-.marquee-content.paused {
-    animation-play-state: paused;
-}
-
-.spinner {
-    border: 4px solid rgba(0, 0, 0, 0.1);
-    border-left: 4px solid #26A69A;
-    border-radius: 50%;
-    width: 24px;
-    height: 24px;
-    animation: spin 1s linear infinite;
-    margin: 0 auto;
-}
-
-@keyframes spin {
-    to { transform: rotate(360deg); }
-}
-
-@media (max-width: 640px) {
-    h1 {
-        @apply text-2xl;
+    async function fetchFantasyPoints() {
+        try {
+            const apikey = 'FKDTXMJ98XB49TAS6M33';
+            const format = 'standard';
+            const url = `[invalid url, do not cite]
+            const response = await fetch(url);
+            if (!response.ok) throw new Error('Fantasy Nerds API request failed');
+            const data = await response.json();
+            if (data && data.players && Array.isArray(data.players) && data.players.length) {
+                const topPlayers = data.players.slice(0, 10);
+                tickerContent.innerHTML = topPlayers.map(player => `<span>${player.position}: ${player.name} - ADP ${player.adp}</span>`).join('');
+            } else {
+                throw new Error('No valid ADP data');
+            }
+        } catch (error) {
+            console.error('Error fetching ADP data:', error);
+            const mockData = [
+                { position: 'RB', name: 'Christian McCaffrey', adp: 1 },
+                { position: 'RB', name: 'Saquon Barkley', adp: 2 },
+                { position: 'WR', name: 'Justin Jefferson', adp: 3 },
+                { position: 'QB', name: 'Patrick Mahomes', adp: 4 },
+                { position: 'WR', name: 'Ja’Marr Chase', adp: 5 },
+                { position: 'RB', name: 'Jonathan Taylor', adp: 6 },
+                { position: 'WR', name: 'Tyreek Hill', adp: 7 },
+                { position: 'QB', name: 'Jalen Hurts', adp: 8 },
+                { position: 'WR', name: 'Cooper Kupp', adp: 9 },
+                { position: 'TE', name: 'Travis Kelce', adp: 10 }
+            ];
+            tickerContent.innerHTML = mockData.map(player => `<span>${player.position}: ${player.name} - ADP ${player.adp}</span>`).join('');
+        }
     }
-    h2 {
-        @apply text-xl;
+
+    pauseButton.addEventListener('click', () => {
+        const isPaused = tickerContent.classList.toggle('paused');
+        pauseButton.textContent = isPaused ? 'Play' : 'Pause';
+    });
+
+    setInterval(fetchFantasyPoints, 30000);
+    fetchFantasyPoints();
+
+    // Trade Analyzer
+    const leagueIdInput = document.getElementById('leagueId');
+    const syncLeagueBtn = document.getElementById('syncLeague');
+    const team1Select = document.getElementById('team1Select');
+    const team2Select = document.getElementById('team2Select');
+    const analyzeTradeBtn = document.getElementById('analyzeTradeBtn');
+    const tradeResult = document.getElementById('tradeResult');
+    const recentTrades = document.getElementById('recentTrades');
+    const leagueTypeSelect = document.getElementById('leagueType');
+    const scoringSelect = document.getElementById('scoring');
+    const positionValueSelect = document.getElementById('positionValue');
+    const platformSelect = document.getElementById('platform');
+
+    const mockPlayers = [
+        { id: '1', name: 'Christian McCaffrey', position: 'RB', redraftValue: 25, dynastyValue: 30 },
+        { id: '2', name: 'De’Von Achane', position: 'RB', redraftValue: 18, dynastyValue: 22 },
+        { id: '3', name: 'Nico Collins', position: 'WR', redraftValue: 15, dynastyValue: 18 },
+        { id: '4', name: 'Ashton Jeanty', position: 'RB', redraftValue: 12, dynastyValue: 20 },
+        { id: '5', name: 'Drake London', position: 'WR', redraftValue: 14, dynastyValue: 17 }
+    ];
+
+    async function fetchPlayers(platform) {
+        if (platform === 'sleeper') {
+            try {
+                const response = await fetch('[invalid url, do not cite]);
+                if (!response.ok) throw new Error('Sleeper API request failed');
+                const data = await response.json();
+                return Object.values(data).filter(player => player.fantasy_positions && player.team).slice(0, 50);
+            } catch (error) {
+                console.error('Error fetching Sleeper players:', error);
+                tradeResult.textContent = 'Failed to fetch players. Using mock data.';
+                return mockPlayers;
+            }
+        } else {
+            tradeResult.textContent = `Player data for ${platform} not yet implemented. Using mock data.`;
+            return mockPlayers;
+        }
     }
-    .card {
-        @apply p-3;
+
+    async function fetchADP(leagueType, teams = 12) {
+        const apikey = 'FKDTXMJ98XB49TAS6M33';
+        const format = leagueType === 'dynasty' ? 'dynasty' : scoringSelect.value || 'standard';
+        const url = `[invalid url, do not cite]
+        try {
+            const response = await fetch(url);
+            if (!response.ok) throw new Error('Fantasy Nerds API request failed');
+            const data = await response.json();
+            return data.players || [];
+        } catch (error) {
+            console.error('Error fetching ADP:', error);
+            tradeResult.textContent = 'Failed to fetch ADP data. Using mock values.';
+            return mockPlayers.map(p => ({ name: p.name, redraftValue: p.redraftValue, dynastyValue: p.dynastyValue }));
+        }
     }
-    .button {
-        @apply px-4 py-2;
+
+    async function fetchTransactions(leagueId, platform) {
+        if (platform === 'sleeper') {
+            try {
+                const url = `[invalid url, do not cite]
+                const response = await fetch(url);
+                if (!response.ok) throw new Error('Sleeper transaction API request failed');
+                const data = await response.json();
+                return data.filter(tx => tx.type === 'trade').slice(0, 5);
+            } catch (error) {
+                console.error('Error fetching Sleeper transactions:', error);
+                tradeResult.textContent = 'Failed to fetch transactions. Check league ID or API access.';
+                return [];
+            }
+        } else {
+            return [];
+        }
     }
-    .marquee-content {
-        @apply gap-2;
+
+    async function populatePlayers(platform) {
+        const players = await fetchPlayers(platform);
+        const adpData = await fetchADP(leagueTypeSelect.value);
+        const options = players.map(player => {
+            const adp = adpData.find(p => p.name === (player.full_name || player.name)) || { redraftValue: 10, dynastyValue: 10 };
+            return `<option value="${player.player_id || player.id}" data-position="${player.fantasy_positions ? player.fantasy_positions[0] : player.position}" data-redraft="${adp.redraftValue || 10}" data-dynasty="${adp.dynastyValue || 10}">${player.full_name || player.name} (${player.fantasy_positions ? player.fantasy_positions[0] : player.position})</option>`;
+        }).join('');
+        team1Select.innerHTML = '<option value="">Select Player 1</option>' + options;
+        team2Select.innerHTML = '<option value="">Select Player 2</option>' + options;
     }
-}
 
-.trade-analyzer {
-    background-color: #00695C !important;
-    color: #FFFFFF !important;
-    padding: 1rem;
-    border-radius: 8px;
-    position: relative;
-    z-index: 1;
-}
+    async function displayRecentTrades(leagueId, platform) {
+        const transactions = await fetchTransactions(leagueId, platform);
+        recentTrades.innerHTML = transactions.length ? transactions.map(tx => {
+            const players = Object.entries(tx.adds || {}).map(([playerId]) => {
+                const player = mockPlayers.find(p => p.id === playerId) || { name: 'Unknown Player' };
+                return player.name;
+            }).join(', ');
+            return `<p class="mt-2">Trade: ${players} exchanged between rosters ${tx.roster_ids.join(' and ')}</p>`;
+        }).join('') : '<p>No recent trades found.</p>';
+    }
 
-.trade-analyzer h3 {
-    font-size: 1.25rem;
-    font-weight: 600;
-    margin-bottom: 1rem;
-}
+    function getPlayerValue(playerId, leagueType, scoring, positionValue) {
+        const option = team1Select.querySelector(`option[value="${playerId}"]`) || team2Select.querySelector(`option[value="${playerId}"]`);
+        if (!option) return 0;
+        let baseValue = leagueType === 'dynasty' ? parseFloat(option.dataset.dynasty) : parseFloat(option.dataset.redraft);
+        let scoringModifier = scoring === 'ppr' ? 1.2 : scoring === 'halfppr' ? 1.1 : 1;
+        let positionModifier = 1;
+        if (positionValue === 'qbBoost' && option.dataset.position === 'QB') positionModifier = 1.3;
+        if (positionValue === 'teBoost' && option.dataset.position === 'TE') positionModifier = 1.5;
+        return Math.round(baseValue * scoringModifier * positionModifier);
+    }
 
-.trade-analyzer label {
-    display: block;
-    font-size: 0.875rem;
-    font-weight: 500;
-    margin-bottom: 0.5rem;
-    color: #FFFFFF !important;
-}
+    syncLeagueBtn.addEventListener('click', async () => {
+        const leagueId = leagueIdInput.value;
+        const platform = platformSelect.value;
+        if (platform === 'sleeper' && leagueId) {
+            tradeResult.textContent = 'Syncing league...';
+            await populatePlayers(platform);
+            await displayRecentTrades(leagueId, platform);
+            tradeResult.textContent = 'League synced successfully.';
+        } else if (platform !== 'sleeper') {
+            tradeResult.textContent = 'Only Sleeper platform is supported at this time.';
+        } else {
+            tradeResult.textContent = 'Please enter a valid League ID.';
+        }
+    });
 
-.trade-analyzer input, .trade-analyzer select {
-    width: 100%;
-    padding: 0.5rem;
-    border-radius: 4px;
-    background-color: #263238 !important;
-    color: #FFFFFF !important;
-    margin-bottom: 1rem;
-}
+    analyzeTradeBtn.addEventListener('click', () => {
+        const player1Id = team1Select.value;
+        const player2Id = team2Select.value;
+        const leagueType = leagueTypeSelect.value;
+        const scoring = scoringSelect.value;
+        const positionValue = positionValueSelect.value;
 
-.trade-analyzer select option {
-    color: #FFFFFF !important;
-    background-color: #37474F !important;
-}
+        if (player1Id && player2Id && player1Id !== player2Id) {
+            const value1 = getPlayerValue(player1Id, leagueType, scoring, positionValue);
+            const value2 = getPlayerValue(player2Id, leagueType, scoring, positionValue);
+            const player1Name = team1Select.options[team1Select.selectedIndex].text;
+            const player2Name = team2Select.options[team2Select.selectedIndex].text;
+            if (value1 > value2) {
+                tradeResult.textContent = `${player1Name} is valued higher (${value1} vs ${value2}). Consider this trade if you need ${player2Name}'s position or future potential.`;
+            } else if (value2 > value1) {
+                tradeResult.textContent = `${player2Name} is valued higher (${value2} vs ${value1}). Consider this trade if you need ${player1Name}'s position or future potential.`;
+            } else {
+                tradeResult.textContent = 'The trade is balanced in value. Evaluate based on team needs.';
+            }
+        } else {
+            tradeResult.textContent = 'Please select two different players.';
+        }
+    });
 
-.trade-analyzer select option:checked {
-    background-color: #26A69A !important;
-}
+    leagueTypeSelect.addEventListener('change', () => analyzeTradeBtn.click());
+    scoringSelect.addEventListener('change', () => analyzeTradeBtn.click());
+    positionValueSelect.addEventListener('change', () => analyzeTradeBtn.click());
 
-.trade-analyzer button {
-    width: 100%;
-    padding: 0.5rem 1rem;
-    background-color: #26A69A;
-    color: #FFFFFF;
-    border-radius: 4px;
-    cursor: pointer;
-    transition: background-color 0.3s;
-}
+    // Matchup Predictor
+    const matchupTeam1Select = document.getElementById('matchupTeam1Select');
+    const matchupTeam2Select = document.getElementById('matchupTeam2Select');
+    const predictMatchupBtn = document.getElementById('predictMatchupBtn');
+    const predictionResult = document.getElementById('predictionResult');
 
-.trade-analyzer button:hover {
-    background-color: #00796B;
-}
+    async function fetchMatchupTeams() {
+        try {
+            const response = await fetch('[invalid url, do not cite]);
+            if (!response.ok) throw new Error('Matchup teams API request failed');
+            const data = await response.json();
+            if (data && data.length) {
+                matchupTeam1Select.innerHTML = '<option value="">Select Team 1</option>' + data.map(team => `<option value="${team.roster_id}">${team.owner_id}</option>`).join('');
+                matchupTeam2Select.innerHTML = '<option value="">Select Team 2</option>' + data.map(team => `<option value="${team.roster_id}">${team.owner_id}</option>`).join('');
+            }
+        } catch (error) {
+            console.error('Error fetching matchup teams:', error);
+            matchupTeam1Select.innerHTML = '<option value="">Error loading teams</option>';
+            matchupTeam2Select.innerHTML = '<option value="">Error loading teams</option>';
+        }
+    }
 
-.trade-analyzer p {
-    text-align: center;
-    margin-top: 1rem;
-}
-
-.trade-analyzer .filter-section {
-    margin-bottom: 1rem;
-    padding: 1rem;
-    background-color: #1E2A33 !important;
-    border-radius: 8px;
-    color: #FFFFFF !important;
-}
+    predictMatchupBtn.addEventListener('click', async () => {
+        const team1 = matchupTeam1Select.value;
+        const team2 = matchupTeam2Select.value;
+        if (team1 && team2 && team1 !== team2) {
+            predictionResult.textContent = 'Prediction not available (placeholder).';
+        } else {
+            predictionResult.textContent =
