@@ -19,7 +19,7 @@ body {
 }
 
 .marquee {
-    background-color: #26A69A; /* Vibrant teal color */
+    background-color: #26A69A;
     padding: 8px 0;
     border-radius: 8px;
     overflow: hidden;
@@ -32,19 +32,19 @@ body {
     font-size: 1rem;
     font-weight: 600;
     color: #FFFFFF;
-    min-width: 200%; /* Adjusted for duplicated content */
+    min-width: 100%; /* Reset to match single content width */
     animation: marquee 40s linear infinite;
 }
 
 .marquee-content b {
     font-size: 1.2rem;
-    color: #FFD700; /* Gold for position emphasis */
+    color: #FFD700;
     margin-right: 0.5rem;
 }
 
 @keyframes marquee {
     0% { transform: translateX(0); }
-    100% { transform: translateX(-50%); } /* Half the width for seamless loop with duplicate */
+    100% { transform: translateX(-100%); } /* Full width translation for seamless loop */
 }
 
 .marquee-content.paused {
