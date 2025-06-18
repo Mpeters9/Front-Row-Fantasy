@@ -3,7 +3,7 @@
 @tailwind utilities;
 
 body {
-    background-color: #F5F5F5;
+    background-color: #F5F5F5 !important;
 }
 
 .card {
@@ -35,12 +35,12 @@ body {
     font-size: 1rem;
     font-weight: 600;
     color: #FFFFFF;
-    min-width: 200%; /* Ensure scrolling with enough content */
+    min-width: 300%; /* Increased to ensure scrolling */
 }
 
 @keyframes marquee {
-    0% { transform: translateX(0); }
-    100% { transform: translateX(-50%); }
+    0% { transform: translateX(100%); }
+    100% { transform: translateX(-100%); }
 }
 
 .marquee-content.paused {
@@ -85,7 +85,7 @@ body {
     padding: 1rem;
     border-radius: 8px;
     position: relative;
-    z-index: 10; /* Higher z-index to ensure visibility */
+    z-index: 10;
 }
 
 .trade-analyzer h3 {
@@ -125,15 +125,15 @@ body {
 .trade-analyzer button {
     width: 100%;
     padding: 0.5rem 1rem;
-    background-color: #26A69A;
-    color: #FFFFFF;
+    background-color: #26A69A !important;
+    color: #FFFFFF !important;
     border-radius: 4px;
     cursor: pointer;
     transition: background-color 0.3s;
 }
 
 .trade-analyzer button:hover {
-    background-color: #00796B;
+    background-color: #00796B !important;
 }
 
 .trade-analyzer p {
