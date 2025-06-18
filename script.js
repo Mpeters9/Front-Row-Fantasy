@@ -44,12 +44,12 @@ document.addEventListener('DOMContentLoaded', () => {
             return b.points - a.points;
         });
 
-        // Group by position and format with position label at the start of each group
+        // Group by position and format with position label at the start of each group in a single line
         let content = '';
         let currentPosition = null;
         sortedData.forEach((player, index) => {
             if (player.position !== currentPosition) {
-                if (currentPosition !== null) content += '<br>'; // Add line break between groups
+                if (currentPosition !== null) content += ', ';
                 content += `${player.position}: `;
                 currentPosition = player.position;
             } else if (index > 0) {
