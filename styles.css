@@ -19,7 +19,7 @@ body {
 }
 
 .marquee {
-    background: linear-gradient(90deg, #00695C, #26A69A);
+    background-color: #00695C; /* Solid color to remove gradient flicker */
     padding: 8px 0;
     border-radius: 8px;
     overflow: hidden;
