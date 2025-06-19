@@ -73,78 +73,23 @@ document.addEventListener('DOMContentLoaded', () => {
     const leagueIdInput = document.getElementById('leagueId');
     const syncLeagueBtn = document.getElementById('syncLeague');
 
-    let allPlayers = [];
-
-    async function fetchPlayers() {
-        try {
-            const response = await fetch('https://api.sleeper.app/v1/players/nfl');
-            if (!response.ok) throw new Error('Sleeper API request failed');
-            const data = await response.json();
-            console.log('Raw API response:', data); // Debug log
-            // Filter for active offensive players and kickers, exclude Defense/ST, retired, or inactive players
-            const activePlayers = Object.values(data)
-                .filter(player => player.active && !player.retired && player.fantasy_positions && 
-                    ['QB', 'RB', 'WR', 'TE', 'K'].includes(player.fantasy_positions[0]))
-                .map(player => ({
-                    id: player.player_id,
-                    name: player.full_name || player.name,
-                    position: player.fantasy_positions[0] === 'QB' ? 'Quarterback' :
-                            player.fantasy_positions[0] === 'RB' ? 'Running Back' :
-                            player.fantasy_positions[0] === 'WR' ? 'Wide Receiver' :
-                            player.fantasy_positions[0] === 'TE' ? 'Tight End' : 'Kicker'
-                }));
-            if (activePlayers.length === 0) {
-                console.error('No active players returned from API. Check status field or API data.');
-            }
-            return activePlayers;
-        } catch (error) {
-            console.error('Error fetching players:', error);
-            tradeResult.textContent = 'Failed to fetch players. Using mock data.';
-            return [
-                { id: '1', name: 'Josh Allen', position: 'Quarterback' },
-                { id: '2', name: 'Christian McCaffrey', position: 'Running Back' },
-                { id: '3', name: 'Tyreek Hill', position: 'Wide Receiver' },
-                { id: '4', name: 'Travis Kelce', position: 'Tight End' },
-                { id: '5', name: 'Justin Tucker', position: 'Kicker' }
-            ];
-        }
-    }
-
-    async function fetchADP() {
-        const apikey = 'FKDTXMJ98XB49TAS6M33';
-        const url = `https://api.fantasynerds.com/v1/nfl/adp?apikey=${apikey}&teams=12&format=standard`;
-        try {
-            const response = await fetch(url);
-            if (!response.ok) throw new Error('Fantasy Nerds API request failed due to CORS or server issue');
-            const data = await response.json();
-            return data.players || [];
-        } catch (error) {
-            console.warn('ADP fetch failed (CORS or API issue):', error.message);
-            tradeResult.textContent = 'ADP data unavailable. Proceeding without ADP.';
-            return []; // Return empty array to proceed without ADP
-        }
-    }
-
-    async function initializePlayers() {
-        allPlayers = await fetchPlayers();
-        if (allPlayers.length === 0) {
-            tradeResult.textContent = 'No players available. Check API status.';
-            return;
-        }
-        const adpData = await fetchADP();
-        if (adpData.length > 0) {
-            allPlayers.forEach(player => {
-                const adp = adpData.find(p => p.name === player.name);
-                player.adpRank = adp ? adp.adp : Infinity;
-            });
-        } else {
-            allPlayers.forEach(player => player.adpRank = Infinity); // Default to Infinity if no ADP
-        }
-        setupAutocomplete();
-    }
+    let allPlayers = [
+        { id: '1', name: 'Josh Allen', position: 'Quarterback' },
+        { id: '2', name: 'Patrick Mahomes', position: 'Quarterback' },
+        { id: '3', name: 'Lamar Jackson', position: 'Quarterback' },
+        { id: '4', name: 'Christian McCaffrey', position: 'Running Back' },
+        { id: '5', name: 'Austin Ekeler', position: 'Running Back' },
+        { id: '6', name: 'Alvin Kamara', position: 'Running Back' },
+        { id: '7', name: 'Tyreek Hill', position: 'Wide Receiver' },
+        { id: '8', name: 'Davante Adams', position: 'Wide Receiver' },
+        { id: '9', name: 'Justin Jefferson', position: 'Wide Receiver' },
+        { id: '10', name: 'Travis Kelce', position: 'Tight End' },
+        { id: '11', name: 'George Kittle', position: 'Tight End' },
+        { id: '12', name: 'Darren Waller', position: 'Tight End' }
+    ];
 
     function setupAutocomplete() {
-        const debouncedFilter = debounce((input, select) => filterPlayers(input.value, select), 300);
+        const debouncedFilter = debounce((input, dropdown) => filterPlayers(input.value, dropdown), 300);
 
         [team1Select, team2Select].forEach(select => {
             const wrapper = document.createElement('div');
@@ -153,33 +98,27 @@ document.addEventListener('DOMContentLoaded', () => {
             input.type = 'text';
             input.className = 'w-full p-2 border rounded mb-2 bg-gray-700 text-white';
             input.placeholder = `Search ${select.id === 'team1Select' ? 'Player 1' : 'Player 2'}...`;
-            const dropdown = select.cloneNode(true);
-            dropdown.id = `${select.id}-dropdown`;
-            dropdown.style.display = 'block';
-            dropdown.style.position = 'absolute';
-            dropdown.style.top = '100%';
-            dropdown.style.left = 0;
-            dropdown.style.width = '100%';
-            dropdown.style.zIndex = 10;
-            dropdown.style.background = '#37474F';
-            dropdown.style.maxHeight = '200px';
-            dropdown.style.overflowY = 'auto';
+            const dropdownList = document.createElement('ul');
+            dropdownList.className = 'absolute top-100% left-0 w-full bg-gray-800 text-white border rounded mt-1 max-h-48 overflow-y-auto z-10';
             wrapper.appendChild(input);
-            wrapper.appendChild(dropdown);
+            wrapper.appendChild(dropdownList);
             select.parentNode.insertBefore(wrapper, select);
             select.style.display = 'none';
 
-            input.addEventListener('input', () => debouncedFilter(input, dropdown));
-            input.addEventListener('blur', () => {
-                setTimeout(() => dropdown.style.display = 'none', 200);
-            });
+            input.addEventListener('input', () => debouncedFilter(input, dropdownList));
             input.addEventListener('focus', () => {
-                if (input.value) dropdown.style.display = 'block';
+                if (input.value) filterPlayers(input.value, dropdownList);
             });
-            dropdown.addEventListener('change', (e) => {
-                input.value = e.target.selectedOptions[0].text;
-                select.value = e.target.value;
-                dropdown.style.display = 'none';
+            input.addEventListener('blur', () => {
+                setTimeout(() => dropdownList.innerHTML = '', 200);
+            });
+            dropdownList.addEventListener('click', (e) => {
+                if (e.target.tagName === 'LI') {
+                    input.value = e.target.textContent;
+                    select.value = e.target.dataset.id;
+                    dropdownList.innerHTML = '';
+                    analyzeTradeBtn.click();
+                }
             });
         });
     }
@@ -196,10 +135,9 @@ document.addEventListener('DOMContentLoaded', () => {
         };
     }
 
-    function filterPlayers(searchTerm, dropdown) {
+    function filterPlayers(searchTerm, dropdownList) {
         if (!searchTerm) {
-            dropdown.innerHTML = '<option value="">Select Player</option>';
-            dropdown.style.display = 'none';
+            dropdownList.innerHTML = '';
             return;
         }
 
@@ -211,14 +149,12 @@ document.addEventListener('DOMContentLoaded', () => {
             return aRelevance - bRelevance;
         });
 
-        let options = '<option value="">Select Player</option>';
+        let options = '';
         filteredPlayers.forEach(player => {
-            const adpText = player.adpRank === Infinity ? 'N/A' : player.adpRank.toFixed(1);
-            options += `<option value="${player.id}" data-position="${player.position}">${player.name} - ${adpText}</option>`;
+            options += `<li class="p-2 hover:bg-gray-700 cursor-pointer" data-id="${player.id}">${player.name} (${player.position})</li>`;
         });
 
-        dropdown.innerHTML = options;
-        dropdown.style.display = 'block';
+        dropdownList.innerHTML = options;
     }
 
     function getPlayerValue(playerId, leagueType, scoring, positionValue) {
@@ -237,7 +173,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const platform = platformSelect.value;
         if (platform === 'sleeper' && leagueId) {
             tradeResult.textContent = 'Syncing league...';
-            await initializePlayers();
+            setupAutocomplete();
             tradeResult.textContent = 'League synced successfully.';
         } else if (platform !== 'sleeper') {
             tradeResult.textContent = 'Only Sleeper platform is supported at this time.';
@@ -256,8 +192,8 @@ document.addEventListener('DOMContentLoaded', () => {
         if (player1Id && player2Id && player1Id !== player2Id) {
             const value1 = getPlayerValue(player1Id, leagueType, scoring, positionValue);
             const value2 = getPlayerValue(player2Id, leagueType, scoring, positionValue);
-            const player1Name = team1Select.options[team1Select.selectedIndex].text;
-            const player2Name = team2Select.options[team2Select.selectedIndex].text;
+            const player1Name = allPlayers.find(p => p.id === player1Id).name;
+            const player2Name = allPlayers.find(p => p.id === player2Id).name;
             if (value1 > value2) {
                 tradeResult.textContent = `${player1Name} is valued higher (${value1} vs ${value2}). Consider this trade if you need ${player2Name}'s position or future potential.`;
             } else if (value2 > value1) {
@@ -274,7 +210,7 @@ document.addEventListener('DOMContentLoaded', () => {
     scoringSelect.addEventListener('change', () => analyzeTradeBtn.click());
     positionValueSelect.addEventListener('change', () => analyzeTradeBtn.click());
 
-    initializePlayers();
+    setupAutocomplete();
 
     // Matchup Predictor
     const matchupTeam1Select = document.getElementById('matchupTeam1Select');
