@@ -11,7 +11,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
 </head>
-<body class="text-black transition-colors duration-300 bg-gray-100" aria-label="Main content">
+<body class="text-black bg-gray-100" aria-label="Main content">
     <header class="bg-gray-100 shadow-md py-3" role="banner">
         <div class="max-w-7xl mx-auto px-4 flex justify-between items-center">
             <h1 class="text-2xl font-bold text-teal-600">Front Row Fantasy</h1>
@@ -62,11 +62,11 @@
         </section>
 
         <section class="grid grid-cols-1 md:grid-cols-3 gap-6 bg-gray-100">
-            <div class="trade-analyzer">
-                <h3 class="text-lg font-semibold text-white">Trade Analyzer</h3>
+            <div class="trade-analyzer bg-teal-800 text-white p-4 rounded-lg">
+                <h3 class="text-lg font-semibold">Trade Analyzer</h3>
                 <div class="filter-section">
                     <label for="platform" class="text-white font-medium">Platform:</label>
-                    <select id="platform" class="w-full mt-2 p-2 rounded bg-gray-700 text-white">
+                    <select id="platform" class="w-full mt-2 p-2 rounded bg-gray-700 text-white border border-teal-300">
                         <option value="sleeper">Sleeper</option>
                         <option value="yahoo">Yahoo</option>
                         <option value="espn">ESPN</option>
@@ -75,18 +75,18 @@
                     <input type="text" id="leagueId" class="w-full mt-2 p-2 rounded bg-gray-700 text-white border border-teal-300">
                     <button id="syncLeague" class="mt-2 w-full bg-teal-600 text-white px-4 py-2 rounded hover:bg-teal-700">Sync League</button>
                     <label for="leagueType" class="text-white font-medium">League Type:</label>
-                    <select id="leagueType" class="w-full mt-2 p-2 rounded bg-gray-700 text-white">
+                    <select id="leagueType" class="w-full mt-2 p-2 rounded bg-gray-700 text-white border border-teal-300">
                         <option value="redraft">Redraft</option>
                         <option value="dynasty">Dynasty</option>
                     </select>
                     <label for="scoring" class="text-white font-medium">Scoring:</label>
-                    <select id="scoring" class="w-full mt-2 p-2 rounded bg-gray-700 text-white">
+                    <select id="scoring" class="w-full mt-2 p-2 rounded bg-gray-700 text-white border border-teal-300">
                         <option value="standard">Standard</option>
                         <option value="halfppr">Half PPR</option>
                         <option value="ppr">PPR</option>
                     </select>
                     <label for="positionValue" class="text-white font-medium">Position Value:</label>
-                    <select id="positionValue" class="w-full mt-2 p-2 rounded bg-gray-700 text-white">
+                    <select id="positionValue" class="w-full mt-2 p-2 rounded bg-gray-700 text-white border border-teal-300">
                         <option value="neutral">Neutral</option>
                         <option value="qbBoost">QB Boost (Superflex)</option>
                         <option value="teBoost">TE Boost (Premium)</option>
@@ -99,15 +99,15 @@
                     <option value="">Select Player 2</option>
                 </select>
                 <button id="analyzeTradeBtn" class="mt-4 w-full bg-teal-600 text-white px-4 py-2 rounded hover:bg-teal-700">Analyze Trade</button>
-                <p id="tradeResult" class="mt-2 text-center text-white"></p>
+                <p id="tradeResult" class="mt-2 text-center"></p>
                 <div id="recentTrades"></div>
             </div>
             <div class="bg-teal-800 text-white p-4 rounded-lg">
                 <h3 class="text-lg font-semibold">Matchup Predictor</h3>
-                <select class="w-full mt-2 p-2 rounded bg-gray-700 text-white" id="matchupTeam1Select">
+                <select class="w-full mt-2 p-2 rounded bg-gray-700 text-white border border-teal-300" id="matchupTeam1Select">
                     <option value="">Select Team 1</option>
                 </select>
-                <select class="w-full mt-2 p-2 rounded bg-gray-700 text-white" id="matchupTeam2Select">
+                <select class="w-full mt-2 p-2 rounded bg-gray-700 text-white border border-teal-300" id="matchupTeam2Select">
                     <option value="">Select Team 2</option>
                 </select>
                 <button class="mt-4 w-full bg-teal-600 text-white px-4 py-2 rounded hover:bg-teal-700" id="predictMatchupBtn">Predict Matchup</button>
