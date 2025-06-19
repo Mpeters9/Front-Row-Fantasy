@@ -47,22 +47,33 @@
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div class="p-4 bg-teal-50 rounded shadow">
                     <h3 class="text-lg font-semibold text-gray-900">Latest Stats</h3>
-                    <p class="text-gray-900">Stay updated with the latest player performances.</p>
+                    <ul class="mt-2 text-gray-900">
+                        <li>Josh Allen (QB, BUF) - 25.4 pts</li>
+                        <li>Christian McCaffrey (RB, SF) - 20.5 pts</li>
+                        <li>Tyreek Hill (WR, MIA) - 19.8 pts</li>
+                        <li>Travis Kelce (TE, KC) - 18.9 pts</li>
+                        <li>Justin Tucker (K, BAL) - 14.5 pts</li>
+                    </ul>
                 </div>
                 <div class="p-4 bg-teal-50 rounded shadow">
                     <h3 class="text-lg font-semibold text-gray-900">Expert Tools</h3>
-                    <p class="text-gray-900">Analyze trades and predict matchups with ease.</p>
+                    <p class="mt-2 text-gray-900">Optimize your roster with our tools:</p>
+                    <ul class="mt-2 text-gray-900">
+                        <li><a href="#trade-analyzer" class="text-teal-600 hover:underline">Trade Analyzer</a> - Evaluate trade offers.</li>
+                        <li><a href="#matchup-predictor" class="text-teal-600 hover:underline">Matchup Predictor</a> - Forecast game outcomes.</li>
+                    </ul>
                 </div>
                 <div class="p-4 bg-teal-50 rounded shadow">
                     <h3 class="text-lg font-semibold text-gray-900">Community</h3>
-                    <p class="text-gray-900">Join our Discord to connect with fellow fans.</p>
+                    <p class="mt-2 text-gray-900">Join our fantasy football community!</p>
+                    <a href="https://discord.com/invite/fantasyfootball" target="_blank" class="mt-2 inline-block text-teal-600 hover:underline">Join Discord</a>
                 </div>
             </div>
             <button class="mt-6 bg-teal-600 text-white px-6 py-2 rounded hover:bg-teal-700">Join Now</button>
         </section>
 
         <section class="grid grid-cols-1 md:grid-cols-3 gap-6 bg-gray-100">
-            <div class="trade-analyzer bg-teal-800 text-white p-4 rounded-lg">
+            <div id="trade-analyzer" class="trade-analyzer bg-teal-800 text-white p-4 rounded-lg">
                 <h3 class="text-lg font-semibold">Trade Analyzer</h3>
                 <div class="filter-section">
                     <label for="platform" class="text-white font-medium">Platform:</label>
@@ -135,7 +146,7 @@
                     <option value="">Select Player</option>
                 </select>
             </div>
-            <div class="bg-teal-800 text-white p-4 rounded-lg">
+            <div id="matchup-predictor" class="bg-teal-800 text-white p-4 rounded-lg">
                 <h3 class="text-lg font-semibold">Matchup Predictor</h3>
                 <select class="w-full mt-2 p-2 rounded bg-gray-700 text-white border border-teal-300" id="matchupTeam1Select">
                     <option value="">Select Team 1</option>
