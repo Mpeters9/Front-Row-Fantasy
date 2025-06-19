@@ -99,7 +99,7 @@ document.addEventListener('DOMContentLoaded', () => {
             input.className = 'w-full p-2 border rounded mb-2 bg-gray-700 text-white';
             input.placeholder = `Search ${select.id === 'team1Select' ? 'Player 1' : 'Player 2'}...`;
             const dropdownList = document.createElement('ul');
-            dropdownList.className = 'absolute top-100% left-0 w-full bg-gray-800 text-white border rounded mt-1 max-h-48 overflow-y-auto z-10';
+            dropdownList.className = 'absolute top-full left-0 w-full bg-gray-800 text-white border rounded mt-1 max-h-48 overflow-y-auto z-10';
             wrapper.appendChild(input);
             wrapper.appendChild(dropdownList);
             select.parentNode.insertBefore(wrapper, select);
