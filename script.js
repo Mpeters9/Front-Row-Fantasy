@@ -111,7 +111,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const wrapper = input.parentElement;
             const dropdownList = document.createElement('ul');
             dropdownList.id = dropdownId;
-            dropdownList.className = 'absolute top-full left-0 w-full bg-teal-800 text-white border border-teal-300 rounded mt-1 max-h-48 overflow-y-auto z-50';
+            dropdownList.className = 'absolute z-50 mt-1 w-full max-h-48 overflow-y-auto rounded border border-teal-300 bg-teal-800 text-white';
             wrapper.appendChild(dropdownList);
 
             input.addEventListener('input', () => debouncedFilter(input, dropdownId, select));
@@ -171,6 +171,8 @@ document.addEventListener('DOMContentLoaded', () => {
         });
 
         dropdownList.innerHTML = options || '<li class="p-2 text-gray-400">No players found</li>';
+        dropdownList.style.top = `${input.offsetHeight + 2}px`;
+        dropdownList.style.left = '0';
     }
 
     function getPlayerValue(playerId, leagueType, rosterType) {
