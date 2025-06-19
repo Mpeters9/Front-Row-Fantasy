@@ -89,7 +89,7 @@ document.addEventListener('DOMContentLoaded', () => {
     ];
 
     function setupAutocomplete() {
-        const debouncedFilter = debounce((input, dropdown) => filterPlayers(input.value, dropdown), 300);
+        const debouncedFilter = debounce((input, dropdown) => filterPlayers(input.value, dropdown, input), 300);
 
         [team1Select, team2Select].forEach(select => {
             const wrapper = document.createElement('div');
@@ -107,17 +107,18 @@ document.addEventListener('DOMContentLoaded', () => {
 
             input.addEventListener('input', () => debouncedFilter(input, dropdownList));
             input.addEventListener('focus', () => {
-                if (input.value) filterPlayers(input.value, dropdownList);
+                if (input.value) filterPlayers(input.value, dropdownList, input);
             });
             input.addEventListener('blur', () => {
                 setTimeout(() => dropdownList.innerHTML = '', 200);
             });
             dropdownList.addEventListener('click', (e) => {
                 if (e.target.tagName === 'LI') {
-                    input.value = e.target.textContent;
-                    select.value = e.target.dataset.id;
+                    const player = allPlayers.find(p => p.id === e.target.dataset.id);
+                    input.value = `${player.name} (${player.position})`;
+                    select.value = player.id;
                     dropdownList.innerHTML = '';
-                    analyzeTradeBtn.click();
+                    analyzeTrade(analyzeTradeBtn); // Direct call to analysis function
                 }
             });
         });
@@ -135,7 +136,7 @@ document.addEventListener('DOMContentLoaded', () => {
         };
     }
 
-    function filterPlayers(searchTerm, dropdownList) {
+    function filterPlayers(searchTerm, dropdownList, input) {
         if (!searchTerm) {
             dropdownList.innerHTML = '';
             return;
@@ -158,31 +159,17 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function getPlayerValue(playerId, leagueType, scoring, positionValue) {
-        const option = team1Select.querySelector(`option[value="${playerId}"]`) || team2Select.querySelector(`option[value="${playerId}"]`);
-        if (!option) return 0;
+        const player = allPlayers.find(p => p.id === playerId);
+        if (!player) return 0;
         let baseValue = 10;
         let scoringModifier = scoring === 'ppr' ? 1.2 : scoring === 'halfppr' ? 1.1 : 1;
         let positionModifier = 1;
-        if (positionValue === 'qbBoost' && option.dataset.position === 'Quarterback') positionModifier = 1.3;
-        if (positionValue === 'teBoost' && option.dataset.position === 'Tight End') positionModifier = 1.5;
+        if (positionValue === 'qbBoost' && player.position === 'Quarterback') positionModifier = 1.3;
+        if (positionValue === 'teBoost' && player.position === 'Tight End') positionModifier = 1.5;
         return Math.round(baseValue * scoringModifier * positionModifier);
     }
 
-    syncLeagueBtn.addEventListener('click', async () => {
-        const leagueId = leagueIdInput.value;
-        const platform = platformSelect.value;
-        if (platform === 'sleeper' && leagueId) {
-            tradeResult.textContent = 'Syncing league...';
-            setupAutocomplete();
-            tradeResult.textContent = 'League synced successfully.';
-        } else if (platform !== 'sleeper') {
-            tradeResult.textContent = 'Only Sleeper platform is supported at this time.';
-        } else {
-            tradeResult.textContent = 'Please enter a valid League ID.';
-        }
-    });
-
-    analyzeTradeBtn.addEventListener('click', () => {
+    function analyzeTrade(button) {
         const player1Id = team1Select.value;
         const player2Id = team2Select.value;
         const leagueType = leagueTypeSelect.value;
@@ -204,11 +191,26 @@ document.addEventListener('DOMContentLoaded', () => {
         } else {
             tradeResult.textContent = 'Please select two different players.';
         }
+    }
+
+    syncLeagueBtn.addEventListener('click', async () => {
+        const leagueId = leagueIdInput.value;
+        const platform = platformSelect.value;
+        if (platform === 'sleeper' && leagueId) {
+            tradeResult.textContent = 'Syncing league...';
+            setupAutocomplete();
+            tradeResult.textContent = 'League synced successfully.';
+        } else if (platform !== 'sleeper') {
+            tradeResult.textContent = 'Only Sleeper platform is supported at this time.';
+        } else {
+            tradeResult.textContent = 'Please enter a valid League ID.';
+        }
     });
 
-    leagueTypeSelect.addEventListener('change', () => analyzeTradeBtn.click());
-    scoringSelect.addEventListener('change', () => analyzeTradeBtn.click());
-    positionValueSelect.addEventListener('change', () => analyzeTradeBtn.click());
+    analyzeTradeBtn.addEventListener('click', () => analyzeTrade(analyzeTradeBtn));
+    leagueTypeSelect.addEventListener('change', () => analyzeTrade(analyzeTradeBtn));
+    scoringSelect.addEventListener('change', () => analyzeTrade(analyzeTradeBtn));
+    positionValueSelect.addEventListener('change', () => analyzeTrade(analyzeTradeBtn));
 
     setupAutocomplete();
 
