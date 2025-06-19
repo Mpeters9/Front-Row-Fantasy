@@ -31,7 +31,7 @@ document.addEventListener('DOMContentLoaded', () => {
         ];
 
         const sortedData = mockData.sort((a, b) => {
-            const positionOrder = { Quarterback: 1, 'Running Back': 2, 'Wide Receiver': 3, 'Tight End': 4, Kicker: 5 };
+            const positionOrder = { "Quarterback": 1, "Running Back": 2, "Wide Receiver": 3, "Tight End": 4, "Kicker": 5 };
             if (positionOrder[a.position] !== positionOrder[b.position]) {
                 return positionOrder[a.position] - positionOrder[b.position];
             }
@@ -42,16 +42,16 @@ document.addEventListener('DOMContentLoaded', () => {
         let currentPosition = null;
         sortedData.forEach((player, index) => {
             if (player.position !== currentPosition) {
-                if (currentPosition !== null) content += ' ';
+                if (currentPosition !== null) content += ' | ';
                 content += `<b>${player.position}:</b> `;
                 currentPosition = player.position;
             } else {
-                content += ' ';
+                content += ' | ';
             }
             content += `${player.name} (${player.team}) - ${player.points} pts`;
         });
 
-        tickerContent.innerHTML = content + ' ' + content; // Duplicate for seamless loop
+        tickerContent.innerHTML = content + ' | ' + content; // Duplicate for seamless loop
         tickerContent.classList.remove('loading');
     }
 
@@ -104,10 +104,10 @@ document.addEventListener('DOMContentLoaded', () => {
             input.type = 'text';
             input.id = select.id === 'team1Select' ? 'player1Input' : 'player2Input';
             input.name = select.id === 'team1Select' ? 'player1' : 'player2';
-            input.className = 'w-full p-2 border rounded mb-2 bg-gray-700 text-white';
+            input.className = 'w-full p-2 border rounded bg-teal-700 text-white focus:outline-none focus:border-teal-500';
             input.placeholder = `Search ${select.id === 'team1Select' ? 'Player 1' : 'Player 2'}...`;
             const dropdownList = document.createElement('ul');
-            dropdownList.className = 'absolute top-full left-0 w-full bg-gray-800 text-white border rounded mt-1 max-h-48 overflow-y-auto z-10';
+            dropdownList.className = 'absolute top-full left-0 w-full bg-teal-800 text-white border border-teal-300 rounded mt-1 max-h-48 overflow-y-auto z-50';
             wrapper.appendChild(input);
             wrapper.appendChild(dropdownList);
             select.parentNode.insertBefore(wrapper, select);
@@ -121,10 +121,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 setTimeout(() => dropdownList.innerHTML = '', 200);
             });
             dropdownList.addEventListener('click', (e) => {
-                if (e.target.tagName === 'LI') {
-                    const player = allPlayers.find(p => p.id === e.target.dataset.id);
+                const li = e.target.closest('li');
+                if (li) {
+                    const playerId = li.dataset.id;
+                    const player = allPlayers.find(p => p.id === playerId);
                     input.value = `${player.name} (${player.position})`;
-                    select.value = player.id;
+                    select.value = playerId;
+                    console.log(`Selected player ID: ${select.value}`); // Debug log
                     dropdownList.innerHTML = '';
                     analyzeTrade(analyzeTradeBtn);
                 }
@@ -155,13 +158,13 @@ document.addEventListener('DOMContentLoaded', () => {
         ).sort((a, b) => {
             const aRelevance = a.name.toLowerCase().indexOf(searchTerm.toLowerCase());
             const bRelevance = b.name.toLowerCase().indexOf(searchTerm.toLowerCase());
-            return aRelevance - bRelevance;
+            return aRelevance - bRelevance || a.adp - b.adp; // Secondary sort by ADP
         });
 
         let options = '';
         filteredPlayers.forEach(player => {
             const adpText = player.adp ? player.adp.toFixed(1) : 'N/A';
-            options += `<li class="p-2 hover:bg-gray-700 cursor-pointer" data-id="${player.id}">${player.name} (${player.position}) - ADP: ${adpText}</li>`;
+            options += `<li class="p-2 hover:bg-teal-600 cursor-pointer" data-id="${player.id}">${player.name} (${player.position}) - ADP: ${adpText}</li>`;
         });
 
         dropdownList.innerHTML = options;
@@ -170,7 +173,7 @@ document.addEventListener('DOMContentLoaded', () => {
     function getPlayerValue(playerId, leagueType, scoring, positionValue) {
         const player = allPlayers.find(p => p.id === playerId);
         if (!player) return 0;
-        let baseValue = player.adp ? 100 / player.adp : 10; // Use ADP for value if available
+        let baseValue = player.adp ? 100 / player.adp : 10;
         let scoringModifier = scoring === 'ppr' ? 1.2 : scoring === 'halfppr' ? 1.1 : 1;
         let positionModifier = 1;
         if (positionValue === 'qbBoost' && player.position === 'Quarterback') positionModifier = 1.3;
@@ -181,6 +184,8 @@ document.addEventListener('DOMContentLoaded', () => {
     function analyzeTrade(button) {
         const player1Id = team1Select.value;
         const player2Id = team2Select.value;
+        console.log(`Player 1 ID: ${player1Id}`); // Debug log
+        console.log(`Player 2 ID: ${player2Id}`); // Debug log
         const leagueType = leagueTypeSelect.value;
         const scoring = scoringSelect.value;
         const positionValue = positionValueSelect.value;
