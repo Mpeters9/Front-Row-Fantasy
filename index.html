@@ -16,10 +16,10 @@
         <div class="max-w-7xl mx-auto px-4 flex justify-between items-center">
             <h1 class="text-2xl font-bold text-teal-600">Front Row Fantasy</h1>
             <nav class="space-x-4">
-                <a href="#home" class="hover:underline">Home</a>
-                <a href="#about" class="hover:underline">About</a>
-                <a href="#games" class="hover:underline">Games</a>
-                <a href="#contact" class="hover:underline">Contact</a>
+                <a href="#home" class="hover:underline text-teal-600">Home</a>
+                <a href="#about" class="hover:underline text-teal-600">About</a>
+                <a href="#games" class="hover:underline text-teal-600">Games</a>
+                <a href="#contact" class="hover:underline text-teal-600">Contact</a>
             </nav>
         </div>
     </header>
@@ -63,43 +63,43 @@
 
         <section class="grid grid-cols-1 md:grid-cols-3 gap-6 bg-gray-100">
             <div class="trade-analyzer">
-                <h3>Trade Analyzer</h3>
+                <h3 class="text-lg font-semibold text-white">Trade Analyzer</h3>
                 <div class="filter-section">
-                    <label for="platform">Platform:</label>
-                    <select id="platform">
+                    <label for="platform" class="text-white font-medium">Platform:</label>
+                    <select id="platform" class="w-full mt-2 p-2 rounded bg-gray-700 text-white">
                         <option value="sleeper">Sleeper</option>
                         <option value="yahoo">Yahoo</option>
                         <option value="espn">ESPN</option>
                     </select>
-                    <label for="leagueId">League ID:</label>
-                    <input type="text" id="leagueId">
-                    <button id="syncLeague">Sync League</button>
-                    <label for="leagueType">League Type:</label>
-                    <select id="leagueType">
+                    <label for="leagueId" class="text-white font-medium">League ID:</label>
+                    <input type="text" id="leagueId" class="w-full mt-2 p-2 rounded bg-gray-700 text-white border border-teal-300">
+                    <button id="syncLeague" class="mt-2 w-full bg-teal-600 text-white px-4 py-2 rounded hover:bg-teal-700">Sync League</button>
+                    <label for="leagueType" class="text-white font-medium">League Type:</label>
+                    <select id="leagueType" class="w-full mt-2 p-2 rounded bg-gray-700 text-white">
                         <option value="redraft">Redraft</option>
                         <option value="dynasty">Dynasty</option>
                     </select>
-                    <label for="scoring">Scoring:</label>
-                    <select id="scoring">
+                    <label for="scoring" class="text-white font-medium">Scoring:</label>
+                    <select id="scoring" class="w-full mt-2 p-2 rounded bg-gray-700 text-white">
                         <option value="standard">Standard</option>
                         <option value="halfppr">Half PPR</option>
                         <option value="ppr">PPR</option>
                     </select>
-                    <label for="positionValue">Position Value:</label>
-                    <select id="positionValue">
+                    <label for="positionValue" class="text-white font-medium">Position Value:</label>
+                    <select id="positionValue" class="w-full mt-2 p-2 rounded bg-gray-700 text-white">
                         <option value="neutral">Neutral</option>
                         <option value="qbBoost">QB Boost (Superflex)</option>
                         <option value="teBoost">TE Boost (Premium)</option>
                     </select>
                 </div>
-                <select id="team1Select">
+                <select id="team1Select" class="hidden">
                     <option value="">Select Player 1</option>
                 </select>
-                <select id="team2Select">
+                <select id="team2Select" class="hidden">
                     <option value="">Select Player 2</option>
                 </select>
-                <button id="analyzeTradeBtn">Analyze Trade</button>
-                <p id="tradeResult"></p>
+                <button id="analyzeTradeBtn" class="mt-4 w-full bg-teal-600 text-white px-4 py-2 rounded hover:bg-teal-700">Analyze Trade</button>
+                <p id="tradeResult" class="mt-2 text-center text-white"></p>
                 <div id="recentTrades"></div>
             </div>
             <div class="bg-teal-800 text-white p-4 rounded-lg">
