@@ -20,7 +20,7 @@ document.addEventListener('DOMContentLoaded', () => {
             { position: 'Wide Receiver', name: 'Justin Jefferson', team: 'MIN', points: 19.2 },
             { position: 'Wide Receiver', name: 'Stefon Diggs', team: 'BUF', points: 18.3 },
             { position: 'Wide Receiver', name: 'Cooper Kupp', team: 'LA', points: 17.4 },
-            { position: 'Wide Receiver', name: 'Ja’Marr Chase', team: 'CIN', points: 16.5 },
+            { position: 'Wide Receiver', name: 'JaMarr Chase', team: 'CIN', points: 16.5 },
             { position: 'Wide Receiver', name: 'Deebo Samuel', team: 'SF', points: 15.6 },
             { position: 'Tight End', name: 'Travis Kelce', team: 'KC', points: 18.9 },
             { position: 'Tight End', name: 'George Kittle', team: 'SF', points: 17.1 },
@@ -29,7 +29,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Sort by position and then by points descending
         const sortedData = mockData.sort((a, b) => {
-            const positionOrder = { Quarterback: 1, 'Running Back': 2, 'Wide Receiver': 3, 'Tight End': 4 };
+            const positionOrder = { Quarterback: 1, Running Back: 2, Wide Receiver: 3, Tight End: 4 };
             if (positionOrder[a.position] !== positionOrder[b.position]) {
                 return positionOrder[a.position] - positionOrder[b.position];
             }
@@ -47,7 +47,7 @@ document.addEventListener('DOMContentLoaded', () => {
             } else {
                 content += ' ';
             }
-            content += `${player.name} (${player.team}) - ${player.points} pts`;
+            content += `${player.name} ${player.team} - ${player.points} pts`;
         });
 
         tickerContent.innerHTML = content;
@@ -74,6 +74,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const scoringSelect = document.getElementById('scoring');
     const positionValueSelect = document.getElementById('positionValue');
     const platformSelect = document.getElementById('platform');
+    const leagueIdInput = document.getElementById('leagueId');
+    const syncLeagueBtn = document.getElementById('syncLeague');
 
     async function fetchPlayers() {
         try {
@@ -141,7 +143,8 @@ document.addEventListener('DOMContentLoaded', () => {
             if (positionGroups[position].length) {
                 options += `<optgroup label="${position}">`;
                 positionGroups[position].forEach(player => {
-                    options += `<option value="${player.id}" data-position="${player.position}">${player.name}</option>`;
+                    const adpText = player.adpRank === Infinity ? 'N/A' : player.adpRank.toFixed(1);
+                    options += `<option value="${player.id}" data-position="${player.position}">${player.name} - ${adpText}</option>`;
                 });
                 options += '</optgroup>';
             }
@@ -160,6 +163,20 @@ document.addEventListener('DOMContentLoaded', () => {
         if (positionValue === 'teBoost' && option.dataset.position === 'Tight End') positionModifier = 1.5;
         return Math.round(baseValue * scoringModifier * positionModifier);
     }
+
+    syncLeagueBtn.addEventListener('click', async () => {
+        const leagueId = leagueIdInput.value;
+        const platform = platformSelect.value;
+        if (platform === 'sleeper' && leagueId) {
+            tradeResult.textContent = 'Syncing league...';
+            await populatePlayers();
+            tradeResult.textContent = 'League synced successfully.';
+        } else if (platform !== 'sleeper') {
+            tradeResult.textContent = 'Only Sleeper platform is supported at this time.';
+        } else {
+            tradeResult.textContent = 'Please enter a valid League ID.';
+        }
+    });
 
     analyzeTradeBtn.addEventListener('click', () => {
         const player1Id = team1Select.value;
@@ -188,10 +205,6 @@ document.addEventListener('DOMContentLoaded', () => {
     leagueTypeSelect.addEventListener('change', () => analyzeTradeBtn.click());
     scoringSelect.addEventListener('change', () => analyzeTradeBtn.click());
     positionValueSelect.addEventListener('change', () => analyzeTradeBtn.click());
-
-    // Remove syncLeagueBtn and leagueIdInput related logic
-    document.getElementById('syncLeague').remove();
-    document.getElementById('leagueId').remove();
 
     populatePlayers();
 
