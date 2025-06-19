@@ -20,15 +20,16 @@ document.addEventListener('DOMContentLoaded', () => {
             { position: 'Wide Receiver', name: 'Justin Jefferson', team: 'MIN', points: 19.2 },
             { position: 'Wide Receiver', name: 'Stefon Diggs', team: 'BUF', points: 18.3 },
             { position: 'Wide Receiver', name: 'Cooper Kupp', team: 'LA', points: 17.4 },
-            { position: 'Wide Receiver', name: 'JaMarr Chase', team: 'CIN', points: 16.5 },
-            { position: 'Wide Receiver', name: 'Deebo Samuel', team: 'SF', points: 15.6 },
             { position: 'Tight End', name: 'Travis Kelce', team: 'KC', points: 18.9 },
             { position: 'Tight End', name: 'George Kittle', team: 'SF', points: 17.1 },
-            { position: 'Tight End', name: 'Dallas Goedert', team: 'PHI', points: 15.3 }
+            { position: 'Tight End', name: 'Dallas Goedert', team: 'PHI', points: 15.3 },
+            { position: 'Kicker', name: 'Justin Tucker', team: 'BAL', points: 14.5 },
+            { position: 'Kicker', name: 'Harrison Butker', team: 'KC', points: 13.8 },
+            { position: 'Kicker', name: 'Evan McPherson', team: 'CIN', points: 13.2 }
         ];
 
         const sortedData = mockData.sort((a, b) => {
-            const positionOrder = { "Quarterback": 1, "Running Back": 2, "Wide Receiver": 3, "Tight End": 4 };
+            const positionOrder = { Quarterback: 1, 'Running Back': 2, 'Wide Receiver': 3, 'Tight End': 4, Kicker: 5 };
             if (positionOrder[a.position] !== positionOrder[b.position]) {
                 return positionOrder[a.position] - positionOrder[b.position];
             }
@@ -48,7 +49,7 @@ document.addEventListener('DOMContentLoaded', () => {
             content += `${player.name} (${player.team}) - ${player.points} pts`;
         });
 
-        tickerContent.innerHTML = content;
+        tickerContent.innerHTML = content + ' ' + content; // Duplicate for seamless loop
         tickerContent.classList.remove('loading');
     }
 
@@ -74,18 +75,21 @@ document.addEventListener('DOMContentLoaded', () => {
     const syncLeagueBtn = document.getElementById('syncLeague');
 
     let allPlayers = [
-        { id: '1', name: 'Josh Allen', position: 'Quarterback' },
-        { id: '2', name: 'Patrick Mahomes', position: 'Quarterback' },
-        { id: '3', name: 'Lamar Jackson', position: 'Quarterback' },
-        { id: '4', name: 'Christian McCaffrey', position: 'Running Back' },
-        { id: '5', name: 'Austin Ekeler', position: 'Running Back' },
-        { id: '6', name: 'Alvin Kamara', position: 'Running Back' },
-        { id: '7', name: 'Tyreek Hill', position: 'Wide Receiver' },
-        { id: '8', name: 'Davante Adams', position: 'Wide Receiver' },
-        { id: '9', name: 'Justin Jefferson', position: 'Wide Receiver' },
-        { id: '10', name: 'Travis Kelce', position: 'Tight End' },
-        { id: '11', name: 'George Kittle', position: 'Tight End' },
-        { id: '12', name: 'Darren Waller', position: 'Tight End' }
+        { id: '1', name: 'Josh Allen', position: 'Quarterback', adp: 5.2 },
+        { id: '2', name: 'Patrick Mahomes', position: 'Quarterback', adp: 6.1 },
+        { id: '3', name: 'Lamar Jackson', position: 'Quarterback', adp: 7.8 },
+        { id: '4', name: 'Christian McCaffrey', position: 'Running Back', adp: 1.5 },
+        { id: '5', name: 'Austin Ekeler', position: 'Running Back', adp: 12.3 },
+        { id: '6', name: 'Alvin Kamara', position: 'Running Back', adp: 15.6 },
+        { id: '7', name: 'Tyreek Hill', position: 'Wide Receiver', adp: 3.4 },
+        { id: '8', name: 'Davante Adams', position: 'Wide Receiver', adp: 8.9 },
+        { id: '9', name: 'Justin Jefferson', position: 'Wide Receiver', adp: 2.7 },
+        { id: '10', name: 'Travis Kelce', position: 'Tight End', adp: 10.2 },
+        { id: '11', name: 'George Kittle', position: 'Tight End', adp: 18.5 },
+        { id: '12', name: 'Darren Waller', position: 'Tight End', adp: 22.1 },
+        { id: '13', name: 'Justin Tucker', position: 'Kicker', adp: 50.3 },
+        { id: '14', name: 'Harrison Butker', position: 'Kicker', adp: 55.7 },
+        { id: '15', name: 'Evan McPherson', position: 'Kicker', adp: 60.4 }
     ];
 
     function setupAutocomplete() {
@@ -93,11 +97,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
         [team1Select, team2Select].forEach(select => {
             const wrapper = document.createElement('div');
-            wrapper.className = 'relative';
+            wrapper.className = 'input-wrapper';
             const input = document.createElement('input');
             input.type = 'text';
-            input.id = select.id === 'team1Select' ? 'player1Input' : 'player2Input'; // Unique IDs
-            input.name = select.id === 'team1Select' ? 'player1' : 'player2'; // Unique names
+            input.id = select.id === 'team1Select' ? 'player1Input' : 'player2Input';
+            input.name = select.id === 'team1Select' ? 'player1' : 'player2';
             input.className = 'w-full p-2 border rounded mb-2 bg-gray-700 text-white';
             input.placeholder = `Search ${select.id === 'team1Select' ? 'Player 1' : 'Player 2'}...`;
             const dropdownList = document.createElement('ul');
@@ -120,7 +124,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     input.value = `${player.name} (${player.position})`;
                     select.value = player.id;
                     dropdownList.innerHTML = '';
-                    analyzeTrade(analyzeTradeBtn); // Direct call to analysis function
+                    analyzeTrade(analyzeTradeBtn);
                 }
             });
         });
@@ -154,7 +158,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
         let options = '';
         filteredPlayers.forEach(player => {
-            options += `<li class="p-2 hover:bg-gray-700 cursor-pointer" data-id="${player.id}">${player.name} (${player.position})</li>`;
+            const adpText = player.adp ? player.adp.toFixed(1) : 'N/A';
+            options += `<li class="p-2 hover:bg-gray-700 cursor-pointer" data-id="${player.id}">${player.name} (${player.position}) - ADP: ${adpText}</li>`;
         });
 
         dropdownList.innerHTML = options;
@@ -163,7 +168,7 @@ document.addEventListener('DOMContentLoaded', () => {
     function getPlayerValue(playerId, leagueType, scoring, positionValue) {
         const player = allPlayers.find(p => p.id === playerId);
         if (!player) return 0;
-        let baseValue = 10;
+        let baseValue = player.adp ? 100 / player.adp : 10; // Use ADP for value if available
         let scoringModifier = scoring === 'ppr' ? 1.2 : scoring === 'halfppr' ? 1.1 : 1;
         let positionModifier = 1;
         if (positionValue === 'qbBoost' && player.position === 'Quarterback') positionModifier = 1.3;
