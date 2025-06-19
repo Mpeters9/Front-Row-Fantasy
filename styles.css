@@ -34,7 +34,7 @@ body {
     font-size: 1rem;
     font-weight: 600;
     color: #FFFFFF;
-    min-width: 100%;
+    min-width: 200%; /* Ensure full width for duplication */
     animation: marquee 40s linear infinite;
 }
 
@@ -67,6 +67,55 @@ body {
     to { transform: rotate(360deg); }
 }
 
+.trade-analyzer {
+    @apply bg-teal-100 p-6 rounded-lg shadow-md;
+}
+
+.trade-analyzer h3 {
+    @apply text-xl font-semibold text-teal-800 mb-4;
+}
+
+.trade-analyzer .filter-section {
+    @apply grid grid-cols-1 gap-4 mb-6;
+}
+
+.trade-analyzer label {
+    @apply text-teal-800 font-medium;
+}
+
+.trade-analyzer select,
+.trade-analyzer input {
+    @apply w-full p-2 border border-teal-300 rounded bg-gray-700 text-white;
+}
+
+.trade-analyzer button {
+    @apply bg-teal-500 text-white px-4 py-2 rounded hover:bg-teal-600 mt-2;
+}
+
+.trade-analyzer .input-wrapper {
+    @apply relative mb-4;
+}
+
+.trade-analyzer input {
+    @apply w-full p-2 border rounded bg-gray-700 text-white;
+}
+
+.trade-analyzer input:focus {
+    @apply outline-none border-teal-500;
+}
+
+.trade-analyzer ul {
+    @apply absolute top-full left-0 w-full bg-gray-800 text-white border border-teal-300 rounded mt-1 max-h-48 overflow-y-auto z-10;
+}
+
+.trade-analyzer ul li {
+    @apply p-2 hover:bg-teal-700 cursor-pointer;
+}
+
+#tradeResult {
+    @apply mt-4 p-2 bg-teal-200 text-teal-800 rounded;
+}
+
 @media (max-width: 640px) {
     h1 {
         @apply text-2xl;
@@ -83,7 +132,7 @@ body {
     .marquee-content {
         font-size: 0.9rem;
     }
+    .trade-analyzer .filter-section {
+        @apply grid-cols-1;
+    }
 }
-
-.trade-analyzer {
-    background-color: #
