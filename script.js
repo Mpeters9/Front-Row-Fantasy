@@ -27,7 +27,6 @@ document.addEventListener('DOMContentLoaded', () => {
             { position: 'Tight End', name: 'Dallas Goedert', team: 'PHI', points: 15.3 }
         ];
 
-        // Sort by position and then by points descending
         const sortedData = mockData.sort((a, b) => {
             const positionOrder = { "Quarterback": 1, "Running Back": 2, "Wide Receiver": 3, "Tight End": 4 };
             if (positionOrder[a.position] !== positionOrder[b.position]) {
@@ -36,7 +35,6 @@ document.addEventListener('DOMContentLoaded', () => {
             return b.points - a.points;
         });
 
-        // Group by position and format as a single continuous line with bolded positions
         let content = '';
         let currentPosition = null;
         sortedData.forEach((player, index) => {
@@ -51,7 +49,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
 
         tickerContent.innerHTML = content;
-        tickerContent.classList.remove('loading'); // Remove loading class once content is populated
+        tickerContent.classList.remove('loading');
     }
 
     pauseButton.addEventListener('click', () => {
@@ -74,6 +72,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const platformSelect = document.getElementById('platform');
     const leagueIdInput = document.getElementById('leagueId');
     const syncLeagueBtn = document.getElementById('syncLeague');
+
+    let allPlayers = [];
 
     async function fetchPlayers() {
         try {
@@ -121,45 +121,72 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    async function populatePlayers() {
-        const players = await fetchPlayers();
-        if (players.length === 0) {
-            tradeResult.textContent = 'No active players found. Check API status.';
+    async function initializePlayers() {
+        allPlayers = await fetchPlayers();
+        const adpData = await fetchADP();
+        allPlayers.forEach(player => {
+            const adp = adpData.find(p => p.name === player.name);
+            player.adpRank = adp ? adp.adp : Infinity;
+        });
+        setupAutocomplete();
+    }
+
+    function setupAutocomplete() {
+        const debouncedFilter = debounce((input, select) => filterPlayers(input, select), 300);
+
+        [team1Select, team2Select].forEach(select => {
+            const input = document.createElement('input');
+            input.type = 'text';
+            input.className = 'w-full p-2 border rounded mb-2 bg-gray-700 text-white';
+            input.placeholder = `Search ${select.id === 'team1Select' ? 'Player 1' : 'Player 2'}...`;
+            select.parentNode.insertBefore(input, select);
+            select.style.display = 'none';
+
+            input.addEventListener('input', () => debouncedFilter(input.value, select));
+        });
+    }
+
+    function debounce(func, wait) {
+        let timeout;
+        return function executedFunction(...args) {
+            const later = () => {
+                clearTimeout(timeout);
+                func(...args);
+            };
+            clearTimeout(timeout);
+            timeout = setTimeout(later, wait);
+        };
+    }
+
+    function filterPlayers(searchTerm, select) {
+        if (!searchTerm) {
+            select.innerHTML = '<option value="">Select Player</option>';
+            select.style.display = 'block';
             return;
         }
-        const adpData = await fetchADP();
-        // Sort players by ADP within position groups
-        const positionGroups = {
-            'Quarterback': [], 'Running Back': [], 'Wide Receiver': [], 'Tight End': [], 'Kicker': []
-        };
-        players.forEach(player => {
-            const adp = adpData.find(p => p.name === player.name);
-            positionGroups[player.position].push({ ...player, adpRank: adp ? adp.adp : Infinity });
-        });
-        // Sort each group by ADP (lower is better)
-        Object.keys(positionGroups).forEach(position => {
-            positionGroups[position].sort((a, b) => a.adpRank - b.adpRank);
+
+        const filteredPlayers = allPlayers.filter(player =>
+            player.name.toLowerCase().includes(searchTerm.toLowerCase())
+        ).sort((a, b) => {
+            const aRelevance = a.name.toLowerCase().indexOf(searchTerm.toLowerCase());
+            const bRelevance = b.name.toLowerCase().indexOf(searchTerm.toLowerCase());
+            return aRelevance - bRelevance;
         });
 
-        let options = '';
-        Object.keys(positionGroups).forEach(position => {
-            if (positionGroups[position].length) {
-                options += `<optgroup label="${position}">`;
-                positionGroups[position].forEach(player => {
-                    const adpText = player.adpRank === Infinity ? 'N/A' : player.adpRank.toFixed(1);
-                    options += `<option value="${player.id}" data-position="${player.position}">${player.name} - ${adpText}</option>`;
-                });
-                options += '</optgroup>';
-            }
+        let options = '<option value="">Select Player</option>';
+        filteredPlayers.forEach(player => {
+            const adpText = player.adpRank === Infinity ? 'N/A' : player.adpRank.toFixed(1);
+            options += `<option value="${player.id}" data-position="${player.position}">${player.name} - ${adpText}</option>`;
         });
-        team1Select.innerHTML = '<option value="">Select Player 1</option>' + options;
-        team2Select.innerHTML = '<option value="">Select Player 2</option>' + options;
+
+        select.innerHTML = options;
+        select.style.display = 'block';
     }
 
     function getPlayerValue(playerId, leagueType, scoring, positionValue) {
         const option = team1Select.querySelector(`option[value="${playerId}"]`) || team2Select.querySelector(`option[value="${playerId}"]`);
         if (!option) return 0;
-        let baseValue = 10; // Default value since ADP data might not provide exact values
+        let baseValue = 10;
         let scoringModifier = scoring === 'ppr' ? 1.2 : scoring === 'halfppr' ? 1.1 : 1;
         let positionModifier = 1;
         if (positionValue === 'qbBoost' && option.dataset.position === 'Quarterback') positionModifier = 1.3;
@@ -172,7 +199,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const platform = platformSelect.value;
         if (platform === 'sleeper' && leagueId) {
             tradeResult.textContent = 'Syncing league...';
-            await populatePlayers();
+            await initializePlayers();
             tradeResult.textContent = 'League synced successfully.';
         } else if (platform !== 'sleeper') {
             tradeResult.textContent = 'Only Sleeper platform is supported at this time.';
@@ -209,7 +236,7 @@ document.addEventListener('DOMContentLoaded', () => {
     scoringSelect.addEventListener('change', () => analyzeTradeBtn.click());
     positionValueSelect.addEventListener('change', () => analyzeTradeBtn.click());
 
-    populatePlayers();
+    initializePlayers();
 
     // Matchup Predictor
     const matchupTeam1Select = document.getElementById('matchupTeam1Select');
