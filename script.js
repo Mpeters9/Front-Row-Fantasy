@@ -127,8 +127,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     const player = allPlayers.find(p => p.id === playerId);
                     input.value = `${player.name} (${player.position})`;
                     select.value = playerId;
-                    console.log(`Selected player ID: ${select.value}`); // Debug log
-                    dropdownList.innerHTML = '';
+                    dropdownList.innerHTML = ''; // Close dropdown immediately
                     analyzeTrade(analyzeTradeBtn);
                 }
             });
@@ -158,7 +157,7 @@ document.addEventListener('DOMContentLoaded', () => {
         ).sort((a, b) => {
             const aRelevance = a.name.toLowerCase().indexOf(searchTerm.toLowerCase());
             const bRelevance = b.name.toLowerCase().indexOf(searchTerm.toLowerCase());
-            return aRelevance - bRelevance || a.adp - b.adp; // Secondary sort by ADP
+            return aRelevance - bRelevance || a.adp - b.adp;
         });
 
         let options = '';
@@ -184,8 +183,6 @@ document.addEventListener('DOMContentLoaded', () => {
     function analyzeTrade(button) {
         const player1Id = team1Select.value;
         const player2Id = team2Select.value;
-        console.log(`Player 1 ID: ${player1Id}`); // Debug log
-        console.log(`Player 2 ID: ${player2Id}`); // Debug log
         const leagueType = leagueTypeSelect.value;
         const scoring = scoringSelect.value;
         const positionValue = positionValueSelect.value;
