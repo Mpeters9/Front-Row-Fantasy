@@ -20,6 +20,8 @@ document.addEventListener('DOMContentLoaded', () => {
             { position: 'Wide Receiver', name: 'Justin Jefferson', team: 'MIN', points: 19.2 },
             { position: 'Wide Receiver', name: 'Stefon Diggs', team: 'BUF', points: 18.3 },
             { position: 'Wide Receiver', name: 'Cooper Kupp', team: 'LA', points: 17.4 },
+            { position: 'Wide Receiver', name: 'JaMarr Chase', team: 'CIN', points: 16.5 },
+            { position: 'Wide Receiver', name: 'Deebo Samuel', team: 'SF', points: 15.6 },
             { position: 'Tight End', name: 'Travis Kelce', team: 'KC', points: 18.9 },
             { position: 'Tight End', name: 'George Kittle', team: 'SF', points: 17.1 },
             { position: 'Tight End', name: 'Dallas Goedert', team: 'PHI', points: 15.3 },
