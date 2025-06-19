@@ -104,6 +104,14 @@ body {
     @apply mt-2 p-2 bg-teal-700 rounded text-center;
 }
 
+html {
+    scroll-behavior: smooth;
+}
+
+.nav-link.active {
+    @apply text-teal-800 font-bold;
+}
+
 @media (max-width: 640px) {
     h1 {
         @apply text-2xl;
