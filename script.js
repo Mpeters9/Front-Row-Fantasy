@@ -96,6 +96,8 @@ document.addEventListener('DOMContentLoaded', () => {
             wrapper.className = 'relative';
             const input = document.createElement('input');
             input.type = 'text';
+            input.id = select.id === 'team1Select' ? 'player1Input' : 'player2Input'; // Unique IDs
+            input.name = select.id === 'team1Select' ? 'player1' : 'player2'; // Unique names
             input.className = 'w-full p-2 border rounded mb-2 bg-gray-700 text-white';
             input.placeholder = `Search ${select.id === 'team1Select' ? 'Player 1' : 'Player 2'}...`;
             const dropdownList = document.createElement('ul');
