@@ -8,7 +8,7 @@ body {
 }
 
 .card {
-    @apply bg-white dark:bg-gray-800 p-4 rounded-lg shadow-md hover:shadow-xl transition transform hover:-translate-y-1;
+    @apply bg-white p-4 rounded-lg shadow-md hover:shadow-xl transition transform hover:-translate-y-1;
 }
 
 .button {
@@ -68,28 +68,28 @@ body {
 }
 
 .trade-analyzer {
-    @apply bg-teal-100 p-6 rounded-lg shadow-md;
+    @apply bg-teal-800 p-4 rounded-lg;
 }
 
 .trade-analyzer h3 {
-    @apply text-xl font-semibold text-teal-800 mb-4;
+    @apply text-lg font-semibold text-white mb-4;
 }
 
 .trade-analyzer .filter-section {
-    @apply grid grid-cols-1 md:grid-cols-2 gap-4 mb-6;
+    @apply grid grid-cols-1 gap-4;
 }
 
 .trade-analyzer label {
-    @apply text-teal-800 font-medium;
+    @apply text-white font-medium;
 }
 
 .trade-analyzer select,
 .trade-analyzer input[type="text"] {
-    @apply w-full p-2 border border-teal-300 rounded bg-teal-700 text-white focus:outline-none focus:border-teal-500;
+    @apply w-full mt-2 p-2 rounded bg-gray-700 text-white border border-teal-300 focus:outline-none focus:border-teal-500;
 }
 
 .trade-analyzer button {
-    @apply bg-teal-500 text-white px-4 py-2 rounded hover:bg-teal-600 mt-2 w-full md:w-auto;
+    @apply mt-2 w-full bg-teal-600 text-white px-4 py-2 rounded hover:bg-teal-700;
 }
 
 .trade-analyzer .input-wrapper {
@@ -97,7 +97,7 @@ body {
 }
 
 .trade-analyzer input[type="text"] {
-    @apply w-full p-2 border border-teal-300 rounded bg-teal-700 text-white placeholder-teal-200 focus:outline-none focus:border-teal-500;
+    @apply w-full mt-2 p-2 rounded bg-gray-700 text-white border border-teal-300 placeholder-teal-200 focus:outline-none focus:border-teal-500;
 }
 
 .trade-analyzer input[type="text"]:focus {
@@ -113,7 +113,7 @@ body {
 }
 
 #tradeResult {
-    @apply mt-4 p-2 bg-teal-200 text-teal-800 rounded;
+    @apply mt-2 p-2 bg-teal-700 text-white rounded text-center;
 }
 
 @media (max-width: 640px) {
