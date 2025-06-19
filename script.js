@@ -29,7 +29,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Sort by position and then by points descending
         const sortedData = mockData.sort((a, b) => {
-            const positionOrder = { Quarterback: 1, Running Back: 2, Wide Receiver: 3, Tight End: 4 };
+            const positionOrder = { "Quarterback": 1, "Running Back": 2, "Wide Receiver": 3, "Tight End": 4 };
             if (positionOrder[a.position] !== positionOrder[b.position]) {
                 return positionOrder[a.position] - positionOrder[b.position];
             }
