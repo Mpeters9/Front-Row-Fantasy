@@ -260,4 +260,18 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     fetchMatchupTeams();
+
+    // Navigation Highlighting
+    function setActiveNav() {
+        const currentHash = window.location.hash || '#home';
+        document.querySelectorAll('.nav-link').forEach(link => {
+            link.classList.remove('active');
+            if (link.getAttribute('href') === currentHash) {
+                link.classList.add('active');
+            }
+        });
+    }
+
+    setActiveNav();
+    window.addEventListener('hashchange', setActiveNav);
 });
