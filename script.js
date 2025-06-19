@@ -47,13 +47,11 @@ document.addEventListener('DOMContentLoaded', () => {
             } else {
                 content += ' ';
             }
-            content += `${player.name} ${player.team} - ${player.points} pts`;
+            content += `${player.name} (${player.team}) - ${player.points} pts`;
         });
 
         tickerContent.innerHTML = content;
-        if (getComputedStyle(tickerContent).animationPlayState === 'paused') {
-            console.log('Ticker animation is paused or not applied');
-        }
+        tickerContent.classList.remove('loading'); // Remove loading class once content is populated
     }
 
     pauseButton.addEventListener('click', () => {
@@ -82,7 +80,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const response = await fetch('https://api.sleeper.app/v1/players/nfl');
             if (!response.ok) throw new Error('Sleeper API request failed');
             const data = await response.json();
-            // Filter for active offensive players and kickers, exclude Defense/ST and retired/inactive players
+            // Filter for active offensive players and kickers, exclude Defense/ST, retired, or inactive players
             return Object.values(data)
                 .filter(player => player.active && player.fantasy_positions && 
                     ['QB', 'RB', 'WR', 'TE', 'K'].includes(player.fantasy_positions[0]) && 
@@ -125,6 +123,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     async function populatePlayers() {
         const players = await fetchPlayers();
+        if (players.length === 0) {
+            tradeResult.textContent = 'No active players found. Check API status.';
+            return;
+        }
         const adpData = await fetchADP();
         // Sort players by ADP within position groups
         const positionGroups = {
