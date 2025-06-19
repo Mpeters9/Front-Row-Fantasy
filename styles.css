@@ -97,7 +97,7 @@ body {
 }
 
 .trade-analyzer input[type="text"] {
-    @apply w-full p-2 border rounded bg-teal-700 text-white;
+    @apply w-full p-2 border border-teal-300 rounded bg-teal-700 text-white placeholder-teal-200 focus:outline-none focus:border-teal-500;
 }
 
 .trade-analyzer input[type="text"]:focus {
