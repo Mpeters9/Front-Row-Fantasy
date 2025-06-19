@@ -127,7 +127,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     const player = allPlayers.find(p => p.id === playerId);
                     input.value = `${player.name} (${player.position})`;
                     select.value = playerId;
-                    dropdownList.innerHTML = ''; // Close dropdown immediately
+                    dropdownList.innerHTML = '';
                     analyzeTrade(analyzeTradeBtn);
                 }
             });
@@ -227,35 +227,4 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Matchup Predictor
     const matchupTeam1Select = document.getElementById('matchupTeam1Select');
-    const matchupTeam2Select = document.getElementById('matchupTeam2Select');
-    const predictMatchupBtn = document.getElementById('predictMatchupBtn');
-    const predictionResult = document.getElementById('predictionResult');
-
-    async function fetchMatchupTeams() {
-        try {
-            const response = await fetch('https://api.sleeper.app/v1/league/1180205990138392576/rosters');
-            if (!response.ok) throw new Error('Matchup teams API request failed');
-            const data = await response.json();
-            if (data && data.length) {
-                matchupTeam1Select.innerHTML = '<option value="">Select Team 1</option>' + data.map(team => `<option value="${team.roster_id}">${team.owner_id}</option>`).join('');
-                matchupTeam2Select.innerHTML = '<option value="">Select Team 2</option>' + data.map(team => `<option value="${team.roster_id}">${team.owner_id}</option>`).join('');
-            }
-        } catch (error) {
-            console.error('Error fetching matchup teams:', error);
-            matchupTeam1Select.innerHTML = '<option value="">Error loading teams</option>';
-            matchupTeam2Select.innerHTML = '<option value="">Error loading teams</option>';
-        }
-    }
-
-    predictMatchupBtn.addEventListener('click', async () => {
-        const team1 = matchupTeam1Select.value;
-        const team2 = matchupTeam2Select.value;
-        if (team1 && team2 && team1 !== team2) {
-            predictionResult.textContent = 'Prediction not available (placeholder).';
-        } else {
-            predictionResult.textContent = 'Please select two different teams.';
-        }
-    });
-
-    fetchMatchupTeams();
-});
+    const matchupTeam2Select = document.getElementById('matchupTeam2
