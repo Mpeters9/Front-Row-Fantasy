@@ -31,6 +31,7 @@ body.dark {
     background-color: #4a5568;
     border-radius: 5px;
     font-size: 1.1rem;
+    animation: marquee 15s linear infinite;
 }
 
 #tickerContent.paused {
@@ -41,40 +42,61 @@ body.dark {
     margin-right: 10px;
 }
 
+@keyframes marquee {
+    0% { transform: translateX(100%); }
+    100% { transform: translateX(-100%); }
+}
+
 /* Trade Analyzer Styles */
 .trade-analyzer {
     margin-top: 20px;
     padding: 15px;
     background-color: #2d3748;
     border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-.trade-analyzer select,
+.trade-analyzer .input-wrapper {
+    position: relative;
+    margin-bottom: 15px;
+}
+
 .trade-analyzer input {
-    display: block;
     width: 100%;
-    padding: 8px;
-    margin-bottom: 10px;
+    padding: 8px 12px;
     border: 1px solid #4a5568;
     border-radius: 4px;
     background-color: #37474F;
     color: #e2e8f0;
+    font-size: 1rem;
 }
 
 .trade-analyzer input:focus {
     outline: none;
     border-color: #63b3ed;
+    box-shadow: 0 0 5px rgba(99, 179, 237, 0.5);
 }
 
 .trade-analyzer ul {
     list-style: none;
     padding: 0;
     margin: 0;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 100%;
+    background-color: #37474F;
+    border: 1px solid #4a5568;
+    border-radius: 4px;
+    max-height: 200px;
+    overflow-y: auto;
+    z-index: 10;
 }
 
 .trade-analyzer ul li {
-    padding: 0.5rem;
+    padding: 8px 12px;
     cursor: pointer;
+    transition: background-color 0.2s;
 }
 
 .trade-analyzer ul li:hover {
@@ -82,10 +104,11 @@ body.dark {
 }
 
 #tradeResult {
-    margin-top: 10px;
+    margin-top: 15px;
     padding: 10px;
     background-color: #37474F;
     border-radius: 4px;
+    font-size: 0.95rem;
 }
 
 /* Matchup Predictor Styles */
@@ -94,6 +117,7 @@ body.dark {
     padding: 15px;
     background-color: #2d3748;
     border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .matchup-predictor select {
@@ -105,6 +129,7 @@ body.dark {
     border-radius: 4px;
     background-color: #37474F;
     color: #e2e8f0;
+    font-size: 1rem;
 }
 
 #predictionResult {
@@ -112,6 +137,7 @@ body.dark {
     padding: 10px;
     background-color: #37474F;
     border-radius: 4px;
+    font-size: 0.95rem;
 }
 
 /* Button Styles */
@@ -122,6 +148,8 @@ button {
     border: none;
     border-radius: 4px;
     cursor: pointer;
+    font-size: 1rem;
+    transition: background-color 0.2s;
 }
 
 button:hover {
@@ -137,6 +165,8 @@ button:hover {
     border: none;
     border-radius: 4px;
     cursor: pointer;
+    font-size: 1rem;
+    transition: background-color 0.2s;
 }
 
 #darkModeToggle:hover {
