@@ -258,9 +258,4 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     fetchMatchupTeams();
-
-    // Dark mode toggle
-    const toggleDarkMode = () => {
-        document.body.classList.toggle('dark');
-    };
 });
