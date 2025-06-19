@@ -68,11 +68,11 @@ body {
 }
 
 .trade-analyzer {
-    @apply bg-teal-800 p-4 rounded-lg;
+    @apply bg-teal-800 text-white p-4 rounded-lg relative;
 }
 
 .trade-analyzer h3 {
-    @apply text-lg font-semibold text-white mb-4;
+    @apply text-lg font-semibold mb-4;
 }
 
 .trade-analyzer .filter-section {
@@ -92,18 +92,6 @@ body {
     @apply mt-2 w-full bg-teal-600 text-white px-4 py-2 rounded hover:bg-teal-700;
 }
 
-.trade-analyzer .input-wrapper {
-    @apply relative mb-4;
-}
-
-.trade-analyzer input[type="text"] {
-    @apply w-full mt-2 p-2 rounded bg-gray-700 text-white border border-teal-300 placeholder-teal-200 focus:outline-none focus:border-teal-500;
-}
-
-.trade-analyzer input[type="text"]:focus {
-    @apply outline-none border-teal-500;
-}
-
 .trade-analyzer ul {
     @apply absolute top-full left-0 w-full bg-teal-800 text-white border border-teal-300 rounded mt-1 max-h-48 overflow-y-auto z-50;
 }
@@ -113,7 +101,7 @@ body {
 }
 
 #tradeResult {
-    @apply mt-2 p-2 bg-teal-700 text-white rounded text-center;
+    @apply mt-2 p-2 bg-teal-700 rounded text-center;
 }
 
 @media (max-width: 640px) {
