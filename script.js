@@ -81,7 +81,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (!response.ok) throw new Error('Sleeper API request failed');
             const data = await response.json();
             // Filter for active offensive players and kickers, exclude Defense/ST, retired, or inactive players
-            return Object.values(data)
+            const activePlayers = Object.values(data)
                 .filter(player => player.active && player.fantasy_positions && 
                     ['QB', 'RB', 'WR', 'TE', 'K'].includes(player.fantasy_positions[0]) && 
                     !player.retired && player.status === 'active')
@@ -93,6 +93,10 @@ document.addEventListener('DOMContentLoaded', () => {
                             player.fantasy_positions[0] === 'WR' ? 'Wide Receiver' :
                             player.fantasy_positions[0] === 'TE' ? 'Tight End' : 'Kicker'
                 }));
+            if (activePlayers.length === 0) {
+                console.error('No active players returned from API');
+            }
+            return activePlayers;
         } catch (error) {
             console.error('Error fetching players:', error);
             tradeResult.textContent = 'Failed to fetch players. Using mock data.';
@@ -123,6 +127,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     async function initializePlayers() {
         allPlayers = await fetchPlayers();
+        if (allPlayers.length === 0) {
+            tradeResult.textContent = 'No players available. Check API status.';
+            return;
+        }
         const adpData = await fetchADP();
         allPlayers.forEach(player => {
             const adp = adpData.find(p => p.name === player.name);
@@ -132,17 +140,43 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function setupAutocomplete() {
-        const debouncedFilter = debounce((input, select) => filterPlayers(input, select), 300);
+        const debouncedFilter = debounce((input, select) => filterPlayers(input.value, select), 300);
 
         [team1Select, team2Select].forEach(select => {
+            const wrapper = document.createElement('div');
+            wrapper.className = 'relative';
             const input = document.createElement('input');
             input.type = 'text';
             input.className = 'w-full p-2 border rounded mb-2 bg-gray-700 text-white';
             input.placeholder = `Search ${select.id === 'team1Select' ? 'Player 1' : 'Player 2'}...`;
-            select.parentNode.insertBefore(input, select);
+            const dropdown = select.cloneNode(true);
+            dropdown.id = `${select.id}-dropdown`;
+            dropdown.style.display = 'block';
+            dropdown.style.position = 'absolute';
+            dropdown.style.top = '100%';
+            dropdown.style.left = 0;
+            dropdown.style.width = '100%';
+            dropdown.style.zIndex = 10;
+            dropdown.style.background = '#37474F';
+            dropdown.style.maxHeight = '200px';
+            dropdown.style.overflowY = 'auto';
+            wrapper.appendChild(input);
+            wrapper.appendChild(dropdown);
+            select.parentNode.insertBefore(wrapper, select);
             select.style.display = 'none';
 
-            input.addEventListener('input', () => debouncedFilter(input.value, select));
+            input.addEventListener('input', () => debouncedFilter(input, dropdown));
+            input.addEventListener('blur', () => {
+                setTimeout(() => dropdown.style.display = 'none', 200);
+            });
+            input.addEventListener('focus', () => {
+                if (input.value) dropdown.style.display = 'block';
+            });
+            dropdown.addEventListener('change', (e) => {
+                input.value = e.target.selectedOptions[0].text;
+                select.value = e.target.value;
+                dropdown.style.display = 'none';
+            });
         });
     }
 
@@ -158,10 +192,10 @@ document.addEventListener('DOMContentLoaded', () => {
         };
     }
 
-    function filterPlayers(searchTerm, select) {
+    function filterPlayers(searchTerm, dropdown) {
         if (!searchTerm) {
-            select.innerHTML = '<option value="">Select Player</option>';
-            select.style.display = 'block';
+            dropdown.innerHTML = '<option value="">Select Player</option>';
+            dropdown.style.display = 'none';
             return;
         }
 
@@ -179,8 +213,8 @@ document.addEventListener('DOMContentLoaded', () => {
             options += `<option value="${player.id}" data-position="${player.position}">${player.name} - ${adpText}</option>`;
         });
 
-        select.innerHTML = options;
-        select.style.display = 'block';
+        dropdown.innerHTML = options;
+        dropdown.style.display = 'block';
     }
 
     function getPlayerValue(playerId, leagueType, scoring, positionValue) {
