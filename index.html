@@ -79,28 +79,61 @@
                         <option value="redraft">Redraft</option>
                         <option value="dynasty">Dynasty</option>
                     </select>
-                    <label for="scoring" class="text-white font-medium">Scoring:</label>
-                    <select id="scoring" class="w-full mt-2 p-2 rounded bg-gray-700 text-white border border-teal-300">
-                        <option value="standard">Standard</option>
-                        <option value="halfppr">Half PPR</option>
-                        <option value="ppr">PPR</option>
+                    <label for="rosterType" class="text-white font-medium">Roster Type:</label>
+                    <select id="rosterType" class="w-full mt-2 p-2 rounded bg-gray-700 text-white border border-teal-300">
+                        <option value="regular" selected>Regular</option>
+                        <option value="superflex">SuperFlex</option>
                     </select>
-                    <label for="positionValue" class="text-white font-medium">Position Value:</label>
-                    <select id="positionValue" class="w-full mt-2 p-2 rounded bg-gray-700 text-white border border-teal-300">
-                        <option value="neutral">Neutral</option>
-                        <option value="qbBoost">QB Boost (Superflex)</option>
-                        <option value="teBoost">TE Boost (Premium)</option>
-                    </select>
+                    <div class="mt-4 border-t border-teal-300 pt-4">
+                        <h4 class="text-md font-semibold text-white">Team 1</h4>
+                        <label for="player1-1" class="text-white font-medium">Player 1:</label>
+                        <input type="text" id="player1-1" class="w-full mt-2 p-2 rounded bg-gray-700 text-white border border-teal-300" placeholder="Search Player 1...">
+                        <label for="player1-2" class="text-white font-medium">Player 2:</label>
+                        <input type="text" id="player1-2" class="w-full mt-2 p-2 rounded bg-gray-700 text-white border border-teal-300" placeholder="Search Player 2...">
+                        <label for="player1-3" class="text-white font-medium">Player 3:</label>
+                        <input type="text" id="player1-3" class="w-full mt-2 p-2 rounded bg-gray-700 text-white border border-teal-300" placeholder="Search Player 3...">
+                        <label for="player1-4" class="text-white font-medium">Player 4:</label>
+                        <input type="text" id="player1-4" class="w-full mt-2 p-2 rounded bg-gray-700 text-white border border-teal-300" placeholder="Search Player 4...">
+                    </div>
+                    <div class="mt-4 border-t border-teal-300 pt-4">
+                        <h4 class="text-md font-semibold text-white">Team 2</h4>
+                        <label for="player2-1" class="text-white font-medium">Player 1:</label>
+                        <input type="text" id="player2-1" class="w-full mt-2 p-2 rounded bg-gray-700 text-white border border-teal-300" placeholder="Search Player 1...">
+                        <label for="player2-2" class="text-white font-medium">Player 2:</label>
+                        <input type="text" id="player2-2" class="w-full mt-2 p-2 rounded bg-gray-700 text-white border border-teal-300" placeholder="Search Player 2...">
+                        <label for="player2-3" class="text-white font-medium">Player 3:</label>
+                        <input type="text" id="player2-3" class="w-full mt-2 p-2 rounded bg-gray-700 text-white border border-teal-300" placeholder="Search Player 3...">
+                        <label for="player2-4" class="text-white font-medium">Player 4:</label>
+                        <input type="text" id="player2-4" class="w-full mt-2 p-2 rounded bg-gray-700 text-white border border-teal-300" placeholder="Search Player 4...">
+                    </div>
+                    <button id="analyzeTradeBtn" class="mt-4 w-full bg-teal-600 text-white px-4 py-2 rounded hover:bg-teal-700">Analyze Trade</button>
+                    <p id="tradeResult" class="mt-2 text-center"></p>
+                    <div id="recentTrades"></div>
                 </div>
-                <select id="team1Select" class="hidden">
-                    <option value="">Select Player 1</option>
+                <select id="team1-1" class="hidden">
+                    <option value="">Select Player</option>
                 </select>
-                <select id="team2Select" class="hidden">
-                    <option value="">Select Player 2</option>
+                <select id="team1-2" class="hidden">
+                    <option value="">Select Player</option>
                 </select>
-                <button id="analyzeTradeBtn" class="mt-4 w-full bg-teal-600 text-white px-4 py-2 rounded hover:bg-teal-700">Analyze Trade</button>
-                <p id="tradeResult" class="mt-2 text-center"></p>
-                <div id="recentTrades"></div>
+                <select id="team1-3" class="hidden">
+                    <option value="">Select Player</option>
+                </select>
+                <select id="team1-4" class="hidden">
+                    <option value="">Select Player</option>
+                </select>
+                <select id="team2-1" class="hidden">
+                    <option value="">Select Player</option>
+                </select>
+                <select id="team2-2" class="hidden">
+                    <option value="">Select Player</option>
+                </select>
+                <select id="team2-3" class="hidden">
+                    <option value="">Select Player</option>
+                </select>
+                <select id="team2-4" class="hidden">
+                    <option value="">Select Player</option>
+                </select>
             </div>
             <div class="bg-teal-800 text-white p-4 rounded-lg">
                 <h3 class="text-lg font-semibold">Matchup Predictor</h3>
