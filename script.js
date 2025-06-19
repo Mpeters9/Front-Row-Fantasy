@@ -64,17 +64,20 @@ document.addEventListener('DOMContentLoaded', () => {
     populateTicker();
 
     // Trade Analyzer
-    const team1Select = document.getElementById('team1Select');
-    const team2Select = document.getElementById('team2Select');
+    const team1Selects = ['team1-1', 'team1-2', 'team1-3', 'team1-4'].map(id => document.getElementById(id));
+    const team2Selects = ['team2-1', 'team2-2', 'team2-3', 'team2-4'].map(id => document.getElementById(id));
     const analyzeTradeBtn = document.getElementById('analyzeTradeBtn');
     const tradeResult = document.getElementById('tradeResult');
     const recentTrades = document.getElementById('recentTrades');
     const leagueTypeSelect = document.getElementById('leagueType');
-    const scoringSelect = document.getElementById('scoring');
-    const positionValueSelect = document.getElementById('positionValue');
+    const rosterTypeSelect = document.getElementById('rosterType');
     const platformSelect = document.getElementById('platform');
     const leagueIdInput = document.getElementById('leagueId');
     const syncLeagueBtn = document.getElementById('syncLeague');
+    const playerInputs = [
+        ...['player1-1', 'player1-2', 'player1-3', 'player1-4'].map(id => document.getElementById(id)),
+        ...['player2-1', 'player2-2', 'player2-3', 'player2-4'].map(id => document.getElementById(id))
+    ];
 
     let allPlayers = [
         { id: '1', name: 'Josh Allen', position: 'Quarterback', adp: 5.2 },
@@ -95,40 +98,40 @@ document.addEventListener('DOMContentLoaded', () => {
     ];
 
     function setupAutocomplete() {
-        const debouncedFilter = debounce((input, dropdown) => filterPlayers(input.value, dropdown, input), 300);
+        const debouncedFilter = debounce((input, dropdownId, select) => filterPlayers(input.value, dropdownId, input, select), 300);
 
-        [team1Select, team2Select].forEach(select => {
-            const wrapper = document.createElement('div');
-            wrapper.className = 'input-wrapper';
-            const input = document.createElement('input');
-            input.type = 'text';
-            input.id = select.id === 'team1Select' ? 'player1Input' : 'player2Input';
-            input.name = select.id === 'team1Select' ? 'player1' : 'player2';
-            input.className = 'w-full mt-2 p-2 rounded bg-gray-700 text-white border border-teal-300 focus:outline-none focus:border-teal-500';
-            input.placeholder = `Search ${select.id === 'team1Select' ? 'Player 1' : 'Player 2'}...`;
+        playerInputs.forEach(input => {
+            const dropdownId = `dropdown-${input.id}`;
+            const selectId = input.id.replace('player', 'team');
+            const select = document.getElementById(selectId);
+            if (!select) {
+                console.error(`Select element with ID ${selectId} not found for input ${input.id}`);
+                return;
+            }
+            const wrapper = input.parentElement;
             const dropdownList = document.createElement('ul');
+            dropdownList.id = dropdownId;
             dropdownList.className = 'absolute top-full left-0 w-full bg-teal-800 text-white border border-teal-300 rounded mt-1 max-h-48 overflow-y-auto z-50';
-            wrapper.appendChild(input);
             wrapper.appendChild(dropdownList);
-            select.parentNode.insertBefore(wrapper, select);
-            select.style.display = 'none';
 
-            input.addEventListener('input', () => debouncedFilter(input, dropdownList));
+            input.addEventListener('input', () => debouncedFilter(input, dropdownId, select));
             input.addEventListener('focus', () => {
-                if (input.value) filterPlayers(input.value, dropdownList, input);
+                if (input.value) filterPlayers(input.value, dropdownId, input, select);
             });
             input.addEventListener('blur', () => {
-                setTimeout(() => dropdownList.innerHTML = '', 200);
+                setTimeout(() => document.getElementById(dropdownId).innerHTML = '', 200);
             });
             dropdownList.addEventListener('click', (e) => {
                 const li = e.target.closest('li');
                 if (li) {
                     const playerId = li.dataset.id;
                     const player = allPlayers.find(p => p.id === playerId);
-                    input.value = `${player.name} (${player.position})`;
-                    select.value = playerId;
-                    dropdownList.innerHTML = '';
-                    analyzeTrade(analyzeTradeBtn);
+                    if (player) {
+                        input.value = `${player.name} (${player.position})`;
+                        select.value = playerId;
+                        document.getElementById(dropdownId).innerHTML = '';
+                        analyzeTrade(analyzeTradeBtn);
+                    }
                 }
             });
         });
@@ -146,7 +149,8 @@ document.addEventListener('DOMContentLoaded', () => {
         };
     }
 
-    function filterPlayers(searchTerm, dropdownList, input) {
+    function filterPlayers(searchTerm, dropdownId, input, select) {
+        const dropdownList = document.getElementById(dropdownId);
         if (!searchTerm) {
             dropdownList.innerHTML = '';
             return;
@@ -166,41 +170,38 @@ document.addEventListener('DOMContentLoaded', () => {
             options += `<li class="p-2 hover:bg-teal-600 cursor-pointer" data-id="${player.id}">${player.name} (${player.position}) - ADP: ${adpText}</li>`;
         });
 
-        dropdownList.innerHTML = options;
+        dropdownList.innerHTML = options || '<li class="p-2 text-gray-400">No players found</li>';
     }
 
-    function getPlayerValue(playerId, leagueType, scoring, positionValue) {
+    function getPlayerValue(playerId, leagueType, rosterType) {
         const player = allPlayers.find(p => p.id === playerId);
         if (!player) return 0;
         let baseValue = player.adp ? 100 / player.adp : 10;
-        let scoringModifier = scoring === 'ppr' ? 1.2 : scoring === 'halfppr' ? 1.1 : 1;
         let positionModifier = 1;
-        if (positionValue === 'qbBoost' && player.position === 'Quarterback') positionModifier = 1.3;
-        if (positionValue === 'teBoost' && player.position === 'Tight End') positionModifier = 1.5;
-        return Math.round(baseValue * scoringModifier * positionModifier);
+        if (rosterType === 'superflex' && player.position === 'Quarterback') positionModifier = 1.3;
+        return Math.round(baseValue * positionModifier);
     }
 
     function analyzeTrade(button) {
-        const player1Id = team1Select.value;
-        const player2Id = team2Select.value;
+        const team1Ids = team1Selects.map(select => select.value).filter(id => id);
+        const team2Ids = team2Selects.map(select => select.value).filter(id => id);
         const leagueType = leagueTypeSelect.value;
-        const scoring = scoringSelect.value;
-        const positionValue = positionValueSelect.value;
+        const rosterType = rosterTypeSelect.value;
 
-        if (player1Id && player2Id && player1Id !== player2Id) {
-            const value1 = getPlayerValue(player1Id, leagueType, scoring, positionValue);
-            const value2 = getPlayerValue(player2Id, leagueType, scoring, positionValue);
-            const player1Name = allPlayers.find(p => p.id === player1Id).name;
-            const player2Name = allPlayers.find(p => p.id === player2Id).name;
+        if (team1Ids.length > 0 && team2Ids.length > 0) {
+            const value1 = team1Ids.reduce((sum, id) => sum + getPlayerValue(id, leagueType, rosterType), 0);
+            const value2 = team2Ids.reduce((sum, id) => sum + getPlayerValue(id, leagueType, rosterType), 0);
+            const team1Names = team1Ids.map(id => allPlayers.find(p => p.id === id).name).join(', ');
+            const team2Names = team2Ids.map(id => allPlayers.find(p => p.id === id).name).join(', ');
             if (value1 > value2) {
-                tradeResult.textContent = `${player1Name} is valued higher (${value1} vs ${value2}). Consider this trade if you need ${player2Name}'s position or future potential.`;
+                tradeResult.textContent = `${team1Names} is valued higher (${value1} vs ${value2}). Consider this trade if you need ${team2Names}'s positions or future potential.`;
             } else if (value2 > value1) {
-                tradeResult.textContent = `${player2Name} is valued higher (${value2} vs ${value1}). Consider this trade if you need ${player1Name}'s position or future potential.`;
+                tradeResult.textContent = `${team2Names} is valued higher (${value2} vs ${value1}). Consider this trade if you need ${team1Names}'s positions or future potential.`;
             } else {
                 tradeResult.textContent = 'The trade is balanced in value. Evaluate based on team needs.';
             }
         } else {
-            tradeResult.textContent = 'Please select two different players.';
+            tradeResult.textContent = 'Please select at least one player for each team.';
         }
     }
 
@@ -220,11 +221,41 @@ document.addEventListener('DOMContentLoaded', () => {
 
     analyzeTradeBtn.addEventListener('click', () => analyzeTrade(analyzeTradeBtn));
     leagueTypeSelect.addEventListener('change', () => analyzeTrade(analyzeTradeBtn));
-    scoringSelect.addEventListener('change', () => analyzeTrade(analyzeTradeBtn));
-    positionValueSelect.addEventListener('change', () => analyzeTrade(analyzeTradeBtn));
+    rosterTypeSelect.addEventListener('change', () => analyzeTrade(analyzeTradeBtn));
 
     setupAutocomplete();
 
     // Matchup Predictor
     const matchupTeam1Select = document.getElementById('matchupTeam1Select');
-    const matchupTeam2Select = document.getElementById('matchupTeam2
+    const matchupTeam2Select = document.getElementById('matchupTeam2Select');
+    const predictMatchupBtn = document.getElementById('predictMatchupBtn');
+    const predictionResult = document.getElementById('predictionResult');
+
+    async function fetchMatchupTeams() {
+        try {
+            const response = await fetch('https://api.sleeper.app/v1/league/1180205990138392576/rosters');
+            if (!response.ok) throw new Error('Matchup teams API request failed');
+            const data = await response.json();
+            if (data && data.length) {
+                matchupTeam1Select.innerHTML = '<option value="">Select Team 1</option>' + data.map(team => `<option value="${team.roster_id}">${team.owner_id}</option>`).join('');
+                matchupTeam2Select.innerHTML = '<option value="">Select Team 2</option>' + data.map(team => `<option value="${team.roster_id}">${team.owner_id}</option>`).join('');
+            }
+        } catch (error) {
+            console.error('Error fetching matchup teams:', error);
+            matchupTeam1Select.innerHTML = '<option value="">Error loading teams</option>';
+            matchupTeam2Select.innerHTML = '<option value="">Error loading teams</option>';
+        }
+    }
+
+    predictMatchupBtn.addEventListener('click', async () => {
+        const team1 = matchupTeam1Select.value;
+        const team2 = matchupTeam2Select.value;
+        if (team1 && team2 && team1 !== team2) {
+            predictionResult.textContent = 'Prediction not available (placeholder).';
+        } else {
+            predictionResult.textContent = 'Please select two different teams.';
+        }
+    });
+
+    fetchMatchupTeams();
+});
