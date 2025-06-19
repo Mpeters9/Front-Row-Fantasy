@@ -104,7 +104,7 @@ document.addEventListener('DOMContentLoaded', () => {
             input.type = 'text';
             input.id = select.id === 'team1Select' ? 'player1Input' : 'player2Input';
             input.name = select.id === 'team1Select' ? 'player1' : 'player2';
-            input.className = 'w-full p-2 border rounded bg-teal-700 text-white focus:outline-none focus:border-teal-500';
+            input.className = 'w-full mt-2 p-2 rounded bg-gray-700 text-white border border-teal-300 focus:outline-none focus:border-teal-500';
             input.placeholder = `Search ${select.id === 'team1Select' ? 'Player 1' : 'Player 2'}...`;
             const dropdownList = document.createElement('ul');
             dropdownList.className = 'absolute top-full left-0 w-full bg-teal-800 text-white border border-teal-300 rounded mt-1 max-h-48 overflow-y-auto z-50';
