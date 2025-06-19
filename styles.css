@@ -76,7 +76,7 @@ body {
 }
 
 .trade-analyzer .filter-section {
-    @apply grid grid-cols-1 gap-4 mb-6;
+    @apply grid grid-cols-1 md:grid-cols-2 gap-4 mb-6;
 }
 
 .trade-analyzer label {
@@ -84,32 +84,32 @@ body {
 }
 
 .trade-analyzer select,
-.trade-analyzer input {
-    @apply w-full p-2 border border-teal-300 rounded bg-gray-700 text-white;
+.trade-analyzer input[type="text"] {
+    @apply w-full p-2 border border-teal-300 rounded bg-teal-700 text-white focus:outline-none focus:border-teal-500;
 }
 
 .trade-analyzer button {
-    @apply bg-teal-500 text-white px-4 py-2 rounded hover:bg-teal-600 mt-2;
+    @apply bg-teal-500 text-white px-4 py-2 rounded hover:bg-teal-600 mt-2 w-full md:w-auto;
 }
 
 .trade-analyzer .input-wrapper {
     @apply relative mb-4;
 }
 
-.trade-analyzer input {
-    @apply w-full p-2 border rounded bg-gray-700 text-white;
+.trade-analyzer input[type="text"] {
+    @apply w-full p-2 border rounded bg-teal-700 text-white;
 }
 
-.trade-analyzer input:focus {
+.trade-analyzer input[type="text"]:focus {
     @apply outline-none border-teal-500;
 }
 
 .trade-analyzer ul {
-    @apply absolute top-full left-0 w-full bg-gray-800 text-white border border-teal-300 rounded mt-1 max-h-48 overflow-y-auto z-10;
+    @apply absolute top-full left-0 w-full bg-teal-800 text-white border border-teal-300 rounded mt-1 max-h-48 overflow-y-auto z-50;
 }
 
 .trade-analyzer ul li {
-    @apply p-2 hover:bg-teal-700 cursor-pointer;
+    @apply p-2 hover:bg-teal-600 cursor-pointer;
 }
 
 #tradeResult {
@@ -134,5 +134,8 @@ body {
     }
     .trade-analyzer .filter-section {
         @apply grid-cols-1;
+    }
+    .trade-analyzer button {
+        @apply w-full;
     }
 }
