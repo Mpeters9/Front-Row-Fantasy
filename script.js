@@ -115,13 +115,13 @@ document.addEventListener('DOMContentLoaded', () => {
         const url = `https://api.fantasynerds.com/v1/nfl/adp?apikey=${apikey}&teams=12&format=standard`;
         try {
             const response = await fetch(url);
-            if (!response.ok) throw new Error('Fantasy Nerds API request failed');
+            if (!response.ok) throw new Error('Fantasy Nerds API request failed due to CORS or server issue');
             const data = await response.json();
             return data.players || [];
         } catch (error) {
-            console.error('Error fetching ADP:', error);
-            tradeResult.textContent = 'Failed to fetch ADP data. Using default order.';
-            return [];
+            console.warn('ADP fetch failed (CORS or API issue):', error.message);
+            tradeResult.textContent = 'ADP data unavailable. Proceeding without ADP.';
+            return []; // Return empty array to proceed without ADP
         }
     }
 
@@ -132,10 +132,14 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
         const adpData = await fetchADP();
-        allPlayers.forEach(player => {
-            const adp = adpData.find(p => p.name === player.name);
-            player.adpRank = adp ? adp.adp : Infinity;
-        });
+        if (adpData.length > 0) {
+            allPlayers.forEach(player => {
+                const adp = adpData.find(p => p.name === player.name);
+                player.adpRank = adp ? adp.adp : Infinity;
+            });
+        } else {
+            allPlayers.forEach(player => player.adpRank = Infinity); // Default to Infinity if no ADP
+        }
         setupAutocomplete();
     }
 
