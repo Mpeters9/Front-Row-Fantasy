@@ -82,10 +82,11 @@ document.addEventListener('DOMContentLoaded', () => {
             const response = await fetch('https://api.sleeper.app/v1/players/nfl');
             if (!response.ok) throw new Error('Sleeper API request failed');
             const data = await response.json();
-            // Filter for active offensive players and kickers, exclude Defense/ST
+            // Filter for active offensive players and kickers, exclude Defense/ST and retired/inactive players
             return Object.values(data)
                 .filter(player => player.active && player.fantasy_positions && 
-                    ['QB', 'RB', 'WR', 'TE', 'K'].includes(player.fantasy_positions[0]))
+                    ['QB', 'RB', 'WR', 'TE', 'K'].includes(player.fantasy_positions[0]) && 
+                    !player.retired && player.status === 'active')
                 .map(player => ({
                     id: player.player_id,
                     name: player.full_name || player.name,
