@@ -19,26 +19,27 @@ body {
 }
 
 .marquee {
-    background-color: #26A69A; /* Consistent teal background */
+    background-color: #26A69A;
     padding: 8px 0;
     border-radius: 8px;
-    overflow: hidden; /* Ensure no overflow artifacts */
+    overflow: hidden;
     position: relative;
     width: 100%;
-    display: block; /* Ensure consistent block rendering */
+    display: block;
 }
 
 .marquee-content {
     white-space: nowrap;
-    font-size: 1rem;
+    font-size: 1.1rem; /* Increased from 1rem for visibility */
     font-weight: 600;
     color: #FFFFFF;
     min-width: 100%;
     animation: marquee 40s linear infinite;
+    line-height: 1.6; /* Added for better text spacing */
 }
 
 .marquee-content b {
-    font-size: 1.2rem;
+    font-size: 1.3rem; /* Slightly increased for visibility */
     font-weight: bold;
     margin-right: 0.5rem;
 }
@@ -81,6 +82,7 @@ body {
     }
     .marquee-content {
         @apply gap-2;
+        font-size: 0.95rem; /* Adjusted for smaller screens */
     }
 }
 
@@ -94,7 +96,7 @@ body {
 }
 
 .trade-analyzer h3 {
-    font-size: 1.25rem;
+    font-size: 1.3rem; /* Increased for visibility */
     font-weight: 600;
     margin-bottom: 1rem;
     color: #FFFFFF !important;
@@ -102,7 +104,7 @@ body {
 
 .trade-analyzer label {
     display: block;
-    font-size: 0.875rem;
+    font-size: 1rem; /* Increased from 0.875rem for visibility */
     font-weight: 500;
     margin-bottom: 0.5rem;
     color: #FFFFFF !important;
@@ -110,17 +112,19 @@ body {
 
 .trade-analyzer input, .trade-analyzer select {
     width: 100%;
-    padding: 0.5rem;
+    padding: 0.6rem; /* Slightly increased padding */
     border-radius: 4px;
     background-color: #263238 !important;
     color: #FFFFFF !important;
     border: 1px solid #37474F !important;
     margin-bottom: 1rem;
+    font-size: 1rem; /* Increased for visibility */
 }
 
 .trade-analyzer select option {
     color: #FFFFFF !important;
     background-color: #37474F !important;
+    font-size: 1rem; /* Increased for visibility */
 }
 
 .trade-analyzer select option:checked {
@@ -129,12 +133,13 @@ body {
 
 .trade-analyzer button {
     width: 100%;
-    padding: 0.5rem 1rem;
+    padding: 0.6rem 1rem; /* Slightly increased padding */
     background-color: #26A69A !important;
     color: #FFFFFF !important;
     border-radius: 4px;
     cursor: pointer;
     transition: background-color 0.3s;
+    font-size: 1rem; /* Increased for visibility */
 }
 
 .trade-analyzer button:hover {
@@ -145,6 +150,7 @@ body {
     text-align: center;
     margin-top: 1rem;
     color: #FFFFFF !important;
+    font-size: 1rem; /* Increased for visibility */
 }
 
 .trade-analyzer .filter-section {
