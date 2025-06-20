@@ -17,6 +17,7 @@
             <h1 class="text-2xl font-bold text-teal-600">Front Row Fantasy</h1>
             <nav class="space-x-4">
                 <a href="#home" class="nav-link hover:underline text-teal-600">Home</a>
+                <a href="tools.html" class="nav-link hover:underline text-teal-600">Expert Tools</a>
                 <a href="#about" class="nav-link hover:underline text-teal-600">About</a>
                 <a href="#games" class="nav-link hover:underline text-teal-600">Games</a>
                 <a href="#contact" class="nav-link hover:underline text-teal-600">Contact</a>
@@ -35,151 +36,48 @@
     </section>
 
     <main class="max-w-7xl mx-auto px-4 py-6 bg-gray-100">
-        <section id="home" class="bg-teal-600 text-white p-4 rounded-lg text-center mb-6">
-            <h2 class="text-2xl font-semibold">Your Ultimate Fantasy Football Command Center</h2>
-            <p class="mt-2">Real-time stats, expert tools, and breaking news for every fantasy manager.</p>
-            <button class="mt-4 bg-white text-teal-600 px-4 py-2 rounded hover:bg-gray-200">Explore Players</button>
+        <section id="home" class="splash-section bg-teal-600 text-white p-6 rounded-lg text-center mb-6">
+            <h2 class="text-3xl font-bold mb-4">Welcome to Front Row Fantasy</h2>
+            <p class="text-lg mb-6">Your front-row seat to dominate the fantasy football season! Dive into real-time stats, join a passionate community, and elevate your game.</p>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                <div class="p-4 bg-teal-700 rounded-lg shadow">
+                    <h3 class="text-xl font-semibold">Top Player</h3>
+                    <p class="mt-2">Josh Allen (BUF) - 25.4 pts</p>
+                </div>
+                <div class="p-4 bg-teal-700 rounded-lg shadow">
+                    <h3 class="text-xl font-semibold">Active Leagues</h3>
+                    <p class="mt-2">1,234 Leagues</p>
+                </div>
+                <div class="p-4 bg-teal-700 rounded-lg shadow">
+                    <h3 class="text-xl font-semibold">Community Members</h3>
+                    <p class="mt-2">50,000+ Fans</p>
+                </div>
+            </div>
+            <a href="tools.html" class="bg-white text-teal-600 px-6 py-3 rounded-lg hover:bg-gray-200 transition">Explore Expert Tools</a>
         </section>
 
         <section class="bg-teal-100 p-6 rounded-lg shadow-md mb-6">
-            <h2 class="text-2xl font-semibold text-gray-900 text-center mb-4">Welcome to Front Row Fantasy</h2>
-            <p class="text-center mb-4 text-gray-900">Dive into the ultimate fantasy football experience with real-time updates, expert tools, and a vibrant community. Whether you're a beginner or a seasoned pro, we’ve got you covered!</p>
+            <h2 class="text-2xl font-semibold text-gray-900 text-center mb-4">Why Choose Front Row Fantasy?</h2>
+            <p class="text-center mb-4 text-gray-900">Whether you're a beginner or a pro, our platform offers real-time updates, expert insights, and a vibrant community to help you win.</p>
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div class="p-4 bg-teal-50 rounded shadow">
                     <h3 class="text-lg font-semibold text-gray-900">Latest Stats</h3>
                     <ul class="mt-2 text-gray-900">
-                        <li>Josh Allen (QB, BUF) - 25.4 pts</li>
                         <li>Christian McCaffrey (RB, SF) - 20.5 pts</li>
                         <li>Tyreek Hill (WR, MIA) - 19.8 pts</li>
                         <li>Travis Kelce (TE, KC) - 18.9 pts</li>
-                        <li>Justin Tucker (K, BAL) - 14.5 pts</li>
-                    </ul>
-                </div>
-                <div class="p-4 bg-teal-50 rounded shadow">
-                    <h3 class="text-lg font-semibold text-gray-900">Expert Tools</h3>
-                    <p class="mt-2 text-gray-900">Optimize your roster with our tools:</p>
-                    <ul class="mt-2 text-gray-900">
-                        <li><a href="#trade-analyzer" class="text-teal-600 hover:underline">Trade Analyzer</a> - Evaluate trade offers.</li>
-                        <li><a href="#matchup-predictor" class="text-teal-600 hover:underline">Matchup Predictor</a> - Forecast game outcomes.</li>
                     </ul>
                 </div>
                 <div class="p-4 bg-teal-50 rounded shadow">
                     <h3 class="text-lg font-semibold text-gray-900">Community</h3>
-                    <p class="mt-2 text-gray-900">Join our fantasy football community!</p>
+                    <p class="mt-2 text-gray-900">Join our thriving fantasy football community!</p>
                     <a href="https://discord.com/invite/fantasyfootball" target="_blank" class="mt-2 inline-block text-teal-600 hover:underline">Join Discord</a>
                 </div>
-            </div>
-            <button class="mt-6 bg-teal-600 text-white px-6 py-2 rounded hover:bg-teal-700">Join Now</button>
-        </section>
-
-        <section class="grid grid-cols-1 md:grid-cols-3 gap-6 bg-gray-100">
-            <div id="trade-analyzer" class="trade-analyzer bg-teal-800 text-white p-4 rounded-lg">
-                <h3 class="text-lg font-semibold">Trade Analyzer</h3>
-                <div id="trade-filter-section" class="filter-section relative">
-                    <label for="platform" class="text-white font-medium">Platform:</label>
-                    <select id="platform" class="w-full mt-2 p-2 rounded bg-gray-700 text-white border border-teal-300">
-                        <option value="sleeper">Sleeper</option>
-                        <option value="yahoo">Yahoo</option>
-                        <option value="espn">ESPN</option>
-                    </select>
-                    <label for="leagueId" class="text-white font-medium">League ID:</label>
-                    <input type="text" id="leagueId" class="w-full mt-2 p-2 rounded bg-gray-700 text-white border border-teal-300">
-                    <button id="syncLeague" class="mt-2 w-full bg-teal-600 text-white px-4 py-2 rounded hover:bg-teal-700">Sync League</button>
-                    <label for="leagueType" class="text-white font-medium">League Type:</label>
-                    <select id="leagueType" class="w-full mt-2 p-2 rounded bg-gray-700 text-white border border-teal-300">
-                        <option value="redraft">Redraft</option>
-                        <option value="dynasty">Dynasty</option>
-                    </select>
-                    <label for="rosterType" class="text-white font-medium">Roster Type:</label>
-                    <select id="rosterType" class="w-full mt-2 p-2 rounded bg-gray-700 text-white border border-teal-300">
-                        <option value="regular" selected>Regular</option>
-                        <option value="superflex">SuperFlex</option>
-                    </select>
-                    <div class="mt-4 border-t border-teal-700 pt-4">
-                        <h4 class="text-md font-semibold text-white">Team 1</h4>
-                        <div class="input-wrapper">
-                            <label for="player1" class="text-white font-medium">Players:</label>
-                            <div class="relative">
-                                <input type="text" id="player1" class="w-full mt-2 p-2 rounded bg-gray-700 text-white border border-teal-300 autocomplete-input" placeholder="Search Players...">
-                                <button id="add-player1" class="mt-2 w-full bg-teal-600 text-white px-4 py-2 rounded hover:bg-teal-700">Add Player</button>
-                                <div id="player1-selections" class="mt-2"></div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="mt-4 border-t border-teal-700 pt-4">
-                        <h4 class="text-md font-semibold text-white">Team 2</h4>
-                        <div class="input-wrapper">
-                            <label for="player2" class="text-white font-medium">Players:</label>
-                            <div class="relative">
-                                <input type="text" id="player2" class="w-full mt-2 p-2 rounded bg-gray-700 text-white border border-teal-300 autocomplete-input" placeholder="Search Players...">
-                                <button id="add-player2" class="mt-2 w-full bg-teal-600 text-white px-4 py-2 rounded hover:bg-teal-700">Add Player</button>
-                                <div id="player2-selections" class="mt-2"></div>
-                            </div>
-                        </div>
-                    </div>
-                    <div id="trade-comparison" class="mt-4">
-                        <h4 class="text-md font-semibold text-white">Trade Comparison</h4>
-                        <table class="w-full text-white mt-2">
-                            <thead>
-                                <tr>
-                                    <th class="p-2 text-left">Player</th>
-                                    <th class="p-2 text-left">Position</th>
-                                    <th class="p-2 text-left">Projected Points</th>
-                                    <th class="p-2 text-left">Value</th>
-                                </tr>
-                            </thead>
-                            <tbody id="trade-table-body"></tbody>
-                        </table>
-                        <div id="trade-fairness" class="mt-2 p-2 rounded text-center"></div>
-                    </div>
-                    <button id="analyzeTradeBtn" class="mt-4 w-full bg-teal-600 text-white px-4 py-2 rounded hover:bg-teal-700">Analyze Trade</button>
-                    <p id="tradeResult" class="mt-2 text-center"></p>
-                    <div id="recentTrades"></div>
+                <div class="p-4 bg-teal-50 rounded shadow">
+                    <h3 class="text-lg font-semibold text-gray-900">Get Started</h3>
+                    <p class="mt-2 text-gray-900">Sign up to unlock all features.</p>
+                    <button class="mt-2 bg-teal-600 text-white px-4 py-2 rounded hover:bg-teal-700">Sign Up</button>
                 </div>
-                <select id="team1-1" class="hidden">
-                    <option value="">Select Player</option>
-                </select>
-                <select id="team1-2" class="hidden">
-                    <option value="">Select Player</option>
-                </select>
-                <select id="team1-3" class="hidden">
-                    <option value="">Select Player</option>
-                </select>
-                <select id="team1-4" class="hidden">
-                    <option value="">Select Player</option>
-                </select>
-                <select id="team2-1" class="hidden">
-                    <option value="">Select Player</option>
-                </select>
-                <select id="team2-2" class="hidden">
-                    <option value="">Select Player</option>
-                </select>
-                <select id="team2-3" class="hidden">
-                    <option value="">Select Player</option>
-                </select>
-                <select id="team2-4" class="hidden">
-                    <option value="">Select Player</option>
-                </select>
-            </div>
-            <div id="matchup-predictor" class="bg-teal-800 text-white p-4 rounded-lg">
-                <h3 class="text-lg font-semibold">Matchup Predictor</h3>
-                <select class="w-full mt-2 p-2 rounded bg-gray-700 text-white border border-teal-300" id="matchupTeam1Select">
-                    <option value="">Select Team 1</option>
-                </select>
-                <select class="w-full mt-2 p-2 rounded bg-gray-700 text-white border border-teal-300" id="matchupTeam2Select">
-                    <option value="">Select Team 2</option>
-                </select>
-                <button class="mt-4 w-full bg-teal-600 text-white px-4 py-2 rounded hover:bg-teal-700" id="predictMatchupBtn">Predict Matchup</button>
-                <p id="predictionResult" class="mt-2 text-center"></p>
-            </div>
-            <div class="bg-teal-800 text-white p-4 rounded-lg">
-                <h3 class="text-lg font-semibold">Quick Links</h3>
-                <ul class="mt-2 space-y-2">
-                    <li><a href="#beginner-guides" class="text-teal-300 hover:underline">Beginner Guides</a></li>
-                    <li><a href="#player-stats" class="text-teal-300 hover:underline">Player Stats</a></li>
-                    <li><a href="#league-standings" class="text-teal-300 hover:underline">League Standings</a></li>
-                    <li><a href="#discord" class="text-teal-300 hover:underline">Join Our Discord</a></li>
-                </ul>
             </div>
         </section>
 
