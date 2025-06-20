@@ -3,6 +3,33 @@ document.addEventListener('DOMContentLoaded', () => {
     const tickerContent = document.getElementById('tickerContent');
     const pauseButton = document.getElementById('pauseButton');
 
+    function loadFileData(fileName) {
+        // Mock CSV data as a fallback since actual file loading isn't defined
+        return `1,Patrick Mahomes,KC,7,Quarterback,10.5
+2,Christian McCaffrey,SF,9,Running Back,15.2
+3,Justin Jefferson,MIN,10,Wide Receiver,12.8
+4,Travis Kelce,KC,7,Tight End,11.0
+5,Justin Herbert,LAC,8,Quarterback,9.8
+6,Derrick Henry,TEN,13,Running Back,14.5
+7,Cooper Kupp,LAR,11,Wide Receiver,11.5
+8,George Kittle,SF,9,Tight End,10.2
+9,Joe Burrow,CIN,10,Quarterback,9.0
+10,Nick Chubb,CLE,13,Running Back,13.8
+11,Davante Adams,LV,6,Wide Receiver,11.0
+12,Mark Andrews,BAL,8,Tight End,9.5
+13,Aaron Rodgers,GB,11,Quarterback,8.5
+14,Alvin Kamara,NO,6,Running Back,13.2
+15,Stefon Diggs,BUF,7,Wide Receiver,10.8
+16,Darren Waller,LV,6,Tight End,9.0
+17,Kyler Murray,ARI,12,Quarterback,8.2
+18,James Robinson,JAX,7,Running Back,12.5
+19,Calvin Ridley,TEN,13,Wide Receiver,10.5
+20,T.J. Hockenson,DET,9,Tight End,8.8
+21,Matthew Stafford,LAR,11,Quarterback,7.9
+22,David Montgomery,DET,9,Running Back,12.0
+23,Tee Higgins,CIN,10,Wide Receiver,10.2`;
+    }
+
     function populateTicker() {
         const mockData = loadFileData("FantasyPros_2025_Overall_ADP_Rankings.csv").split('\n').slice(1).map(line => {
             const [rank, name, team, bye, pos, avg] = line.split(',').map(s => s.trim());
