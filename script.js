@@ -4,43 +4,20 @@ document.addEventListener('DOMContentLoaded', () => {
     const pauseButton = document.getElementById('pauseButton');
 
     function populateTicker() {
-        const mockData = [
-            { position: 'Quarterback', name: 'Josh Allen', team: 'BUF', points: 25.4 },
-            { position: 'Quarterback', name: 'Patrick Mahomes', team: 'KC', points: 25.1 },
-            { position: 'Quarterback', name: 'Lamar Jackson', team: 'BAL', points: 23.8 },
-            { position: 'Quarterback', name: 'Jalen Hurts', team: 'PHI', points: 22.3 },
-            { position: 'Quarterback', name: 'Joe Burrow', team: 'CIN', points: 21.6 },
-            { position: 'Running Back', name: 'Christian McCaffrey', team: 'SF', points: 20.5 },
-            { position: 'Running Back', name: 'Austin Ekeler', team: 'LAC', points: 19.5 },
-            { position: 'Running Back', name: 'Alvin Kamara', team: 'NO', points: 18.6 },
-            { position: 'Running Back', name: 'Nick Chubb', team: 'CLE', points: 17.7 },
-            { position: 'Running Back', name: 'Saquon Barkley', team: 'NYG', points: 16.8 },
-            { position: 'Wide Receiver', name: 'Davante Adams', team: 'LV', points: 20.9 },
-            { position: 'Wide Receiver', name: 'Tyreek Hill', team: 'MIA', points: 19.8 },
-            { position: 'Wide Receiver', name: 'Justin Jefferson', team: 'MIN', points: 19.2 },
-            { position: 'Wide Receiver', name: 'Stefon Diggs', team: 'BUF', points: 18.3 },
-            { position: 'Wide Receiver', name: 'Cooper Kupp', team: 'LA', points: 17.4 },
-            { position: 'Wide Receiver', name: 'JaMarr Chase', team: 'CIN', points: 16.5 },
-            { position: 'Wide Receiver', name: 'Deebo Samuel', team: 'SF', points: 15.6 },
-            { position: 'Tight End', name: 'Travis Kelce', team: 'KC', points: 18.9 },
-            { position: 'Tight End', name: 'George Kittle', team: 'SF', points: 17.1 },
-            { position: 'Tight End', name: 'Dallas Goedert', team: 'PHI', points: 15.3 },
-            { position: 'Kicker', name: 'Justin Tucker', team: 'BAL', points: 14.5 },
-            { position: 'Kicker', name: 'Harrison Butker', team: 'KC', points: 13.8 },
-            { position: 'Kicker', name: 'Evan McPherson', team: 'CIN', points: 13.2 }
-        ];
-
-        const sortedData = mockData.sort((a, b) => {
+        const mockData = loadFileData("FantasyPros_2025_Overall_ADP_Rankings.csv").split('\n').slice(1).map(line => {
+            const [rank, name, team, bye, pos, avg] = line.split(',').map(s => s.trim());
+            return { position: pos.replace(/\d+/g, ''), name, team, points: (401 - parseFloat(avg)) / 10 }; // Inverse ADP to simulate points
+        }).sort((a, b) => {
             const positionOrder = { "Quarterback": 1, "Running Back": 2, "Wide Receiver": 3, "Tight End": 4, "Kicker": 5 };
             if (positionOrder[a.position] !== positionOrder[b.position]) {
                 return positionOrder[a.position] - positionOrder[b.position];
             }
             return b.points - a.points;
-        });
+        }).slice(0, 23); // Limit to top 23 for ticker
 
         let content = '';
         let currentPosition = null;
-        sortedData.forEach((player, index) => {
+        mockData.forEach((player, index) => {
             if (player.position !== currentPosition) {
                 if (currentPosition !== null) content += ' | ';
                 content += `<b>${player.position}:</b> `;
@@ -48,7 +25,7 @@ document.addEventListener('DOMContentLoaded', () => {
             } else {
                 content += ' | ';
             }
-            content += `${player.name} (${player.team}) - ${player.points} pts`;
+            content += `${player.name} (${player.team}) - ${player.points.toFixed(1)} pts`;
         });
 
         tickerContent.innerHTML = content + ' | ' + content; // Duplicate for seamless loop
@@ -85,23 +62,10 @@ document.addEventListener('DOMContentLoaded', () => {
         const tradeFairness = document.getElementById('trade-fairness');
         const clearAllBtn = document.getElementById('clearAllBtn');
 
-        let allPlayers = [
-            { id: '1', name: 'Josh Allen', position: 'Quarterback', adp: 5.2, projectedPoints: 300, recentPoints: 25.4, confidence: 85, injuryImpact: 1.0 },
-            { id: '2', name: 'Patrick Mahomes', position: 'Quarterback', adp: 6.1, projectedPoints: 290, recentPoints: 25.1, confidence: 82, injuryImpact: 0.9 },
-            { id: '3', name: 'Lamar Jackson', position: 'Quarterback', adp: 7.8, projectedPoints: 280, recentPoints: 23.8, confidence: 80, injuryImpact: 1.0 },
-            { id: '4', name: 'Christian McCaffrey', position: 'Running Back', adp: 1.5, projectedPoints: 250, recentPoints: 20.5, confidence: 90, injuryImpact: 0.7 },
-            { id: '5', name: 'Austin Ekeler', position: 'Running Back', adp: 12.3, projectedPoints: 200, recentPoints: 19.5, confidence: 75, injuryImpact: 1.0 },
-            { id: '6', name: 'Alvin Kamara', position: 'Running Back', adp: 15.6, projectedPoints: 190, recentPoints: 18.6, confidence: 70, injuryImpact: 1.0 },
-            { id: '7', name: 'Tyreek Hill', position: 'Wide Receiver', adp: 3.4, projectedPoints: 220, recentPoints: 19.8, confidence: 88, injuryImpact: 1.0 },
-            { id: '8', name: 'Davante Adams', position: 'Wide Receiver', adp: 8.9, projectedPoints: 210, recentPoints: 20.9, confidence: 83, injuryImpact: 0.85 },
-            { id: '9', name: 'Justin Jefferson', position: 'Wide Receiver', adp: 2.7, projectedPoints: 230, recentPoints: 19.2, confidence: 92, injuryImpact: 1.0 },
-            { id: '10', name: 'Travis Kelce', position: 'Tight End', adp: 10.2, projectedPoints: 180, recentPoints: 18.9, confidence: 87, injuryImpact: 1.0 },
-            { id: '11', name: 'George Kittle', position: 'Tight End', adp: 18.5, projectedPoints: 170, recentPoints: 17.1, confidence: 78, injuryImpact: 0.9 },
-            { id: '12', name: 'Darren Waller', position: 'Tight End', adp: 22.1, projectedPoints: 160, recentPoints: 15.3, confidence: 72, injuryImpact: 1.0 },
-            { id: '13', name: 'Justin Tucker', position: 'Kicker', adp: 50.3, projectedPoints: 120, recentPoints: 14.5, confidence: 65, injuryImpact: 1.0 },
-            { id: '14', name: 'Harrison Butker', position: 'Kicker', adp: 55.7, projectedPoints: 115, recentPoints: 13.8, confidence: 62, injuryImpact: 1.0 },
-            { id: '15', name: 'Evan McPherson', position: 'Kicker', adp: 60.4, projectedPoints: 110, recentPoints: 13.2, confidence: 60, injuryImpact: 1.0 }
-        ];
+        let allPlayers = loadFileData("FantasyPros_2025_Overall_ADP_Rankings.csv").split('\n').slice(1).map(line => {
+            const [rank, name, team, bye, pos, avg] = line.split(',').map(s => s.trim());
+            return { id: rank, name, position: pos.replace(/\d+/g, ''), team, adp: parseFloat(avg), projectedPoints: (401 - parseFloat(avg)) * 0.75, recentPoints: (401 - parseFloat(avg)) / 10, confidence: 70 + (30 * (1 - parseFloat(avg) / 400)), injuryImpact: 1.0 };
+        });
 
         let team1Players = [];
         let team2Players = [];
@@ -195,7 +159,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     <span class="w-8 h-8 bg-gray-500 rounded-full mr-2"></span>
                     <div>
                         <div class="font-bold">${player.name} (${player.position})</div>
-                        <div class="text-sm text-gray-300">Proj: ${player.projectedPoints}, ADP: ${player.adp.toFixed(1)}, Recent: ${player.recentPoints}, Fit: ${player.confidence}%</div>
+                        <div class="text-sm text-gray-300">Proj: ${player.projectedPoints.toFixed(1)}, ADP: ${player.adp.toFixed(1)}, Recent: ${player.recentPoints.toFixed(1)}, Fit: ${player.confidence.toFixed(1)}%</div>
                     </div>
                 </li>`;
             });
@@ -228,7 +192,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     updateSelections(selectionsDiv, selectionsDiv === player1Selections ? team1Players : team2Players);
                     updateTradeComparison();
                     analyzeTrade(analyzeTradeBtn);
-                    // Reset dropdown to reflect new state
                     if (selectionsDiv === player1Selections) {
                         filterPlayers(player1Input.value, `dropdown-${player1Input.id}`, player1Input, player1Selections, team1Players);
                     } else {
@@ -249,7 +212,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     row.innerHTML = `
                         <td class="p-2">${player.name}</td>
                         <td class="p-2">${player.position}</td>
-                        <td class="p-2">${player.projectedPoints}</td>
+                        <td class="p-2">${player.projectedPoints.toFixed(1)}</td>
                         <td class="p-2">${(100 / player.adp).toFixed(1)}</td>
                     `;
                     tradeTableBody.appendChild(row);
@@ -342,7 +305,6 @@ document.addEventListener('DOMContentLoaded', () => {
             updateTradeComparison();
             tradeFairness.innerHTML = '';
             tradeResult.textContent = 'Trade cleared. Add new players to analyze.';
-            // Reset dropdowns on clear
             filterPlayers(player1Input.value, `dropdown-${player1Input.id}`, player1Input, player1Selections, team1Players);
             filterPlayers(player2Input.value, `dropdown-${player2Input.id}`, player2Input, player2Selections, team2Players);
         });
@@ -360,16 +322,20 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Mock roster data for fantasy teams (to be replaced with actual API data)
         let rosters = {
-            '1': ['1', '4', '7', '10', '13'], // Fantasy Team 1
-            '2': ['2', '5', '8', '11', '14'], // Fantasy Team 2
-            '3': ['3', '6', '9', '12', '15']  // Fantasy Team 3
+            '1': ['1', '4', '7', '18', '25'], // Fantasy Team 1
+            '2': ['2', '5', '8', '19', '26'], // Fantasy Team 2
+            '3': ['3', '6', '9', '20', '27']  // Fantasy Team 3
         };
+
+        let allPlayers = loadFileData("FantasyPros_2025_Overall_ADP_Rankings.csv").split('\n').slice(1).map(line => {
+            const [rank, name, team, bye, pos, avg] = line.split(',').map(s => s.trim());
+            return { id: rank, name, position: pos.replace(/\d+/g, ''), team, adp: parseFloat(avg), projectedPoints: (401 - parseFloat(avg)) * 0.75, recentPoints: (401 - parseFloat(avg)) / 10, confidence: 70 + (30 * (1 - parseFloat(avg) / 400)), injuryImpact: 1.0 };
+        });
 
         function getTeamAdjustedPoints(teamIds) {
             return teamIds.reduce((sum, playerId) => {
                 const player = allPlayers.find(p => p.id === playerId);
                 if (player) {
-                    // Adjust for recent performance (20% weight), matchup difficulty (random 0.9-1.1), and injury impact
                     const matchupDifficulty = 0.9 + Math.random() * 0.2; // Simulated difficulty for fantasy matchup
                     const recentWeight = player.recentPoints * 0.2;
                     const adjustedPoints = (player.projectedPoints * 0.8 + recentWeight) * player.injuryImpact * matchupDifficulty;
@@ -392,13 +358,11 @@ document.addEventListener('DOMContentLoaded', () => {
                     matchupTeam1Select.innerHTML = '<option value="">Select Fantasy Team 1</option>' + data.map(team => `<option value="${team.roster_id}">${team.owner_id}</option>`).join('');
                     matchupTeam2Select.innerHTML = '<option value="">Select Fantasy Team 2</option>' + data.map(team => `<option value="${team.roster_id}">${team.owner_id}</option>`).join('');
                 } else {
-                    // Fallback to mock data if API data is incomplete
                     matchupTeam1Select.innerHTML = '<option value="">Select Fantasy Team 1</option><option value="1">Team 1</option><option value="2">Team 2</option><option value="3">Team 3</option>';
                     matchupTeam2Select.innerHTML = '<option value="">Select Fantasy Team 2</option><option value="1">Team 1</option><option value="2">Team 2</option><option value="3">Team 3</option>';
                 }
             } catch (error) {
                 console.error('Error fetching matchup teams:', error);
-                // Fallback to mock data
                 matchupTeam1Select.innerHTML = '<option value="">Select Fantasy Team 1</option><option value="1">Team 1</option><option value="2">Team 2</option><option value="3">Team 3</option>';
                 matchupTeam2Select.innerHTML = '<option value="">Select Fantasy Team 2</option><option value="1">Team 1</option><option value="2">Team 2</option><option value="3">Team 3</option>';
             }
