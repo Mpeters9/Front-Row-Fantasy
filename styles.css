@@ -92,11 +92,11 @@ body {
     @apply mt-2 w-full bg-teal-600 text-white px-4 py-2 rounded hover:bg-teal-700;
 }
 
-.trade-analyzer ul {
-    @apply absolute top-full left-0 w-full bg-teal-800 text-white border border-teal-300 rounded mt-1 max-h-48 overflow-y-auto z-50;
+.autocomplete-dropdown {
+    @apply absolute z-50 mt-1 w-full max-h-48 overflow-y-auto rounded border border-teal-300 bg-teal-800 text-white;
 }
 
-.trade-analyzer ul li {
+.autocomplete-dropdown li {
     @apply p-2 hover:bg-teal-600 cursor-pointer;
 }
 
