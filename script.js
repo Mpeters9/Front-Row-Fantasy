@@ -83,6 +83,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const player2Selections = document.getElementById('player2-selections');
         const tradeTableBody = document.getElementById('trade-table-body');
         const tradeFairness = document.getElementById('trade-fairness');
+        const clearAllBtn = document.getElementById('clearAllBtn');
 
         let allPlayers = [
             { id: '1', name: 'Josh Allen', position: 'Quarterback', adp: 5.2, projectedPoints: 300, recentPoints: 25.4, confidence: 85 },
@@ -317,6 +318,16 @@ document.addEventListener('DOMContentLoaded', () => {
         analyzeTradeBtn.addEventListener('click', () => analyzeTrade(analyzeTradeBtn));
         leagueTypeSelect.addEventListener('change', () => analyzeTrade(analyzeTradeBtn));
         rosterTypeSelect.addEventListener('change', () => analyzeTrade(analyzeTradeBtn));
+
+        clearAllBtn.addEventListener('click', () => {
+            team1Players = [];
+            team2Players = [];
+            updateSelections(player1Selections, team1Players);
+            updateSelections(player2Selections, team2Players);
+            updateTradeComparison();
+            tradeFairness.innerHTML = '';
+            tradeResult.textContent = 'Trade cleared. Add new players to analyze.';
+        });
 
         setupAutocomplete(player1Input, player1Selections, team1Players);
         setupAutocomplete(player2Input, player2Selections, team2Players);
