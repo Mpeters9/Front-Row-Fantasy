@@ -79,6 +79,14 @@ body {
     @apply grid grid-cols-1 gap-4;
 }
 
+.trade-analyzer .filter-section.relative {
+    position: relative;
+}
+
+.input-wrapper {
+    position: relative;
+}
+
 .trade-analyzer label {
     @apply text-white font-medium;
 }
@@ -93,7 +101,7 @@ body {
 }
 
 .autocomplete-dropdown {
-    @apply absolute z-50 mt-1 w-full max-h-48 overflow-y-auto rounded border border-teal-300 bg-teal-800 text-white;
+    @apply absolute z-50 max-h-48 overflow-y-auto rounded border border-teal-300 bg-teal-800 text-white;
 }
 
 .autocomplete-dropdown li {
