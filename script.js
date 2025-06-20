@@ -358,11 +358,11 @@ document.addEventListener('DOMContentLoaded', () => {
         const predictMatchupBtn = document.getElementById('predictMatchupBtn');
         const predictionResult = document.getElementById('predictionResult');
 
-        // Mock roster data for teams (to be replaced with actual API data)
+        // Mock roster data for fantasy teams (to be replaced with actual API data)
         let rosters = {
-            '1': ['1', '4', '7', '10', '13'], // Team 1: Josh Allen, Christian McCaffrey, Tyreek Hill, Travis Kelce, Justin Tucker
-            '2': ['2', '5', '8', '11', '14'], // Team 2: Patrick Mahomes, Austin Ekeler, Davante Adams, George Kittle, Harrison Butker
-            '3': ['3', '6', '9', '12', '15']  // Team 3: Lamar Jackson, Alvin Kamara, Justin Jefferson, Darren Waller, Evan McPherson
+            '1': ['1', '4', '7', '10', '13'], // Fantasy Team 1
+            '2': ['2', '5', '8', '11', '14'], // Fantasy Team 2
+            '3': ['3', '6', '9', '12', '15']  // Fantasy Team 3
         };
 
         function getTeamAdjustedPoints(teamIds) {
@@ -370,7 +370,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 const player = allPlayers.find(p => p.id === playerId);
                 if (player) {
                     // Adjust for recent performance (20% weight), matchup difficulty (random 0.9-1.1), and injury impact
-                    const matchupDifficulty = 0.9 + Math.random() * 0.2; // Simulated difficulty
+                    const matchupDifficulty = 0.9 + Math.random() * 0.2; // Simulated difficulty for fantasy matchup
                     const recentWeight = player.recentPoints * 0.2;
                     const adjustedPoints = (player.projectedPoints * 0.8 + recentWeight) * player.injuryImpact * matchupDifficulty;
                     return sum + adjustedPoints;
@@ -387,20 +387,20 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (data && data.length) {
                     rosters = {};
                     data.forEach(team => {
-                        rosters[team.roster_id] = team.players || []; // Map player IDs from API
+                        rosters[team.roster_id] = team.players || []; // Map player IDs from API for fantasy teams
                     });
-                    matchupTeam1Select.innerHTML = '<option value="">Select Team 1</option>' + data.map(team => `<option value="${team.roster_id}">${team.owner_id}</option>`).join('');
-                    matchupTeam2Select.innerHTML = '<option value="">Select Team 2</option>' + data.map(team => `<option value="${team.roster_id}">${team.owner_id}</option>`).join('');
+                    matchupTeam1Select.innerHTML = '<option value="">Select Fantasy Team 1</option>' + data.map(team => `<option value="${team.roster_id}">${team.owner_id}</option>`).join('');
+                    matchupTeam2Select.innerHTML = '<option value="">Select Fantasy Team 2</option>' + data.map(team => `<option value="${team.roster_id}">${team.owner_id}</option>`).join('');
                 } else {
                     // Fallback to mock data if API data is incomplete
-                    matchupTeam1Select.innerHTML = '<option value="">Select Team 1</option><option value="1">Team 1</option><option value="2">Team 2</option><option value="3">Team 3</option>';
-                    matchupTeam2Select.innerHTML = '<option value="">Select Team 2</option><option value="1">Team 1</option><option value="2">Team 2</option><option value="3">Team 3</option>';
+                    matchupTeam1Select.innerHTML = '<option value="">Select Fantasy Team 1</option><option value="1">Team 1</option><option value="2">Team 2</option><option value="3">Team 3</option>';
+                    matchupTeam2Select.innerHTML = '<option value="">Select Fantasy Team 2</option><option value="1">Team 1</option><option value="2">Team 2</option><option value="3">Team 3</option>';
                 }
             } catch (error) {
                 console.error('Error fetching matchup teams:', error);
                 // Fallback to mock data
-                matchupTeam1Select.innerHTML = '<option value="">Select Team 1</option><option value="1">Team 1</option><option value="2">Team 2</option><option value="3">Team 3</option>';
-                matchupTeam2Select.innerHTML = '<option value="">Select Team 2</option><option value="1">Team 1</option><option value="2">Team 2</option><option value="3">Team 3</option>';
+                matchupTeam1Select.innerHTML = '<option value="">Select Fantasy Team 1</option><option value="1">Team 1</option><option value="2">Team 2</option><option value="3">Team 3</option>';
+                matchupTeam2Select.innerHTML = '<option value="">Select Fantasy Team 2</option><option value="1">Team 1</option><option value="2">Team 2</option><option value="3">Team 3</option>';
             }
         }
 
@@ -414,10 +414,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 return { winner: 'N/A', confidence: 0 };
             } else if (team1Points > team2Points) {
                 confidence = Math.min(95, 50 + ((team1Points - team2Points) / totalPoints) * 50);
-                return { winner: 'Team 1', confidence };
+                return { winner: 'Fantasy Team 1', confidence };
             } else if (team2Points > team1Points) {
                 confidence = Math.min(95, 50 + ((team2Points - team1Points) / totalPoints) * 50);
-                return { winner: 'Team 2', confidence };
+                return { winner: 'Fantasy Team 2', confidence };
             } else {
                 return { winner: 'Tie', confidence: 50 };
             }
@@ -428,9 +428,9 @@ document.addEventListener('DOMContentLoaded', () => {
             const team2 = matchupTeam2Select.value;
             if (team1 && team2 && team1 !== team2) {
                 const prediction = predictMatchup(team1, team2);
-                predictionResult.textContent = `${prediction.winner} is predicted to win with a ${prediction.confidence.toFixed(1)}% confidence based on projected points, recent performance, and injury impact.`;
+                predictionResult.textContent = `${prediction.winner} is predicted to win with a ${prediction.confidence.toFixed(1)}% confidence based on projected points, recent performance, and injury impact for fantasy team matchups.`;
             } else {
-                predictionResult.textContent = 'Please select two different teams.';
+                predictionResult.textContent = 'Please select two different fantasy teams.';
             }
         });
 
