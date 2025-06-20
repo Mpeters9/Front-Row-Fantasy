@@ -180,8 +180,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 return;
             }
 
+            const allSelectedPlayers = [...team1Players, ...team2Players];
             const filteredPlayers = allPlayers.filter(player =>
-                !teamPlayers.some(p => p.id === player.id) && player.name.toLowerCase().includes(searchTerm.toLowerCase())
+                !allSelectedPlayers.some(p => p.id === player.id) && player.name.toLowerCase().includes(searchTerm.toLowerCase())
             ).sort((a, b) => {
                 const aRelevance = a.name.toLowerCase().indexOf(searchTerm.toLowerCase());
                 const bRelevance = b.name.toLowerCase().indexOf(searchTerm.toLowerCase());
@@ -221,8 +222,14 @@ document.addEventListener('DOMContentLoaded', () => {
                     const playerId = btn.dataset.id;
                     teamPlayers = teamPlayers.filter(p => p.id !== playerId);
                     updateSelections(selectionsDiv, teamPlayers);
-                    updateTradeComparison(); // Ensure table updates on removal
+                    updateTradeComparison();
                     analyzeTrade(analyzeTradeBtn);
+                    // Reset dropdown to reflect new state
+                    if (selectionsDiv === player1Selections) {
+                        filterPlayers(player1Input.value, `dropdown-${player1Input.id}`, player1Input, player1Selections, team1Players);
+                    } else {
+                        filterPlayers(player2Input.value, `dropdown-${player2Input.id}`, player2Input, player2Selections, team2Players);
+                    }
                 });
             });
         }
@@ -328,9 +335,12 @@ document.addEventListener('DOMContentLoaded', () => {
             team2Players = [];
             updateSelections(player1Selections, team1Players);
             updateSelections(player2Selections, team2Players);
-            updateTradeComparison(); // Ensure table clears
+            updateTradeComparison();
             tradeFairness.innerHTML = '';
             tradeResult.textContent = 'Trade cleared. Add new players to analyze.';
+            // Reset dropdowns on clear
+            filterPlayers(player1Input.value, `dropdown-${player1Input.id}`, player1Input, player1Selections, team1Players);
+            filterPlayers(player2Input.value, `dropdown-${player2Input.id}`, player2Input, player2Selections, team2Players);
         });
 
         setupAutocomplete(player1Input, player1Selections, team1Players);
