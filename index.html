@@ -133,6 +133,21 @@
                             <input type="text" id="player2-4" class="w-full mt-2 p-2 rounded bg-gray-700 text-white border border-teal-300 autocomplete-input" placeholder="Search Player 4...">
                         </div>
                     </div>
+                    <div id="trade-comparison" class="mt-4">
+                        <h4 class="text-md font-semibold text-white">Trade Comparison</h4>
+                        <table class="w-full text-white mt-2">
+                            <thead>
+                                <tr>
+                                    <th class="p-2 text-left">Player</th>
+                                    <th class="p-2 text-left">Position</th>
+                                    <th class="p-2 text-left">Projected Points</th>
+                                    <th class="p-2 text-left">Value</th>
+                                </tr>
+                            </thead>
+                            <tbody id="trade-table-body"></tbody>
+                        </table>
+                        <div id="trade-fairness" class="mt-2 p-2 rounded text-center"></div>
+                    </div>
                     <button id="analyzeTradeBtn" class="mt-4 w-full bg-teal-600 text-white px-4 py-2 rounded hover:bg-teal-700">Analyze Trade</button>
                     <p id="tradeResult" class="mt-2 text-center"></p>
                     <div id="recentTrades"></div>
