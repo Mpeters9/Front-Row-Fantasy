@@ -78,23 +78,25 @@ document.addEventListener('DOMContentLoaded', () => {
         ...['player1-1', 'player1-2', 'player1-3', 'player1-4'].map(id => document.getElementById(id)),
         ...['player2-1', 'player2-2', 'player2-3', 'player2-4'].map(id => document.getElementById(id))
     ];
+    const tradeTableBody = document.getElementById('trade-table-body');
+    const tradeFairness = document.getElementById('trade-fairness');
 
     let allPlayers = [
-        { id: '1', name: 'Josh Allen', position: 'Quarterback', adp: 5.2 },
-        { id: '2', name: 'Patrick Mahomes', position: 'Quarterback', adp: 6.1 },
-        { id: '3', name: 'Lamar Jackson', position: 'Quarterback', adp: 7.8 },
-        { id: '4', name: 'Christian McCaffrey', position: 'Running Back', adp: 1.5 },
-        { id: '5', name: 'Austin Ekeler', position: 'Running Back', adp: 12.3 },
-        { id: '6', name: 'Alvin Kamara', position: 'Running Back', adp: 15.6 },
-        { id: '7', name: 'Tyreek Hill', position: 'Wide Receiver', adp: 3.4 },
-        { id: '8', name: 'Davante Adams', position: 'Wide Receiver', adp: 8.9 },
-        { id: '9', name: 'Justin Jefferson', position: 'Wide Receiver', adp: 2.7 },
-        { id: '10', name: 'Travis Kelce', position: 'Tight End', adp: 10.2 },
-        { id: '11', name: 'George Kittle', position: 'Tight End', adp: 18.5 },
-        { id: '12', name: 'Darren Waller', position: 'Tight End', adp: 22.1 },
-        { id: '13', name: 'Justin Tucker', position: 'Kicker', adp: 50.3 },
-        { id: '14', name: 'Harrison Butker', position: 'Kicker', adp: 55.7 },
-        { id: '15', name: 'Evan McPherson', position: 'Kicker', adp: 60.4 }
+        { id: '1', name: 'Josh Allen', position: 'Quarterback', adp: 5.2, projectedPoints: 300 },
+        { id: '2', name: 'Patrick Mahomes', position: 'Quarterback', adp: 6.1, projectedPoints: 290 },
+        { id: '3', name: 'Lamar Jackson', position: 'Quarterback', adp: 7.8, projectedPoints: 280 },
+        { id: '4', name: 'Christian McCaffrey', position: 'Running Back', adp: 1.5, projectedPoints: 250 },
+        { id: '5', name: 'Austin Ekeler', position: 'Running Back', adp: 12.3, projectedPoints: 200 },
+        { id: '6', name: 'Alvin Kamara', position: 'Running Back', adp: 15.6, projectedPoints: 190 },
+        { id: '7', name: 'Tyreek Hill', position: 'Wide Receiver', adp: 3.4, projectedPoints: 220 },
+        { id: '8', name: 'Davante Adams', position: 'Wide Receiver', adp: 8.9, projectedPoints: 210 },
+        { id: '9', name: 'Justin Jefferson', position: 'Wide Receiver', adp: 2.7, projectedPoints: 230 },
+        { id: '10', name: 'Travis Kelce', position: 'Tight End', adp: 10.2, projectedPoints: 180 },
+        { id: '11', name: 'George Kittle', position: 'Tight End', adp: 18.5, projectedPoints: 170 },
+        { id: '12', name: 'Darren Waller', position: 'Tight End', adp: 22.1, projectedPoints: 160 },
+        { id: '13', name: 'Justin Tucker', position: 'Kicker', adp: 50.3, projectedPoints: 120 },
+        { id: '14', name: 'Harrison Butker', position: 'Kicker', adp: 55.7, projectedPoints: 115 },
+        { id: '15', name: 'Evan McPherson', position: 'Kicker', adp: 60.4, projectedPoints: 110 }
     ];
 
     function setupAutocomplete() {
@@ -117,9 +119,15 @@ document.addEventListener('DOMContentLoaded', () => {
                 wrapper.appendChild(dropdownList);
             }
 
-            input.addEventListener('input', () => debouncedFilter(input, dropdownId, select));
+            input.addEventListener('input', () => {
+                dropdownList.classList.add('loading');
+                debouncedFilter(input, dropdownId, select);
+            });
             input.addEventListener('focus', () => {
-                if (input.value) filterPlayers(input.value, dropdownId, input, select);
+                if (input.value) {
+                    dropdownList.classList.add('loading');
+                    filterPlayers(input.value, dropdownId, input, select);
+                }
             });
             input.addEventListener('blur', () => {
                 setTimeout(() => {
@@ -128,7 +136,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 }, 200);
             });
             input.addEventListener('click', () => {
-                if (input.value) filterPlayers(input.value, dropdownId, input, select);
+                if (input.value) {
+                    dropdownList.classList.add('loading');
+                    filterPlayers(input.value, dropdownId, input, select);
+                }
             });
             dropdownList.addEventListener('click', (e) => {
                 const li = e.target.closest('li');
@@ -139,6 +150,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         input.value = `${player.name} (${player.position})`;
                         select.value = playerId;
                         dropdownList.style.display = 'none';
+                        updateTradeComparison();
                         analyzeTrade(analyzeTradeBtn);
                     }
                 }
@@ -162,6 +174,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const dropdownList = document.getElementById(dropdownId);
         if (!searchTerm) {
             dropdownList.style.display = 'none';
+            dropdownList.classList.remove('loading');
             return;
         }
 
@@ -176,11 +189,14 @@ document.addEventListener('DOMContentLoaded', () => {
         let options = '';
         filteredPlayers.forEach(player => {
             const adpText = player.adp ? player.adp.toFixed(1) : 'N/A';
-            options += `<li class="p-2 hover:bg-teal-600 cursor-pointer" data-id="${player.id}">${player.name} (${player.position}) - ADP: ${adpText}</li>`;
+            options += `<li class="p-2 flex items-center hover:bg-teal-600 cursor-pointer" data-id="${player.id}">
+                <span class="w-8 h-8 bg-gray-500 rounded-full mr-2"></span> ${player.name} (${player.position}) - ADP: ${adpText}
+            </li>`;
         });
 
         dropdownList.innerHTML = options || '<li class="p-2 text-gray-400">No players found</li>';
         dropdownList.style.display = 'block';
+        dropdownList.classList.remove('loading');
         const wrapperRect = input.closest('.input-wrapper').getBoundingClientRect();
         const tradeAnalyzerRect = document.getElementById('trade-analyzer').getBoundingClientRect();
         dropdownList.style.top = `${wrapperRect.bottom - tradeAnalyzerRect.top + 5}px`;
@@ -188,13 +204,41 @@ document.addEventListener('DOMContentLoaded', () => {
         dropdownList.style.width = `${wrapperRect.width}px`;
     }
 
-    function getPlayerValue(playerId, leagueType, rosterType) {
-        const player = allPlayers.find(p => p.id === playerId);
-        if (!player) return 0;
-        let baseValue = player.adp ? 100 / player.adp : 10;
-        let positionModifier = 1;
-        if (rosterType === 'superflex' && player.position === 'Quarterback') positionModifier = 1.3;
-        return Math.round(baseValue * positionModifier);
+    function updateTradeComparison() {
+        const team1Players = team1Selects.map(select => allPlayers.find(p => p.id === select.value)).filter(p => p);
+        const team2Players = team2Selects.map(select => allPlayers.find(p => p.id === select.value)).filter(p => p);
+        const allPlayersInTrade = [...team1Players, ...team2Players];
+
+        tradeTableBody.innerHTML = '';
+        allPlayersInTrade.forEach(player => {
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td class="p-2">${player.name}</td>
+                <td class="p-2">${player.position}</td>
+                <td class="p-2">${player.projectedPoints}</td>
+                <td class="p-2">${(100 / player.adp).toFixed(1)}</td>
+            `;
+            tradeTableBody.appendChild(row);
+        });
+    }
+
+    function getTradeFairness() {
+        const team1Value = team1Selects.reduce((sum, select) => {
+            const player = allPlayers.find(p => p.id === select.value);
+            return player ? sum + (100 / player.adp) : sum;
+        }, 0);
+        const team2Value = team2Selects.reduce((sum, select) => {
+            const player = allPlayers.find(p => p.id === select.value);
+            return player ? sum + (100 / player.adp) : sum;
+        }, 0);
+        const diff = Math.abs(team1Value - team2Value);
+        const totalValue = team1Value + team2Value;
+
+        if (totalValue === 0) return { color: 'gray', text: 'N/A' };
+        const fairness = diff / totalValue * 100;
+        if (fairness < 10) return { color: 'green', text: 'Fair' };
+        if (fairness < 20) return { color: 'yellow', text: 'Slight Imbalance' };
+        return { color: 'red', text: 'Unfair' };
     }
 
     function analyzeTrade(button) {
@@ -202,6 +246,10 @@ document.addEventListener('DOMContentLoaded', () => {
         const team2Ids = team2Selects.map(select => select.value).filter(id => id);
         const leagueType = leagueTypeSelect.value;
         const rosterType = rosterTypeSelect.value;
+
+        updateTradeComparison();
+        const fairness = getTradeFairness();
+        tradeFairness.innerHTML = `<span class="trade-fairness-${fairness.color}">${fairness.text}</span>`;
 
         if (team1Ids.length > 0 && team2Ids.length > 0) {
             const value1 = team1Ids.reduce((sum, id) => sum + getPlayerValue(id, leagueType, rosterType), 0);
@@ -218,6 +266,15 @@ document.addEventListener('DOMContentLoaded', () => {
         } else {
             tradeResult.textContent = 'Please select at least one player for each team.';
         }
+    }
+
+    function getPlayerValue(playerId, leagueType, rosterType) {
+        const player = allPlayers.find(p => p.id === playerId);
+        if (!player) return 0;
+        let baseValue = player.adp ? 100 / player.adp : 10;
+        let positionModifier = 1;
+        if (rosterType === 'superflex' && player.position === 'Quarterback') positionModifier = 1.3;
+        return Math.round(baseValue * positionModifier);
     }
 
     syncLeagueBtn.addEventListener('click', async () => {
