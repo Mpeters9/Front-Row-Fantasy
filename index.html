@@ -75,7 +75,7 @@
         <section class="grid grid-cols-1 md:grid-cols-3 gap-6 bg-gray-100">
             <div id="trade-analyzer" class="trade-analyzer bg-teal-800 text-white p-4 rounded-lg">
                 <h3 class="text-lg font-semibold">Trade Analyzer</h3>
-                <div id="trade-filter-section" class="filter-section">
+                <div id="trade-filter-section" class="filter-section relative">
                     <label for="platform" class="text-white font-medium">Platform:</label>
                     <select id="platform" class="w-full mt-2 p-2 rounded bg-gray-700 text-white border border-teal-300">
                         <option value="sleeper">Sleeper</option>
@@ -97,25 +97,41 @@
                     </select>
                     <div class="mt-4 border-t border-teal-700 pt-4">
                         <h4 class="text-md font-semibold text-white">Team 1</h4>
-                        <label for="player1-1" class="text-white font-medium">Player 1:</label>
-                        <input type="text" id="player1-1" class="w-full mt-2 p-2 rounded bg-gray-700 text-white border border-teal-300 autocomplete-input" placeholder="Search Player 1...">
-                        <label for="player1-2" class="text-white font-medium">Player 2:</label>
-                        <input type="text" id="player1-2" class="w-full mt-2 p-2 rounded bg-gray-700 text-white border border-teal-300 autocomplete-input" placeholder="Search Player 2...">
-                        <label for="player1-3" class="text-white font-medium">Player 3:</label>
-                        <input type="text" id="player1-3" class="w-full mt-2 p-2 rounded bg-gray-700 text-white border border-teal-300 autocomplete-input" placeholder="Search Player 3...">
-                        <label for="player1-4" class="text-white font-medium">Player 4:</label>
-                        <input type="text" id="player1-4" class="w-full mt-2 p-2 rounded bg-gray-700 text-white border border-teal-300 autocomplete-input" placeholder="Search Player 4...">
+                        <div class="input-wrapper">
+                            <label for="player1-1" class="text-white font-medium">Player 1:</label>
+                            <input type="text" id="player1-1" class="w-full mt-2 p-2 rounded bg-gray-700 text-white border border-teal-300 autocomplete-input" placeholder="Search Player 1...">
+                        </div>
+                        <div class="input-wrapper">
+                            <label for="player1-2" class="text-white font-medium">Player 2:</label>
+                            <input type="text" id="player1-2" class="w-full mt-2 p-2 rounded bg-gray-700 text-white border border-teal-300 autocomplete-input" placeholder="Search Player 2...">
+                        </div>
+                        <div class="input-wrapper">
+                            <label for="player1-3" class="text-white font-medium">Player 3:</label>
+                            <input type="text" id="player1-3" class="w-full mt-2 p-2 rounded bg-gray-700 text-white border border-teal-300 autocomplete-input" placeholder="Search Player 3...">
+                        </div>
+                        <div class="input-wrapper">
+                            <label for="player1-4" class="text-white font-medium">Player 4:</label>
+                            <input type="text" id="player1-4" class="w-full mt-2 p-2 rounded bg-gray-700 text-white border border-teal-300 autocomplete-input" placeholder="Search Player 4...">
+                        </div>
                     </div>
                     <div class="mt-4 border-t border-teal-700 pt-4">
                         <h4 class="text-md font-semibold text-white">Team 2</h4>
-                        <label for="player2-1" class="text-white font-medium">Player 1:</label>
-                        <input type="text" id="player2-1" class="w-full mt-2 p-2 rounded bg-gray-700 text-white border border-teal-300 autocomplete-input" placeholder="Search Player 1...">
-                        <label for="player2-2" class="text-white font-medium">Player 2:</label>
-                        <input type="text" id="player2-2" class="w-full mt-2 p-2 rounded bg-gray-700 text-white border border-teal-300 autocomplete-input" placeholder="Search Player 2...">
-                        <label for="player2-3" class="text-white font-medium">Player 3:</label>
-                        <input type="text" id="player2-3" class="w-full mt-2 p-2 rounded bg-gray-700 text-white border border-teal-300 autocomplete-input" placeholder="Search Player 3...">
-                        <label for="player2-4" class="text-white font-medium">Player 4:</label>
-                        <input type="text" id="player2-4" class="w-full mt-2 p-2 rounded bg-gray-700 text-white border border-teal-300 autocomplete-input" placeholder="Search Player 4...">
+                        <div class="input-wrapper">
+                            <label for="player2-1" class="text-white font-medium">Player 1:</label>
+                            <input type="text" id="player2-1" class="w-full mt-2 p-2 rounded bg-gray-700 text-white border border-teal-300 autocomplete-input" placeholder="Search Player 1...">
+                        </div>
+                        <div class="input-wrapper">
+                            <label for="player2-2" class="text-white font-medium">Player 2:</label>
+                            <input type="text" id="player2-2" class="w-full mt-2 p-2 rounded bg-gray-700 text-white border border-teal-300 autocomplete-input" placeholder="Search Player 2...">
+                        </div>
+                        <div class="input-wrapper">
+                            <label for="player2-3" class="text-white font-medium">Player 3:</label>
+                            <input type="text" id="player2-3" class="w-full mt-2 p-2 rounded bg-gray-700 text-white border border-teal-300 autocomplete-input" placeholder="Search Player 3...">
+                        </div>
+                        <div class="input-wrapper">
+                            <label for="player2-4" class="text-white font-medium">Player 4:</label>
+                            <input type="text" id="player2-4" class="w-full mt-2 p-2 rounded bg-gray-700 text-white border border-teal-300 autocomplete-input" placeholder="Search Player 4...">
+                        </div>
                     </div>
                     <button id="analyzeTradeBtn" class="mt-4 w-full bg-teal-600 text-white px-4 py-2 rounded hover:bg-teal-700">Analyze Trade</button>
                     <p id="tradeResult" class="mt-2 text-center"></p>
