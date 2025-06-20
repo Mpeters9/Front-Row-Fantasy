@@ -117,9 +117,12 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
             input.addEventListener('input', () => {
-                if (teamPlayers.length < maxPlayers) {
+                if (teamPlayers.length < maxPlayers && input.value) {
                     dropdownList.classList.add('loading');
+                    filterPlayers(input.value, dropdownId, input, selectionsDiv, teamPlayers, maxPlayers);
                     debouncedFilter(input.value, dropdownId);
+                } else if (!input.value) {
+                    dropdownList.style.display = 'none';
                 }
             });
             input.addEventListener('focus', () => {
