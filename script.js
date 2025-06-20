@@ -109,17 +109,26 @@ document.addEventListener('DOMContentLoaded', () => {
                 return;
             }
             const wrapper = input.parentElement;
-            const dropdownList = document.createElement('ul');
-            dropdownList.id = dropdownId;
-            dropdownList.className = 'absolute z-50 mt-1 w-full max-h-48 overflow-y-auto rounded border border-teal-300 bg-teal-800 text-white';
-            wrapper.appendChild(dropdownList);
+            let dropdownList = document.getElementById(dropdownId);
+            if (!dropdownList) {
+                dropdownList = document.createElement('ul');
+                dropdownList.id = dropdownId;
+                dropdownList.className = 'autocomplete-dropdown absolute z-50 mt-1 w-full max-h-48 overflow-y-auto rounded border border-teal-300 bg-teal-800 text-white';
+                wrapper.appendChild(dropdownList);
+            }
 
             input.addEventListener('input', () => debouncedFilter(input, dropdownId, select));
             input.addEventListener('focus', () => {
                 if (input.value) filterPlayers(input.value, dropdownId, input, select);
             });
             input.addEventListener('blur', () => {
-                setTimeout(() => document.getElementById(dropdownId).innerHTML = '', 200);
+                setTimeout(() => {
+                    const dropdown = document.getElementById(dropdownId);
+                    if (dropdown) dropdown.style.display = 'none';
+                }, 200);
+            });
+            input.addEventListener('click', () => {
+                if (input.value) filterPlayers(input.value, dropdownId, input, select);
             });
             dropdownList.addEventListener('click', (e) => {
                 const li = e.target.closest('li');
@@ -129,7 +138,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     if (player) {
                         input.value = `${player.name} (${player.position})`;
                         select.value = playerId;
-                        document.getElementById(dropdownId).innerHTML = '';
+                        dropdownList.style.display = 'none';
                         analyzeTrade(analyzeTradeBtn);
                     }
                 }
@@ -152,7 +161,7 @@ document.addEventListener('DOMContentLoaded', () => {
     function filterPlayers(searchTerm, dropdownId, input, select) {
         const dropdownList = document.getElementById(dropdownId);
         if (!searchTerm) {
-            dropdownList.innerHTML = '';
+            dropdownList.style.display = 'none';
             return;
         }
 
@@ -171,8 +180,10 @@ document.addEventListener('DOMContentLoaded', () => {
         });
 
         dropdownList.innerHTML = options || '<li class="p-2 text-gray-400">No players found</li>';
-        dropdownList.style.top = `${input.offsetHeight + 2}px`;
-        dropdownList.style.left = '0';
+        dropdownList.style.display = 'block';
+        dropdownList.style.top = `${input.offsetHeight + input.offsetTop + 2}px`;
+        dropdownList.style.left = `${input.offsetLeft}px`;
+        dropdownList.style.width = `${input.offsetWidth}px`;
     }
 
     function getPlayerValue(playerId, leagueType, rosterType) {
