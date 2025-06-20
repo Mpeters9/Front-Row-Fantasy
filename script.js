@@ -358,6 +358,39 @@ document.addEventListener('DOMContentLoaded', () => {
         const predictMatchupBtn = document.getElementById('predictMatchupBtn');
         const predictionResult = document.getElementById('predictionResult');
 
+        // Mock roster data for teams (to be replaced with actual API data later)
+        const mockRosters = {
+            '1': ['1', '4', '7', '10', '13'], // Team 1: Josh Allen, Christian McCaffrey, Tyreek Hill, Travis Kelce, Justin Tucker
+            '2': ['2', '5', '8', '11', '14'], // Team 2: Patrick Mahomes, Austin Ekeler, Davante Adams, George Kittle, Harrison Butker
+            '3': ['3', '6', '9', '12', '15']  // Team 3: Lamar Jackson, Alvin Kamara, Justin Jefferson, Darren Waller, Evan McPherson
+        };
+
+        function getTeamProjectedPoints(teamIds) {
+            return teamIds.reduce((sum, playerId) => {
+                const player = allPlayers.find(p => p.id === playerId);
+                return player ? sum + player.projectedPoints : sum;
+            }, 0);
+        }
+
+        function predictMatchup(team1Id, team2Id) {
+            const team1Points = getTeamProjectedPoints(mockRosters[team1Id] || []);
+            const team2Points = getTeamProjectedPoints(mockRosters[team2Id] || []);
+            const totalPoints = team1Points + team2Points;
+            let confidence;
+
+            if (totalPoints === 0) {
+                return { winner: 'N/A', confidence: 0 };
+            } else if (team1Points > team2Points) {
+                confidence = Math.min(95, 50 + (team1Points - team2Points) / totalPoints * 50);
+                return { winner: 'Team 1', confidence };
+            } else if (team2Points > team1Points) {
+                confidence = Math.min(95, 50 + (team2Points - team1Points) / totalPoints * 50);
+                return { winner: 'Team 2', confidence };
+            } else {
+                return { winner: 'Tie', confidence: 50 };
+            }
+        }
+
         async function fetchMatchupTeams() {
             try {
                 const response = await fetch('https://api.sleeper.app/v1/league/1180205990138392576/rosters');
@@ -378,7 +411,8 @@ document.addEventListener('DOMContentLoaded', () => {
             const team1 = matchupTeam1Select.value;
             const team2 = matchupTeam2Select.value;
             if (team1 && team2 && team1 !== team2) {
-                predictionResult.textContent = 'Prediction not available (placeholder).';
+                const prediction = predictMatchup(team1, team2);
+                predictionResult.textContent = `${prediction.winner} is predicted to win with a ${prediction.confidence.toFixed(1)}% confidence based on projected points.`;
             } else {
                 predictionResult.textContent = 'Please select two different teams.';
             }
