@@ -74,87 +74,82 @@ document.addEventListener('DOMContentLoaded', () => {
     const platformSelect = document.getElementById('platform');
     const leagueIdInput = document.getElementById('leagueId');
     const syncLeagueBtn = document.getElementById('syncLeague');
-    const playerInputs = [
-        ...['player1-1', 'player1-2', 'player1-3', 'player1-4'].map(id => document.getElementById(id)),
-        ...['player2-1', 'player2-2', 'player2-3', 'player2-4'].map(id => document.getElementById(id))
-    ];
+    const player1Input = document.getElementById('player1');
+    const player2Input = document.getElementById('player2');
+    const addPlayer1Btn = document.getElementById('add-player1');
+    const addPlayer2Btn = document.getElementById('add-player2');
+    const player1Selections = document.getElementById('player1-selections');
+    const player2Selections = document.getElementById('player2-selections');
     const tradeTableBody = document.getElementById('trade-table-body');
     const tradeFairness = document.getElementById('trade-fairness');
 
     let allPlayers = [
-        { id: '1', name: 'Josh Allen', position: 'Quarterback', adp: 5.2, projectedPoints: 300 },
-        { id: '2', name: 'Patrick Mahomes', position: 'Quarterback', adp: 6.1, projectedPoints: 290 },
-        { id: '3', name: 'Lamar Jackson', position: 'Quarterback', adp: 7.8, projectedPoints: 280 },
-        { id: '4', name: 'Christian McCaffrey', position: 'Running Back', adp: 1.5, projectedPoints: 250 },
-        { id: '5', name: 'Austin Ekeler', position: 'Running Back', adp: 12.3, projectedPoints: 200 },
-        { id: '6', name: 'Alvin Kamara', position: 'Running Back', adp: 15.6, projectedPoints: 190 },
-        { id: '7', name: 'Tyreek Hill', position: 'Wide Receiver', adp: 3.4, projectedPoints: 220 },
-        { id: '8', name: 'Davante Adams', position: 'Wide Receiver', adp: 8.9, projectedPoints: 210 },
-        { id: '9', name: 'Justin Jefferson', position: 'Wide Receiver', adp: 2.7, projectedPoints: 230 },
-        { id: '10', name: 'Travis Kelce', position: 'Tight End', adp: 10.2, projectedPoints: 180 },
-        { id: '11', name: 'George Kittle', position: 'Tight End', adp: 18.5, projectedPoints: 170 },
-        { id: '12', name: 'Darren Waller', position: 'Tight End', adp: 22.1, projectedPoints: 160 },
-        { id: '13', name: 'Justin Tucker', position: 'Kicker', adp: 50.3, projectedPoints: 120 },
-        { id: '14', name: 'Harrison Butker', position: 'Kicker', adp: 55.7, projectedPoints: 115 },
-        { id: '15', name: 'Evan McPherson', position: 'Kicker', adp: 60.4, projectedPoints: 110 }
+        { id: '1', name: 'Josh Allen', position: 'Quarterback', adp: 5.2, projectedPoints: 300, recentPoints: 25.4, confidence: 85 },
+        { id: '2', name: 'Patrick Mahomes', position: 'Quarterback', adp: 6.1, projectedPoints: 290, recentPoints: 25.1, confidence: 82 },
+        { id: '3', name: 'Lamar Jackson', position: 'Quarterback', adp: 7.8, projectedPoints: 280, recentPoints: 23.8, confidence: 80 },
+        { id: '4', name: 'Christian McCaffrey', position: 'Running Back', adp: 1.5, projectedPoints: 250, recentPoints: 20.5, confidence: 90 },
+        { id: '5', name: 'Austin Ekeler', position: 'Running Back', adp: 12.3, projectedPoints: 200, recentPoints: 19.5, confidence: 75 },
+        { id: '6', name: 'Alvin Kamara', position: 'Running Back', adp: 15.6, projectedPoints: 190, recentPoints: 18.6, confidence: 70 },
+        { id: '7', name: 'Tyreek Hill', position: 'Wide Receiver', adp: 3.4, projectedPoints: 220, recentPoints: 19.8, confidence: 88 },
+        { id: '8', name: 'Davante Adams', position: 'Wide Receiver', adp: 8.9, projectedPoints: 210, recentPoints: 20.9, confidence: 83 },
+        { id: '9', name: 'Justin Jefferson', position: 'Wide Receiver', adp: 2.7, projectedPoints: 230, recentPoints: 19.2, confidence: 92 },
+        { id: '10', name: 'Travis Kelce', position: 'Tight End', adp: 10.2, projectedPoints: 180, recentPoints: 18.9, confidence: 87 },
+        { id: '11', name: 'George Kittle', position: 'Tight End', adp: 18.5, projectedPoints: 170, recentPoints: 17.1, confidence: 78 },
+        { id: '12', name: 'Darren Waller', position: 'Tight End', adp: 22.1, projectedPoints: 160, recentPoints: 15.3, confidence: 72 },
+        { id: '13', name: 'Justin Tucker', position: 'Kicker', adp: 50.3, projectedPoints: 120, recentPoints: 14.5, confidence: 65 },
+        { id: '14', name: 'Harrison Butker', position: 'Kicker', adp: 55.7, projectedPoints: 115, recentPoints: 13.8, confidence: 62 },
+        { id: '15', name: 'Evan McPherson', position: 'Kicker', adp: 60.4, projectedPoints: 110, recentPoints: 13.2, confidence: 60 }
     ];
 
-    function setupAutocomplete() {
-        const debouncedFilter = debounce((input, dropdownId, select) => filterPlayers(input.value, dropdownId, input, select), 300);
+    let team1Players = [];
+    let team2Players = [];
 
-        playerInputs.forEach(input => {
-            const dropdownId = `dropdown-${input.id}`;
-            const selectId = input.id.replace('player', 'team');
-            const select = document.getElementById(selectId);
-            if (!select) {
-                console.error(`Select element with ID ${selectId} not found for input ${input.id}`);
-                return;
-            }
-            const wrapper = input.closest('.input-wrapper');
-            let dropdownList = document.getElementById(dropdownId);
-            if (!dropdownList) {
-                dropdownList = document.createElement('ul');
-                dropdownList.id = dropdownId;
-                dropdownList.className = 'autocomplete-dropdown';
-                wrapper.appendChild(dropdownList);
-            }
+    function setupAutocomplete(input, selectionsDiv, teamPlayers, maxPlayers = 4) {
+        const debouncedFilter = debounce((value, dropdownId) => filterPlayers(value, dropdownId, input, selectionsDiv, teamPlayers, maxPlayers), 300);
+        const dropdownId = `dropdown-${input.id}`;
+        let dropdownList = document.getElementById(dropdownId);
+        if (!dropdownList) {
+            dropdownList = document.createElement('ul');
+            dropdownList.id = dropdownId;
+            dropdownList.className = 'autocomplete-dropdown';
+            input.parentNode.appendChild(dropdownList);
+        }
 
-            input.addEventListener('input', () => {
+        input.addEventListener('input', () => {
+            dropdownList.classList.add('loading');
+            debouncedFilter(input.value, dropdownId);
+        });
+        input.addEventListener('focus', () => {
+            if (input.value) {
                 dropdownList.classList.add('loading');
-                debouncedFilter(input, dropdownId, select);
-            });
-            input.addEventListener('focus', () => {
-                if (input.value) {
-                    dropdownList.classList.add('loading');
-                    filterPlayers(input.value, dropdownId, input, select);
+                filterPlayers(input.value, dropdownId, input, selectionsDiv, teamPlayers, maxPlayers);
+            }
+        });
+        input.addEventListener('blur', () => {
+            setTimeout(() => {
+                dropdownList.style.display = 'none';
+            }, 200);
+        });
+        input.addEventListener('click', () => {
+            if (input.value && teamPlayers.length < maxPlayers) {
+                dropdownList.classList.add('loading');
+                filterPlayers(input.value, dropdownId, input, selectionsDiv, teamPlayers, maxPlayers);
+            }
+        });
+        dropdownList.addEventListener('click', (e) => {
+            const li = e.target.closest('li');
+            if (li && teamPlayers.length < maxPlayers) {
+                const playerId = li.dataset.id;
+                const player = allPlayers.find(p => p.id === playerId);
+                if (player) {
+                    teamPlayers.push(player);
+                    updateSelections(selectionsDiv, teamPlayers);
+                    input.value = '';
+                    dropdownList.style.display = 'none';
+                    updateTradeComparison();
+                    analyzeTrade(analyzeTradeBtn);
                 }
-            });
-            input.addEventListener('blur', () => {
-                setTimeout(() => {
-                    const dropdown = document.getElementById(dropdownId);
-                    if (dropdown) dropdown.style.display = 'none';
-                }, 200);
-            });
-            input.addEventListener('click', () => {
-                if (input.value) {
-                    dropdownList.classList.add('loading');
-                    filterPlayers(input.value, dropdownId, input, select);
-                }
-            });
-            dropdownList.addEventListener('click', (e) => {
-                const li = e.target.closest('li');
-                if (li) {
-                    const playerId = li.dataset.id;
-                    const player = allPlayers.find(p => p.id === playerId);
-                    if (player) {
-                        input.value = `${player.name} (${player.position})`;
-                        select.value = playerId;
-                        dropdownList.style.display = 'none';
-                        updateTradeComparison();
-                        analyzeTrade(analyzeTradeBtn);
-                    }
-                }
-            });
+            }
         });
     }
 
@@ -170,31 +165,34 @@ document.addEventListener('DOMContentLoaded', () => {
         };
     }
 
-    function filterPlayers(searchTerm, dropdownId, input, select) {
+    function filterPlayers(searchTerm, dropdownId, input, selectionsDiv, teamPlayers, maxPlayers) {
         const dropdownList = document.getElementById(dropdownId);
-        if (!searchTerm) {
+        if (!searchTerm || teamPlayers.length >= maxPlayers) {
             dropdownList.style.display = 'none';
             dropdownList.classList.remove('loading');
             return;
         }
 
         const filteredPlayers = allPlayers.filter(player =>
-            player.name.toLowerCase().includes(searchTerm.toLowerCase())
+            !teamPlayers.some(p => p.id === player.id) && player.name.toLowerCase().includes(searchTerm.toLowerCase())
         ).sort((a, b) => {
             const aRelevance = a.name.toLowerCase().indexOf(searchTerm.toLowerCase());
             const bRelevance = b.name.toLowerCase().indexOf(searchTerm.toLowerCase());
-            return aRelevance - bRelevance || a.adp - b.adp;
+            return aRelevance - bRelevance || a.confidence - b.confidence;
         });
 
         let options = '';
         filteredPlayers.forEach(player => {
-            const adpText = player.adp ? player.adp.toFixed(1) : 'N/A';
-            options += `<li class="p-2 flex items-center hover:bg-teal-600 cursor-pointer" data-id="${player.id}">
-                <span class="w-8 h-8 bg-gray-500 rounded-full mr-2"></span> ${player.name} (${player.position}) - ADP: ${adpText}
+            options += `<li class="p-2 flex items-center hover:bg-teal-600 cursor-pointer transition-all duration-200" data-id="${player.id}">
+                <span class="w-8 h-8 bg-gray-500 rounded-full mr-2"></span>
+                <div>
+                    <div class="font-bold">${player.name} (${player.position})</div>
+                    <div class="text-sm text-gray-300">Proj: ${player.projectedPoints}, ADP: ${player.adp.toFixed(1)}, Recent: ${player.recentPoints}, Fit: ${player.confidence}%</div>
+                </div>
             </li>`;
         });
 
-        dropdownList.innerHTML = options || '<li class="p-2 text-gray-400">No players found</li>';
+        dropdownList.innerHTML = options || '<li class="p-2 text-gray-400">No players available</li>';
         dropdownList.style.display = 'block';
         dropdownList.classList.remove('loading');
         const wrapperRect = input.closest('.input-wrapper').getBoundingClientRect();
@@ -204,11 +202,26 @@ document.addEventListener('DOMContentLoaded', () => {
         dropdownList.style.width = `${wrapperRect.width}px`;
     }
 
-    function updateTradeComparison() {
-        const team1Players = team1Selects.map(select => allPlayers.find(p => p.id === select.value)).filter(p => p);
-        const team2Players = team2Selects.map(select => allPlayers.find(p => p.id === select.value)).filter(p => p);
-        const allPlayersInTrade = [...team1Players, ...team2Players];
+    function updateSelections(selectionsDiv, teamPlayers) {
+        selectionsDiv.innerHTML = teamPlayers.map(player => `
+            <div class="flex items-center justify-between bg-teal-700 p-2 rounded mt-2">
+                <span>${player.name} (${player.position})</span>
+                <button class="remove-player text-red-300 hover:text-red-100" data-id="${player.id}">×</button>
+            </div>
+        `).join('');
+        document.querySelectorAll('.remove-player').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const playerId = btn.dataset.id;
+                teamPlayers = teamPlayers.filter(p => p.id !== playerId);
+                updateSelections(selectionsDiv, teamPlayers);
+                updateTradeComparison();
+                analyzeTrade(analyzeTradeBtn);
+            });
+        });
+    }
 
+    function updateTradeComparison() {
+        const allPlayersInTrade = [...team1Players, ...team2Players];
         tradeTableBody.innerHTML = '';
         allPlayersInTrade.forEach(player => {
             const row = document.createElement('tr');
@@ -223,14 +236,8 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function getTradeFairness() {
-        const team1Value = team1Selects.reduce((sum, select) => {
-            const player = allPlayers.find(p => p.id === select.value);
-            return player ? sum + (100 / player.adp) : sum;
-        }, 0);
-        const team2Value = team2Selects.reduce((sum, select) => {
-            const player = allPlayers.find(p => p.id === select.value);
-            return player ? sum + (100 / player.adp) : sum;
-        }, 0);
+        const team1Value = team1Players.reduce((sum, player) => sum + (100 / player.adp), 0);
+        const team2Value = team2Players.reduce((sum, player) => sum + (100 / player.adp), 0);
         const diff = Math.abs(team1Value - team2Value);
         const totalValue = team1Value + team2Value;
 
@@ -242,24 +249,19 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function analyzeTrade(button) {
-        const team1Ids = team1Selects.map(select => select.value).filter(id => id);
-        const team2Ids = team2Selects.map(select => select.value).filter(id => id);
-        const leagueType = leagueTypeSelect.value;
-        const rosterType = rosterTypeSelect.value;
-
         updateTradeComparison();
         const fairness = getTradeFairness();
         tradeFairness.innerHTML = `<span class="trade-fairness-${fairness.color}">${fairness.text}</span>`;
 
-        if (team1Ids.length > 0 && team2Ids.length > 0) {
-            const value1 = team1Ids.reduce((sum, id) => sum + getPlayerValue(id, leagueType, rosterType), 0);
-            const value2 = team2Ids.reduce((sum, id) => sum + getPlayerValue(id, leagueType, rosterType), 0);
-            const team1Names = team1Ids.map(id => allPlayers.find(p => p.id === id).name).join(', ');
-            const team2Names = team2Ids.map(id => allPlayers.find(p => p.id === id).name).join(', ');
+        if (team1Players.length > 0 && team2Players.length > 0) {
+            const team1Names = team1Players.map(p => p.name).join(', ');
+            const team2Names = team2Players.map(p => p.name).join(', ');
+            const value1 = team1Players.reduce((sum, p) => sum + (100 / p.adp), 0);
+            const value2 = team2Players.reduce((sum, p) => sum + (100 / p.adp), 0);
             if (value1 > value2) {
-                tradeResult.textContent = `${team1Names} is valued higher (${value1} vs ${value2}). Consider this trade if you need ${team2Names}'s positions or future potential.`;
+                tradeResult.textContent = `${team1Names} is valued higher (${value1.toFixed(1)} vs ${value2.toFixed(1)}). Consider if you need ${team2Names}'s positions or potential.`;
             } else if (value2 > value1) {
-                tradeResult.textContent = `${team2Names} is valued higher (${value2} vs ${value1}). Consider this trade if you need ${team1Names}'s positions or future potential.`;
+                tradeResult.textContent = `${team2Names} is valued higher (${value2.toFixed(1)} vs ${value1.toFixed(1)}). Consider if you need ${team1Names}'s positions or potential.`;
             } else {
                 tradeResult.textContent = 'The trade is balanced in value. Evaluate based on team needs.';
             }
@@ -282,7 +284,8 @@ document.addEventListener('DOMContentLoaded', () => {
         const platform = platformSelect.value;
         if (platform === 'sleeper' && leagueId) {
             tradeResult.textContent = 'Syncing league...';
-            setupAutocomplete();
+            setupAutocomplete(player1Input, player1Selections, team1Players);
+            setupAutocomplete(player2Input, player2Selections, team2Players);
             tradeResult.textContent = 'League synced successfully.';
         } else if (platform !== 'sleeper') {
             tradeResult.textContent = 'Only Sleeper platform is supported at this time.';
@@ -291,11 +294,26 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
+    addPlayer1Btn.addEventListener('click', () => {
+        if (team1Players.length < 4) {
+            player1Input.value = '';
+            setupAutocomplete(player1Input, player1Selections, team1Players);
+        }
+    });
+
+    addPlayer2Btn.addEventListener('click', () => {
+        if (team2Players.length < 4) {
+            player2Input.value = '';
+            setupAutocomplete(player2Input, player2Selections, team2Players);
+        }
+    });
+
     analyzeTradeBtn.addEventListener('click', () => analyzeTrade(analyzeTradeBtn));
     leagueTypeSelect.addEventListener('change', () => analyzeTrade(analyzeTradeBtn));
     rosterTypeSelect.addEventListener('change', () => analyzeTrade(analyzeTradeBtn));
 
-    setupAutocomplete();
+    setupAutocomplete(player1Input, player1Selections, team1Players);
+    setupAutocomplete(player2Input, player2Selections, team2Players);
 
     // Matchup Predictor
     const matchupTeam1Select = document.getElementById('matchupTeam1Select');
