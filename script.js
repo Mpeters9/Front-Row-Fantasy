@@ -108,12 +108,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 console.error(`Select element with ID ${selectId} not found for input ${input.id}`);
                 return;
             }
-            const wrapper = input.parentElement;
+            const wrapper = input.closest('.input-wrapper');
             let dropdownList = document.getElementById(dropdownId);
             if (!dropdownList) {
                 dropdownList = document.createElement('ul');
                 dropdownList.id = dropdownId;
-                dropdownList.className = 'autocomplete-dropdown absolute z-50 mt-1 w-full max-h-48 overflow-y-auto rounded border border-teal-300 bg-teal-800 text-white';
+                dropdownList.className = 'autocomplete-dropdown';
                 wrapper.appendChild(dropdownList);
             }
 
@@ -181,9 +181,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
         dropdownList.innerHTML = options || '<li class="p-2 text-gray-400">No players found</li>';
         dropdownList.style.display = 'block';
-        dropdownList.style.top = `${input.offsetHeight + input.offsetTop + 2}px`;
-        dropdownList.style.left = `${input.offsetLeft}px`;
-        dropdownList.style.width = `${input.offsetWidth}px`;
+        const wrapperRect = input.closest('.input-wrapper').getBoundingClientRect();
+        const tradeAnalyzerRect = document.getElementById('trade-analyzer').getBoundingClientRect();
+        dropdownList.style.top = `${wrapperRect.bottom - tradeAnalyzerRect.top + 5}px`;
+        dropdownList.style.left = `${wrapperRect.left - tradeAnalyzerRect.left}px`;
+        dropdownList.style.width = `${wrapperRect.width}px`;
     }
 
     function getPlayerValue(playerId, leagueType, rosterType) {
