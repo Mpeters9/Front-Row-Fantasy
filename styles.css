@@ -101,7 +101,8 @@ body {
 }
 
 .autocomplete-dropdown {
-    @apply absolute z-50 max-h-48 overflow-y-auto rounded border border-teal-300 bg-teal-800 text-white;
+    @apply absolute z-50 max-h-60 overflow-y-auto rounded border border-teal-300 bg-teal-800 text-white shadow-lg;
+    animation: slideDown 0.2s ease-out;
 }
 
 .autocomplete-dropdown.loading::before {
@@ -112,7 +113,15 @@ body {
 }
 
 .autocomplete-dropdown li {
-    @apply p-2 hover:bg-teal-600 cursor-pointer;
+    @apply p-2 flex items-center hover:bg-teal-600 cursor-pointer transition-all duration-200;
+}
+
+.autocomplete-dropdown li:hover .preview {
+    @apply opacity-100;
+}
+
+.autocomplete-dropdown .preview {
+    @apply absolute left-full ml-2 p-2 bg-teal-700 rounded opacity-0 transition-opacity duration-200;
 }
 
 #trade-comparison table {
@@ -139,12 +148,21 @@ body {
     @apply mt-2 p-2 bg-teal-700 rounded text-center;
 }
 
+#player1-selections, #player2-selections .remove-player {
+    @apply text-red-300 hover:text-red-100;
+}
+
 html {
     scroll-behavior: smooth;
 }
 
 .nav-link.active {
     @apply text-teal-800 font-bold;
+}
+
+@keyframes slideDown {
+    from { transform: translateY(-10px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
 }
 
 @media (max-width: 640px) {
@@ -171,5 +189,8 @@ html {
     }
     #trade-comparison table {
         @apply text-sm;
+    }
+    .autocomplete-dropdown {
+        @apply max-h-40;
     }
 }
