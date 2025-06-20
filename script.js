@@ -240,6 +240,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 `;
                 tradeTableBody.appendChild(row);
             });
+            if (allPlayersInTrade.length === 0) {
+                tradeTableBody.innerHTML = '<tr><td colspan="4" class="p-2 text-center">No players in trade</td></tr>';
+            }
         }
 
         function getTradeFairness() {
