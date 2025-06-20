@@ -320,7 +320,11 @@ document.addEventListener('DOMContentLoaded', () => {
         const predictMatchupBtn = document.getElementById('predictMatchupBtn');
         const predictionResult = document.getElementById('predictionResult');
 
-        let rosters = {};
+        let rosters = {
+            '1': ['1', '4', '7', '18', '25'], // Fake Team 1
+            '2': ['2', '5', '8', '19', '26'], // Fake Team 2
+            '3': ['3', '6', '9', '20', '27']  // Fake Team 3
+        };
 
         let allPlayers = loadFileData("FantasyPros_2025_Overall_ADP_Rankings.csv").split('\n').slice(1).map(line => {
             const [rank, name, team, bye, pos, avg] = line.split(',').map(s => s.trim());
@@ -340,42 +344,15 @@ document.addEventListener('DOMContentLoaded', () => {
             }, 0);
         }
 
-        async function fetchMatchupTeams() {
-            try {
-                const response = await fetch('https://api.sleeper.app/v1/league/1180205990138392576/rosters');
-                const data = await response.json();
-                if (data && data.length) {
-                    rosters = {};
-                    data.forEach(team => {
-                        rosters[team.roster_id] = team.players || [];
-                        // Use owner_id or roster_id as a fallback for team name
-                        const teamName = team.owner_id || `Team ${team.roster_id}`;
-                        if (!matchupTeam1Select.querySelector(`option[value="${team.roster_id}"]`)) {
-                            matchupTeam1Select.innerHTML += `<option value="${team.roster_id}">${teamName}</option>`;
-                            matchupTeam2Select.innerHTML += `<option value="${team.roster_id}">${teamName}</option>`;
-                        }
-                    });
-                } else {
-                    // Fallback mock data
-                    rosters = {
-                        '1': ['1', '4', '7', '18', '25'],
-                        '2': ['2', '5', '8', '19', '26'],
-                        '3': ['3', '6', '9', '20', '27']
-                    };
-                    matchupTeam1Select.innerHTML = '<option value="">Select Team 1</option><option value="1">Team 1</option><option value="2">Team 2</option><option value="3">Team 3</option>';
-                    matchupTeam2Select.innerHTML = '<option value="">Select Team 2</option><option value="1">Team 1</option><option value="2">Team 2</option><option value="3">Team 3</option>';
-                }
-            } catch (error) {
-                console.error('Error fetching matchup teams:', error);
-                // Fallback mock data
-                rosters = {
-                    '1': ['1', '4', '7', '18', '25'],
-                    '2': ['2', '5', '8', '19', '26'],
-                    '3': ['3', '6', '9', '20', '27']
-                };
-                matchupTeam1Select.innerHTML = '<option value="">Select Team 1</option><option value="1">Team 1</option><option value="2">Team 2</option><option value="3">Team 3</option>';
-                matchupTeam2Select.innerHTML = '<option value="">Select Team 2</option><option value="1">Team 1</option><option value="2">Team 2</option><option value="3">Team 3</option>';
-            }
+        function fetchMatchupTeams() {
+            // Use fake teams instead of API
+            rosters = {
+                '1': ['1', '4', '7', '18', '25'], // Fake Team 1
+                '2': ['2', '5', '8', '19', '26'], // Fake Team 2
+                '3': ['3', '6', '9', '20', '27']  // Fake Team 3
+            };
+            matchupTeam1Select.innerHTML = '<option value="">Select Team 1</option><option value="1">Team 1</option><option value="2">Team 2</option><option value="3">Team 3</option>';
+            matchupTeam2Select.innerHTML = '<option value="">Select Team 2</option><option value="1">Team 1</option><option value="2">Team 2</option><option value="3">Team 3</option>';
         }
 
         function predictMatchup(team1Id, team2Id) {
@@ -397,7 +374,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
 
-        predictMatchupBtn.addEventListener('click', async () => {
+        predictMatchupBtn.addEventListener('click', () => {
             const team1 = matchupTeam1Select.value;
             const team2 = matchupTeam2Select.value;
             if (team1 && team2 && team1 !== team2) {
