@@ -86,21 +86,21 @@ document.addEventListener('DOMContentLoaded', () => {
         const clearAllBtn = document.getElementById('clearAllBtn');
 
         let allPlayers = [
-            { id: '1', name: 'Josh Allen', position: 'Quarterback', adp: 5.2, projectedPoints: 300, recentPoints: 25.4, confidence: 85 },
-            { id: '2', name: 'Patrick Mahomes', position: 'Quarterback', adp: 6.1, projectedPoints: 290, recentPoints: 25.1, confidence: 82 },
-            { id: '3', name: 'Lamar Jackson', position: 'Quarterback', adp: 7.8, projectedPoints: 280, recentPoints: 23.8, confidence: 80 },
-            { id: '4', name: 'Christian McCaffrey', position: 'Running Back', adp: 1.5, projectedPoints: 250, recentPoints: 20.5, confidence: 90 },
-            { id: '5', name: 'Austin Ekeler', position: 'Running Back', adp: 12.3, projectedPoints: 200, recentPoints: 19.5, confidence: 75 },
-            { id: '6', name: 'Alvin Kamara', position: 'Running Back', adp: 15.6, projectedPoints: 190, recentPoints: 18.6, confidence: 70 },
-            { id: '7', name: 'Tyreek Hill', position: 'Wide Receiver', adp: 3.4, projectedPoints: 220, recentPoints: 19.8, confidence: 88 },
-            { id: '8', name: 'Davante Adams', position: 'Wide Receiver', adp: 8.9, projectedPoints: 210, recentPoints: 20.9, confidence: 83 },
-            { id: '9', name: 'Justin Jefferson', position: 'Wide Receiver', adp: 2.7, projectedPoints: 230, recentPoints: 19.2, confidence: 92 },
-            { id: '10', name: 'Travis Kelce', position: 'Tight End', adp: 10.2, projectedPoints: 180, recentPoints: 18.9, confidence: 87 },
-            { id: '11', name: 'George Kittle', position: 'Tight End', adp: 18.5, projectedPoints: 170, recentPoints: 17.1, confidence: 78 },
-            { id: '12', name: 'Darren Waller', position: 'Tight End', adp: 22.1, projectedPoints: 160, recentPoints: 15.3, confidence: 72 },
-            { id: '13', name: 'Justin Tucker', position: 'Kicker', adp: 50.3, projectedPoints: 120, recentPoints: 14.5, confidence: 65 },
-            { id: '14', name: 'Harrison Butker', position: 'Kicker', adp: 55.7, projectedPoints: 115, recentPoints: 13.8, confidence: 62 },
-            { id: '15', name: 'Evan McPherson', position: 'Kicker', adp: 60.4, projectedPoints: 110, recentPoints: 13.2, confidence: 60 }
+            { id: '1', name: 'Josh Allen', position: 'Quarterback', adp: 5.2, projectedPoints: 300, recentPoints: 25.4, confidence: 85, injuryImpact: 1.0 },
+            { id: '2', name: 'Patrick Mahomes', position: 'Quarterback', adp: 6.1, projectedPoints: 290, recentPoints: 25.1, confidence: 82, injuryImpact: 0.9 },
+            { id: '3', name: 'Lamar Jackson', position: 'Quarterback', adp: 7.8, projectedPoints: 280, recentPoints: 23.8, confidence: 80, injuryImpact: 1.0 },
+            { id: '4', name: 'Christian McCaffrey', position: 'Running Back', adp: 1.5, projectedPoints: 250, recentPoints: 20.5, confidence: 90, injuryImpact: 0.7 },
+            { id: '5', name: 'Austin Ekeler', position: 'Running Back', adp: 12.3, projectedPoints: 200, recentPoints: 19.5, confidence: 75, injuryImpact: 1.0 },
+            { id: '6', name: 'Alvin Kamara', position: 'Running Back', adp: 15.6, projectedPoints: 190, recentPoints: 18.6, confidence: 70, injuryImpact: 1.0 },
+            { id: '7', name: 'Tyreek Hill', position: 'Wide Receiver', adp: 3.4, projectedPoints: 220, recentPoints: 19.8, confidence: 88, injuryImpact: 1.0 },
+            { id: '8', name: 'Davante Adams', position: 'Wide Receiver', adp: 8.9, projectedPoints: 210, recentPoints: 20.9, confidence: 83, injuryImpact: 0.85 },
+            { id: '9', name: 'Justin Jefferson', position: 'Wide Receiver', adp: 2.7, projectedPoints: 230, recentPoints: 19.2, confidence: 92, injuryImpact: 1.0 },
+            { id: '10', name: 'Travis Kelce', position: 'Tight End', adp: 10.2, projectedPoints: 180, recentPoints: 18.9, confidence: 87, injuryImpact: 1.0 },
+            { id: '11', name: 'George Kittle', position: 'Tight End', adp: 18.5, projectedPoints: 170, recentPoints: 17.1, confidence: 78, injuryImpact: 0.9 },
+            { id: '12', name: 'Darren Waller', position: 'Tight End', adp: 22.1, projectedPoints: 160, recentPoints: 15.3, confidence: 72, injuryImpact: 1.0 },
+            { id: '13', name: 'Justin Tucker', position: 'Kicker', adp: 50.3, projectedPoints: 120, recentPoints: 14.5, confidence: 65, injuryImpact: 1.0 },
+            { id: '14', name: 'Harrison Butker', position: 'Kicker', adp: 55.7, projectedPoints: 115, recentPoints: 13.8, confidence: 62, injuryImpact: 1.0 },
+            { id: '15', name: 'Evan McPherson', position: 'Kicker', adp: 60.4, projectedPoints: 110, recentPoints: 13.2, confidence: 60, injuryImpact: 1.0 }
         ];
 
         let team1Players = [];
@@ -358,37 +358,25 @@ document.addEventListener('DOMContentLoaded', () => {
         const predictMatchupBtn = document.getElementById('predictMatchupBtn');
         const predictionResult = document.getElementById('predictionResult');
 
-        // Mock roster data for teams (to be replaced with actual API data later)
-        const mockRosters = {
+        // Mock roster data for teams (to be replaced with actual API data)
+        let rosters = {
             '1': ['1', '4', '7', '10', '13'], // Team 1: Josh Allen, Christian McCaffrey, Tyreek Hill, Travis Kelce, Justin Tucker
             '2': ['2', '5', '8', '11', '14'], // Team 2: Patrick Mahomes, Austin Ekeler, Davante Adams, George Kittle, Harrison Butker
             '3': ['3', '6', '9', '12', '15']  // Team 3: Lamar Jackson, Alvin Kamara, Justin Jefferson, Darren Waller, Evan McPherson
         };
 
-        function getTeamProjectedPoints(teamIds) {
+        function getTeamAdjustedPoints(teamIds) {
             return teamIds.reduce((sum, playerId) => {
                 const player = allPlayers.find(p => p.id === playerId);
-                return player ? sum + player.projectedPoints : sum;
+                if (player) {
+                    // Adjust for recent performance (20% weight), matchup difficulty (random 0.9-1.1), and injury impact
+                    const matchupDifficulty = 0.9 + Math.random() * 0.2; // Simulated difficulty
+                    const recentWeight = player.recentPoints * 0.2;
+                    const adjustedPoints = (player.projectedPoints * 0.8 + recentWeight) * player.injuryImpact * matchupDifficulty;
+                    return sum + adjustedPoints;
+                }
+                return sum;
             }, 0);
-        }
-
-        function predictMatchup(team1Id, team2Id) {
-            const team1Points = getTeamProjectedPoints(mockRosters[team1Id] || []);
-            const team2Points = getTeamProjectedPoints(mockRosters[team2Id] || []);
-            const totalPoints = team1Points + team2Points;
-            let confidence;
-
-            if (totalPoints === 0) {
-                return { winner: 'N/A', confidence: 0 };
-            } else if (team1Points > team2Points) {
-                confidence = Math.min(95, 50 + (team1Points - team2Points) / totalPoints * 50);
-                return { winner: 'Team 1', confidence };
-            } else if (team2Points > team1Points) {
-                confidence = Math.min(95, 50 + (team2Points - team1Points) / totalPoints * 50);
-                return { winner: 'Team 2', confidence };
-            } else {
-                return { winner: 'Tie', confidence: 50 };
-            }
         }
 
         async function fetchMatchupTeams() {
@@ -397,13 +385,41 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (!response.ok) throw new Error('Matchup teams API request failed');
                 const data = await response.json();
                 if (data && data.length) {
+                    rosters = {};
+                    data.forEach(team => {
+                        rosters[team.roster_id] = team.players || []; // Map player IDs from API
+                    });
                     matchupTeam1Select.innerHTML = '<option value="">Select Team 1</option>' + data.map(team => `<option value="${team.roster_id}">${team.owner_id}</option>`).join('');
                     matchupTeam2Select.innerHTML = '<option value="">Select Team 2</option>' + data.map(team => `<option value="${team.roster_id}">${team.owner_id}</option>`).join('');
+                } else {
+                    // Fallback to mock data if API data is incomplete
+                    matchupTeam1Select.innerHTML = '<option value="">Select Team 1</option><option value="1">Team 1</option><option value="2">Team 2</option><option value="3">Team 3</option>';
+                    matchupTeam2Select.innerHTML = '<option value="">Select Team 2</option><option value="1">Team 1</option><option value="2">Team 2</option><option value="3">Team 3</option>';
                 }
             } catch (error) {
                 console.error('Error fetching matchup teams:', error);
-                matchupTeam1Select.innerHTML = '<option value="">Error loading teams</option>';
-                matchupTeam2Select.innerHTML = '<option value="">Error loading teams</option>';
+                // Fallback to mock data
+                matchupTeam1Select.innerHTML = '<option value="">Select Team 1</option><option value="1">Team 1</option><option value="2">Team 2</option><option value="3">Team 3</option>';
+                matchupTeam2Select.innerHTML = '<option value="">Select Team 2</option><option value="1">Team 1</option><option value="2">Team 2</option><option value="3">Team 3</option>';
+            }
+        }
+
+        function predictMatchup(team1Id, team2Id) {
+            const team1Points = getTeamAdjustedPoints(rosters[team1Id] || []);
+            const team2Points = getTeamAdjustedPoints(rosters[team2Id] || []);
+            const totalPoints = team1Points + team2Points;
+            let confidence;
+
+            if (totalPoints === 0) {
+                return { winner: 'N/A', confidence: 0 };
+            } else if (team1Points > team2Points) {
+                confidence = Math.min(95, 50 + ((team1Points - team2Points) / totalPoints) * 50);
+                return { winner: 'Team 1', confidence };
+            } else if (team2Points > team1Points) {
+                confidence = Math.min(95, 50 + ((team2Points - team1Points) / totalPoints) * 50);
+                return { winner: 'Team 2', confidence };
+            } else {
+                return { winner: 'Tie', confidence: 50 };
             }
         }
 
@@ -412,7 +428,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const team2 = matchupTeam2Select.value;
             if (team1 && team2 && team1 !== team2) {
                 const prediction = predictMatchup(team1, team2);
-                predictionResult.textContent = `${prediction.winner} is predicted to win with a ${prediction.confidence.toFixed(1)}% confidence based on projected points.`;
+                predictionResult.textContent = `${prediction.winner} is predicted to win with a ${prediction.confidence.toFixed(1)}% confidence based on projected points, recent performance, and injury impact.`;
             } else {
                 predictionResult.textContent = 'Please select two different teams.';
             }
