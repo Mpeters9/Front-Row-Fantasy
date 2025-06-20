@@ -221,7 +221,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     const playerId = btn.dataset.id;
                     teamPlayers = teamPlayers.filter(p => p.id !== playerId);
                     updateSelections(selectionsDiv, teamPlayers);
-                    updateTradeComparison();
+                    updateTradeComparison(); // Ensure table updates on removal
                     analyzeTrade(analyzeTradeBtn);
                 });
             });
@@ -230,18 +230,19 @@ document.addEventListener('DOMContentLoaded', () => {
         function updateTradeComparison() {
             const allPlayersInTrade = [...team1Players, ...team2Players];
             tradeTableBody.innerHTML = '';
-            allPlayersInTrade.forEach(player => {
-                const row = document.createElement('tr');
-                row.innerHTML = `
-                    <td class="p-2">${player.name}</td>
-                    <td class="p-2">${player.position}</td>
-                    <td class="p-2">${player.projectedPoints}</td>
-                    <td class="p-2">${(100 / player.adp).toFixed(1)}</td>
-                `;
-                tradeTableBody.appendChild(row);
-            });
             if (allPlayersInTrade.length === 0) {
                 tradeTableBody.innerHTML = '<tr><td colspan="4" class="p-2 text-center">No players in trade</td></tr>';
+            } else {
+                allPlayersInTrade.forEach(player => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td class="p-2">${player.name}</td>
+                        <td class="p-2">${player.position}</td>
+                        <td class="p-2">${player.projectedPoints}</td>
+                        <td class="p-2">${(100 / player.adp).toFixed(1)}</td>
+                    `;
+                    tradeTableBody.appendChild(row);
+                });
             }
         }
 
@@ -327,7 +328,7 @@ document.addEventListener('DOMContentLoaded', () => {
             team2Players = [];
             updateSelections(player1Selections, team1Players);
             updateSelections(player2Selections, team2Players);
-            updateTradeComparison();
+            updateTradeComparison(); // Ensure table clears
             tradeFairness.innerHTML = '';
             tradeResult.textContent = 'Trade cleared. Add new players to analyze.';
         });
