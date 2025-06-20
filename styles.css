@@ -152,6 +152,18 @@ body {
     @apply text-red-300 hover:text-red-100;
 }
 
+.splash-section {
+    @apply bg-teal-600 text-white p-6 rounded-lg text-center mb-6;
+}
+
+.splash-section h2 {
+    @apply text-3xl font-bold mb-4;
+}
+
+.splash-section p {
+    @apply text-lg mb-6;
+}
+
 html {
     scroll-behavior: smooth;
 }
@@ -192,5 +204,14 @@ html {
     }
     .autocomplete-dropdown {
         @apply max-h-40;
+    }
+    .splash-section {
+        @apply p-4;
+    }
+    .splash-section h2 {
+        @apply text-2xl;
+    }
+    .splash-section p {
+        @apply text-base;
     }
 }
