@@ -320,11 +320,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const predictMatchupBtn = document.getElementById('predictMatchupBtn');
         const predictionResult = document.getElementById('predictionResult');
 
-        let rosters = {
-            '1': ['1', '4', '7', '18', '25'],
-            '2': ['2', '5', '8', '19', '26'],
-            '3': ['3', '6', '9', '20', '27']
-        };
+        let rosters = {};
 
         let allPlayers = loadFileData("FantasyPros_2025_Overall_ADP_Rankings.csv").split('\n').slice(1).map(line => {
             const [rank, name, team, bye, pos, avg] = line.split(',').map(s => s.trim());
@@ -352,17 +348,33 @@ document.addEventListener('DOMContentLoaded', () => {
                     rosters = {};
                     data.forEach(team => {
                         rosters[team.roster_id] = team.players || [];
+                        // Use owner_id or roster_id as a fallback for team name
+                        const teamName = team.owner_id || `Team ${team.roster_id}`;
+                        if (!matchupTeam1Select.querySelector(`option[value="${team.roster_id}"]`)) {
+                            matchupTeam1Select.innerHTML += `<option value="${team.roster_id}">${teamName}</option>`;
+                            matchupTeam2Select.innerHTML += `<option value="${team.roster_id}">${teamName}</option>`;
+                        }
                     });
-                    matchupTeam1Select.innerHTML = '<option value="">Select Fantasy Team 1</option>' + Object.keys(rosters).map(rosterId => `<option value="${rosterId}">Team ${rosterId}</option>`).join('');
-                    matchupTeam2Select.innerHTML = '<option value="">Select Fantasy Team 2</option>' + Object.keys(rosters).map(rosterId => `<option value="${rosterId}">Team ${rosterId}</option>`).join('');
                 } else {
-                    matchupTeam1Select.innerHTML = '<option value="">Select Fantasy Team 1</option><option value="1">Team 1</option><option value="2">Team 2</option><option value="3">Team 3</option>';
-                    matchupTeam2Select.innerHTML = '<option value="">Select Fantasy Team 2</option><option value="1">Team 1</option><option value="2">Team 2</option><option value="3">Team 3</option>';
+                    // Fallback mock data
+                    rosters = {
+                        '1': ['1', '4', '7', '18', '25'],
+                        '2': ['2', '5', '8', '19', '26'],
+                        '3': ['3', '6', '9', '20', '27']
+                    };
+                    matchupTeam1Select.innerHTML = '<option value="">Select Team 1</option><option value="1">Team 1</option><option value="2">Team 2</option><option value="3">Team 3</option>';
+                    matchupTeam2Select.innerHTML = '<option value="">Select Team 2</option><option value="1">Team 1</option><option value="2">Team 2</option><option value="3">Team 3</option>';
                 }
             } catch (error) {
                 console.error('Error fetching matchup teams:', error);
-                matchupTeam1Select.innerHTML = '<option value="">Select Fantasy Team 1</option><option value="1">Team 1</option><option value="2">Team 2</option><option value="3">Team 3</option>';
-                matchupTeam2Select.innerHTML = '<option value="">Select Fantasy Team 2</option><option value="1">Team 1</option><option value="2">Team 2</option><option value="3">Team 3</option>';
+                // Fallback mock data
+                rosters = {
+                    '1': ['1', '4', '7', '18', '25'],
+                    '2': ['2', '5', '8', '19', '26'],
+                    '3': ['3', '6', '9', '20', '27']
+                };
+                matchupTeam1Select.innerHTML = '<option value="">Select Team 1</option><option value="1">Team 1</option><option value="2">Team 2</option><option value="3">Team 3</option>';
+                matchupTeam2Select.innerHTML = '<option value="">Select Team 2</option><option value="1">Team 1</option><option value="2">Team 2</option><option value="3">Team 3</option>';
             }
         }
 
@@ -376,10 +388,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 return { winner: 'N/A', confidence: 0 };
             } else if (team1Points > team2Points) {
                 confidence = Math.min(95, 50 + ((team1Points - team2Points) / totalPoints) * 50);
-                return { winner: 'Fantasy Team 1', confidence };
+                return { winner: 'Team ' + team1Id, confidence };
             } else if (team2Points > team1Points) {
                 confidence = Math.min(95, 50 + ((team2Points - team1Points) / totalPoints) * 50);
-                return { winner: 'Fantasy Team 2', confidence };
+                return { winner: 'Team ' + team2Id, confidence };
             } else {
                 return { winner: 'Tie', confidence: 50 };
             }
@@ -392,7 +404,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 const prediction = predictMatchup(team1, team2);
                 predictionResult.textContent = `${prediction.winner} is predicted to win with a ${prediction.confidence.toFixed(1)}% confidence based on projected points, recent performance, and injury impact for fantasy team matchups.`;
             } else {
-                predictionResult.textContent = 'Please select two different fantasy teams.';
+                predictionResult.textContent = 'Please select two different teams.';
             }
         });
 
