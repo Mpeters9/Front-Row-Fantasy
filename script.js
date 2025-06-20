@@ -6,14 +6,14 @@ document.addEventListener('DOMContentLoaded', () => {
     function populateTicker() {
         const mockData = loadFileData("FantasyPros_2025_Overall_ADP_Rankings.csv").split('\n').slice(1).map(line => {
             const [rank, name, team, bye, pos, avg] = line.split(',').map(s => s.trim());
-            return { position: pos.replace(/\d+/g, ''), name, team, points: (401 - parseFloat(avg)) / 10 }; // Inverse ADP to simulate points
+            return { position: pos.replace(/\d+/g, ''), name, team, points: (401 - parseFloat(avg)) / 10 };
         }).sort((a, b) => {
             const positionOrder = { "Quarterback": 1, "Running Back": 2, "Wide Receiver": 3, "Tight End": 4, "Kicker": 5 };
             if (positionOrder[a.position] !== positionOrder[b.position]) {
                 return positionOrder[a.position] - positionOrder[b.position];
             }
             return b.points - a.points;
-        }).slice(0, 23); // Limit to top 23 for ticker
+        }).slice(0, 23);
 
         let content = '';
         let currentPosition = null;
@@ -28,7 +28,7 @@ document.addEventListener('DOMContentLoaded', () => {
             content += `${player.name} (${player.team}) - ${player.points.toFixed(1)} pts`;
         });
 
-        tickerContent.innerHTML = content + ' | ' + content; // Duplicate for seamless loop
+        tickerContent.innerHTML = content + ' | ' + content;
         tickerContent.classList.remove('loading');
     }
 
@@ -320,11 +320,10 @@ document.addEventListener('DOMContentLoaded', () => {
         const predictMatchupBtn = document.getElementById('predictMatchupBtn');
         const predictionResult = document.getElementById('predictionResult');
 
-        // Mock roster data for fantasy teams (to be replaced with actual API data)
         let rosters = {
-            '1': ['1', '4', '7', '18', '25'], // Fantasy Team 1
-            '2': ['2', '5', '8', '19', '26'], // Fantasy Team 2
-            '3': ['3', '6', '9', '20', '27']  // Fantasy Team 3
+            '1': ['1', '4', '7', '18', '25'],
+            '2': ['2', '5', '8', '19', '26'],
+            '3': ['3', '6', '9', '20', '27']
         };
 
         let allPlayers = loadFileData("FantasyPros_2025_Overall_ADP_Rankings.csv").split('\n').slice(1).map(line => {
@@ -336,7 +335,7 @@ document.addEventListener('DOMContentLoaded', () => {
             return teamIds.reduce((sum, playerId) => {
                 const player = allPlayers.find(p => p.id === playerId);
                 if (player) {
-                    const matchupDifficulty = 0.9 + Math.random() * 0.2; // Simulated difficulty for fantasy matchup
+                    const matchupDifficulty = 0.9 + Math.random() * 0.2;
                     const recentWeight = player.recentPoints * 0.2;
                     const adjustedPoints = (player.projectedPoints * 0.8 + recentWeight) * player.injuryImpact * matchupDifficulty;
                     return sum + adjustedPoints;
@@ -348,15 +347,14 @@ document.addEventListener('DOMContentLoaded', () => {
         async function fetchMatchupTeams() {
             try {
                 const response = await fetch('https://api.sleeper.app/v1/league/1180205990138392576/rosters');
-                if (!response.ok) throw new Error('Matchup teams API request failed');
                 const data = await response.json();
                 if (data && data.length) {
                     rosters = {};
                     data.forEach(team => {
-                        rosters[team.roster_id] = team.players || []; // Map player IDs from API for fantasy teams
+                        rosters[team.roster_id] = team.players || [];
                     });
-                    matchupTeam1Select.innerHTML = '<option value="">Select Fantasy Team 1</option>' + data.map(team => `<option value="${team.roster_id}">${team.owner_id}</option>`).join('');
-                    matchupTeam2Select.innerHTML = '<option value="">Select Fantasy Team 2</option>' + data.map(team => `<option value="${team.roster_id}">${team.owner_id}</option>`).join('');
+                    matchupTeam1Select.innerHTML = '<option value="">Select Fantasy Team 1</option>' + Object.keys(rosters).map(rosterId => `<option value="${rosterId}">Team ${rosterId}</option>`).join('');
+                    matchupTeam2Select.innerHTML = '<option value="">Select Fantasy Team 2</option>' + Object.keys(rosters).map(rosterId => `<option value="${rosterId}">Team ${rosterId}</option>`).join('');
                 } else {
                     matchupTeam1Select.innerHTML = '<option value="">Select Fantasy Team 1</option><option value="1">Team 1</option><option value="2">Team 2</option><option value="3">Team 3</option>';
                     matchupTeam2Select.innerHTML = '<option value="">Select Fantasy Team 2</option><option value="1">Team 1</option><option value="2">Team 2</option><option value="3">Team 3</option>';
