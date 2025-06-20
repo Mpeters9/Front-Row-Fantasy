@@ -104,8 +104,35 @@ body {
     @apply absolute z-50 max-h-48 overflow-y-auto rounded border border-teal-300 bg-teal-800 text-white;
 }
 
+.autocomplete-dropdown.loading::before {
+    content: '';
+    @apply absolute top-0 left-0 w-full h-full flex items-center justify-center bg-teal-800 bg-opacity-75;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='12' cy='12' r='10' fill='none' stroke='%2326A69A' stroke-width='4'/%3E%3C/svg%3E");
+    animation: spin 1s linear infinite;
+}
+
 .autocomplete-dropdown li {
     @apply p-2 hover:bg-teal-600 cursor-pointer;
+}
+
+#trade-comparison table {
+    @apply w-full border-collapse;
+}
+
+#trade-comparison th, #trade-comparison td {
+    @apply p-2 border-b border-teal-700;
+}
+
+#trade-fairness .trade-fairness-green {
+    @apply bg-green-500 p-1 rounded;
+}
+
+#trade-fairness .trade-fairness-yellow {
+    @apply bg-yellow-500 p-1 rounded;
+}
+
+#trade-fairness .trade-fairness-red {
+    @apply bg-red-500 p-1 rounded;
 }
 
 #tradeResult {
@@ -141,5 +168,8 @@ html {
     }
     .trade-analyzer button {
         @apply w-full;
+    }
+    #trade-comparison table {
+        @apply text-sm;
     }
 }
