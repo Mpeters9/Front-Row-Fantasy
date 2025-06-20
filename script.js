@@ -220,8 +220,12 @@ document.addEventListener('DOMContentLoaded', () => {
             document.querySelectorAll('.remove-player').forEach(btn => {
                 btn.addEventListener('click', () => {
                     const playerId = btn.dataset.id;
-                    teamPlayers = teamPlayers.filter(p => p.id !== playerId);
-                    updateSelections(selectionsDiv, teamPlayers);
+                    if (selectionsDiv === player1Selections) {
+                        team1Players = team1Players.filter(p => p.id !== playerId);
+                    } else if (selectionsDiv === player2Selections) {
+                        team2Players = team2Players.filter(p => p.id !== playerId);
+                    }
+                    updateSelections(selectionsDiv, selectionsDiv === player1Selections ? team1Players : team2Players);
                     updateTradeComparison();
                     analyzeTrade(analyzeTradeBtn);
                     // Reset dropdown to reflect new state
