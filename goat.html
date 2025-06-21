@@ -289,14 +289,16 @@
             // Updated player data with ADP from FantasyPros PPR (June 20, 2025)
             const players = [
                 { name: 'Christian McCaffrey', pos: 'RB', team: 'SF', adp: 1, points: 22.5, td: 1, fumble: 0, passTds: 0, receptions: 80 },
-                { name: 'CeeDee Lamb', pos: 'WR', team: 'DAL', adp: 6, points: 20.1, td: 1, fumble: 0, passTds: 0, receptions: 100 },
+                { name: 'Tyreek Hill', pos: 'WR', team: 'MIA', adp: 2, points: 20.5, td: 1, fumble: 0, passTds: 0, receptions: 90 },
                 { name: 'Breece Hall', pos: 'RB', team: 'NYJ', adp: 3, points: 19.8, td: 1, fumble: 0, passTds: 0, receptions: 60 },
                 { name: 'Justin Jefferson', pos: 'WR', team: 'MIN', adp: 4, points: 20.3, td: 1, fumble: 0, passTds: 0, receptions: 90 },
                 { name: 'Ja\'Marr Chase', pos: 'WR', team: 'CIN', adp: 5, points: 20.0, td: 1, fumble: 0, passTds: 0, receptions: 85 },
+                { name: 'CeeDee Lamb', pos: 'WR', team: 'DAL', adp: 6, points: 20.1, td: 1, fumble: 0, passTds: 0, receptions: 100 },
                 { name: 'Amon-Ra St. Brown', pos: 'WR', team: 'DET', adp: 7, points: 19.7, td: 1, fumble: 0, passTds: 0, receptions: 95 },
                 { name: 'A.J. Brown', pos: 'WR', team: 'PHI', adp: 8, points: 19.5, td: 1, fumble: 0, passTds: 0, receptions: 80 },
                 { name: 'Garrett Wilson', pos: 'WR', team: 'NYJ', adp: 9, points: 19.2, td: 1, fumble: 0, passTds: 0, receptions: 75 },
                 { name: 'Patrick Mahomes', pos: 'QB', team: 'KC', adp: 10, points: 23.1, td: 1, fumble: 0, passTds: 35, receptions: 0 },
+                { name: 'Brian Thomas Jr.', pos: 'WR', team: 'JAX', adp: 11.5, points: 19.0, td: 1, fumble: 0, passTds: 0, receptions: 70 },
                 { name: 'Travis Etienne Jr.', pos: 'RB', team: 'JAX', adp: 11, points: 18.9, td: 1, fumble: 0, passTds: 0, receptions: 50 },
                 { name: 'Drake London', pos: 'WR', team: 'ATL', adp: 12, points: 18.7, td: 1, fumble: 0, passTds: 0, receptions: 70 },
                 { name: 'Travis Kelce', pos: 'TE', team: 'KC', adp: 13, points: 18.4, td: 1, fumble: 0, passTds: 0, receptions: 70 },
@@ -310,7 +312,6 @@
                 { name: 'Mike Evans', pos: 'WR', team: 'TB', adp: 40, points: 15.8, td: 1, fumble: 0, passTds: 0, receptions: 50 },
                 { name: 'David Montgomery', pos: 'RB', team: 'DET', adp: 50, points: 15.2, td: 1, fumble: 0, passTds: 0, receptions: 30 },
                 { name: 'George Kittle', pos: 'TE', team: 'SF', adp: 60, points: 14.5, td: 1, fumble: 0, passTds: 0, receptions: 55 },
-                { name: 'Tyreek Hill', pos: 'WR', team: 'MIA', adp: 2, points: 20.5, td: 1, fumble: 0, passTds: 0, receptions: 90 },
                 { name: 'Rachaad White', pos: 'RB', team: 'TB', adp: 70, points: 14.0, td: 1, fumble: 0, passTds: 0, receptions: 40 },
                 { name: 'Jaylen Warren', pos: 'RB', team: 'PIT', adp: 80, points: 13.5, td: 0, fumble: 0, passTds: 0, receptions: 35 },
                 { name: 'Gabe Davis', pos: 'WR', team: 'JAX', adp: 90, points: 13.0, td: 0, fumble: 0, passTds: 0, receptions: 40 },
@@ -326,7 +327,7 @@
             }
 
             // Generate Optimal Draft
-            if (generateDraftButton) {
+            if (generateDraftButton && leagueSizeSelect && startingLineupSelect && benchSizeSelect && scoringTypeSelect && bonusTDCheckbox && penaltyFumbleCheckbox && positionFocusSelect && draftPickInput && progressBarDraft && progressDraft && buildResultDraft) {
                 generateDraftButton.addEventListener('click', () => {
                     const leagueSize = parseInt(leagueSizeSelect.value) || 10;
                     const startingLineup = startingLineupSelect.value.split(',').map(s => s.trim().toUpperCase());
@@ -358,7 +359,7 @@
             }
 
             // Generate Optimal Weekly Lineup
-            if (generateLineupWeeklyButton) {
+            if (generateLineupWeeklyButton && lineupSizeInput && lineupStartingSelect && lineupBenchSizeSelect && lineupIrSpotsSelect && lineupScoringSelect && lineupBonusTDCheckbox && lineupPenaltyFumbleCheckbox && currentRosterInput && progressBarWeekly && progressWeekly && lineupResult) {
                 generateLineupWeeklyButton.addEventListener('click', () => {
                     const lineupSize = parseInt(lineupSizeInput.value) || 15;
                     const startingLineup = lineupStartingSelect.value.split(',').map(s => s.trim().toUpperCase());
@@ -385,7 +386,7 @@
             }
 
             // Swap Players
-            if (swapPlayersButton) {
+            if (swapPlayersButton && currentRosterInput) {
                 swapPlayersButton.addEventListener('click', () => {
                     const currentRoster = currentRosterInput.value.split(';').map(p => p.trim()).filter(p => p);
                     if (currentRoster.length) {
@@ -397,7 +398,7 @@
             }
 
             // Save/Export Draft
-            if (saveDraftButton) {
+            if (saveDraftButton && buildResultDraft) {
                 saveDraftButton.addEventListener('click', () => {
                     const result = buildResultDraft.innerHTML;
                     if (result) {
@@ -418,7 +419,7 @@
             }
 
             // Save/Export Weekly Lineup
-            if (saveLineupWeeklyButton) {
+            if (saveLineupWeeklyButton && lineupResult) {
                 saveLineupWeeklyButton.addEventListener('click', () => {
                     const result = lineupResult.innerHTML;
                     if (result) {
@@ -439,7 +440,7 @@
             }
 
             // Compare Draft Lineups
-            if (compareDraftButton) {
+            if (compareDraftButton && leagueSizeSelect && startingLineupSelect && benchSizeSelect && scoringTypeSelect && bonusTDCheckbox && penaltyFumbleCheckbox && positionFocusSelect && draftPickInput && progressBarDraft && progressDraft && buildResultDraft) {
                 compareDraftButton.addEventListener('click', () => {
                     const leagueSize = parseInt(leagueSizeSelect.value) || 10;
                     const startingLineup = startingLineupSelect.value.split(',').map(s => s.trim().toUpperCase());
@@ -468,7 +469,7 @@
             }
 
             // Compare Weekly Lineups
-            if (compareLineupsWeeklyButton) {
+            if (compareLineupsWeeklyButton && lineupSizeInput && lineupStartingSelect && lineupBenchSizeSelect && lineupIrSpotsSelect && lineupScoringSelect && lineupBonusTDCheckbox && lineupPenaltyFumbleCheckbox && currentRosterInput && progressBarWeekly && progressWeekly && lineupResult) {
                 compareLineupsWeeklyButton.addEventListener('click', () => {
                     const lineupSize = parseInt(lineupSizeInput.value) || 15;
                     const startingLineup = lineupStartingSelect.value.split(',').map(s => s.trim().toUpperCase());
@@ -632,10 +633,16 @@
 
                 buildResultDraft.innerHTML = `
                     <h3 class="text-xl font-semibold mb-4 text-teal-700">Optimal Draft Build</h3>
-                    <ul class="list-disc pl-5 space-y-2">
-                        ${lineup.map(entry => `<li>Round ${entry.round} (Pick ${entry.pick}): ${entry.player.name} (${entry.player.pos}) - ${entry.player.adjustedPoints.toFixed(1)} pts (ADP: ${entry.player.adp})</li>`).join('')}
-                    </ul>
-                    <p class="mt-2 text-gray-600">Total Projected Points: ${lineup.reduce((sum, entry) => sum + entry.player.adjustedPoints, 0).toFixed(1)}</p>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        ${lineup.map(entry => `
+                            <div class="p-4 bg-teal-50 rounded-lg shadow-md border-l-4 border-teal-600">
+                                <p class="font-medium text-gray-900">Round ${entry.round}, Pick ${entry.pick}</p>
+                                <p class="text-teal-700">${entry.player.name} (${entry.player.pos})</p>
+                                <p class="text-sm text-gray-600">${entry.player.adjustedPoints.toFixed(1)} pts (ADP: ${entry.player.adp})</p>
+                            </div>
+                        `).join('')}
+                    </div>
+                    <p class="mt-4 text-gray-600">Total Projected Points: ${lineup.reduce((sum, entry) => sum + entry.player.adjustedPoints, 0).toFixed(1)}</p>
                 `;
                 return lineup;
             }
@@ -736,25 +743,25 @@
             // Best Draft Strategies Functionality
             const strategies = {
                 redraft: [
-                    { title: 'Zero-RB', content: 'Zero-RB Guide: Focus on WRs early (rounds 1-3), then target RBs in mid-to-late rounds (6-10). Ideal for PPR/Half PPR leagues. Target high-upside RBs like Jaylen Warren or Rachaad White. Risk: Depth at RB if injuries occur. Best for leagues with deep WR talent pools.' },
-                    { title: 'Late-Round QB', content: 'Late-Round QB: Target QBs in rounds 8+ (e.g., Josh Allen, Patrick Mahomes). Prioritize elite WRs/RBs early. Risk: QB production may lag if top options are taken. Works well in 6pt Passing TD formats to maximize value.' },
-                    { title: 'Hero-RB', content: 'Hero-RB: Draft a top RB early (rounds 1-2, e.g., Christian McCaffrey), then load up on WRs and a mid-tier QB. Ideal for standard leagues. Risk: Weakness at other positions if RB underperforms. Pair with TEP or TE Full PPR if TE depth is strong.' },
-                    { title: 'Balanced Approach', content: 'Balanced Approach: Draft a mix of positions early (e.g., RB, WR, QB by round 5), avoiding over-focusing on one. Aim for consistency with players like Justin Jefferson or Breece Hall. Risk: May miss elite upside. Suits all scoring types.' },
-                    { title: 'WR-Heavy', content: 'WR-Heavy: Load up on WRs in rounds 1-4 (e.g., Ja\'Marr Chase, Amon-Ra St. Brown), then fill RB and QB later. Great for PPR/Half PPR. Risk: RB scarcity in later rounds. Target high-reception WRs like Tyreek Hill.' }
+                    { title: 'Zero-RB', content: 'Focus on WRs like Tyreek Hill and Justin Jefferson in rounds 1-3, then target RBs like Jaylen Warren or Rachaad White in mid-to-late rounds. Ideal for PPR leagues with deep WR talent, but watch for RB injury risks.' },
+                    { title: 'Late-Round QB', content: 'Target QBs like Josh Allen or Drake Maye in rounds 8+, prioritizing elite WRs and RBs early. Works well with 6pt passing TD formats, though QB production may lag if top options are taken.' },
+                    { title: 'Hero-RB', content: 'Draft a top RB like Christian McCaffrey early, then load up on WRs and a mid-tier QB. Suits standard leagues, but avoid over-reliance if the RB underperforms.' },
+                    { title: 'Balanced Approach', content: 'Mix positions early with players like Breece Hall and Amon-Ra St. Brown, avoiding over-focus. Consistent but may miss elite upside, fitting all scoring types.' },
+                    { title: 'WR-Heavy', content: 'Load up on WRs like Ja\'Marr Chase and Brian Thomas Jr. in rounds 1-4, filling RB and QB later. Great for PPR, but expect RB scarcity late.' }
                 ],
                 dynasty: [
-                    { title: 'Zero-RB', content: 'Zero-RB Guide: Prioritize young WRs (e.g., Garrett Wilson, Drake London) in early rounds, then acquire rookie RBs (e.g., Jaylen Warren) via trades or late picks. Ideal for long-term PPR value. Risk: Early RB injuries hurt depth.' },
-                    { title: 'Late-Round QB', content: 'Late-Round QB: Delay QB picks (e.g., Josh Allen in later rounds), focusing on young skill players. Trade up for elite QBs later. Risk: QB depth may thin out. Best with 6pt Passing TDs to boost late-round value.' },
-                    { title: 'Hero-RB', content: 'Hero-RB: Secure a young RB star (e.g., Breece Hall) early, then build around with WRs and a mid-tier QB. Ideal for dynasty stability. Risk: Over-reliance on one player. Pair with TEP or TE Full PPR for TE support.' },
-                    { title: 'Rookie Focus', content: 'Rookie Focus: Target rookie WRs/RBs (e.g., Puka Nacua) in early rounds, leveraging their long-term potential. Trade veterans for picks. Risk: Inconsistent early production. Works with any scoring type.' },
-                    { title: 'Balanced Approach', content: 'Balanced Approach: Draft a mix of young stars (e.g., Justin Jefferson) and veterans (e.g., Travis Kelce) across positions. Maintain trade flexibility. Risk: May miss breakout rookies. Suits all scoring formats.' }
+                    { title: 'Zero-RB', content: 'Prioritize young WRs like Garrett Wilson and Drake London early, then grab rookie RBs like Ashton Jeanty via trades or late picks. Ideal for long-term PPR value, though early RB injuries hurt depth.' },
+                    { title: 'Late-Round QB', content: 'Delay QB picks like Josh Allen, focusing on young skill players, and trade up later. Risky with thinning QB depth, best with 6pt passing TDs.' },
+                    { title: 'Hero-RB', content: 'Secure a young RB star like Breece Hall early, then build with WRs and a mid-tier QB. Stable but risky if reliant on one player.' },
+                    { title: 'Rookie Focus', content: 'Target rookies like Puka Nacua and Quinshon Judkins early for long-term potential, trading veterans for picks. Inconsistent early production is a risk.' },
+                    { title: 'Balanced Approach', content: 'Draft a mix of young stars like Justin Jefferson and veterans like Travis Kelce across positions, maintaining trade flexibility.' }
                 ],
                 superflex: [
-                    { title: 'Early QB', content: 'Early QB: Draft two QBs early (e.g., Patrick Mahomes, Josh Allen) in rounds 1-4 to exploit Superflex value. Fill WR/RB later. Risk: Weak skill positions. Optimized for 6pt Passing TDs.' },
-                    { title: 'Zero-RB', content: 'Zero-RB Guide: Focus on QBs and WRs early (e.g., Ja\'Marr Chase), then target RBs late (e.g., Rachaad White). Leverage QB depth. Risk: RB injuries. Best for PPR/Half PPR.' },
-                    { title: 'Hero-RB', content: 'Hero-RB: Grab a top RB (e.g., Christian McCaffrey) early, then secure two QBs (e.g., Josh Allen) for Superflex. Risk: QB scarcity later. Pair with TEP or TE Full PPR for TE support.' },
-                    { title: 'QB-WR Stack', content: 'QB-WR Stack: Draft a QB (e.g., Patrick Mahomes) and his top WR (e.g., Travis Kelce) early, then add a second QB. Boosts consistency. Risk: RB depth issues. Works with 6pt Passing TDs.' },
-                    { title: 'Balanced Superflex', content: 'Balanced Superflex: Take one QB early (e.g., Josh Allen), then mix WRs (e.g., Justin Jefferson) and RBs (e.g., Breece Hall). Add a second QB later. Risk: Elite QB miss. Suits all scoring types.' }
+                    { title: 'Early QB', content: 'Draft two QBs like Patrick Mahomes and Justin Fields in rounds 1-4 to exploit Superflex value. Weak skill positions are a risk, optimized for 6pt passing TDs.' },
+                    { title: 'Zero-RB', content: 'Focus on QBs and WRs like Ja\'Marr Chase early, then target RBs like Rachaad White late. Leverages QB depth but risks RB injuries.' },
+                    { title: 'Hero-RB', content: 'Grab a top RB like Christian McCaffrey early, then secure two QBs for Superflex. QB scarcity later is a concern.' },
+                    { title: 'QB-WR Stack', content: 'Draft a QB like Patrick Mahomes and his top WR early, then add a second QB. Boosts consistency but may lack RB depth.' },
+                    { title: 'Balanced Superflex', content: 'Take one QB like Josh Allen early, mix WRs like Justin Jefferson and RBs like Breece Hall, then add a second QB later.' }
                 ]
             };
 
