@@ -88,6 +88,11 @@
                             <option value="1QB,2RB,2WR,1TE,2FLEX,1DST,1K">1QB, 2RB, 2WR, 1TE, 2FLEX, 1DST, 1K</option>
                             <option value="1QB,3RB,2WR,1TE,1FLEX,1DST,1K">1QB, 3RB, 2WR, 1TE, 1FLEX, 1DST, 1K</option>
                             <option value="1QB,2RB,3WR,1TE,1DST,1K">1QB, 2RB, 3WR, 1TE, 1DST, 1K</option>
+                            <option value="1QB,2RB,2WR,1TE,1FLEX">1QB, 2RB, 2WR, 1TE, 1FLEX</option>
+                            <option value="1QB,2RB,3WR,1TE,1FLEX">1QB, 2RB, 3WR, 1TE, 1FLEX</option>
+                            <option value="1QB,2RB,2WR,1TE,2FLEX">1QB, 2RB, 2WR, 1TE, 2FLEX</option>
+                            <option value="1QB,3RB,2WR,1TE,1FLEX">1QB, 3RB, 2WR, 1TE, 1FLEX</option>
+                            <option value="1QB,2RB,3WR,1TE">1QB, 2RB, 3WR, 1TE</option>
                         </select></label>
                         <label class="block mb-2 text-gray-900">Bench Size: <select id="benchSize" class="bg-white p-3 rounded border border-gray-300 w-full">
                             <option value="5">5</option>
@@ -100,7 +105,7 @@
                             <option value="ppr">PPR (+1 pt/reception)</option>
                             <option value="halfppr">Half PPR (0.5 pt/reception)</option>
                             <option value="tep">TEP (1.5x TE points)</option>
-                            <option value="tefullppr">TE Full PPR (1.5 pt/reception for TE)</option>
+                            <option value="tefullppr">TE Full PPR (2x pt/reception for TE)</option>
                             <option value="6ptpass">6pt Passing TDs</option>
                         </select></label>
                         <label class="block mb-2 text-gray-900">Bonuses/Penalties: <input type="checkbox" id="bonusTD" class="mr-2">+6 pts for TDs <input type="checkbox" id="penaltyFumble" class="ml-4 mr-2">-2 pts for fumbles</label>
@@ -131,6 +136,10 @@
                             <option value="1QB,2RB,2WR,1TE,2FLEX,1DST,1K">1QB, 2RB, 2WR, 1TE, 2FLEX, 1DST, 1K</option>
                             <option value="1QB,3RB,2WR,1TE,1FLEX,1DST,1K">1QB, 3RB, 2WR, 1TE, 1FLEX, 1DST, 1K</option>
                             <option value="1QB,2RB,3WR,1TE,1DST,1K">1QB, 2RB, 3WR, 1TE, 1DST, 1K</option>
+                            <option value="1QB,2RB,3WR,1TE,1FLEX">1QB, 2RB, 3WR, 1TE, 1FLEX</option>
+                            <option value="1QB,2RB,2WR,1TE,2FLEX">1QB, 2RB, 2WR, 1TE, 2FLEX</option>
+                            <option value="1QB,3RB,2WR,1TE,1FLEX">1QB, 3RB, 2WR, 1TE, 1FLEX</option>
+                            <option value="1QB,2RB,3WR,1TE">1QB, 2RB, 3WR, 1TE</option>
                         </select></label>
                         <label class="block mb-2 text-gray-900">Bench Size: <select id="lineupBenchSize" class="bg-white p-3 rounded border border-gray-300 w-full">
                             <option value="5">5</option>
@@ -148,7 +157,7 @@
                             <option value="ppr">PPR (+1 pt/reception)</option>
                             <option value="halfppr">Half PPR (0.5 pt/reception)</option>
                             <option value="tep">TEP (1.5x TE points)</option>
-                            <option value="tefullppr">TE Full PPR (1.5 pt/reception for TE)</option>
+                            <option value="tefullppr">TE Full PPR (2x pt/reception for TE)</option>
                             <option value="6ptpass">6pt Passing TDs</option>
                         </select></label>
                         <label class="block mb-2 text-gray-900">Bonuses/Penalties: <input type="checkbox" id="lineupBonusTD" class="mr-2">+6 pts for TDs <input type="checkbox" id="lineupPenaltyFumble" class="ml-4 mr-2">-2 pts for fumbles</label>
@@ -532,7 +541,7 @@
                     if (scoring === 'ppr') points += p.receptions;
                     else if (scoring === 'halfppr') points += p.receptions * 0.5;
                     else if (scoring === 'tep' && p.pos === 'TE') points *= 1.5;
-                    else if (scoring === 'tefullppr' && p.pos === 'TE') points += p.receptions * 1.5;
+                    else if (scoring === 'tefullppr' && p.pos === 'TE') points += p.receptions * 2;
                     else if (scoring === '6ptpass') points += (p.passTds * 2); // Add 2 points per passing TD (from 4 to 6)
                     if (bonusTD && p.td > 0) points += 6;
                     if (penaltyFumble && p.fumble > 0) points -= 2;
@@ -667,7 +676,7 @@
                     if (scoring === 'ppr') points += p.receptions;
                     else if (scoring === 'halfppr') points += p.receptions * 0.5;
                     else if (scoring === 'tep' && p.pos === 'TE') points *= 1.5;
-                    else if (scoring === 'tefullppr' && p.pos === 'TE') points += p.receptions * 1.5;
+                    else if (scoring === 'tefullppr' && p.pos === 'TE') points += p.receptions * 2;
                     else if (scoring === '6ptpass') points += (p.passTds * 2); // Add 2 points per passing TD (from 4 to 6)
                     if (bonusTD && p.td > 0) points += 6;
                     if (penaltyFumble && p.fumble > 0) points -= 2;
@@ -786,7 +795,7 @@
                 });
             }
             leagueTypeSelect.addEventListener('change', updateStrategies);
-            updateStrategies();
+            updateStrategies(); // Initial load
 
             // Reset Strategies
             document.getElementById('resetStrategies').addEventListener('click', () => {
