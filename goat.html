@@ -7,48 +7,8 @@
     <meta name="keywords" content="fantasy football, GOAT, team building, draft strategies, player research">
     <meta name="author" content="Mpeters9">
     <title>Front Row Fantasy - GOAT Page</title>
-    <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="styles.css">
-    <style>
-        .strategy-card {
-            transition: all 0.3s ease;
-            position: relative;
-        }
-        .strategy-card.expanded {
-            height: auto;
-            max-height: 400px;
-            padding: 1rem;
-        }
-        .strategy-card:not(.expanded) {
-            height: auto;
-            padding: 0.5rem;
-        }
-        .strategy-card:hover {
-            background-color: #e0f2f7;
-        }
-        .strategy-preview {
-            display: -webkit-box;
-            -webkit-line-clamp: 2;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-        .expand-toggle {
-            cursor: pointer;
-            color: #2563eb;
-            font-size: 0.875rem;
-        }
-        .full-content {
-            display: none;
-        }
-        .strategy-card.expanded .full-content {
-            display: block;
-        }
-        .strategy-card.expanded .strategy-preview {
-            display: none;
-        }
-    </style>
+    <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="text-black bg-gray-100 font-sans" aria-label="GOAT Page Content">
     <header class="bg-gradient-to-r from-teal-600 to-teal-800 shadow-md py-3 text-white" role="banner">
@@ -206,7 +166,7 @@
             <div class="p-6 bg-teal-50 rounded-lg shadow-lg hover:shadow-xl transition-shadow">
                 <div id="stat-visuals" class="h-64 bg-teal-100 rounded-lg mb-6"></div>
                 <div class="flex flex-col md:flex-row gap-4">
-                    <input type="text" class="bg-white p-3 rounded border border-gray-300 w-full md:w-2/3 text-gray-900" placeholder="Filter by Position/Week/Stat">
+                    <input type="text" id="statFilter" class="bg-white p-3 rounded border border-gray-300 w-full md:w-2/3 text-gray-900" placeholder="Filter by Position/Week/Stat">
                     <button class="bg-teal-600 text-white px-6 py-3 rounded-lg hover:bg-teal-700 transition w-full md:w-1/3">Explore Stats</button>
                 </div>
                 <div id="stat-result" class="mt-6 text-gray-900"></div>
@@ -216,7 +176,7 @@
         <section id="community-input">
             <h2 class="text-3xl font-semibold mb-6 text-teal-700 text-center">Community Input</h2>
             <div class="p-6 bg-teal-50 rounded-lg shadow-lg hover:shadow-xl transition-shadow">
-                <textarea class="w-full bg-white p-3 rounded border border-gray-300 mb-6 text-gray-900" rows="4" placeholder="Share your strategy..."></textarea>
+                <textarea id="communityStrategy" class="w-full bg-white p-3 rounded border border-gray-300 mb-6 text-gray-900" rows="4" placeholder="Share your strategy..."></textarea>
                 <button class="bg-teal-600 text-white px-6 py-3 rounded-lg hover:bg-teal-700 transition">Submit</button>
                 <div id="community-feed" class="mt-6 space-y-4">
                     <div class="p-4 bg-teal-100 rounded-lg text-gray-900">User Strategy: [Strategy Text]</div>
@@ -304,21 +264,27 @@
             const lineupResult = document.getElementById('lineup-result');
 
             // Update draft pick slider max based on league size
-            leagueSizeSelect.addEventListener('change', () => {
-                draftPickInput.max = leagueSizeSelect.value;
-                if (parseInt(draftPickInput.value) > parseInt(leagueSizeSelect.value)) {
-                    draftPickInput.value = leagueSizeSelect.value;
-                    draftPickValue.textContent = draftPickInput.value;
-                }
-            });
+            if (leagueSizeSelect) {
+                leagueSizeSelect.addEventListener('change', () => {
+                    if (draftPickInput && draftPickValue) {
+                        draftPickInput.max = leagueSizeSelect.value;
+                        if (parseInt(draftPickInput.value) > parseInt(leagueSizeSelect.value)) {
+                            draftPickInput.value = leagueSizeSelect.value;
+                            draftPickValue.textContent = draftPickInput.value;
+                        }
+                    }
+                });
+            }
 
             // Sync bench size between sections
-            benchSizeSelect.addEventListener('change', () => {
-                lineupBenchSizeSelect.value = benchSizeSelect.value;
-            });
-            lineupBenchSizeSelect.addEventListener('change', () => {
-                benchSizeSelect.value = lineupBenchSizeSelect.value;
-            });
+            if (benchSizeSelect && lineupBenchSizeSelect) {
+                benchSizeSelect.addEventListener('change', () => {
+                    lineupBenchSizeSelect.value = benchSizeSelect.value;
+                });
+                lineupBenchSizeSelect.addEventListener('change', () => {
+                    benchSizeSelect.value = lineupBenchSizeSelect.value;
+                });
+            }
 
             // Updated player data with ADP from FantasyPros PPR (June 20, 2025)
             const players = [
@@ -353,166 +319,182 @@
             ];
 
             // Update draft pick value display
-            draftPickInput.addEventListener('input', () => {
-                draftPickValue.textContent = draftPickInput.value;
-            });
+            if (draftPickInput && draftPickValue) {
+                draftPickInput.addEventListener('input', () => {
+                    draftPickValue.textContent = draftPickInput.value;
+                });
+            }
 
             // Generate Optimal Draft
-            generateDraftButton.addEventListener('click', () => {
-                const leagueSize = parseInt(leagueSizeSelect.value) || 10;
-                const startingLineup = startingLineupSelect.value.split(',').map(s => s.trim().toUpperCase());
-                const benchSize = parseInt(benchSizeSelect.value) || 7;
-                const scoringType = scoringTypeSelect.value;
-                const bonusTD = bonusTDCheckbox.checked;
-                const penaltyFumble = penaltyFumbleCheckbox.checked;
-                const positionFocus = positionFocusSelect.value;
-                const draftPick = parseInt(draftPickInput.value) || 5;
+            if (generateDraftButton) {
+                generateDraftButton.addEventListener('click', () => {
+                    const leagueSize = parseInt(leagueSizeSelect.value) || 10;
+                    const startingLineup = startingLineupSelect.value.split(',').map(s => s.trim().toUpperCase());
+                    const benchSize = parseInt(benchSizeSelect.value) || 7;
+                    const scoringType = scoringTypeSelect.value;
+                    const bonusTD = bonusTDCheckbox.checked;
+                    const penaltyFumble = penaltyFumbleCheckbox.checked;
+                    const positionFocus = positionFocusSelect.value;
+                    const draftPick = parseInt(draftPickInput.value) || 5;
 
-                if (leagueSize < 8 || leagueSize > 14) {
-                    alert('League size must be between 8 and 14.');
-                    return;
-                }
-
-                progressBarDraft.classList.remove('hidden');
-                let width = 0;
-                const interval = setInterval(() => {
-                    if (width >= 100) {
-                        clearInterval(interval);
-                        generateOptimalDraft(leagueSize, startingLineup, benchSize, scoringType, bonusTD, penaltyFumble, positionFocus, draftPick);
-                        progressBarDraft.classList.add('hidden');
-                    } else {
-                        width += 10;
-                        progressDraft.style.width = `${width}%`;
+                    if (leagueSize < 8 || leagueSize > 14) {
+                        alert('League size must be between 8 and 14.');
+                        return;
                     }
-                }, 200);
-            });
+
+                    progressBarDraft.classList.remove('hidden');
+                    let width = 0;
+                    const interval = setInterval(() => {
+                        if (width >= 100) {
+                            clearInterval(interval);
+                            generateOptimalDraft(leagueSize, startingLineup, benchSize, scoringType, bonusTD, penaltyFumble, positionFocus, draftPick);
+                            progressBarDraft.classList.add('hidden');
+                        } else {
+                            width += 10;
+                            progressDraft.style.width = `${width}%`;
+                        }
+                    }, 200);
+                });
+            }
 
             // Generate Optimal Weekly Lineup
-            generateLineupWeeklyButton.addEventListener('click', () => {
-                const lineupSize = parseInt(lineupSizeInput.value) || 15;
-                const startingLineup = lineupStartingSelect.value.split(',').map(s => s.trim().toUpperCase());
-                const benchSize = parseInt(lineupBenchSizeSelect.value) || 7;
-                const irSpots = parseInt(lineupIrSpotsSelect.value) || 1;
-                const scoringType = lineupScoringSelect.value;
-                const bonusTD = lineupBonusTDCheckbox.checked;
-                const penaltyFumble = lineupPenaltyFumbleCheckbox.checked;
-                const currentRoster = currentRosterInput.value.split(';').map(p => p.trim()).filter(p => p);
+            if (generateLineupWeeklyButton) {
+                generateLineupWeeklyButton.addEventListener('click', () => {
+                    const lineupSize = parseInt(lineupSizeInput.value) || 15;
+                    const startingLineup = lineupStartingSelect.value.split(',').map(s => s.trim().toUpperCase());
+                    const benchSize = parseInt(lineupBenchSizeSelect.value) || 7;
+                    const irSpots = parseInt(lineupIrSpotsSelect.value) || 1;
+                    const scoringType = lineupScoringSelect.value;
+                    const bonusTD = lineupBonusTDCheckbox.checked;
+                    const penaltyFumble = lineupPenaltyFumbleCheckbox.checked;
+                    const currentRoster = currentRosterInput.value.split(';').map(p => p.trim()).filter(p => p);
 
-                progressBarWeekly.classList.remove('hidden');
-                let width = 0;
-                const interval = setInterval(() => {
-                    if (width >= 100) {
-                        clearInterval(interval);
-                        generateOptimalLineupWeekly(lineupSize, startingLineup, benchSize, irSpots, scoringType, bonusTD, penaltyFumble, currentRoster);
-                        progressBarWeekly.classList.add('hidden');
-                    } else {
-                        width += 10;
-                        progressWeekly.style.width = `${width}%`;
-                    }
-                }, 200);
-            });
+                    progressBarWeekly.classList.remove('hidden');
+                    let width = 0;
+                    const interval = setInterval(() => {
+                        if (width >= 100) {
+                            clearInterval(interval);
+                            generateOptimalLineupWeekly(lineupSize, startingLineup, benchSize, irSpots, scoringType, bonusTD, penaltyFumble, currentRoster);
+                            progressBarWeekly.classList.add('hidden');
+                        } else {
+                            width += 10;
+                            progressWeekly.style.width = `${width}%`;
+                        }
+                    }, 200);
+                });
+            }
 
             // Swap Players
-            swapPlayersButton.addEventListener('click', () => {
-                const currentRoster = currentRosterInput.value.split(';').map(p => p.trim()).filter(p => p);
-                if (currentRoster.length) {
-                    alert('Players swapped! Review and generate lineup.');
-                } else {
-                    alert('Enter players in the roster field first!');
-                }
-            });
+            if (swapPlayersButton) {
+                swapPlayersButton.addEventListener('click', () => {
+                    const currentRoster = currentRosterInput.value.split(';').map(p => p.trim()).filter(p => p);
+                    if (currentRoster.length) {
+                        alert('Players swapped! Review and generate lineup.');
+                    } else {
+                        alert('Enter players in the roster field first!');
+                    }
+                });
+            }
 
             // Save/Export Draft
-            saveDraftButton.addEventListener('click', () => {
-                const result = buildResultDraft.innerHTML;
-                if (result) {
-                    const lineupText = buildResultDraft.textContent;
-                    localStorage.setItem('savedDraft', lineupText);
-                    const blob = new Blob([lineupText], { type: 'text/plain' });
-                    const url = URL.createObjectURL(blob);
-                    const a = document.createElement('a');
-                    a.href = url;
-                    a.download = 'fantasy_draft.txt';
-                    a.click();
-                    URL.revokeObjectURL(url);
-                    alert('Draft saved and exported!');
-                } else {
-                    alert('Generate a draft first!');
-                }
-            });
+            if (saveDraftButton) {
+                saveDraftButton.addEventListener('click', () => {
+                    const result = buildResultDraft.innerHTML;
+                    if (result) {
+                        const lineupText = buildResultDraft.textContent;
+                        localStorage.setItem('savedDraft', lineupText);
+                        const blob = new Blob([lineupText], { type: 'text/plain' });
+                        const url = URL.createObjectURL(blob);
+                        const a = document.createElement('a');
+                        a.href = url;
+                        a.download = 'fantasy_draft.txt';
+                        a.click();
+                        URL.revokeObjectURL(url);
+                        alert('Draft saved and exported!');
+                    } else {
+                        alert('Generate a draft first!');
+                    }
+                });
+            }
 
             // Save/Export Weekly Lineup
-            saveLineupWeeklyButton.addEventListener('click', () => {
-                const result = lineupResult.innerHTML;
-                if (result) {
-                    const lineupText = lineupResult.textContent;
-                    localStorage.setItem('savedLineup', lineupText);
-                    const blob = new Blob([lineupText], { type: 'text/plain' });
-                    const url = URL.createObjectURL(blob);
-                    const a = document.createElement('a');
-                    a.href = url;
-                    a.download = 'fantasy_lineup.txt';
-                    a.click();
-                    URL.revokeObjectURL(url);
-                    alert('Lineup saved and exported!');
-                } else {
-                    alert('Generate a lineup first!');
-                }
-            });
+            if (saveLineupWeeklyButton) {
+                saveLineupWeeklyButton.addEventListener('click', () => {
+                    const result = lineupResult.innerHTML;
+                    if (result) {
+                        const lineupText = lineupResult.textContent;
+                        localStorage.setItem('savedLineup', lineupText);
+                        const blob = new Blob([lineupText], { type: 'text/plain' });
+                        const url = URL.createObjectURL(blob);
+                        const a = document.createElement('a');
+                        a.href = url;
+                        a.download = 'fantasy_lineup.txt';
+                        a.click();
+                        URL.revokeObjectURL(url);
+                        alert('Lineup saved and exported!');
+                    } else {
+                        alert('Generate a lineup first!');
+                    }
+                });
+            }
 
             // Compare Draft Lineups
-            compareDraftButton.addEventListener('click', () => {
-                const leagueSize = parseInt(leagueSizeSelect.value) || 10;
-                const startingLineup = startingLineupSelect.value.split(',').map(s => s.trim().toUpperCase());
-                const benchSize = parseInt(benchSizeSelect.value) || 7;
-                const scoringType = scoringTypeSelect.value;
-                const bonusTD = bonusTDCheckbox.checked;
-                const penaltyFumble = penaltyFumbleCheckbox.checked;
-                const positionFocus = positionFocusSelect.value;
-                const draftPick = parseInt(draftPickInput.value) || 5;
+            if (compareDraftButton) {
+                compareDraftButton.addEventListener('click', () => {
+                    const leagueSize = parseInt(leagueSizeSelect.value) || 10;
+                    const startingLineup = startingLineupSelect.value.split(',').map(s => s.trim().toUpperCase());
+                    const benchSize = parseInt(benchSizeSelect.value) || 7;
+                    const scoringType = scoringTypeSelect.value;
+                    const bonusTD = bonusTDCheckbox.checked;
+                    const penaltyFumble = penaltyFumbleCheckbox.checked;
+                    const positionFocus = positionFocusSelect.value;
+                    const draftPick = parseInt(draftPickInput.value) || 5;
 
-                progressBarDraft.classList.remove('hidden');
-                let width = 0;
-                const interval = setInterval(() => {
-                    if (width >= 100) {
-                        clearInterval(interval);
-                        const lineup1 = generateOptimalDraft(leagueSize, startingLineup, benchSize, scoringType, bonusTD, penaltyFumble, positionFocus, draftPick);
-                        const lineup2 = generateOptimalDraft(leagueSize, startingLineup, benchSize, scoringType, bonusTD, penaltyFumble, 'balanced', draftPick);
-                        compareLineups(lineup1, lineup2, 'draft');
-                        progressBarDraft.classList.add('hidden');
-                    } else {
-                        width += 10;
-                        progressDraft.style.width = `${width}%`;
-                    }
-                }, 200);
-            });
+                    progressBarDraft.classList.remove('hidden');
+                    let width = 0;
+                    const interval = setInterval(() => {
+                        if (width >= 100) {
+                            clearInterval(interval);
+                            const lineup1 = generateOptimalDraft(leagueSize, startingLineup, benchSize, scoringType, bonusTD, penaltyFumble, positionFocus, draftPick);
+                            const lineup2 = generateOptimalDraft(leagueSize, startingLineup, benchSize, scoringType, bonusTD, penaltyFumble, 'balanced', draftPick);
+                            compareLineups(lineup1, lineup2, 'draft');
+                            progressBarDraft.classList.add('hidden');
+                        } else {
+                            width += 10;
+                            progressDraft.style.width = `${width}%`;
+                        }
+                    }, 200);
+                });
+            }
 
             // Compare Weekly Lineups
-            compareLineupsWeeklyButton.addEventListener('click', () => {
-                const lineupSize = parseInt(lineupSizeInput.value) || 15;
-                const startingLineup = lineupStartingSelect.value.split(',').map(s => s.trim().toUpperCase());
-                const benchSize = parseInt(lineupBenchSizeSelect.value) || 7;
-                const irSpots = parseInt(lineupIrSpotsSelect.value) || 1;
-                const scoringType = lineupScoringSelect.value;
-                const bonusTD = lineupBonusTDCheckbox.checked;
-                const penaltyFumble = lineupPenaltyFumbleCheckbox.checked;
-                const currentRoster = currentRosterInput.value.split(';').map(p => p.trim()).filter(p => p);
+            if (compareLineupsWeeklyButton) {
+                compareLineupsWeeklyButton.addEventListener('click', () => {
+                    const lineupSize = parseInt(lineupSizeInput.value) || 15;
+                    const startingLineup = lineupStartingSelect.value.split(',').map(s => s.trim().toUpperCase());
+                    const benchSize = parseInt(lineupBenchSizeSelect.value) || 7;
+                    const irSpots = parseInt(lineupIrSpotsSelect.value) || 1;
+                    const scoringType = lineupScoringSelect.value;
+                    const bonusTD = lineupBonusTDCheckbox.checked;
+                    const penaltyFumble = lineupPenaltyFumbleCheckbox.checked;
+                    const currentRoster = currentRosterInput.value.split(';').map(p => p.trim()).filter(p => p);
 
-                progressBarWeekly.classList.remove('hidden');
-                let width = 0;
-                const interval = setInterval(() => {
-                    if (width >= 100) {
-                        clearInterval(interval);
-                        const lineup1 = generateOptimalLineupWeekly(lineupSize, startingLineup, benchSize, irSpots, scoringType, bonusTD, penaltyFumble, currentRoster);
-                        const lineup2 = generateOptimalLineupWeekly(lineupSize, startingLineup, benchSize, irSpots, scoringType, bonusTD, penaltyFumble, currentRoster, true);
-                        compareLineups(lineup1, lineup2, 'weekly');
-                        progressBarWeekly.classList.add('hidden');
-                    } else {
-                        width += 10;
-                        progressWeekly.style.width = `${width}%`;
-                    }
-                }, 200);
-            });
+                    progressBarWeekly.classList.remove('hidden');
+                    let width = 0;
+                    const interval = setInterval(() => {
+                        if (width >= 100) {
+                            clearInterval(interval);
+                            const lineup1 = generateOptimalLineupWeekly(lineupSize, startingLineup, benchSize, irSpots, scoringType, bonusTD, penaltyFumble, currentRoster);
+                            const lineup2 = generateOptimalLineupWeekly(lineupSize, startingLineup, benchSize, irSpots, scoringType, bonusTD, penaltyFumble, currentRoster, true);
+                            compareLineups(lineup1, lineup2, 'weekly');
+                            progressBarWeekly.classList.add('hidden');
+                        } else {
+                            width += 10;
+                            progressWeekly.style.width = `${width}%`;
+                        }
+                    }, 200);
+                });
+            }
 
             function generateOptimalDraft(leagueSize, lineupConfig, benchSize, scoring, bonusTD, penaltyFumble, focus, pick) {
                 let availablePlayers = [...players];
@@ -779,30 +761,38 @@
             // Populate strategy cards based on league type
             const leagueTypeSelect = document.getElementById('leagueType');
             const strategyCardsDiv = document.getElementById('strategyCards');
-            function updateStrategies() {
-                const leagueType = leagueTypeSelect.value;
-                strategyCardsDiv.innerHTML = '';
-                strategies[leagueType].forEach((strategy, index) => {
-                    const card = document.createElement('div');
-                    card.className = 'strategy-card p-4 bg-teal-100 rounded-lg';
-                    card.innerHTML = `
-                        <h4 class="font-semibold">${strategy.title}</h4>
-                        <p class="strategy-preview text-sm">${strategy.content.substring(0, 100)}...</p>
-                        <p class="full-content text-sm mt-2">${strategy.content}</p>
-                        <span class="expand-toggle" onclick="this.parentElement.classList.toggle('expanded');">Show more</span>
-                    `;
-                    strategyCardsDiv.appendChild(card);
-                });
+            if (leagueTypeSelect && strategyCardsDiv) {
+                function updateStrategies() {
+                    const leagueType = leagueTypeSelect.value;
+                    strategyCardsDiv.innerHTML = '';
+                    strategies[leagueType].forEach((strategy, index) => {
+                        const card = document.createElement('div');
+                        card.className = 'strategy-card p-4 bg-teal-100 rounded-lg';
+                        card.innerHTML = `
+                            <h4 class="font-semibold">${strategy.title}</h4>
+                            <p class="strategy-preview text-sm">${strategy.content.substring(0, 100)}...</p>
+                            <p class="full-content text-sm mt-2">${strategy.content}</p>
+                            <span class="expand-toggle" onclick="this.parentElement.classList.toggle('expanded');">Show more</span>
+                        `;
+                        strategyCardsDiv.appendChild(card);
+                    });
+                }
+                leagueTypeSelect.addEventListener('change', updateStrategies);
+                updateStrategies(); // Ensure initial load
             }
-            leagueTypeSelect.addEventListener('change', updateStrategies);
-            updateStrategies(); // Ensure initial load
 
             // Reset Strategies
-            document.getElementById('resetStrategies').addEventListener('click', () => {
-                document.querySelectorAll('.strategy-card').forEach(card => {
-                    card.classList.remove('expanded');
+            const resetStrategiesButton = document.getElementById('resetStrategies');
+            if (resetStrategiesButton) {
+                resetStrategiesButton.addEventListener('click', () => {
+                    document.querySelectorAll('.strategy-card').forEach(card => {
+                        card.classList.remove('expanded');
+                    });
                 });
-            });
+            }
         });
     </script>
+    <script src="https://unpkg.com/react@17/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@17/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
     <script src="script.js"></script>
