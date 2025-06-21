@@ -32,26 +32,51 @@
             <button class="bg-white text-teal-600 px-6 py-3 rounded-lg hover:bg-gray-200 transition">Get Started</button>
         </section>
 
-        <section id="best-team-builds" class="mb-12">
-            <h2 class="text-3xl font-semibold mb-6 text-teal-700 text-center">Best Team Builds</h2>
+        <section id="best-draft-builds" class="mb-12">
+            <h2 class="text-3xl font-semibold mb-6 text-teal-700 text-center">Best Draft Builds</h2>
             <div class="p-6 bg-teal-50 rounded-lg shadow-lg hover:shadow-xl transition-shadow">
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
                     <div>
                         <label class="block mb-2 text-gray-900">League Size: <input type="number" id="leagueSize" min="8" max="16" class="bg-white p-3 rounded border border-gray-300 w-full" placeholder="e.g., 12" value="12"></label>
-                        <label class="block mb-2 text-gray-900">Starting Lineup: <input type="text" id="startingLineup" class="bg-white p-3 rounded border border-gray-300 w-full" placeholder="e.g., 1QB,2RB,3WR,1TE,1FLEX" value="1QB,2RB,3WR,1TE,1FLEX"></label>
+                        <label class="block mb-2 text-gray-900">Starting Lineup: <select id="startingLineup" class="bg-white p-3 rounded border border-gray-300 w-full"><option value="1QB,2RB,3WR,1TE,1FLEX">1QB, 2RB, 3WR, 1TE, 1FLEX</option><option value="1QB,2RB,2WR,1TE,2FLEX">1QB, 2RB, 2WR, 1TE, 2FLEX</option><option value="1QB,3RB,2WR,1TE,1FLEX">1QB, 3RB, 2WR, 1TE, 1FLEX</option><option value="1QB,2RB,3WR,1TE">1QB, 2RB, 3WR, 1TE</option></select></label>
                         <label class="block mb-2 text-gray-900">Scoring: <select id="scoringType" class="bg-white p-3 rounded border border-gray-300 w-full"><option value="standard">Standard</option><option value="ppr">PPR (+1 pt/reception)</option></select></label>
-                        <label class="block mb-2 text-gray-900">Bonuses: <input type="checkbox" id="bonusTD" class="mr-2">+2 pts for 40+ yd TD <input type="checkbox" id="bonusYds" class="ml-4 mr-2">+1 pt for 100+ yd game</label>
+                        <label class="block mb-2 text-gray-900">Bonuses/Penalties: <input type="checkbox" id="bonusTD" class="mr-2">+6 pts for TDs <input type="checkbox" id="penaltyFumble" class="ml-4 mr-2">-2 pts for fumbles</label>
                     </div>
                     <div>
                         <label class="block mb-2 text-gray-900">Position Focus: <select id="positionFocus" class="bg-white p-3 rounded border border-gray-300 w-full"><option value="balanced">Balanced</option><option value="qb">QB</option><option value="rb">RB</option><option value="wr">WR</option><option value="te">TE</option></select></label>
-                        <button id="generateLineup" class="bg-teal-600 text-white px-6 py-3 rounded-lg hover:bg-teal-700 transition w-full">Generate Optimal Lineup</button>
-                        <button id="saveLineup" class="bg-teal-500 text-white px-6 py-3 rounded-lg hover:bg-teal-600 transition w-full mt-2">Save/Export Lineup</button>
+                        <label class="block mb-2 text-gray-900">Draft Pick: <input type="number" id="draftPick" min="1" max="12" class="bg-white p-3 rounded border border-gray-300 w-full" placeholder="e.g., 5" value="5"></label>
+                        <button id="generateLineup" class="bg-teal-600 text-white px-6 py-3 rounded-lg hover:bg-teal-700 transition w-full">Generate Optimal Draft</button>
+                        <button id="saveLineup" class="bg-teal-500 text-white px-6 py-3 rounded-lg hover:bg-teal-600 transition w-full mt-2">Save/Export Draft</button>
+                        <button id="compareLineups" class="bg-teal-400 text-white px-6 py-3 rounded-lg hover:bg-teal-500 transition w-full mt-2">Compare Lineups</button>
                     </div>
                 </div>
                 <div id="progressBar" class="h-2 bg-gray-300 rounded mb-4 hidden">
                     <div id="progress" class="h-full bg-teal-600 rounded" style="width: 0%;"></div>
                 </div>
                 <div id="build-result" class="mt-6 text-gray-900"></div>
+            </div>
+        </section>
+
+        <section id="best-lineup-builds" class="mb-12">
+            <h2 class="text-3xl font-semibold mb-6 text-teal-700 text-center">Best Lineup Builds</h2>
+            <div class="p-6 bg-teal-50 rounded-lg shadow-lg hover:shadow-xl transition-shadow">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                    <div>
+                        <label class="block mb-2 text-gray-900">Roster Size: <input type="number" id="lineupSize" min="9" max="20" class="bg-white p-3 rounded border border-gray-300 w-full" placeholder="e.g., 15" value="15"></label>
+                        <label class="block mb-2 text-gray-900">Starting Lineup: <select id="lineupStarting" class="bg-white p-3 rounded border border-gray-300 w-full"><option value="1QB,2RB,3WR,1TE,1FLEX">1QB, 2RB, 3WR, 1TE, 1FLEX</option><option value="1QB,2RB,2WR,1TE,2FLEX">1QB, 2RB, 2WR, 1TE, 2FLEX</option><option value="1QB,3RB,2WR,1TE,1FLEX">1QB, 3RB, 2WR, 1TE, 1FLEX</option><option value="1QB,2RB,3WR,1TE">1QB, 2RB, 3WR, 1TE</option></select></label>
+                        <label class="block mb-2 text-gray-900">Scoring: <select id="lineupScoring" class="bg-white p-3 rounded border border-gray-300 w-full"><option value="standard">Standard</option><option value="ppr">PPR (+1 pt/reception)</option></select></label>
+                        <label class="block mb-2 text-gray-900">Bonuses/Penalties: <input type="checkbox" id="lineupBonusTD" class="mr-2">+6 pts for TDs <input type="checkbox" id="lineupPenaltyFumble" class="ml-4 mr-2">-2 pts for fumbles</label>
+                    </div>
+                    <div>
+                        <button id="generateLineupWeekly" class="bg-teal-600 text-white px-6 py-3 rounded-lg hover:bg-teal-700 transition w-full">Generate Optimal Lineup</button>
+                        <button id="saveLineupWeekly" class="bg-teal-500 text-white px-6 py-3 rounded-lg hover:bg-teal-600 transition w-full mt-2">Save/Export Lineup</button>
+                        <button id="compareLineupsWeekly" class="bg-teal-400 text-white px-6 py-3 rounded-lg hover:bg-teal-500 transition w-full mt-2">Compare Lineups</button>
+                    </div>
+                </div>
+                <div id="progressBarWeekly" class="h-2 bg-gray-300 rounded mb-4 hidden">
+                    <div id="progressWeekly" class="h-full bg-teal-600 rounded" style="width: 0%;"></div>
+                </div>
+                <div id="lineup-result" class="mt-6 text-gray-900"></div>
             </div>
         </section>
 
@@ -143,69 +168,127 @@
 
         ReactDOM.render(<App />, document.getElementById('goat-page'));
 
-        // Best Team Builds Functionality
+        // Best Draft Builds and Best Lineup Builds Functionality
         document.addEventListener('DOMContentLoaded', () => {
+            // Draft Builds Elements
             const leagueSizeInput = document.getElementById('leagueSize');
-            const startingLineupInput = document.getElementById('startingLineup');
+            const startingLineupSelect = document.getElementById('startingLineup');
             const scoringTypeSelect = document.getElementById('scoringType');
             const bonusTDCheckbox = document.getElementById('bonusTD');
-            const bonusYdsCheckbox = document.getElementById('bonusYds');
+            const penaltyFumbleCheckbox = document.getElementById('penaltyFumble');
             const positionFocusSelect = document.getElementById('positionFocus');
-            const generateButton = document.getElementById('generateLineup');
-            const saveButton = document.getElementById('saveLineup');
-            const progressBar = document.getElementById('progressBar');
-            const progress = document.getElementById('progress');
-            const buildResult = document.getElementById('build-result');
+            const draftPickInput = document.getElementById('draftPick');
+            const generateDraftButton = document.getElementById('generateLineup');
+            const saveDraftButton = document.getElementById('saveLineup');
+            const compareDraftButton = document.getElementById('compareLineups');
+            const progressBarDraft = document.getElementById('progressBar');
+            const progressDraft = document.getElementById('progress');
+            const buildResultDraft = document.getElementById('build-result');
 
-            // Mock player data based on 2024 trends and historical averages
+            // Lineup Builds Elements
+            const lineupSizeInput = document.getElementById('lineupSize');
+            const lineupStartingSelect = document.getElementById('lineupStarting');
+            const lineupScoringSelect = document.getElementById('lineupScoring');
+            const lineupBonusTDCheckbox = document.getElementById('lineupBonusTD');
+            const lineupPenaltyFumbleCheckbox = document.getElementById('lineupPenaltyFumble');
+            const generateLineupWeeklyButton = document.getElementById('generateLineupWeekly');
+            const saveLineupWeeklyButton = document.getElementById('saveLineupWeekly');
+            const compareLineupsWeeklyButton = document.getElementById('compareLineupsWeekly');
+            const progressBarWeekly = document.getElementById('progressBarWeekly');
+            const progressWeekly = document.getElementById('progressWeekly');
+            const lineupResult = document.getElementById('lineup-result');
+
+            // Mock player data with ADP and stats
             const players = [
-                { name: 'Patrick Mahomes', pos: 'QB', team: 'KC', points: 25.4, bonusTD: 2, bonusYds: 1 },
-                { name: 'Joe Burrow', pos: 'QB', team: 'CIN', points: 23.8, bonusTD: 2, bonusYds: 0 },
-                { name: 'Christian McCaffrey', pos: 'RB', team: 'SF', points: 20.5, bonusTD: 2, bonusYds: 1 },
-                { name: 'Derrick Henry', pos: 'RB', team: 'TEN', points: 19.6, bonusTD: 1, bonusYds: 1 },
-                { name: 'Tyreek Hill', pos: 'WR', team: 'MIA', points: 19.8, bonusTD: 1, bonusYds: 1 },
-                { name: 'Justin Jefferson', pos: 'WR', team: 'MIN', points: 19.2, bonusTD: 1, bonusYds: 0 },
-                { name: 'Travis Kelce', pos: 'TE', team: 'KC', points: 18.9, bonusTD: 1, bonusYds: 0 },
-                { name: 'George Kittle', pos: 'TE', team: 'SF', points: 18.2, bonusTD: 1, bonusYds: 0 },
-                { name: 'Lamar Jackson', pos: 'QB', team: 'BAL', points: 24.1, bonusTD: 2, bonusYds: 1 },
-                { name: 'Nick Chubb', pos: 'RB', team: 'CLE', points: 18.9, bonusTD: 1, bonusYds: 0 },
-                { name: 'CeeDee Lamb', pos: 'WR', team: 'DAL', points: 18.5, bonusTD: 1, bonusYds: 0 },
-                { name: 'Darren Waller', pos: 'TE', team: 'NYG', points: 17.8, bonusTD: 0, bonusYds: 0 },
+                { name: 'Patrick Mahomes', pos: 'QB', team: 'KC', adp: 5, points: 25.4, td: 1, fumble: 0 },
+                { name: 'Joe Burrow', pos: 'QB', team: 'CIN', adp: 8, points: 23.8, td: 1, fumble: 0 },
+                { name: 'Christian McCaffrey', pos: 'RB', team: 'SF', adp: 2, points: 20.5, td: 1, fumble: 0 },
+                { name: 'Derrick Henry', pos: 'RB', team: 'TEN', adp: 10, points: 19.6, td: 1, fumble: 0 },
+                { name: 'Tyreek Hill', pos: 'WR', team: 'MIA', adp: 6, points: 19.8, td: 1, fumble: 0 },
+                { name: 'Justin Jefferson', pos: 'WR', team: 'MIN', adp: 7, points: 19.2, td: 1, fumble: 0 },
+                { name: 'Travis Kelce', pos: 'TE', team: 'KC', adp: 9, points: 18.9, td: 1, fumble: 0 },
+                { name: 'George Kittle', pos: 'TE', team: 'SF', adp: 15, points: 18.2, td: 1, fumble: 0 },
+                { name: 'Lamar Jackson', pos: 'QB', team: 'BAL', adp: 12, points: 24.1, td: 1, fumble: 1 },
+                { name: 'Nick Chubb', pos: 'RB', team: 'CLE', adp: 14, points: 18.9, td: 1, fumble: 0 },
+                { name: 'CeeDee Lamb', pos: 'WR', team: 'DAL', adp: 11, points: 18.5, td: 0, fumble: 0 },
+                { name: 'Darren Waller', pos: 'TE', team: 'NYG', adp: 18, points: 17.8, td: 0, fumble: 0 },
             ];
 
-            generateButton.addEventListener('click', () => {
+            // Generate Optimal Draft
+            generateDraftButton.addEventListener('click', () => {
                 const leagueSize = parseInt(leagueSizeInput.value) || 12;
-                const startingLineup = startingLineupInput.value.split(',').map(s => s.trim().toUpperCase()) || ['1QB', '2RB', '3WR', '1TE', '1FLEX'];
+                const startingLineup = startingLineupSelect.value.split(',').map(s => s.trim().toUpperCase());
                 const scoringType = scoringTypeSelect.value;
                 const bonusTD = bonusTDCheckbox.checked;
-                const bonusYds = bonusYdsCheckbox.checked;
+                const penaltyFumble = penaltyFumbleCheckbox.checked;
                 const positionFocus = positionFocusSelect.value;
+                const draftPick = parseInt(draftPickInput.value) || 5;
 
-                // Validate input
                 if (leagueSize < 8 || leagueSize > 16) {
                     alert('League size must be between 8 and 16.');
                     return;
                 }
 
-                // Simulate processing
-                progressBar.classList.remove('hidden');
+                progressBarDraft.classList.remove('hidden');
                 let width = 0;
                 const interval = setInterval(() => {
                     if (width >= 100) {
                         clearInterval(interval);
-                        generateOptimalLineup(leagueSize, startingLineup, scoringType, bonusTD, bonusYds, positionFocus);
-                        progressBar.classList.add('hidden');
+                        generateOptimalDraft(leagueSize, startingLineup, scoringType, bonusTD, penaltyFumble, positionFocus, draftPick);
+                        progressBarDraft.classList.add('hidden');
                     } else {
                         width += 10;
-                        progress.style.width = `${width}%`;
+                        progressDraft.style.width = `${width}%`;
                     }
                 }, 200);
             });
 
-            saveButton.addEventListener('click', () => {
-                const result = buildResult.innerHTML;
+            // Generate Optimal Weekly Lineup
+            generateLineupWeeklyButton.addEventListener('click', () => {
+                const lineupSize = parseInt(lineupSizeInput.value) || 15;
+                const startingLineup = lineupStartingSelect.value.split(',').map(s => s.trim().toUpperCase());
+                const scoringType = lineupScoringSelect.value;
+                const bonusTD = lineupBonusTDCheckbox.checked;
+                const penaltyFumble = lineupPenaltyFumbleCheckbox.checked;
+
+                progressBarWeekly.classList.remove('hidden');
+                let width = 0;
+                const interval = setInterval(() => {
+                    if (width >= 100) {
+                        clearInterval(interval);
+                        generateOptimalLineupWeekly(lineupSize, startingLineup, scoringType, bonusTD, penaltyFumble);
+                        progressBarWeekly.classList.add('hidden');
+                    } else {
+                        width += 10;
+                        progressWeekly.style.width = `${width}%`;
+                    }
+                }, 200);
+            });
+
+            // Save/Export Draft
+            saveDraftButton.addEventListener('click', () => {
+                const result = buildResultDraft.innerHTML;
                 if (result) {
-                    const lineupText = buildResult.textContent;
+                    const lineupText = buildResultDraft.textContent;
+                    localStorage.setItem('savedDraft', lineupText);
+                    const blob = new Blob([lineupText], { type: 'text/plain' });
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = 'fantasy_draft.txt';
+                    a.click();
+                    URL.revokeObjectURL(url);
+                    alert('Draft saved and exported!');
+                } else {
+                    alert('Generate a draft first!');
+                }
+            });
+
+            // Save/Export Weekly Lineup
+            saveLineupWeeklyButton.addEventListener('click', () => {
+                const result = lineupResult.innerHTML;
+                if (result) {
+                    const lineupText = lineupResult.textContent;
                     localStorage.setItem('savedLineup', lineupText);
                     const blob = new Blob([lineupText], { type: 'text/plain' });
                     const url = URL.createObjectURL(blob);
@@ -220,18 +303,72 @@
                 }
             });
 
-            function generateOptimalLineup(leagueSize, lineupConfig, scoring, bonusTD, bonusYds, focus) {
+            // Compare Draft Lineups
+            compareDraftButton.addEventListener('click', () => {
+                const leagueSize = parseInt(leagueSizeInput.value) || 12;
+                const startingLineup = startingLineupSelect.value.split(',').map(s => s.trim().toUpperCase());
+                const scoringType = scoringTypeSelect.value;
+                const bonusTD = bonusTDCheckbox.checked;
+                const penaltyFumble = penaltyFumbleCheckbox.checked;
+                const positionFocus = positionFocusSelect.value;
+                const draftPick = parseInt(draftPickInput.value) || 5;
+
+                progressBarDraft.classList.remove('hidden');
+                let width = 0;
+                const interval = setInterval(() => {
+                    if (width >= 100) {
+                        clearInterval(interval);
+                        const lineup1 = generateOptimalDraft(leagueSize, startingLineup, scoringType, bonusTD, penaltyFumble, positionFocus, draftPick);
+                        const lineup2 = generateOptimalDraft(leagueSize, startingLineup, scoringType, bonusTD, penaltyFumble, 'balanced', draftPick);
+                        compareLineups(lineup1, lineup2, 'draft');
+                        progressBarDraft.classList.add('hidden');
+                    } else {
+                        width += 10;
+                        progressDraft.style.width = `${width}%`;
+                    }
+                }, 200);
+            });
+
+            // Compare Weekly Lineups
+            compareLineupsWeeklyButton.addEventListener('click', () => {
+                const lineupSize = parseInt(lineupSizeInput.value) || 15;
+                const startingLineup = lineupStartingSelect.value.split(',').map(s => s.trim().toUpperCase());
+                const scoringType = lineupScoringSelect.value;
+                const bonusTD = lineupBonusTDCheckbox.checked;
+                const penaltyFumble = lineupPenaltyFumbleCheckbox.checked;
+
+                progressBarWeekly.classList.remove('hidden');
+                let width = 0;
+                const interval = setInterval(() => {
+                    if (width >= 100) {
+                        clearInterval(interval);
+                        const lineup1 = generateOptimalLineupWeekly(lineupSize, startingLineup, scoringType, bonusTD, penaltyFumble);
+                        const lineup2 = generateOptimalLineupWeekly(lineupSize, startingLineup, scoringType, bonusTD, penaltyFumble, true);
+                        compareLineups(lineup1, lineup2, 'weekly');
+                        progressBarWeekly.classList.add('hidden');
+                    } else {
+                        width += 10;
+                        progressWeekly.style.width = `${width}%`;
+                    }
+                }, 200);
+            });
+
+            function generateOptimalDraft(leagueSize, lineupConfig, scoring, bonusTD, penaltyFumble, focus, pick) {
                 let availablePlayers = [...players];
+                availablePlayers.sort((a, b) => a.adp - b.adp); // Sort by ADP
+                const pickThreshold = pick + (leagueSize * 1.5); // Approximate availability based on pick and league size
+                availablePlayers = availablePlayers.filter(p => p.adp >= pick && p.adp <= pickThreshold);
+
                 // Apply scoring adjustments
                 availablePlayers = availablePlayers.map(p => {
                     let points = p.points;
                     if (scoring === 'ppr') points += 1; // PPR bonus
-                    if (bonusTD && p.bonusTD > 0) points += 2;
-                    if (bonusYds && p.bonusYds > 0) points += 1;
+                    if (bonusTD && p.td > 0) points += 6;
+                    if (penaltyFumble && p.fumble > 0) points -= 2;
                     return { ...p, adjustedPoints: points };
                 });
 
-                // Sort by adjusted points, with focus priority
+                // Sort by adjusted points with focus priority
                 if (focus !== 'balanced') {
                     availablePlayers.sort((a, b) => (a.pos === focus ? -1 : b.pos === focus ? 1 : 0) || b.adjustedPoints - a.adjustedPoints);
                 } else {
@@ -244,14 +381,12 @@
                     const [count, pos] = req.match(/(\d+)([A-Z]+)/);
                     requirements[pos] = parseInt(count);
                 });
-                requirements['FLEX'] = requirements['FLEX'] || 0; // Default FLEX if not specified
+                requirements['FLEX'] = requirements['FLEX'] || 0;
 
-                // Greedy selection algorithm
+                // Greedy selection with ADP consideration
                 const lineup = [];
                 const usedPositions = {};
-                for (let pos in requirements) {
-                    usedPositions[pos] = 0;
-                }
+                for (let pos in requirements) usedPositions[pos] = 0;
 
                 for (let player of availablePlayers) {
                     if (lineup.length >= leagueSize) break;
@@ -267,17 +402,90 @@
                     }
                 }
 
-                // Fill remaining spots if under league size
-                while (lineup.length < leagueSize && availablePlayers.length > lineup.length) {
-                    lineup.push(availablePlayers[lineup.length]);
+                buildResultDraft.innerHTML = `
+                    <h3 class="text-xl font-semibold mb-4 text-teal-700">Optimal Draft Build</h3>
+                    <ul class="list-disc pl-5 space-y-2">
+                        ${lineup.map(player => `<li>${player.name} (${player.pos}) - ${player.adjustedPoints.toFixed(1)} pts (ADP: ${player.adp})</li>`).join('')}
+                    </ul>
+                    <p class="mt-2 text-gray-600">Total Projected Points: ${lineup.reduce((sum, p) => sum + p.adjustedPoints, 0).toFixed(1)}</p>
+                `;
+                return lineup;
+            }
+
+            function generateOptimalLineupWeekly(size, lineupConfig, scoring, bonusTD, penaltyFumble, balanced = false) {
+                let availablePlayers = [...players];
+                availablePlayers.sort((a, b) => b.points - a.points); // Sort by base points for weekly
+
+                // Apply scoring adjustments
+                availablePlayers = availablePlayers.map(p => {
+                    let points = p.points;
+                    if (scoring === 'ppr') points += 1;
+                    if (bonusTD && p.td > 0) points += 6;
+                    if (penaltyFumble && p.fumble > 0) points -= 2;
+                    return { ...p, adjustedPoints: points };
+                });
+
+                if (balanced) availablePlayers.sort(() => Math.random() - 0.5); // Randomize for comparison
+
+                // Parse lineup requirements
+                const requirements = {};
+                lineupConfig.forEach(req => {
+                    const [count, pos] = req.match(/(\d+)([A-Z]+)/);
+                    requirements[pos] = parseInt(count);
+                });
+                requirements['FLEX'] = requirements['FLEX'] || 0;
+
+                // Greedy selection
+                const lineup = [];
+                const usedPositions = {};
+                for (let pos in requirements) usedPositions[pos] = 0;
+
+                for (let player of availablePlayers) {
+                    if (lineup.length >= size) break;
+                    let posToFill = player.pos;
+                    if (usedPositions[player.pos] < requirements[player.pos] || (player.pos !== 'FLEX' && usedPositions['FLEX'] < requirements['FLEX'])) {
+                        if (usedPositions[player.pos] < requirements[player.pos]) {
+                            lineup.push(player);
+                            usedPositions[player.pos] = (usedPositions[player.pos] || 0) + 1;
+                        } else if (usedPositions['FLEX'] < requirements['FLEX'] && ['RB', 'WR', 'TE'].includes(player.pos)) {
+                            lineup.push(player);
+                            usedPositions['FLEX'] = (usedPositions['FLEX'] || 0) + 1;
+                        }
+                    }
                 }
 
-                buildResult.innerHTML = `
-                    <h3 class="text-xl font-semibold mb-4 text-teal-700">Optimal Lineup</h3>
+                lineupResult.innerHTML = `
+                    <h3 class="text-xl font-semibold mb-4 text-teal-700">Optimal Weekly Lineup</h3>
                     <ul class="list-disc pl-5 space-y-2">
                         ${lineup.map(player => `<li>${player.name} (${player.pos}) - ${player.adjustedPoints.toFixed(1)} pts</li>`).join('')}
                     </ul>
                     <p class="mt-2 text-gray-600">Total Projected Points: ${lineup.reduce((sum, p) => sum + p.adjustedPoints, 0).toFixed(1)}</p>
+                `;
+                return lineup;
+            }
+
+            function compareLineups(lineup1, lineup2, type) {
+                const resultDiv = type === 'draft' ? buildResultDraft : lineupResult;
+                const total1 = lineup1.reduce((sum, p) => sum + p.adjustedPoints, 0).toFixed(1);
+                const total2 = lineup2.reduce((sum, p) => sum + p.adjustedPoints, 0).toFixed(1);
+                resultDiv.innerHTML = `
+                    <h3 class="text-xl font-semibold mb-4 text-teal-700">Lineup Comparison</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="p-4 bg-teal-50 rounded-lg shadow">
+                            <h4 class="font-semibold">Optimal ${type === 'draft' ? 'Draft' : 'Weekly'}</h4>
+                            <ul class="list-disc pl-5 space-y-2 mt-2">
+                                ${lineup1.map(player => `<li>${player.name} (${player.pos}) - ${player.adjustedPoints.toFixed(1)} pts</li>`).join('')}
+                            </ul>
+                            <p class="mt-2 text-gray-600">Total: ${total1} pts</p>
+                        </div>
+                        <div class="p-4 bg-teal-50 rounded-lg shadow">
+                            <h4 class="font-semibold">Balanced ${type === 'draft' ? 'Draft' : 'Weekly'}</h4>
+                            <ul class="list-disc pl-5 space-y-2 mt-2">
+                                ${lineup2.map(player => `<li>${player.name} (${player.pos}) - ${player.adjustedPoints.toFixed(1)} pts</li>`).join('')}
+                            </ul>
+                            <p class="mt-2 text-gray-600">Total: ${total2} pts</p>
+                        </div>
+                    </div>
                 `;
             }
         });
