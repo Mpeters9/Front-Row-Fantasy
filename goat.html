@@ -10,6 +10,23 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
+    <style>
+        .strategy-card {
+            transition: all 0.3s ease;
+        }
+        .strategy-card.expanded {
+            height: auto;
+            max-height: 300px;
+            padding: 1rem;
+        }
+        .strategy-card:not(.expanded) {
+            height: 60px;
+            overflow: hidden;
+        }
+        .strategy-card:hover {
+            background-color: #e0f2f7;
+        }
+    </style>
 </head>
 <body class="text-black bg-gray-100 font-sans" aria-label="GOAT Page Content">
     <header class="bg-gradient-to-r from-teal-600 to-teal-800 shadow-md py-3 text-white" role="banner">
@@ -115,9 +132,20 @@
             <div class="p-6 bg-teal-50 rounded-lg shadow-lg hover:shadow-xl transition-shadow">
                 <select class="bg-white p-3 rounded border border-gray-300 mb-6 w-full md:w-1/3 text-gray-900"><option>Redraft</option><option>Dynasty</option><option>Superflex</option></select>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-gray-900">
-                    <div class="p-4 bg-teal-100 rounded-lg hover:bg-teal-200 transition-colors">Zero-RB Guide: Focus on WRs early, RB later.</div>
-                    <div class="p-4 bg-teal-100 rounded-lg hover:bg-teal-200 transition-colors">Late-Round QB: Target QBs in rounds 8+.</div>
+                    <div class="strategy-card p-4 bg-teal-100 rounded-lg cursor-pointer" onclick="this.classList.toggle('expanded');" data-content="Zero-RB Guide: Focus on WRs early (rounds 1-3), then target RBs in mid-to-late rounds (6-10). Ideal for PPR leagues. Look for high-upside RBs like Jaylen Warren or Gabe Davis. Risk: Depth at RB if injuries occur.">
+                        <h4 class="font-semibold">Zero-RB Guide</h4>
+                        <p class="hidden mt-2 text-sm" data-details="Zero-RB Guide: Focus on WRs early (rounds 1-3), then target RBs in mid-to-late rounds (6-10). Ideal for PPR leagues. Look for high-upside RBs like Jaylen Warren or Gabe Davis. Risk: Depth at RB if injuries occur."></p>
+                    </div>
+                    <div class="strategy-card p-4 bg-teal-100 rounded-lg cursor-pointer" onclick="this.classList.toggle('expanded');" data-content="Late-Round QB: Target QBs in rounds 8+ (e.g., Josh Allen, Patrick Mahomes). Prioritize elite WRs/RBs early. Risk: QB production may lag if top options are taken.">
+                        <h4 class="font-semibold">Late-Round QB</h4>
+                        <p class="hidden mt-2 text-sm" data-details="Late-Round QB: Target QBs in rounds 8+ (e.g., Josh Allen, Patrick Mahomes). Prioritize elite WRs/RBs early. Risk: QB production may lag if top options are taken."></p>
+                    </div>
+                    <div class="strategy-card p-4 bg-teal-100 rounded-lg cursor-pointer" onclick="this.classList.toggle('expanded');" data-content="Hero-RB: Draft a top RB early (rounds 1-2), then load up on WRs and a mid-tier QB. Ideal for standard leagues. Target players like Christian McCaffrey or Breece Hall. Risk: Weakness at other positions if RB underperforms.">
+                        <h4 class="font-semibold">Hero-RB</h4>
+                        <p class="hidden mt-2 text-sm" data-details="Hero-RB: Draft a top RB early (rounds 1-2), then load up on WRs and a mid-tier QB. Ideal for standard leagues. Target players like Christian McCaffrey or Breece Hall. Risk: Weakness at other positions if RB underperforms."></p>
+                    </div>
                 </div>
+                <button id="resetStrategies" class="mt-4 bg-teal-600 text-white px-4 py-2 rounded-lg hover:bg-teal-700 transition">Reset</button>
             </div>
         </section>
 
@@ -673,6 +701,11 @@
                     </div>
                 `;
             }
+
+            // Best Draft Strategies Functionality
+            document.getElementById('resetStrategies').addEventListener('click', () => {
+                document.querySelectorAll('.strategy-card').forEach(card => card.classList.remove('expanded'));
+            });
         });
     </script>
     <script src="script.js"></script>
