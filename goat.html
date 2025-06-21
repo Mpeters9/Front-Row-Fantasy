@@ -782,7 +782,7 @@
             function updateStrategies() {
                 const leagueType = leagueTypeSelect.value;
                 strategyCardsDiv.innerHTML = '';
-                strategies[leagueType].forEach(strategy => {
+                strategies[leagueType].forEach((strategy, index) => {
                     const card = document.createElement('div');
                     card.className = 'strategy-card p-4 bg-teal-100 rounded-lg';
                     card.innerHTML = `
@@ -795,11 +795,13 @@
                 });
             }
             leagueTypeSelect.addEventListener('change', updateStrategies);
-            updateStrategies(); // Initial load
+            updateStrategies(); // Ensure initial load
 
             // Reset Strategies
             document.getElementById('resetStrategies').addEventListener('click', () => {
-                document.querySelectorAll('.strategy-card').forEach(card => card.classList.remove('expanded'));
+                document.querySelectorAll('.strategy-card').forEach(card => {
+                    card.classList.remove('expanded');
+                });
             });
         });
     </script>
