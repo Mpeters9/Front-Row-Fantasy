@@ -13,6 +13,7 @@
     <style>
         .strategy-card {
             transition: all 0.3s ease;
+            position: relative;
         }
         .strategy-card.expanded {
             height: auto;
@@ -20,11 +21,32 @@
             padding: 1rem;
         }
         .strategy-card:not(.expanded) {
-            height: 60px;
-            overflow: hidden;
+            height: auto;
+            padding: 0.5rem;
         }
         .strategy-card:hover {
             background-color: #e0f2f7;
+        }
+        .strategy-preview {
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .expand-toggle {
+            cursor: pointer;
+            color: #2563eb;
+            font-size: 0.875rem;
+        }
+        .full-content {
+            display: none;
+        }
+        .strategy-card.expanded .full-content {
+            display: block;
+        }
+        .strategy-card.expanded .strategy-preview {
+            display: none;
         }
     </style>
 </head>
@@ -62,10 +84,10 @@
                         </select></label>
                         <label class="block mb-2 text-gray-900">Starting Lineup: <select id="startingLineup" class="bg-white p-3 rounded border border-gray-300 w-full">
                             <option value="1QB,2RB,2WR,1TE,1FLEX,1DST,1K" selected>1QB, 2RB, 2WR, 1TE, 1FLEX, 1DST, 1K</option>
-                            <option value="1QB,2RB,3WR,1TE,1FLEX">1QB, 2RB, 3WR, 1TE, 1FLEX</option>
-                            <option value="1QB,2RB,2WR,1TE,2FLEX">1QB, 2RB, 2WR, 1TE, 2FLEX</option>
-                            <option value="1QB,3RB,2WR,1TE,1FLEX">1QB, 3RB, 2WR, 1TE, 1FLEX</option>
-                            <option value="1QB,2RB,3WR,1TE">1QB, 2RB, 3WR, 1TE</option>
+                            <option value="1QB,2RB,3WR,1TE,1FLEX,1DST,1K">1QB, 2RB, 3WR, 1TE, 1FLEX, 1DST, 1K</option>
+                            <option value="1QB,2RB,2WR,1TE,2FLEX,1DST,1K">1QB, 2RB, 2WR, 1TE, 2FLEX, 1DST, 1K</option>
+                            <option value="1QB,3RB,2WR,1TE,1FLEX,1DST,1K">1QB, 3RB, 2WR, 1TE, 1FLEX, 1DST, 1K</option>
+                            <option value="1QB,2RB,3WR,1TE,1DST,1K">1QB, 2RB, 3WR, 1TE, 1DST, 1K</option>
                         </select></label>
                         <label class="block mb-2 text-gray-900">Bench Size: <select id="benchSize" class="bg-white p-3 rounded border border-gray-300 w-full">
                             <option value="5">5</option>
@@ -78,6 +100,7 @@
                             <option value="ppr">PPR (+1 pt/reception)</option>
                             <option value="halfppr">Half PPR (0.5 pt/reception)</option>
                             <option value="tep">TEP (1.5x TE points)</option>
+                            <option value="tefullppr">TE Full PPR (1.5 pt/reception for TE)</option>
                             <option value="6ptpass">6pt Passing TDs</option>
                         </select></label>
                         <label class="block mb-2 text-gray-900">Bonuses/Penalties: <input type="checkbox" id="bonusTD" class="mr-2">+6 pts for TDs <input type="checkbox" id="penaltyFumble" class="ml-4 mr-2">-2 pts for fumbles</label>
@@ -103,7 +126,12 @@
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
                     <div>
                         <label class="block mb-2 text-gray-900">Roster Size: <input type="number" id="lineupSize" min="9" max="20" class="bg-white p-3 rounded border border-gray-300 w-full" placeholder="e.g., 15" value="15"></label>
-                        <label class="block mb-2 text-gray-900">Starting Lineup: <select id="lineupStarting" class="bg-white p-3 rounded border border-gray-300 w-full"><option value="1QB,2RB,3WR,1TE,1FLEX">1QB, 2RB, 3WR, 1TE, 1FLEX</option><option value="1QB,2RB,2WR,1TE,2FLEX">1QB, 2RB, 2WR, 1TE, 2FLEX</option><option value="1QB,3RB,2WR,1TE,1FLEX">1QB, 3RB, 2WR, 1TE, 1FLEX</option><option value="1QB,2RB,3WR,1TE">1QB, 2RB, 3WR, 1TE</option></select></label>
+                        <label class="block mb-2 text-gray-900">Starting Lineup: <select id="lineupStarting" class="bg-white p-3 rounded border border-gray-300 w-full">
+                            <option value="1QB,2RB,3WR,1TE,1FLEX,1DST,1K">1QB, 2RB, 3WR, 1TE, 1FLEX, 1DST, 1K</option>
+                            <option value="1QB,2RB,2WR,1TE,2FLEX,1DST,1K">1QB, 2RB, 2WR, 1TE, 2FLEX, 1DST, 1K</option>
+                            <option value="1QB,3RB,2WR,1TE,1FLEX,1DST,1K">1QB, 3RB, 2WR, 1TE, 1FLEX, 1DST, 1K</option>
+                            <option value="1QB,2RB,3WR,1TE,1DST,1K">1QB, 2RB, 3WR, 1TE, 1DST, 1K</option>
+                        </select></label>
                         <label class="block mb-2 text-gray-900">Bench Size: <select id="lineupBenchSize" class="bg-white p-3 rounded border border-gray-300 w-full">
                             <option value="5">5</option>
                             <option value="6">6</option>
@@ -120,6 +148,7 @@
                             <option value="ppr">PPR (+1 pt/reception)</option>
                             <option value="halfppr">Half PPR (0.5 pt/reception)</option>
                             <option value="tep">TEP (1.5x TE points)</option>
+                            <option value="tefullppr">TE Full PPR (1.5 pt/reception for TE)</option>
                             <option value="6ptpass">6pt Passing TDs</option>
                         </select></label>
                         <label class="block mb-2 text-gray-900">Bonuses/Penalties: <input type="checkbox" id="lineupBonusTD" class="mr-2">+6 pts for TDs <input type="checkbox" id="lineupPenaltyFumble" class="ml-4 mr-2">-2 pts for fumbles</label>
@@ -503,6 +532,7 @@
                     if (scoring === 'ppr') points += p.receptions;
                     else if (scoring === 'halfppr') points += p.receptions * 0.5;
                     else if (scoring === 'tep' && p.pos === 'TE') points *= 1.5;
+                    else if (scoring === 'tefullppr' && p.pos === 'TE') points += p.receptions * 1.5;
                     else if (scoring === '6ptpass') points += (p.passTds * 2); // Add 2 points per passing TD (from 4 to 6)
                     if (bonusTD && p.td > 0) points += 6;
                     if (penaltyFumble && p.fumble > 0) points -= 2;
@@ -637,6 +667,7 @@
                     if (scoring === 'ppr') points += p.receptions;
                     else if (scoring === 'halfppr') points += p.receptions * 0.5;
                     else if (scoring === 'tep' && p.pos === 'TE') points *= 1.5;
+                    else if (scoring === 'tefullppr' && p.pos === 'TE') points += p.receptions * 1.5;
                     else if (scoring === '6ptpass') points += (p.passTds * 2); // Add 2 points per passing TD (from 4 to 6)
                     if (bonusTD && p.td > 0) points += 6;
                     if (penaltyFumble && p.fumble > 0) points -= 2;
@@ -716,21 +747,21 @@
                 redraft: [
                     { title: 'Zero-RB', content: 'Zero-RB Guide: Focus on WRs early (rounds 1-3), then target RBs in mid-to-late rounds (6-10). Ideal for PPR/Half PPR leagues. Target high-upside RBs like Jaylen Warren or Rachaad White. Risk: Depth at RB if injuries occur. Best for leagues with deep WR talent pools.' },
                     { title: 'Late-Round QB', content: 'Late-Round QB: Target QBs in rounds 8+ (e.g., Josh Allen, Patrick Mahomes). Prioritize elite WRs/RBs early. Risk: QB production may lag if top options are taken. Works well in 6pt Passing TD formats to maximize value.' },
-                    { title: 'Hero-RB', content: 'Hero-RB: Draft a top RB early (rounds 1-2, e.g., Christian McCaffrey), then load up on WRs and a mid-tier QB. Ideal for standard leagues. Risk: Weakness at other positions if RB underperforms. Pair with TEP if TE depth is strong.' },
+                    { title: 'Hero-RB', content: 'Hero-RB: Draft a top RB early (rounds 1-2, e.g., Christian McCaffrey), then load up on WRs and a mid-tier QB. Ideal for standard leagues. Risk: Weakness at other positions if RB underperforms. Pair with TEP or TE Full PPR if TE depth is strong.' },
                     { title: 'Balanced Approach', content: 'Balanced Approach: Draft a mix of positions early (e.g., RB, WR, QB by round 5), avoiding over-focusing on one. Aim for consistency with players like Justin Jefferson or Breece Hall. Risk: May miss elite upside. Suits all scoring types.' },
                     { title: 'WR-Heavy', content: 'WR-Heavy: Load up on WRs in rounds 1-4 (e.g., Ja\'Marr Chase, Amon-Ra St. Brown), then fill RB and QB later. Great for PPR/Half PPR. Risk: RB scarcity in later rounds. Target high-reception WRs like Tyreek Hill.' }
                 ],
                 dynasty: [
                     { title: 'Zero-RB', content: 'Zero-RB Guide: Prioritize young WRs (e.g., Garrett Wilson, Drake London) in early rounds, then acquire rookie RBs (e.g., Jaylen Warren) via trades or late picks. Ideal for long-term PPR value. Risk: Early RB injuries hurt depth.' },
                     { title: 'Late-Round QB', content: 'Late-Round QB: Delay QB picks (e.g., Josh Allen in later rounds), focusing on young skill players. Trade up for elite QBs later. Risk: QB depth may thin out. Best with 6pt Passing TDs to boost late-round value.' },
-                    { title: 'Hero-RB', content: 'Hero-RB: Secure a young RB star (e.g., Breece Hall) early, then build around with WRs and a mid-tier QB. Ideal for dynasty stability. Risk: Over-reliance on one player. Pair with TEP if TE prospects are strong.' },
+                    { title: 'Hero-RB', content: 'Hero-RB: Secure a young RB star (e.g., Breece Hall) early, then build around with WRs and a mid-tier QB. Ideal for dynasty stability. Risk: Over-reliance on one player. Pair with TEP or TE Full PPR for TE support.' },
                     { title: 'Rookie Focus', content: 'Rookie Focus: Target rookie WRs/RBs (e.g., Puka Nacua) in early rounds, leveraging their long-term potential. Trade veterans for picks. Risk: Inconsistent early production. Works with any scoring type.' },
                     { title: 'Balanced Approach', content: 'Balanced Approach: Draft a mix of young stars (e.g., Justin Jefferson) and veterans (e.g., Travis Kelce) across positions. Maintain trade flexibility. Risk: May miss breakout rookies. Suits all scoring formats.' }
                 ],
                 superflex: [
                     { title: 'Early QB', content: 'Early QB: Draft two QBs early (e.g., Patrick Mahomes, Josh Allen) in rounds 1-4 to exploit Superflex value. Fill WR/RB later. Risk: Weak skill positions. Optimized for 6pt Passing TDs.' },
                     { title: 'Zero-RB', content: 'Zero-RB Guide: Focus on QBs and WRs early (e.g., Ja\'Marr Chase), then target RBs late (e.g., Rachaad White). Leverage QB depth. Risk: RB injuries. Best for PPR/Half PPR.' },
-                    { title: 'Hero-RB', content: 'Hero-RB: Grab a top RB (e.g., Christian McCaffrey) early, then secure two QBs (e.g., Josh Allen) for Superflex. Risk: QB scarcity later. Pair with TEP for TE support.' },
+                    { title: 'Hero-RB', content: 'Hero-RB: Grab a top RB (e.g., Christian McCaffrey) early, then secure two QBs (e.g., Josh Allen) for Superflex. Risk: QB scarcity later. Pair with TEP or TE Full PPR for TE support.' },
                     { title: 'QB-WR Stack', content: 'QB-WR Stack: Draft a QB (e.g., Patrick Mahomes) and his top WR (e.g., Travis Kelce) early, then add a second QB. Boosts consistency. Risk: RB depth issues. Works with 6pt Passing TDs.' },
                     { title: 'Balanced Superflex', content: 'Balanced Superflex: Take one QB early (e.g., Josh Allen), then mix WRs (e.g., Justin Jefferson) and RBs (e.g., Breece Hall). Add a second QB later. Risk: Elite QB miss. Suits all scoring types.' }
                 ]
@@ -744,12 +775,13 @@
                 strategyCardsDiv.innerHTML = '';
                 strategies[leagueType].forEach(strategy => {
                     const card = document.createElement('div');
-                    card.className = 'strategy-card p-4 bg-teal-100 rounded-lg cursor-pointer';
+                    card.className = 'strategy-card p-4 bg-teal-100 rounded-lg';
                     card.innerHTML = `
                         <h4 class="font-semibold">${strategy.title}</h4>
-                        <p class="hidden mt-2 text-sm" data-details="${strategy.content}"></p>
+                        <p class="strategy-preview text-sm">${strategy.content.substring(0, 100)}...</p>
+                        <p class="full-content text-sm mt-2">${strategy.content}</p>
+                        <span class="expand-toggle" onclick="this.parentElement.classList.toggle('expanded');">Show more</span>
                     `;
-                    card.onclick = () => card.classList.toggle('expanded');
                     strategyCardsDiv.appendChild(card);
                 });
             }
