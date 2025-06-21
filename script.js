@@ -1,448 +1,563 @@
 document.addEventListener('DOMContentLoaded', () => {
-    // Fantasy Points Ticker
-    const tickerContent = document.getElementById('tickerContent');
-    const pauseButton = document.getElementById('pauseButton');
+    // Best Draft Builds and Best Lineup Builds Functionality
+    const leagueSizeSelect = document.getElementById('leagueSize');
+    const startingLineupSelect = document.getElementById('startingLineup');
+    const benchSizeSelect = document.getElementById('benchSize');
+    const scoringTypeSelect = document.getElementById('scoringType');
+    const bonusTDCheckbox = document.getElementById('bonusTD');
+    const penaltyFumbleCheckbox = document.getElementById('penaltyFumble');
+    const positionFocusSelect = document.getElementById('positionFocus');
+    const draftPickInput = document.getElementById('draftPick');
+    const draftPickValue = document.getElementById('draftPickValue');
+    const generateDraftButton = document.getElementById('generateLineup');
+    const saveDraftButton = document.getElementById('saveLineup');
+    const compareDraftButton = document.getElementById('compareLineups');
+    const progressBarDraft = document.getElementById('progressBar');
+    const progressDraft = document.getElementById('progress');
+    const buildResultDraft = document.getElementById('build-result');
 
-    function loadFileData(fileName) {
-        // Mock CSV data as a fallback since actual file loading isn't defined
-        return `1,Patrick Mahomes,KC,7,Quarterback,10.5
-2,Christian McCaffrey,SF,9,Running Back,15.2
-3,Justin Jefferson,MIN,10,Wide Receiver,12.8
-4,Travis Kelce,KC,7,Tight End,11.0
-5,Justin Herbert,LAC,8,Quarterback,9.8
-6,Derrick Henry,TEN,13,Running Back,14.5
-7,Cooper Kupp,LAR,11,Wide Receiver,11.5
-8,George Kittle,SF,9,Tight End,10.2
-9,Joe Burrow,CIN,10,Quarterback,9.0
-10,Nick Chubb,CLE,13,Running Back,13.8
-11,Davante Adams,LV,6,Wide Receiver,11.0
-12,Mark Andrews,BAL,8,Tight End,9.5
-13,Aaron Rodgers,GB,11,Quarterback,8.5
-14,Alvin Kamara,NO,6,Running Back,13.2
-15,Stefon Diggs,BUF,7,Wide Receiver,10.8
-16,Darren Waller,LV,6,Tight End,9.0
-17,Kyler Murray,ARI,12,Quarterback,8.2
-18,James Robinson,JAX,7,Running Back,12.5
-19,Calvin Ridley,TEN,13,Wide Receiver,10.5
-20,T.J. Hockenson,DET,9,Tight End,8.8
-21,Matthew Stafford,LAR,11,Quarterback,7.9
-22,David Montgomery,DET,9,Running Back,12.0
-23,Tee Higgins,CIN,10,Wide Receiver,10.2`;
+    // Lineup Builds Elements
+    const lineupSizeInput = document.getElementById('lineupSize');
+    const lineupStartingSelect = document.getElementById('lineupStarting');
+    const lineupBenchSizeSelect = document.getElementById('lineupBenchSize');
+    const lineupIrSpotsSelect = document.getElementById('lineupIrSpots');
+    const lineupScoringSelect = document.getElementById('lineupScoring');
+    const lineupBonusTDCheckbox = document.getElementById('lineupBonusTD');
+    const lineupPenaltyFumbleCheckbox = document.getElementById('lineupPenaltyFumble');
+    const currentRosterInput = document.getElementById('currentRoster');
+    const swapPlayersButton = document.getElementById('swapPlayers');
+    const generateLineupWeeklyButton = document.getElementById('generateLineupWeekly');
+    const saveLineupWeeklyButton = document.getElementById('saveLineupWeekly');
+    const compareLineupsWeeklyButton = document.getElementById('compareLineupsWeekly');
+    const progressBarWeekly = document.getElementById('progressBarWeekly');
+    const progressWeekly = document.getElementById('progressWeekly');
+    const lineupResult = document.getElementById('lineup-result');
+
+    // Update draft pick slider max based on league size
+    if (leagueSizeSelect) {
+        leagueSizeSelect.addEventListener('change', () => {
+            if (draftPickInput && draftPickValue) {
+                draftPickInput.max = leagueSizeSelect.value;
+                if (parseInt(draftPickInput.value) > parseInt(leagueSizeSelect.value)) {
+                    draftPickInput.value = leagueSizeSelect.value;
+                    draftPickValue.textContent = draftPickInput.value;
+                }
+            }
+        });
     }
 
-    function populateTicker() {
-        const mockData = loadFileData("FantasyPros_2025_Overall_ADP_Rankings.csv").split('\n').slice(1).map(line => {
-            const [rank, name, team, bye, pos, avg] = line.split(',').map(s => s.trim());
-            return { position: pos.replace(/\d+/g, ''), name, team, points: (401 - parseFloat(avg)) / 10 };
-        }).sort((a, b) => {
-            const positionOrder = { "Quarterback": 1, "Running Back": 2, "Wide Receiver": 3, "Tight End": 4, "Kicker": 5 };
-            if (positionOrder[a.position] !== positionOrder[b.position]) {
-                return positionOrder[a.position] - positionOrder[b.position];
-            }
-            return b.points - a.points;
-        }).slice(0, 23);
-
-        let content = '';
-        let currentPosition = null;
-        mockData.forEach((player, index) => {
-            if (player.position !== currentPosition) {
-                if (currentPosition !== null) content += ' | ';
-                content += `<b>${player.position}:</b> `;
-                currentPosition = player.position;
-            } else {
-                content += ' | ';
-            }
-            content += `${player.name} (${player.team}) - ${player.points.toFixed(1)} pts`;
+    // Sync bench size between sections
+    if (benchSizeSelect && lineupBenchSizeSelect) {
+        benchSizeSelect.addEventListener('change', () => {
+            lineupBenchSizeSelect.value = benchSizeSelect.value;
         });
-
-        tickerContent.innerHTML = content + ' | ' + content;
-        tickerContent.classList.remove('loading');
+        lineupBenchSizeSelect.addEventListener('change', () => {
+            benchSizeSelect.value = lineupBenchSizeSelect.value;
+        });
     }
 
-    pauseButton.addEventListener('click', () => {
-        const isPaused = tickerContent.classList.toggle('paused');
-        pauseButton.textContent = isPaused ? 'Play' : 'Pause';
-    });
+    // Updated player data with ADP from FantasyPros PPR (June 20, 2025)
+    const players = [
+        { name: 'Christian McCaffrey', pos: 'RB', team: 'SF', adp: 1, points: 22.5, td: 1, fumble: 0, passTds: 0, receptions: 80 },
+        { name: 'CeeDee Lamb', pos: 'WR', team: 'DAL', adp: 6, points: 20.1, td: 1, fumble: 0, passTds: 0, receptions: 100 },
+        { name: 'Breece Hall', pos: 'RB', team: 'NYJ', adp: 3, points: 19.8, td: 1, fumble: 0, passTds: 0, receptions: 60 },
+        { name: 'Justin Jefferson', pos: 'WR', team: 'MIN', adp: 4, points: 20.3, td: 1, fumble: 0, passTds: 0, receptions: 90 },
+        { name: 'Ja\'Marr Chase', pos: 'WR', team: 'CIN', adp: 5, points: 20.0, td: 1, fumble: 0, passTds: 0, receptions: 85 },
+        { name: 'Amon-Ra St. Brown', pos: 'WR', team: 'DET', adp: 7, points: 19.7, td: 1, fumble: 0, passTds: 0, receptions: 95 },
+        { name: 'A.J. Brown', pos: 'WR', team: 'PHI', adp: 8, points: 19.5, td: 1, fumble: 0, passTds: 0, receptions: 80 },
+        { name: 'Garrett Wilson', pos: 'WR', team: 'NYJ', adp: 9, points: 19.2, td: 1, fumble: 0, passTds: 0, receptions: 75 },
+        { name: 'Patrick Mahomes', pos: 'QB', team: 'KC', adp: 10, points: 23.1, td: 1, fumble: 0, passTds: 35, receptions: 0 },
+        { name: 'Travis Etienne Jr.', pos: 'RB', team: 'JAX', adp: 11, points: 18.9, td: 1, fumble: 0, passTds: 0, receptions: 50 },
+        { name: 'Drake London', pos: 'WR', team: 'ATL', adp: 12, points: 18.7, td: 1, fumble: 0, passTds: 0, receptions: 70 },
+        { name: 'Travis Kelce', pos: 'TE', team: 'KC', adp: 13, points: 18.4, td: 1, fumble: 0, passTds: 0, receptions: 70 },
+        { name: 'Kyren Williams', pos: 'RB', team: 'LAR', adp: 15, points: 18.2, td: 1, fumble: 0, passTds: 0, receptions: 40 },
+        { name: 'Puka Nacua', pos: 'WR', team: 'LAR', adp: 16, points: 18.0, td: 1, fumble: 0, passTds: 0, receptions: 65 },
+        { name: 'Josh Allen', pos: 'QB', team: 'BUF', adp: 18, points: 22.8, td: 1, fumble: 0, passTds: 30, receptions: 0 },
+        { name: 'Sam LaPorta', pos: 'TE', team: 'DET', adp: 20, points: 17.5, td: 1, fumble: 0, passTds: 0, receptions: 60 },
+        { name: 'James Cook', pos: 'RB', team: 'BUF', adp: 25, points: 17.0, td: 1, fumble: 0, passTds: 0, receptions: 45 },
+        { name: 'Deebo Samuel', pos: 'WR', team: 'SF', adp: 30, points: 16.5, td: 1, fumble: 0, passTds: 0, receptions: 55 },
+        { name: 'Alvin Kamara', pos: 'RB', team: 'NO', adp: 35, points: 16.0, td: 1, fumble: 0, passTds: 0, receptions: 65 },
+        { name: 'Mike Evans', pos: 'WR', team: 'TB', adp: 40, points: 15.8, td: 1, fumble: 0, passTds: 0, receptions: 50 },
+        { name: 'David Montgomery', pos: 'RB', team: 'DET', adp: 50, points: 15.2, td: 1, fumble: 0, passTds: 0, receptions: 30 },
+        { name: 'George Kittle', pos: 'TE', team: 'SF', adp: 60, points: 14.5, td: 1, fumble: 0, passTds: 0, receptions: 55 },
+        { name: 'Tyreek Hill', pos: 'WR', team: 'MIA', adp: 2, points: 20.5, td: 1, fumble: 0, passTds: 0, receptions: 90 },
+        { name: 'Rachaad White', pos: 'RB', team: 'TB', adp: 70, points: 14.0, td: 1, fumble: 0, passTds: 0, receptions: 40 },
+        { name: 'Jaylen Warren', pos: 'RB', team: 'PIT', adp: 80, points: 13.5, td: 0, fumble: 0, passTds: 0, receptions: 35 },
+        { name: 'Gabe Davis', pos: 'WR', team: 'JAX', adp: 90, points: 13.0, td: 0, fumble: 0, passTds: 0, receptions: 40 },
+        { name: 'Seattle Seahawks', pos: 'DST', team: 'SEA', adp: 150, points: 8.0, td: 0, fumble: 0, passTds: 0, receptions: 0 },
+        { name: 'Harrison Butker', pos: 'K', team: 'KC', adp: 160, points: 7.5, td: 0, fumble: 0, passTds: 0, receptions: 0 },
+    ];
 
-    setInterval(populateTicker, 30000);
-    populateTicker();
-
-    // Trade Analyzer (only on tools.html)
-    if (document.getElementById('trade-analyzer')) {
-        const team1Selects = ['team1-1', 'team1-2', 'team1-3', 'team1-4'].map(id => document.getElementById(id));
-        const team2Selects = ['team2-1', 'team2-2', 'team2-3', 'team2-4'].map(id => document.getElementById(id));
-        const analyzeTradeBtn = document.getElementById('analyzeTradeBtn');
-        const tradeResult = document.getElementById('tradeResult');
-        const recentTrades = document.getElementById('recentTrades');
-        const leagueTypeSelect = document.getElementById('leagueType');
-        const rosterTypeSelect = document.getElementById('rosterType');
-        const platformSelect = document.getElementById('platform');
-        const leagueIdInput = document.getElementById('leagueId');
-        const syncLeagueBtn = document.getElementById('syncLeague');
-        const player1Input = document.getElementById('player1');
-        const player2Input = document.getElementById('player2');
-        const addPlayer1Btn = document.getElementById('add-player1');
-        const addPlayer2Btn = document.getElementById('add-player2');
-        const player1Selections = document.getElementById('player1-selections');
-        const player2Selections = document.getElementById('player2-selections');
-        const tradeTableBody = document.getElementById('trade-table-body');
-        const tradeFairness = document.getElementById('trade-fairness');
-        const clearAllBtn = document.getElementById('clearAllBtn');
-
-        let allPlayers = loadFileData("FantasyPros_2025_Overall_ADP_Rankings.csv").split('\n').slice(1).map(line => {
-            const [rank, name, team, bye, pos, avg] = line.split(',').map(s => s.trim());
-            return { id: rank, name, position: pos.replace(/\d+/g, ''), team, adp: parseFloat(avg), projectedPoints: (401 - parseFloat(avg)) * 0.75, recentPoints: (401 - parseFloat(avg)) / 10, confidence: 70 + (30 * (1 - parseFloat(avg) / 400)), injuryImpact: 1.0 };
+    // Update draft pick value display
+    if (draftPickInput && draftPickValue) {
+        draftPickInput.addEventListener('input', () => {
+            draftPickValue.textContent = draftPickInput.value;
         });
+    }
 
-        let team1Players = [];
-        let team2Players = [];
+    // Generate Optimal Draft
+    if (generateDraftButton && leagueSizeSelect && startingLineupSelect && benchSizeSelect && scoringTypeSelect && bonusTDCheckbox && penaltyFumbleCheckbox && positionFocusSelect && draftPickInput && progressBarDraft && progressDraft && buildResultDraft) {
+        generateDraftButton.addEventListener('click', () => {
+            const leagueSize = parseInt(leagueSizeSelect.value) || 10;
+            const startingLineup = startingLineupSelect.value.split(',').map(s => s.trim().toUpperCase());
+            const benchSize = parseInt(benchSizeSelect.value) || 7;
+            const scoringType = scoringTypeSelect.value;
+            const bonusTD = bonusTDCheckbox.checked;
+            const penaltyFumble = penaltyFumbleCheckbox.checked;
+            const positionFocus = positionFocusSelect.value;
+            const draftPick = parseInt(draftPickInput.value) || 5;
 
-        function setupAutocomplete(input, selectionsDiv, teamPlayers, maxPlayers = 4) {
-            const debouncedFilter = debounce((value, dropdownId) => filterPlayers(value, dropdownId, input, selectionsDiv, teamPlayers, maxPlayers), 300);
-            const dropdownId = `dropdown-${input.id}`;
-            let dropdownList = document.getElementById(dropdownId);
-            if (!dropdownList) {
-                dropdownList = document.createElement('ul');
-                dropdownList.id = dropdownId;
-                dropdownList.className = 'autocomplete-dropdown';
-                input.parentNode.appendChild(dropdownList);
-            }
-
-            input.addEventListener('input', () => {
-                if (teamPlayers.length < maxPlayers && input.value) {
-                    dropdownList.classList.add('loading');
-                    filterPlayers(input.value, dropdownId, input, selectionsDiv, teamPlayers, maxPlayers);
-                    debouncedFilter(input.value, dropdownId);
-                } else if (!input.value) {
-                    dropdownList.style.display = 'none';
-                }
-            });
-            input.addEventListener('focus', () => {
-                if (input.value && teamPlayers.length < maxPlayers) {
-                    dropdownList.classList.add('loading');
-                    filterPlayers(input.value, dropdownId, input, selectionsDiv, teamPlayers, maxPlayers);
-                }
-            });
-            input.addEventListener('blur', () => {
-                setTimeout(() => {
-                    dropdownList.style.display = 'none';
-                }, 200);
-            });
-            input.addEventListener('click', () => {
-                if (input.value && teamPlayers.length < maxPlayers) {
-                    dropdownList.classList.add('loading');
-                    filterPlayers(input.value, dropdownId, input, selectionsDiv, teamPlayers, maxPlayers);
-                }
-            });
-            dropdownList.addEventListener('click', (e) => {
-                const li = e.target.closest('li');
-                if (li && teamPlayers.length < maxPlayers) {
-                    const playerId = li.dataset.id;
-                    const player = allPlayers.find(p => p.id === playerId);
-                    if (player) {
-                        teamPlayers.push(player);
-                        updateSelections(selectionsDiv, teamPlayers);
-                        input.value = '';
-                        dropdownList.style.display = 'none';
-                        updateTradeComparison();
-                        analyzeTrade(analyzeTradeBtn);
-                    }
-                }
-            });
-        }
-
-        function debounce(func, wait) {
-            let timeout;
-            return function executedFunction(...args) {
-                const later = () => {
-                    clearTimeout(timeout);
-                    func(...args);
-                };
-                clearTimeout(timeout);
-                timeout = setTimeout(later, wait);
-            };
-        }
-
-        function filterPlayers(searchTerm, dropdownId, input, selectionsDiv, teamPlayers, maxPlayers) {
-            const dropdownList = document.getElementById(dropdownId);
-            if (!searchTerm || teamPlayers.length >= maxPlayers) {
-                dropdownList.style.display = 'none';
-                dropdownList.classList.remove('loading');
+            if (leagueSize < 8 || leagueSize > 14) {
+                alert('League size must be between 8 and 14.');
                 return;
             }
 
-            const allSelectedPlayers = [...team1Players, ...team2Players];
-            const filteredPlayers = allPlayers.filter(player =>
-                !allSelectedPlayers.some(p => p.id === player.id) && player.name.toLowerCase().includes(searchTerm.toLowerCase())
-            ).sort((a, b) => {
-                const aRelevance = a.name.toLowerCase().indexOf(searchTerm.toLowerCase());
-                const bRelevance = b.name.toLowerCase().indexOf(searchTerm.toLowerCase());
-                return aRelevance - bRelevance || a.confidence - b.confidence;
-            });
-
-            let options = '';
-            filteredPlayers.forEach(player => {
-                options += `<li class="p-2 flex items-center hover:bg-teal-600 cursor-pointer transition-all duration-200" data-id="${player.id}">
-                    <span class="w-8 h-8 bg-gray-500 rounded-full mr-2"></span>
-                    <div>
-                        <div class="font-bold">${player.name} (${player.position})</div>
-                        <div class="text-sm text-gray-300">Proj: ${player.projectedPoints.toFixed(1)}, ADP: ${player.adp.toFixed(1)}, Recent: ${player.recentPoints.toFixed(1)}, Fit: ${player.confidence.toFixed(1)}%</div>
-                    </div>
-                </li>`;
-            });
-
-            dropdownList.innerHTML = options || '<li class="p-2 text-gray-400">No players available</li>';
-            dropdownList.style.display = 'block';
-            dropdownList.classList.remove('loading');
-            const wrapperRect = input.closest('.input-wrapper').getBoundingClientRect();
-            const tradeAnalyzerRect = document.getElementById('trade-analyzer').getBoundingClientRect();
-            dropdownList.style.top = `${wrapperRect.bottom - tradeAnalyzerRect.top + 5}px`;
-            dropdownList.style.left = `${wrapperRect.left - tradeAnalyzerRect.left}px`;
-            dropdownList.style.width = `${wrapperRect.width}px`;
-        }
-
-        function updateSelections(selectionsDiv, teamPlayers) {
-            selectionsDiv.innerHTML = teamPlayers.map(player => `
-                <div class="flex items-center justify-between bg-teal-700 p-2 rounded mt-2">
-                    <span>${player.name} (${player.position})</span>
-                    <button class="remove-player text-red-300 hover:text-red-100" data-id="${player.id}">×</button>
-                </div>
-            `).join('');
-            document.querySelectorAll('.remove-player').forEach(btn => {
-                btn.addEventListener('click', () => {
-                    const playerId = btn.dataset.id;
-                    if (selectionsDiv === player1Selections) {
-                        team1Players = team1Players.filter(p => p.id !== playerId);
-                    } else if (selectionsDiv === player2Selections) {
-                        team2Players = team2Players.filter(p => p.id !== playerId);
-                    }
-                    updateSelections(selectionsDiv, selectionsDiv === player1Selections ? team1Players : team2Players);
-                    updateTradeComparison();
-                    analyzeTrade(analyzeTradeBtn);
-                    if (selectionsDiv === player1Selections) {
-                        filterPlayers(player1Input.value, `dropdown-${player1Input.id}`, player1Input, player1Selections, team1Players);
-                    } else {
-                        filterPlayers(player2Input.value, `dropdown-${player2Input.id}`, player2Input, player2Selections, team2Players);
-                    }
-                });
-            });
-        }
-
-        function updateTradeComparison() {
-            const allPlayersInTrade = [...team1Players, ...team2Players];
-            tradeTableBody.innerHTML = '';
-            if (allPlayersInTrade.length === 0) {
-                tradeTableBody.innerHTML = '<tr><td colspan="4" class="p-2 text-center">No players in trade</td></tr>';
-            } else {
-                allPlayersInTrade.forEach(player => {
-                    const row = document.createElement('tr');
-                    row.innerHTML = `
-                        <td class="p-2">${player.name}</td>
-                        <td class="p-2">${player.position}</td>
-                        <td class="p-2">${player.projectedPoints.toFixed(1)}</td>
-                        <td class="p-2">${(100 / player.adp).toFixed(1)}</td>
-                    `;
-                    tradeTableBody.appendChild(row);
-                });
-            }
-        }
-
-        function getTradeFairness() {
-            const team1Value = team1Players.reduce((sum, player) => sum + (100 / player.adp), 0);
-            const team2Value = team2Players.reduce((sum, player) => sum + (100 / player.adp), 0);
-            const diff = Math.abs(team1Value - team2Value);
-            const totalValue = team1Value + team2Value;
-
-            if (totalValue === 0) return { color: 'gray', text: 'N/A' };
-            const fairness = diff / totalValue * 100;
-            if (fairness < 10) return { color: 'green', text: 'Fair' };
-            if (fairness < 20) return { color: 'yellow', text: 'Slight Imbalance' };
-            return { color: 'red', text: 'Unfair' };
-        }
-
-        function analyzeTrade(button) {
-            updateTradeComparison();
-            const fairness = getTradeFairness();
-            tradeFairness.innerHTML = `<span class="trade-fairness-${fairness.color}">${fairness.text}</span>`;
-
-            if (team1Players.length > 0 && team2Players.length > 0) {
-                const team1Names = team1Players.map(p => p.name).join(', ');
-                const team2Names = team2Players.map(p => p.name).join(', ');
-                const value1 = team1Players.reduce((sum, p) => sum + (100 / p.adp), 0);
-                const value2 = team2Players.reduce((sum, p) => sum + (100 / p.adp), 0);
-                if (value1 > value2) {
-                    tradeResult.textContent = `${team1Names} is valued higher (${value1.toFixed(1)} vs ${value2.toFixed(1)}). Consider if you need ${team2Names}'s positions or potential.`;
-                } else if (value2 > value1) {
-                    tradeResult.textContent = `${team2Names} is valued higher (${value2.toFixed(1)} vs ${value1.toFixed(1)}). Consider if you need ${team1Names}'s positions or potential.`;
+            progressBarDraft.classList.remove('hidden');
+            let width = 0;
+            const interval = setInterval(() => {
+                if (width >= 100) {
+                    clearInterval(interval);
+                    generateOptimalDraft(leagueSize, startingLineup, benchSize, scoringType, bonusTD, penaltyFumble, positionFocus, draftPick);
+                    progressBarDraft.classList.add('hidden');
                 } else {
-                    tradeResult.textContent = 'The trade is balanced in value. Evaluate based on team needs.';
+                    width += 10;
+                    progressDraft.style.width = `${width}%`;
                 }
-            } else {
-                tradeResult.textContent = 'Please select at least one player for each team.';
-            }
-        }
-
-        function getPlayerValue(playerId, leagueType, rosterType) {
-            const player = allPlayers.find(p => p.id === playerId);
-            if (!player) return 0;
-            let baseValue = player.adp ? 100 / player.adp : 10;
-            let positionModifier = 1;
-            if (rosterType === 'superflex' && player.position === 'Quarterback') positionModifier = 1.3;
-            return Math.round(baseValue * positionModifier);
-        }
-
-        syncLeagueBtn.addEventListener('click', async () => {
-            const leagueId = leagueIdInput.value;
-            const platform = platformSelect.value;
-            if (platform === 'sleeper' && leagueId) {
-                tradeResult.textContent = 'Syncing league...';
-                setupAutocomplete(player1Input, player1Selections, team1Players);
-                setupAutocomplete(player2Input, player2Selections, team2Players);
-                tradeResult.textContent = 'League synced successfully.';
-            } else if (platform !== 'sleeper') {
-                tradeResult.textContent = 'Only Sleeper platform is supported at this time.';
-            } else {
-                tradeResult.textContent = 'Please enter a valid League ID.';
-            }
+            }, 200);
         });
-
-        addPlayer1Btn.addEventListener('click', () => {
-            if (team1Players.length < 4) {
-                player1Input.value = '';
-                setupAutocomplete(player1Input, player1Selections, team1Players);
-            }
-        });
-
-        addPlayer2Btn.addEventListener('click', () => {
-            if (team2Players.length < 4) {
-                player2Input.value = '';
-                setupAutocomplete(player2Input, player2Selections, team2Players);
-            }
-        });
-
-        analyzeTradeBtn.addEventListener('click', () => analyzeTrade(analyzeTradeBtn));
-        leagueTypeSelect.addEventListener('change', () => analyzeTrade(analyzeTradeBtn));
-        rosterTypeSelect.addEventListener('change', () => analyzeTrade(analyzeTradeBtn));
-
-        clearAllBtn.addEventListener('click', () => {
-            team1Players = [];
-            team2Players = [];
-            updateSelections(player1Selections, team1Players);
-            updateSelections(player2Selections, team2Players);
-            updateTradeComparison();
-            tradeFairness.innerHTML = '';
-            tradeResult.textContent = 'Trade cleared. Add new players to analyze.';
-            filterPlayers(player1Input.value, `dropdown-${player1Input.id}`, player1Input, player1Selections, team1Players);
-            filterPlayers(player2Input.value, `dropdown-${player2Input.id}`, player2Input, player2Selections, team2Players);
-        });
-
-        setupAutocomplete(player1Input, player1Selections, team1Players);
-        setupAutocomplete(player2Input, player2Selections, team2Players);
     }
 
-    // Matchup Predictor (only on tools.html)
-    if (document.getElementById('matchup-predictor')) {
-        const matchupTeam1Select = document.getElementById('matchupTeam1Select');
-        const matchupTeam2Select = document.getElementById('matchupTeam2Select');
-        const predictMatchupBtn = document.getElementById('predictMatchupBtn');
-        const predictionResult = document.getElementById('predictionResult');
+    // Generate Optimal Weekly Lineup
+    if (generateLineupWeeklyButton && lineupSizeInput && lineupStartingSelect && lineupBenchSizeSelect && lineupIrSpotsSelect && lineupScoringSelect && lineupBonusTDCheckbox && lineupPenaltyFumbleCheckbox && currentRosterInput && progressBarWeekly && progressWeekly && lineupResult) {
+        generateLineupWeeklyButton.addEventListener('click', () => {
+            const lineupSize = parseInt(lineupSizeInput.value) || 15;
+            const startingLineup = lineupStartingSelect.value.split(',').map(s => s.trim().toUpperCase());
+            const benchSize = parseInt(lineupBenchSizeSelect.value) || 7;
+            const irSpots = parseInt(lineupIrSpotsSelect.value) || 1;
+            const scoringType = lineupScoringSelect.value;
+            const bonusTD = lineupBonusTDCheckbox.checked;
+            const penaltyFumble = lineupPenaltyFumbleCheckbox.checked;
+            const currentRoster = currentRosterInput.value.split(';').map(p => p.trim()).filter(p => p);
 
-        let rosters = {
-            '1': ['1', '4', '7', '18', '25'],  // Team 1
-            '2': ['2', '5', '8', '19', '26'],  // Team 2
-            '3': ['3', '6', '9', '20', '27'],  // Team 3
-            '4': ['10', '13', '16', '22', '28'], // Team 4
-            '5': ['11', '14', '17', '23', '29'], // Team 5
-            '6': ['12', '15', '18', '24', '30'], // Team 6
-            '7': ['19', '22', '25', '28', '31'], // Team 7
-            '8': ['20', '23', '26', '29', '32'], // Team 8
-            '9': ['21', '24', '27', '30', '33'], // Team 9
-            '10': ['1', '6', '11', '16', '21'],  // Team 10
-            '11': ['2', '7', '12', '17', '22'],  // Team 11
-            '12': ['3', '8', '13', '18', '23']   // Team 12
-        };
-
-        let allPlayers = loadFileData("FantasyPros_2025_Overall_ADP_Rankings.csv").split('\n').slice(1).map(line => {
-            const [rank, name, team, bye, pos, avg] = line.split(',').map(s => s.trim());
-            return { id: rank, name, position: pos.replace(/\d+/g, ''), team, adp: parseFloat(avg), projectedPoints: (401 - parseFloat(avg)) * 0.75, recentPoints: (401 - parseFloat(avg)) / 10, confidence: 70 + (30 * (1 - parseFloat(avg) / 400)), injuryImpact: 1.0 };
-        });
-
-        function getTeamAdjustedPoints(teamIds) {
-            return teamIds.reduce((sum, playerId) => {
-                const player = allPlayers.find(p => p.id === playerId);
-                if (player) {
-                    const matchupDifficulty = 0.9 + Math.random() * 0.2;
-                    const recentWeight = player.recentPoints * 0.2;
-                    const adjustedPoints = (player.projectedPoints * 0.8 + recentWeight) * player.injuryImpact * matchupDifficulty;
-                    return sum + adjustedPoints;
+            progressBarWeekly.classList.remove('hidden');
+            let width = 0;
+            const interval = setInterval(() => {
+                if (width >= 100) {
+                    clearInterval(interval);
+                    generateOptimalLineupWeekly(lineupSize, startingLineup, benchSize, irSpots, scoringType, bonusTD, penaltyFumble, currentRoster);
+                    progressBarWeekly.classList.add('hidden');
+                } else {
+                    width += 10;
+                    progressWeekly.style.width = `${width}%`;
                 }
-                return sum;
-            }, 0);
-        }
-
-        function fetchMatchupTeams() {
-            rosters = {
-                '1': ['1', '4', '7', '18', '25'],  // Team 1
-                '2': ['2', '5', '8', '19', '26'],  // Team 2
-                '3': ['3', '6', '9', '20', '27'],  // Team 3
-                '4': ['10', '13', '16', '22', '28'], // Team 4
-                '5': ['11', '14', '17', '23', '29'], // Team 5
-                '6': ['12', '15', '18', '24', '30'], // Team 6
-                '7': ['19', '22', '25', '28', '31'], // Team 7
-                '8': ['20', '23', '26', '29', '32'], // Team 8
-                '9': ['21', '24', '27', '30', '33'], // Team 9
-                '10': ['1', '6', '11', '16', '21'],  // Team 10
-                '11': ['2', '7', '12', '17', '22'],  // Team 11
-                '12': ['3', '8', '13', '18', '23']   // Team 12
-            };
-            matchupTeam1Select.innerHTML = '<option value="">Select Team 1</option>' + Array.from({length: 12}, (_, i) => `<option value="${i + 1}">Team ${i + 1}</option>`).join('');
-            matchupTeam2Select.innerHTML = '<option value="">Select Team 2</option>' + Array.from({length: 12}, (_, i) => `<option value="${i + 1}">Team ${i + 1}</option>`).join('');
-        }
-
-        function predictMatchup(team1Id, team2Id) {
-            const team1Points = getTeamAdjustedPoints(rosters[team1Id] || []);
-            const team2Points = getTeamAdjustedPoints(rosters[team2Id] || []);
-            const totalPoints = team1Points + team2Points;
-            let confidence;
-
-            if (totalPoints === 0) {
-                return { winner: 'N/A', confidence: 0 };
-            } else if (team1Points > team2Points) {
-                confidence = Math.min(95, 50 + ((team1Points - team2Points) / totalPoints) * 50);
-                return { winner: 'Team ' + team1Id, confidence };
-            } else if (team2Points > team1Points) {
-                confidence = Math.min(95, 50 + ((team2Points - team1Points) / totalPoints) * 50);
-                return { winner: 'Team ' + team2Id, confidence };
-            } else {
-                return { winner: 'Tie', confidence: 50 };
-            }
-        }
-
-        predictMatchupBtn.addEventListener('click', () => {
-            const team1 = matchupTeam1Select.value;
-            const team2 = matchupTeam2Select.value;
-            if (team1 && team2 && team1 !== team2) {
-                const prediction = predictMatchup(team1, team2);
-                predictionResult.textContent = `${prediction.winner} is predicted to win with a ${prediction.confidence.toFixed(1)}% confidence based on projected points, recent performance, and injury impact for fantasy team matchups.`;
-            } else {
-                predictionResult.textContent = 'Please select two different teams.';
-            }
+            }, 200);
         });
-
-        fetchMatchupTeams();
     }
 
-    // Navigation Highlighting
-    function setActiveNav() {
-        const currentHash = window.location.hash || (window.location.pathname.includes('tools') ? '#tools' : '#home');
-        document.querySelectorAll('.nav-link').forEach(link => {
-            link.classList.remove('active');
-            if (link.getAttribute('href') === currentHash || (currentHash === '#tools' && link.getAttribute('href') === 'tools.html')) {
-                link.classList.add('active');
+    // Swap Players
+    if (swapPlayersButton && currentRosterInput) {
+        swapPlayersButton.addEventListener('click', () => {
+            const currentRoster = currentRosterInput.value.split(';').map(p => p.trim()).filter(p => p);
+            if (currentRoster.length) {
+                alert('Players swapped! Review and generate lineup.');
+            } else {
+                alert('Enter players in the roster field first!');
             }
         });
     }
 
-    setActiveNav();
-    window.addEventListener('hashchange', setActiveNav);
+    // Save/Export Draft
+    if (saveDraftButton && buildResultDraft) {
+        saveDraftButton.addEventListener('click', () => {
+            const result = buildResultDraft.innerHTML;
+            if (result) {
+                const lineupText = buildResultDraft.textContent;
+                localStorage.setItem('savedDraft', lineupText);
+                const blob = new Blob([lineupText], { type: 'text/plain' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'fantasy_draft.txt';
+                a.click();
+                URL.revokeObjectURL(url);
+                alert('Draft saved and exported!');
+            } else {
+                alert('Generate a draft first!');
+            }
+        });
+    }
+
+    // Save/Export Weekly Lineup
+    if (saveLineupWeeklyButton && lineupResult) {
+        saveLineupWeeklyButton.addEventListener('click', () => {
+            const result = lineupResult.innerHTML;
+            if (result) {
+                const lineupText = lineupResult.textContent;
+                localStorage.setItem('savedLineup', lineupText);
+                const blob = new Blob([lineupText], { type: 'text/plain' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'fantasy_lineup.txt';
+                a.click();
+                URL.revokeObjectURL(url);
+                alert('Lineup saved and exported!');
+            } else {
+                alert('Generate a lineup first!');
+            }
+        });
+    }
+
+    // Compare Draft Lineups
+    if (compareDraftButton && leagueSizeSelect && startingLineupSelect && benchSizeSelect && scoringTypeSelect && bonusTDCheckbox && penaltyFumbleCheckbox && positionFocusSelect && draftPickInput && progressBarDraft && progressDraft && buildResultDraft) {
+        compareDraftButton.addEventListener('click', () => {
+            const leagueSize = parseInt(leagueSizeSelect.value) || 10;
+            const startingLineup = startingLineupSelect.value.split(',').map(s => s.trim().toUpperCase());
+            const benchSize = parseInt(benchSizeSelect.value) || 7;
+            const scoringType = scoringTypeSelect.value;
+            const bonusTD = bonusTDCheckbox.checked;
+            const penaltyFumble = penaltyFumbleCheckbox.checked;
+            const positionFocus = positionFocusSelect.value;
+            const draftPick = parseInt(draftPickInput.value) || 5;
+
+            progressBarDraft.classList.remove('hidden');
+            let width = 0;
+            const interval = setInterval(() => {
+                if (width >= 100) {
+                    clearInterval(interval);
+                    const lineup1 = generateOptimalDraft(leagueSize, startingLineup, benchSize, scoringType, bonusTD, penaltyFumble, positionFocus, draftPick);
+                    const lineup2 = generateOptimalDraft(leagueSize, startingLineup, benchSize, scoringType, bonusTD, penaltyFumble, 'balanced', draftPick);
+                    compareLineups(lineup1, lineup2, 'draft');
+                    progressBarDraft.classList.add('hidden');
+                } else {
+                    width += 10;
+                    progressDraft.style.width = `${width}%`;
+                }
+            }, 200);
+        });
+    }
+
+    // Compare Weekly Lineups
+    if (compareLineupsWeeklyButton && lineupSizeInput && lineupStartingSelect && lineupBenchSizeSelect && lineupIrSpotsSelect && lineupScoringSelect && lineupBonusTDCheckbox && lineupPenaltyFumbleCheckbox && currentRosterInput && progressBarWeekly && progressWeekly && lineupResult) {
+        compareLineupsWeeklyButton.addEventListener('click', () => {
+            const lineupSize = parseInt(lineupSizeInput.value) || 15;
+            const startingLineup = lineupStartingSelect.value.split(',').map(s => s.trim().toUpperCase());
+            const benchSize = parseInt(lineupBenchSizeSelect.value) || 7;
+            const irSpots = parseInt(lineupIrSpotsSelect.value) || 1;
+            const scoringType = lineupScoringSelect.value;
+            const bonusTD = lineupBonusTDCheckbox.checked;
+            const penaltyFumble = lineupPenaltyFumbleCheckbox.checked;
+            const currentRoster = currentRosterInput.value.split(';').map(p => p.trim()).filter(p => p);
+
+            progressBarWeekly.classList.remove('hidden');
+            let width = 0;
+            const interval = setInterval(() => {
+                if (width >= 100) {
+                    clearInterval(interval);
+                    const lineup1 = generateOptimalLineupWeekly(lineupSize, startingLineup, benchSize, irSpots, scoringType, bonusTD, penaltyFumble, currentRoster);
+                    const lineup2 = generateOptimalLineupWeekly(lineupSize, startingLineup, benchSize, irSpots, scoringType, bonusTD, penaltyFumble, currentRoster, true);
+                    compareLineups(lineup1, lineup2, 'weekly');
+                    progressBarWeekly.classList.add('hidden');
+                } else {
+                    width += 10;
+                    progressWeekly.style.width = `${width}%`;
+                }
+            }, 200);
+        });
+    }
+
+    function generateOptimalDraft(leagueSize, lineupConfig, benchSize, scoring, bonusTD, penaltyFumble, focus, pick) {
+        let availablePlayers = [...players];
+        availablePlayers.sort((a, b) => a.adp - b.adp); // Sort by ADP
+
+        // Calculate total roster size dynamically (excluding IR spots for draft)
+        const totalRosterSize = lineupConfig.length + benchSize; // Starting lineup + bench
+
+        // Simulate snake draft for the user's pick
+        const draftPicks = [];
+        let currentPick = pick;
+        let round = 1;
+        while (draftPicks.length < totalRosterSize) {
+            draftPicks.push(currentPick);
+            round++;
+            currentPick = (round % 2 === 0) ? (leagueSize * 2 + 1 - currentPick) : (leagueSize * (round - 1) + pick);
+        }
+
+        // Adjust ADP threshold for each pick
+        const selectedPlayers = [];
+        const pickThresholds = draftPicks.map(pick => pick + (leagueSize * 1.5)); // Approximate availability window
+
+        // Apply scoring adjustments
+        availablePlayers = availablePlayers.map(p => {
+            let points = p.points;
+            if (scoring === 'ppr') points += p.receptions;
+            else if (scoring === 'halfppr') points += p.receptions * 0.5;
+            else if (scoring === 'tep' && p.pos === 'TE') points *= 1.5;
+            else if (scoring === 'tefullppr' && p.pos === 'TE') points += p.receptions * 2;
+            else if (scoring === '6ptpass') points += (p.passTds * 2); // Add 2 points per passing TD (from 4 to 6)
+            if (bonusTD && p.td > 0) points += 6;
+            if (penaltyFumble && p.fumble > 0) points -= 2;
+            return { ...p, adjustedPoints: points };
+        });
+
+        // Sort by adjusted points with focus priority
+        if (focus !== 'balanced') {
+            availablePlayers.sort((a, b) => (a.pos === focus ? -1 : b.pos === focus ? 1 : 0) || b.adjustedPoints - a.adjustedPoints);
+        } else {
+            availablePlayers.sort((a, b) => b.adjustedPoints - a.adjustedPoints);
+        }
+
+        // Parse lineup requirements
+        const requirements = {};
+        lineupConfig.forEach(req => {
+            const [count, pos] = req.match(/(\d+)([A-Z]+)/);
+            requirements[pos] = parseInt(count);
+        });
+        requirements['FLEX'] = requirements['FLEX'] || 0;
+
+        // Track roster composition
+        const usedPositions = {};
+        for (let pos in requirements) usedPositions[pos] = 0;
+        const lineup = [];
+        let remainingBench = benchSize;
+
+        // Simulate draft for each round
+        for (let i = 0; i < draftPicks.length; i++) {
+            const pickThreshold = pickThresholds[i];
+            let roundPlayers = availablePlayers.filter(p => p.adp >= draftPicks[i] && p.adp <= pickThreshold && !selectedPlayers.includes(p));
+
+            // Prioritize DST and K in the last two rounds if they are in the lineup
+            if (lineupConfig.includes('1DST') && lineupConfig.includes('1K')) {
+                if (i === draftPicks.length - 2) {
+                    roundPlayers = roundPlayers.filter(p => p.pos === 'DST');
+                } else if (i === draftPicks.length - 1) {
+                    roundPlayers = roundPlayers.filter(p => p.pos === 'K');
+                } else {
+                    roundPlayers = roundPlayers.filter(p => p.pos !== 'DST' && p.pos !== 'K');
+                }
+            } else if (lineupConfig.includes('1DST')) {
+                if (i === draftPicks.length - 1) {
+                    roundPlayers = roundPlayers.filter(p => p.pos === 'DST');
+                } else {
+                    roundPlayers = roundPlayers.filter(p => p.pos !== 'DST');
+                }
+            } else if (lineupConfig.includes('1K')) {
+                if (i === draftPicks.length - 1) {
+                    roundPlayers = roundPlayers.filter(p => p.pos === 'K');
+                } else {
+                    roundPlayers = roundPlayers.filter(p => p.pos !== 'K');
+                }
+            }
+
+            if (roundPlayers.length === 0) continue;
+
+            // Sort round players by adjusted points
+            roundPlayers.sort((a, b) => b.adjustedPoints - a.adjustedPoints);
+
+            let player = null;
+            if (i < lineupConfig.length) {
+                // Fill starting lineup
+                for (let p of roundPlayers) {
+                    if (usedPositions[p.pos] < requirements[p.pos] || (p.pos !== 'FLEX' && usedPositions['FLEX'] < requirements['FLEX'])) {
+                        if (usedPositions[p.pos] < requirements[p.pos]) {
+                            player = p;
+                            usedPositions[p.pos]++;
+                        } else if (usedPositions['FLEX'] < requirements['FLEX'] && ['RB', 'WR', 'TE'].includes(p.pos)) {
+                            player = p;
+                            usedPositions['FLEX']++;
+                        }
+                        break;
+                    }
+                }
+            } else if (lineupConfig.includes('1DST') && lineupConfig.includes('1K') && (i === draftPicks.length - 2 || i === draftPicks.length - 1)) {
+                // DST and K in the last two rounds
+                player = roundPlayers[0];
+                usedPositions[player.pos]++;
+            } else if (lineupConfig.includes('1DST') && !lineupConfig.includes('1K') && i === draftPicks.length - 1) {
+                player = roundPlayers[0];
+                usedPositions[player.pos]++;
+            } else if (lineupConfig.includes('1K') && !lineupConfig.includes('1DST') && i === draftPicks.length - 1) {
+                player = roundPlayers[0];
+                usedPositions[player.pos]++;
+            } else if (remainingBench > 0) {
+                // Fill bench with high-upside RB/WR
+                for (let p of roundPlayers) {
+                    if (['RB', 'WR'].includes(p.pos)) {
+                        player = p;
+                        remainingBench--;
+                        break;
+                    }
+                }
+                if (!player) {
+                    player = roundPlayers[0];
+                    remainingBench--;
+                }
+            }
+
+            if (player) {
+                selectedPlayers.push(player);
+                lineup.push({ round: i + 1, pick: draftPicks[i], player });
+            }
+        }
+
+        buildResultDraft.innerHTML = `
+            <h3 class="text-xl font-semibold mb-4 text-teal-700">Optimal Draft Build</h3>
+            <ul class="list-disc pl-5 space-y-2">
+                ${lineup.map(entry => `<li>Round ${entry.round} (Pick ${entry.pick}): ${entry.player.name} (${entry.player.pos}) - ${entry.player.adjustedPoints.toFixed(1)} pts (ADP: ${entry.player.adp})</li>`).join('')}
+            </ul>
+            <p class="mt-2 text-gray-600">Total Projected Points: ${lineup.reduce((sum, entry) => sum + entry.player.adjustedPoints, 0).toFixed(1)}</p>
+        `;
+        return lineup;
+    }
+
+    function generateOptimalLineupWeekly(size, lineupConfig, benchSize, irSpots, scoring, bonusTD, penaltyFumble, currentRoster = []) {
+        let availablePlayers = [...players];
+        if (currentRoster.length) {
+            availablePlayers = currentRoster.map(p => {
+                const [name, pos] = p.split(',');
+                const player = players.find(pl => pl.name === name && pl.pos === pos);
+                return player ? { ...player, adjustedPoints: player.points } : null;
+            }).filter(p => p);
+        } else {
+            availablePlayers.sort((a, b) => b.points - a.points);
+        }
+
+        // Apply scoring adjustments
+        availablePlayers = availablePlayers.map(p => {
+            let points = p.points;
+            if (scoring === 'ppr') points += p.receptions;
+            else if (scoring === 'halfppr') points += p.receptions * 0.5;
+            else if (scoring === 'tep' && p.pos === 'TE') points *= 1.5;
+            else if (scoring === 'tefullppr' && p.pos === 'TE') points += p.receptions * 2;
+            else if (scoring === '6ptpass') points += (p.passTds * 2); // Add 2 points per passing TD (from 4 to 6)
+            if (bonusTD && p.td > 0) points += 6;
+            if (penaltyFumble && p.fumble > 0) points -= 2;
+            return { ...p, adjustedPoints: points };
+        });
+
+        // Calculate total roster size including IR spots
+        const totalRosterSize = lineupConfig.length + benchSize + irSpots;
+
+        // Use the provided lineup size or the calculated total roster size
+        const effectiveSize = Math.min(size, totalRosterSize);
+
+        // Parse lineup requirements
+        const requirements = {};
+        lineupConfig.forEach(req => {
+            const [count, pos] = req.match(/(\d+)([A-Z]+)/);
+            requirements[pos] = parseInt(count);
+        });
+        requirements['FLEX'] = requirements['FLEX'] || 0;
+
+        // Greedy selection
+        const lineup = [];
+        const usedPositions = {};
+        for (let pos in requirements) usedPositions[pos] = 0;
+
+        for (let player of availablePlayers) {
+            if (lineup.length >= effectiveSize) break;
+            let posToFill = player.pos;
+            if (usedPositions[player.pos] < requirements[player.pos] || (player.pos !== 'FLEX' && usedPositions['FLEX'] < requirements['FLEX'])) {
+                if (usedPositions[player.pos] < requirements[player.pos]) {
+                    lineup.push(player);
+                    usedPositions[player.pos]++;
+                } else if (usedPositions['FLEX'] < requirements['FLEX'] && ['RB', 'WR', 'TE'].includes(player.pos)) {
+                    lineup.push(player);
+                    usedPositions['FLEX']++;
+                }
+            }
+        }
+
+        lineupResult.innerHTML = `
+            <h3 class="text-xl font-semibold mb-4 text-teal-700">Optimal Weekly Lineup</h3>
+            <ul class="list-disc pl-5 space-y-2">
+                ${lineup.map(player => `<li>${player.name} (${player.pos}) - ${player.adjustedPoints.toFixed(1)} pts</li>`).join('')}
+            </ul>
+            <p class="mt-2 text-gray-600">Total Projected Points: ${lineup.reduce((sum, p) => sum + p.adjustedPoints, 0).toFixed(1)}</p>
+        `;
+        return lineup;
+    }
+
+    function compareLineups(lineup1, lineup2, type) {
+        const resultDiv = type === 'draft' ? buildResultDraft : lineupResult;
+        const total1 = lineup1.reduce((sum, entry) => sum + (entry.player ? entry.player.adjustedPoints : entry.adjustedPoints), 0).toFixed(1);
+        const total2 = lineup2.reduce((sum, entry) => sum + (entry.player ? entry.player.adjustedPoints : entry.adjustedPoints), 0).toFixed(1);
+        resultDiv.innerHTML = `
+            <h3 class="text-xl font-semibold mb-4 text-teal-700">Lineup Comparison</h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="p-4 bg-teal-50 rounded-lg shadow">
+                    <h4 class="font-semibold">Optimal ${type === 'draft' ? 'Draft' : 'Weekly'}</h4>
+                    <ul class="list-disc pl-5 space-y-2 mt-2">
+                        ${lineup1.map(entry => `<li>${type === 'draft' ? `Round ${entry.round} (Pick ${entry.pick}): ` : ''}${entry.player ? entry.player.name : entry.name} (${entry.player ? entry.player.pos : entry.pos}) - ${(entry.player ? entry.player.adjustedPoints : entry.adjustedPoints).toFixed(1)} pts</li>`).join('')}
+                    </ul>
+                    <p class="mt-2 text-gray-600">Total: ${total1} pts</p>
+                </div>
+                <div class="p-4 bg-teal-50 rounded-lg shadow">
+                    <h4 class="font-semibold">Balanced ${type === 'draft' ? 'Draft' : 'Weekly'}</h4>
+                    <ul class="list-disc pl-5 space-y-2 mt-2">
+                        ${lineup2.map(entry => `<li>${type === 'draft' ? `Round ${entry.round} (Pick ${entry.pick}): ` : ''}${entry.player ? entry.player.name : entry.name} (${entry.player ? entry.player.pos : entry.pos}) - ${(entry.player ? entry.player.adjustedPoints : entry.adjustedPoints).toFixed(1)} pts</li>`).join('')}
+                    </ul>
+                    <p class="mt-2 text-gray-600">Total: ${total2} pts</p>
+                </div>
+            </div>
+        `;
+    }
+
+    // Best Draft Strategies Functionality
+    const strategies = {
+        redraft: [
+            { title: 'Zero-RB', content: 'Zero-RB Guide: Focus on WRs early (rounds 1-3), then target RBs in mid-to-late rounds (6-10). Ideal for PPR/Half PPR leagues. Target high-upside RBs like Jaylen Warren or Rachaad White. Risk: Depth at RB if injuries occur. Best for leagues with deep WR talent pools.' },
+            { title: 'Late-Round QB', content: 'Late-Round QB: Target QBs in rounds 8+ (e.g., Josh Allen, Patrick Mahomes). Prioritize elite WRs/RBs early. Risk: QB production may lag if top options are taken. Works well in 6pt Passing TD formats to maximize value.' },
+            { title: 'Hero-RB', content: 'Hero-RB: Draft a top RB early (rounds 1-2, e.g., Christian McCaffrey), then load up on WRs and a mid-tier QB. Ideal for standard leagues. Risk: Weakness at other positions if RB underperforms. Pair with TEP or TE Full PPR if TE depth is strong.' },
+            { title: 'Balanced Approach', content: 'Balanced Approach: Draft a mix of positions early (e.g., RB, WR, QB by round 5), avoiding over-focusing on one. Aim for consistency with players like Justin Jefferson or Breece Hall. Risk: May miss elite upside. Suits all scoring types.' },
+            { title: 'WR-Heavy', content: 'WR-Heavy: Load up on WRs in rounds 1-4 (e.g., Ja\'Marr Chase, Amon-Ra St. Brown), then fill RB and QB later. Great for PPR/Half PPR. Risk: RB scarcity in later rounds. Target high-reception WRs like Tyreek Hill.' }
+        ],
+        dynasty: [
+            { title: 'Zero-RB', content: 'Zero-RB Guide: Prioritize young WRs (e.g., Garrett Wilson, Drake London) in early rounds, then acquire rookie RBs (e.g., Jaylen Warren) via trades or late picks. Ideal for long-term PPR value. Risk: Early RB injuries hurt depth.' },
+            { title: 'Late-Round QB', content: 'Late-Round QB: Delay QB picks (e.g., Josh Allen in later rounds), focusing on young skill players. Trade up for elite QBs later. Risk: QB depth may thin out. Best with 6pt Passing TDs to boost late-round value.' },
+            { title: 'Hero-RB', content: 'Hero-RB: Secure a young RB star (e.g., Breece Hall) early, then build around with WRs and a mid-tier QB. Ideal for dynasty stability. Risk: Over-reliance on one player. Pair with TEP or TE Full PPR for TE support.' },
+            { title: 'Rookie Focus', content: 'Rookie Focus: Target rookie WRs/RBs (e.g., Puka Nacua) in early rounds, leveraging their long-term potential. Trade veterans for picks. Risk: Inconsistent early production. Works with any scoring type.' },
+            { title: 'Balanced Approach', content: 'Balanced Approach: Draft a mix of young stars (e.g., Justin Jefferson) and veterans (e.g., Travis Kelce) across positions. Maintain trade flexibility. Risk: May miss breakout rookies. Suits all scoring formats.' }
+        ],
+        superflex: [
+            { title: 'Early QB', content: 'Early QB: Draft two QBs early (e.g., Patrick Mahomes, Josh Allen) in rounds 1-4 to exploit Superflex value. Fill WR/RB later. Risk: Weak skill positions. Optimized for 6pt Passing TDs.' },
+            { title: 'Zero-RB', content: 'Zero-RB Guide: Focus on QBs and WRs early (e.g., Ja\'Marr Chase), then target RBs late (e.g., Rachaad White). Leverage QB depth. Risk: RB injuries. Best for PPR/Half PPR.' },
+            { title: 'Hero-RB', content: 'Hero-RB: Grab a top RB (e.g., Christian McCaffrey) early, then secure two QBs (e.g., Josh Allen) for Superflex. Risk: QB scarcity later. Pair with TEP or TE Full PPR for TE support.' },
+            { title: 'QB-WR Stack', content: 'QB-WR Stack: Draft a QB (e.g., Patrick Mahomes) and his top WR (e.g., Travis Kelce) early, then add a second QB. Boosts consistency. Risk: RB depth issues. Works with 6pt Passing TDs.' },
+            { title: 'Balanced Superflex', content: 'Balanced Superflex: Take one QB early (e.g., Josh Allen), then mix WRs (e.g., Justin Jefferson) and RBs (e.g., Breece Hall). Add a second QB later. Risk: Elite QB miss. Suits all scoring types.' }
+        ]
+    };
+
+    // Populate strategy cards based on league type
+    const leagueTypeSelect = document.getElementById('leagueType');
+    const strategyCardsDiv = document.getElementById('strategyCards');
+    if (leagueTypeSelect && strategyCardsDiv) {
+        function updateStrategies() {
+            const leagueType = leagueTypeSelect.value;
+            strategyCardsDiv.innerHTML = '';
+            strategies[leagueType].forEach((strategy, index) => {
+                const card = document.createElement('div');
+                card.className = 'strategy-card p-4 bg-teal-100 rounded-lg';
+                card.innerHTML = `
+                    <h4 class="font-semibold">${strategy.title}</h4>
+                    <p class="strategy-preview text-sm">${strategy.content.substring(0, 100)}...</p>
+                    <p class="full-content text-sm mt-2">${strategy.content}</p>
+                    <span class="expand-toggle" onclick="this.parentElement.classList.toggle('expanded');">Show more</span>
+                `;
+                strategyCardsDiv.appendChild(card);
+            });
+        }
+        leagueTypeSelect.addEventListener('change', updateStrategies);
+        updateStrategies(); // Ensure initial load
+    }
+
+    // Reset Strategies
+    const resetStrategiesButton = document.getElementById('resetStrategies');
+    if (resetStrategiesButton) {
+        resetStrategiesButton.addEventListener('click', () => {
+            document.querySelectorAll('.strategy-card').forEach(card => {
+                card.classList.remove('expanded');
+            });
+        });
+    }
 });
