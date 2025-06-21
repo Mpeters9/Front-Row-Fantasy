@@ -26,76 +26,63 @@
     </header>
 
     <main class="max-w-7xl mx-auto px-4 py-6 bg-gray-100">
-        <section class="bg-teal-50 p-6 rounded-lg shadow-md mb-6 text-center">
-            <h2 class="text-3xl font-bold mb-4 text-teal-700">Unleash Your Fantasy GOAT</h2>
-            <p class="text-lg mb-6 text-gray-900">Craft the ultimate fantasy football team with cutting-edge tools, strategies, and community wisdom.</p>
+        <section class="bg-gradient-to-r from-teal-500 to-teal-700 text-white p-8 rounded-lg shadow-lg mb-8 text-center">
+            <h2 class="text-4xl font-bold mb-4">Unleash Your Fantasy GOAT</h2>
+            <p class="text-lg mb-6">Master the art of fantasy football with elite strategies, in-depth research, and a thriving community to build the ultimate team.</p>
+            <button class="bg-white text-teal-600 px-6 py-3 rounded-lg hover:bg-gray-200 transition">Get Started</button>
         </section>
 
-        <!-- Design Layout Section -->
-        <section id="design-layout" class="mb-12">
-            <h2 class="text-2xl font-semibold mb-4 text-teal-700">Design Layout</h2>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div class="p-4 bg-teal-100 rounded-lg shadow text-gray-900">Team Builds</div>
-                <div class="p-4 bg-teal-100 rounded-lg shadow text-gray-900">Draft Strategies</div>
-                <div class="p-4 bg-teal-100 rounded-lg shadow text-gray-900">Player Research</div>
-                <div class="p-4 bg-teal-100 rounded-lg shadow text-gray-900">Advanced Stats</div>
-            </div>
-        </section>
-
-        <!-- Best Team Builds Section -->
         <section id="best-team-builds" class="mb-12">
-            <h2 class="text-2xl font-semibold mb-4 text-teal-700">Best Team Builds</h2>
-            <div class="p-4 bg-teal-50 rounded-lg shadow">
-                <label class="block mb-2 text-gray-900">Roster Size: <input type="number" min="1" class="bg-white p-2 rounded border border-gray-300" placeholder="e.g., 15"></label>
-                <label class="block mb-2 text-gray-900">Scoring: <select class="bg-white p-2 rounded border border-gray-300"><option>Standard</option><option>PPR</option></select></label>
-                <button class="bg-teal-600 text-white px-4 py-2 rounded hover:bg-teal-700 transition">Generate Optimal Lineup</button>
-                <div id="build-result" class="mt-4 text-gray-900"></div>
+            <h2 class="text-3xl font-semibold mb-6 text-teal-700 text-center">Best Team Builds</h2>
+            <div class="p-6 bg-teal-50 rounded-lg shadow-lg hover:shadow-xl transition-shadow">
+                <label class="block mb-4 text-gray-900">Roster Size: <input type="number" min="1" class="bg-white p-3 rounded border border-gray-300 w-full md:w-1/3" placeholder="e.g., 15"></label>
+                <label class="block mb-4 text-gray-900">Scoring: <select class="bg-white p-3 rounded border border-gray-300 w-full md:w-1/3"><option>Standard</option><option>PPR</option></select></label>
+                <button class="bg-teal-600 text-white px-6 py-3 rounded-lg hover:bg-teal-700 transition">Generate Optimal Lineup</button>
+                <div id="build-result" class="mt-6 text-gray-900"></div>
             </div>
         </section>
 
-        <!-- Best Draft Strategies Section -->
         <section id="best-draft-strategies" class="mb-12">
-            <h2 class="text-2xl font-semibold mb-4 text-teal-700">Best Draft Strategies</h2>
-            <div class="p-4 bg-teal-50 rounded-lg shadow">
-                <select class="bg-white p-2 rounded border border-gray-300 mb-4 text-gray-900"><option>Redraft</option><option>Dynasty</option><option>Superflex</option></select>
-                <div class="space-y-4 text-gray-900">
-                    <div class="p-2 bg-teal-100 rounded">Zero-RB Guide: Focus on WRs early, RB later.</div>
-                    <div class="p-2 bg-teal-100 rounded">Late-Round QB: Target QBs in rounds 8+.</div>
+            <h2 class="text-3xl font-semibold mb-6 text-teal-700 text-center">Best Draft Strategies</h2>
+            <div class="p-6 bg-teal-50 rounded-lg shadow-lg hover:shadow-xl transition-shadow">
+                <select class="bg-white p-3 rounded border border-gray-300 mb-6 w-full md:w-1/3 text-gray-900"><option>Redraft</option><option>Dynasty</option><option>Superflex</option></select>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-gray-900">
+                    <div class="p-4 bg-teal-100 rounded-lg hover:bg-teal-200 transition-colors">Zero-RB Guide: Focus on WRs early, RB later.</div>
+                    <div class="p-4 bg-teal-100 rounded-lg hover:bg-teal-200 transition-colors">Late-Round QB: Target QBs in rounds 8+.</div>
                 </div>
             </div>
         </section>
 
-        <!-- Player Research Section -->
         <section id="player-research" class="mb-12">
-            <h2 class="text-2xl font-semibold mb-4 text-teal-700">Player Research</h2>
-            <div class="p-4 bg-teal-50 rounded-lg shadow">
-                <table class="w-full">
-                    <thead><tr class="bg-teal-100"><th class="p-2 text-gray-900">Name</th><th class="p-2 text-gray-900">Pos</th><th class="p-2 text-gray-900">Proj Pts</th></tr></thead>
+            <h2 class="text-3xl font-semibold mb-6 text-teal-700 text-center">Player Research</h2>
+            <div class="p-6 bg-teal-50 rounded-lg shadow-lg hover:shadow-xl transition-shadow">
+                <table class="w-full mb-6">
+                    <thead><tr class="bg-teal-100"><th class="p-3 text-gray-900">Name</th><th class="p-3 text-gray-900">Pos</th><th class="p-3 text-gray-900">Proj Pts</th></tr></thead>
                     <tbody id="player-table"></tbody>
                 </table>
-                <div id="player-spotlight" class="mt-4 p-2 bg-teal-100 rounded text-gray-900">Spotlight: [Player Name] - Key Stats Here</div>
+                <div id="player-spotlight" class="p-4 bg-teal-100 rounded-lg text-gray-900">Spotlight: [Player Name] - Key Stats Here</div>
             </div>
         </section>
 
-        <!-- Advanced Stats Section -->
         <section id="advanced-stats" class="mb-12">
-            <h2 class="text-2xl font-semibold mb-4 text-teal-700">Advanced Stats</h2>
-            <div class="p-4 bg-teal-50 rounded-lg shadow">
-                <div id="stat-visuals" class="h-64 bg-teal-100 rounded mb-4"></div>
-                <input type="text" class="bg-white p-2 rounded border border-gray-300 mb-2 text-gray-900" placeholder="Filter by Position/Week/Stat">
-                <button class="bg-teal-600 text-white px-4 py-2 rounded hover:bg-teal-700 transition">Explore Stats</button>
-                <div id="stat-result" class="mt-4 text-gray-900"></div>
+            <h2 class="text-3xl font-semibold mb-6 text-teal-700 text-center">Advanced Stats</h2>
+            <div class="p-6 bg-teal-50 rounded-lg shadow-lg hover:shadow-xl transition-shadow">
+                <div id="stat-visuals" class="h-64 bg-teal-100 rounded-lg mb-6"></div>
+                <div class="flex flex-col md:flex-row gap-4">
+                    <input type="text" class="bg-white p-3 rounded border border-gray-300 w-full md:w-2/3 text-gray-900" placeholder="Filter by Position/Week/Stat">
+                    <button class="bg-teal-600 text-white px-6 py-3 rounded-lg hover:bg-teal-700 transition w-full md:w-1/3">Explore Stats</button>
+                </div>
+                <div id="stat-result" class="mt-6 text-gray-900"></div>
             </div>
         </section>
 
-        <!-- Community Input Section -->
         <section id="community-input">
-            <h2 class="text-2xl font-semibold mb-4 text-teal-700">Community Input</h2>
-            <div class="p-4 bg-teal-50 rounded-lg shadow">
-                <textarea class="w-full bg-white p-2 rounded border border-gray-300 mb-2 text-gray-900" rows="4" placeholder="Share your strategy..."></textarea>
-                <button class="bg-teal-600 text-white px-4 py-2 rounded hover:bg-teal-700 transition">Submit</button>
-                <div id="community-feed" class="mt-4 space-y-2">
-                    <div class="p-2 bg-teal-100 rounded text-gray-900">User Strategy: [Strategy Text]</div>
+            <h2 class="text-3xl font-semibold mb-6 text-teal-700 text-center">Community Input</h2>
+            <div class="p-6 bg-teal-50 rounded-lg shadow-lg hover:shadow-xl transition-shadow">
+                <textarea class="w-full bg-white p-3 rounded border border-gray-300 mb-6 text-gray-900" rows="4" placeholder="Share your strategy..."></textarea>
+                <button class="bg-teal-600 text-white px-6 py-3 rounded-lg hover:bg-teal-700 transition">Submit</button>
+                <div id="community-feed" class="mt-6 space-y-4">
+                    <div class="p-4 bg-teal-100 rounded-lg text-gray-900">User Strategy: [Strategy Text]</div>
                 </div>
             </div>
         </section>
@@ -124,9 +111,9 @@
                 <tbody>
                     {players.map(player => (
                         <tr key={player.id} className="border-t border-gray-300">
-                            <td class="p-2 text-gray-900">{player.name}</td>
-                            <td class="p-2 text-gray-900">{player.position}</td>
-                            <td class="p-2 text-gray-900">{player.projectedPoints.toFixed(1)}</td>
+                            <td className="p-3 text-gray-900">{player.name}</td>
+                            <td className="p-3 text-gray-900">{player.position}</td>
+                            <td className="p-3 text-gray-900">{player.projectedPoints.toFixed(1)}</td>
                         </tr>
                     ))}
                 </tbody>
