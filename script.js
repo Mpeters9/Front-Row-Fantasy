@@ -348,9 +348,18 @@ document.addEventListener('DOMContentLoaded', () => {
         const predictionResult = document.getElementById('predictionResult');
 
         let rosters = {
-            '1': ['1', '4', '7', '18', '25'], // Fake Team 1
-            '2': ['2', '5', '8', '19', '26'], // Fake Team 2
-            '3': ['3', '6', '9', '20', '27']  // Fake Team 3
+            '1': ['1', '4', '7', '18', '25'],  // Team 1
+            '2': ['2', '5', '8', '19', '26'],  // Team 2
+            '3': ['3', '6', '9', '20', '27'],  // Team 3
+            '4': ['10', '13', '16', '22', '28'], // Team 4
+            '5': ['11', '14', '17', '23', '29'], // Team 5
+            '6': ['12', '15', '18', '24', '30'], // Team 6
+            '7': ['19', '22', '25', '28', '31'], // Team 7
+            '8': ['20', '23', '26', '29', '32'], // Team 8
+            '9': ['21', '24', '27', '30', '33'], // Team 9
+            '10': ['1', '6', '11', '16', '21'],  // Team 10
+            '11': ['2', '7', '12', '17', '22'],  // Team 11
+            '12': ['3', '8', '13', '18', '23']   // Team 12
         };
 
         let allPlayers = loadFileData("FantasyPros_2025_Overall_ADP_Rankings.csv").split('\n').slice(1).map(line => {
@@ -372,14 +381,22 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         function fetchMatchupTeams() {
-            // Use fake teams instead of API
             rosters = {
-                '1': ['1', '4', '7', '18', '25'], // Fake Team 1
-                '2': ['2', '5', '8', '19', '26'], // Fake Team 2
-                '3': ['3', '6', '9', '20', '27']  // Fake Team 3
+                '1': ['1', '4', '7', '18', '25'],  // Team 1
+                '2': ['2', '5', '8', '19', '26'],  // Team 2
+                '3': ['3', '6', '9', '20', '27'],  // Team 3
+                '4': ['10', '13', '16', '22', '28'], // Team 4
+                '5': ['11', '14', '17', '23', '29'], // Team 5
+                '6': ['12', '15', '18', '24', '30'], // Team 6
+                '7': ['19', '22', '25', '28', '31'], // Team 7
+                '8': ['20', '23', '26', '29', '32'], // Team 8
+                '9': ['21', '24', '27', '30', '33'], // Team 9
+                '10': ['1', '6', '11', '16', '21'],  // Team 10
+                '11': ['2', '7', '12', '17', '22'],  // Team 11
+                '12': ['3', '8', '13', '18', '23']   // Team 12
             };
-            matchupTeam1Select.innerHTML = '<option value="">Select Team 1</option><option value="1">Team 1</option><option value="2">Team 2</option><option value="3">Team 3</option>';
-            matchupTeam2Select.innerHTML = '<option value="">Select Team 2</option><option value="1">Team 1</option><option value="2">Team 2</option><option value="3">Team 3</option>';
+            matchupTeam1Select.innerHTML = '<option value="">Select Team 1</option>' + Array.from({length: 12}, (_, i) => `<option value="${i + 1}">Team ${i + 1}</option>`).join('');
+            matchupTeam2Select.innerHTML = '<option value="">Select Team 2</option>' + Array.from({length: 12}, (_, i) => `<option value="${i + 1}">Team ${i + 1}</option>`).join('');
         }
 
         function predictMatchup(team1Id, team2Id) {
