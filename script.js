@@ -272,19 +272,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Calculate total roster size dynamically (excluding IR spots for draft)
         const totalRosterSize = lineupConfig.length + benchSize; // Starting lineup + bench
-        const totalRounds = Math.ceil(totalRosterSize / leagueSize); // Number of rounds needed
 
-        // Simulate snake draft picks for the user's position
+        // Generate draft picks for the user's position using snake draft pattern
         const draftPicks = [];
         let currentPick = pick;
-        for (let round = 1; round <= totalRounds; round++) {
+        for (let i = 0; i < totalRosterSize; i++) {
+            const round = Math.floor(i / leagueSize) + 1;
             draftPicks.push(currentPick);
-            if (round < totalRounds) {
-                currentPick = (round % 2 === 0) ? (leagueSize * 2 + 1 - currentPick) : (leagueSize * (round - 1) + pick);
+            if (i < totalRosterSize - 1) {
+                currentPick = (round % 2 === 0) ? (leagueSize * 2 + 1 - currentPick) : (leagueSize * round + pick);
             }
-        }
-        while (draftPicks.length < totalRosterSize) {
-            draftPicks.push(draftPicks[draftPicks.length - 1] + leagueSize); // Fill remaining picks in later rounds
         }
 
         // Adjust ADP threshold dynamically based on round
@@ -324,30 +321,30 @@ document.addEventListener('DOMContentLoaded', () => {
         const lineup = [];
         let remainingBench = benchSize;
 
-        // Simulate draft round by round
-        for (let round = 1; round <= totalRounds && lineup.length < totalRosterSize; round++) {
-            const pickIndex = round - 1;
-            const pickNumber = draftPicks[pickIndex];
-            const pickThreshold = pickThresholds[pickIndex];
+        // Simulate draft pick by pick
+        for (let i = 0; i < totalRosterSize; i++) {
+            const round = Math.floor(i / leagueSize) + 1;
+            const pickNumber = draftPicks[i];
+            const pickThreshold = pickThresholds[i];
             let roundPlayers = availablePlayers.filter(p => p.adp >= pickNumber && p.adp <= pickThreshold && !lineup.some(entry => entry.player === p));
 
             // Prioritize DST and K in the last two rounds if they are in the lineup
             if (lineupConfig.includes('1DST') && lineupConfig.includes('1K')) {
-                if (round === totalRounds - 1 && usedPositions['DST'] === 0) {
+                if (round === Math.ceil(totalRosterSize / leagueSize) - 1 && usedPositions['DST'] === 0) {
                     roundPlayers = roundPlayers.filter(p => p.pos === 'DST');
-                } else if (round === totalRounds && usedPositions['K'] === 0) {
+                } else if (round === Math.ceil(totalRosterSize / leagueSize) && usedPositions['K'] === 0) {
                     roundPlayers = roundPlayers.filter(p => p.pos === 'K');
                 } else {
                     roundPlayers = roundPlayers.filter(p => p.pos !== 'DST' && p.pos !== 'K');
                 }
-            } else if (lineupConfig.includes('1DST') && usedPositions['DST'] === 0 && round >= totalRounds - 1) {
+            } else if (lineupConfig.includes('1DST') && usedPositions['DST'] === 0 && round >= Math.ceil(totalRosterSize / leagueSize) - 1) {
                 roundPlayers = roundPlayers.filter(p => p.pos === 'DST');
-            } else if (lineupConfig.includes('1K') && usedPositions['K'] === 0 && round === totalRounds) {
+            } else if (lineupConfig.includes('1K') && usedPositions['K'] === 0 && round === Math.ceil(totalRosterSize / leagueSize)) {
                 roundPlayers = roundPlayers.filter(p => p.pos === 'K');
             }
 
             let player = null;
-            if (lineup.length < lineupConfig.length) {
+            if (i < lineupConfig.length) {
                 // Fill starting lineup
                 for (let p of roundPlayers) {
                     if (usedPositions[p.pos] < requirements[p.pos] || (p.pos !== 'FLEX' && usedPositions['FLEX'] < requirements['FLEX'])) {
