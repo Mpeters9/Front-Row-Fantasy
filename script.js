@@ -284,7 +284,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         // Adjust ADP threshold for each pick
-        const selectedPlayers = [];
         const pickThresholds = draftPicks.map(pick => pick + (leagueSize * 1.5)); // Approximate availability window
 
         // Apply scoring adjustments
@@ -324,32 +323,27 @@ document.addEventListener('DOMContentLoaded', () => {
         // Simulate draft for each round
         for (let i = 0; i < draftPicks.length; i++) {
             const pickThreshold = pickThresholds[i];
-            let roundPlayers = availablePlayers.filter(p => p.adp >= draftPicks[i] && p.adp <= pickThreshold && !selectedPlayers.includes(p));
+            let roundPlayers = availablePlayers.filter(p => p.adp >= draftPicks[i] && p.adp <= pickThreshold && !lineup.some(entry => entry.player === p));
 
             // Prioritize DST and K in the last two rounds if they are in the lineup
             if (lineupConfig.includes('1DST') && lineupConfig.includes('1K')) {
-                if (i === draftPicks.length - 2) {
+                if (i === draftPicks.length - 2 && usedPositions['DST'] === 0) {
                     roundPlayers = roundPlayers.filter(p => p.pos === 'DST');
-                } else if (i === draftPicks.length - 1) {
+                } else if (i === draftPicks.length - 1 && usedPositions['K'] === 0) {
                     roundPlayers = roundPlayers.filter(p => p.pos === 'K');
                 } else {
                     roundPlayers = roundPlayers.filter(p => p.pos !== 'DST' && p.pos !== 'K');
                 }
-            } else if (lineupConfig.includes('1DST')) {
-                if (i === draftPicks.length - 1) {
-                    roundPlayers = roundPlayers.filter(p => p.pos === 'DST');
-                } else {
-                    roundPlayers = roundPlayers.filter(p => p.pos !== 'DST');
-                }
-            } else if (lineupConfig.includes('1K')) {
-                if (i === draftPicks.length - 1) {
-                    roundPlayers = roundPlayers.filter(p => p.pos === 'K');
-                } else {
-                    roundPlayers = roundPlayers.filter(p => p.pos !== 'K');
-                }
+            } else if (lineupConfig.includes('1DST') && usedPositions['DST'] === 0 && i === draftPicks.length - 1) {
+                roundPlayers = roundPlayers.filter(p => p.pos === 'DST');
+            } else if (lineupConfig.includes('1K') && usedPositions['K'] === 0 && i === draftPicks.length - 1) {
+                roundPlayers = roundPlayers.filter(p => p.pos === 'K');
             }
 
-            if (roundPlayers.length === 0) continue;
+            if (roundPlayers.length === 0 && i < draftPicks.length - 1) {
+                // If no players match, expand the ADP window slightly for the next iteration
+                continue; // Move to the next pick if no valid players are found
+            }
 
             // Sort round players by adjusted points
             roundPlayers.sort((a, b) => b.adjustedPoints - a.adjustedPoints);
@@ -369,34 +363,30 @@ document.addEventListener('DOMContentLoaded', () => {
                         break;
                     }
                 }
-            } else if (lineupConfig.includes('1DST') && lineupConfig.includes('1K') && (i === draftPicks.length - 2 || i === draftPicks.length - 1)) {
-                // DST and K in the last two rounds
-                player = roundPlayers[0];
-                usedPositions[player.pos]++;
-            } else if (lineupConfig.includes('1DST') && !lineupConfig.includes('1K') && i === draftPicks.length - 1) {
-                player = roundPlayers[0];
-                usedPositions[player.pos]++;
-            } else if (lineupConfig.includes('1K') && !lineupConfig.includes('1DST') && i === draftPicks.length - 1) {
-                player = roundPlayers[0];
-                usedPositions[player.pos]++;
-            } else if (remainingBench > 0) {
-                // Fill bench with high-upside RB/WR
+            } else if (remainingBench > 0 || (lineupConfig.includes('1DST') && usedPositions['DST'] === 0) || (lineupConfig.includes('1K') && usedPositions['K'] === 0)) {
+                // Fill bench or remaining special positions
                 for (let p of roundPlayers) {
-                    if (['RB', 'WR'].includes(p.pos)) {
+                    if (remainingBench > 0 && ['RB', 'WR'].includes(p.pos)) {
                         player = p;
                         remainingBench--;
                         break;
+                    } else if (p.pos === 'DST' && usedPositions['DST'] === 0 && lineupConfig.includes('1DST')) {
+                        player = p;
+                        usedPositions['DST']++;
+                    } else if (p.pos === 'K' && usedPositions['K'] === 0 && lineupConfig.includes('1K')) {
+                        player = p;
+                        usedPositions['K']++;
                     }
                 }
-                if (!player) {
-                    player = roundPlayers[0];
+                if (!player && remainingBench > 0) {
+                    player = roundPlayers[0]; // Take the best available player for bench if no preference
                     remainingBench--;
                 }
             }
 
             if (player) {
-                selectedPlayers.push(player);
-                lineup.push({ round: i + 1, pick: draftPicks[i], player });
+                lineup.push({ round: Math.floor((i + pick - 1) / leagueSize) + 1, pick: draftPicks[i], player });
+                availablePlayers = availablePlayers.filter(p => p !== player); // Remove selected player from available pool
             }
         }
 
