@@ -157,7 +157,7 @@
             <div class="p-6 bg-teal-50 rounded-lg shadow-lg hover:shadow-xl transition-shadow">
                 <table class="w-full mb-6" id="player-table">
                     <thead><tr class="bg-teal-100"><th class="p-3 text-gray-900">Name</th><th class="p-3 text-gray-900">Pos</th><th class="p-3 text-gray-900">Proj Pts</th></tr></thead>
-                    <tbody></tbody> <!-- React will populate this tbody -->
+                    <tbody id="player-table-body"></tbody>
                 </table>
                 <div id="player-spotlight" class="p-4 bg-teal-100 rounded-lg text-gray-900">Spotlight: [Player Name] - Key Stats Here</div>
             </div>
@@ -192,10 +192,9 @@
     </footer>
 
     <script type="text/babel">
-        const { useState, useEffect, useRef } = React;
+        const { useState, useEffect } = React;
 
         const PlayerTable = () => {
-            const tbodyRef = useRef(null);
             const [players, setPlayers] = useState([]);
 
             useEffect(() => {
@@ -210,33 +209,35 @@
                 setPlayers(data);
             }, []);
 
-            useEffect(() => {
-                if (tbodyRef.current) {
-                    ReactDOM.render(
-                        <>{players.map(player => (
-                            <tr key={player.id} className="border-t border-gray-300">
-                                <td className="p-3 text-gray-900">{player.name}</td>
-                                <td className="p-3 text-gray-900">{player.position}</td>
-                                <td className="p-3 text-gray-900">{player.projectedPoints.toFixed(1)}</td>
-                            </tr>
-                        ))}</>,
-                        tbodyRef.current
-                    );
-                }
-            }, [players]);
-
-            return <tbody ref={tbodyRef}></tbody>;
+            return (
+                <tbody>
+                    {players.map(player => (
+                        <tr key={player.id} className="border-t border-gray-300">
+                            <td className="p-3 text-gray-900">{player.name}</td>
+                            <td className="p-3 text-gray-900">{player.position}</td>
+                            <td className="p-3 text-gray-900">{player.projectedPoints.toFixed(1)}</td>
+                        </tr>
+                    ))}
+                </tbody>
+            );
         };
 
         const App = () => {
             return (
-                <div>
-                    {/* PlayerTable will manage its own rendering into the tbody */}
+                <table id="player-table">
+                    <thead>
+                        <tr className="bg-teal-100">
+                            <th className="p-3 text-gray-900">Name</th>
+                            <th className="p-3 text-gray-900">Pos</th>
+                            <th className="p-3 text-gray-900">Proj Pts</th>
+                        </tr>
+                    </thead>
                     <PlayerTable />
-                </div>
+                </table>
             );
         };
 
+        // Mount the App to the goat-page div
         ReactDOM.render(<App />, document.getElementById('goat-page'));
     </script>
     <script src="https://unpkg.com/react@17/umd/react.development.js"></script>
