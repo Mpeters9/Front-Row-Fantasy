@@ -11,7 +11,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="text-black bg-gray-100 font-sans" aria-label="GOAT Page Content">
-    <div id="goat-page"></div> <!-- Added target container for React -->
+    <div id="goat-page"></div>
 
     <header class="bg-gradient-to-r from-teal-600 to-teal-800 shadow-md py-3 text-white" role="banner">
         <div class="max-w-7xl mx-auto px-4 flex justify-between items-center">
@@ -209,15 +209,17 @@
             }, []);
 
             return (
-                <tbody>
-                    {players.map(player => (
-                        <tr key={player.id} className="border-t border-gray-300">
-                            <td class="p-3 text-gray-900">{player.name}</td>
-                            <td class="p-3 text-gray-900">{player.position}</td>
-                            <td class="p-3 text-gray-900">{player.projectedPoints.toFixed(1)}</td>
-                        </tr>
-                    ))}
-                </tbody>
+                <table>
+                    <tbody>
+                        {players.map(player => (
+                            <tr key={player.id} className="border-t border-gray-300">
+                                <td className="p-3 text-gray-900">{player.name}</td>
+                                <td className="p-3 text-gray-900">{player.position}</td>
+                                <td className="p-3 text-gray-900">{player.projectedPoints.toFixed(1)}</td>
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
             );
         };
 
@@ -229,7 +231,7 @@
             );
         };
 
-        ReactDOM.render(<App />, document.getElementById('goat-page')); // Now targets the added div
+        ReactDOM.render(<App />, document.getElementById('goat-page'));
     </script>
     <script src="https://unpkg.com/react@17/umd/react.development.js"></script>
     <script src="https://unpkg.com/react-dom@17/umd/react-dom.development.js"></script>
