@@ -11,7 +11,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="text-black bg-gray-100 font-sans" aria-label="GOAT Page Content">
-    <div id="goat-page"></div>
+    <div id="goat-page"></div> <!-- Retained for potential future use, but not used for table -->
 
     <header class="bg-gradient-to-r from-teal-600 to-teal-800 shadow-md py-3 text-white" role="banner">
         <div class="max-w-7xl mx-auto px-4 flex justify-between items-center">
@@ -155,10 +155,7 @@
         <section id="player-research" class="mb-12">
             <h2 class="text-3xl font-semibold mb-6 text-teal-700 text-center">Player Research</h2>
             <div class="p-6 bg-teal-50 rounded-lg shadow-lg hover:shadow-xl transition-shadow">
-                <table class="w-full mb-6" id="player-table">
-                    <thead><tr class="bg-teal-100"><th class="p-3 text-gray-900">Name</th><th class="p-3 text-gray-900">Pos</th><th class="p-3 text-gray-900">Proj Pts</th></tr></thead>
-                    <tbody id="player-table-body"></tbody>
-                </table>
+                <div id="player-table-root"></div> <!-- New mount point for React table -->
                 <div id="player-spotlight" class="p-4 bg-teal-100 rounded-lg text-gray-900">Spotlight: [Player Name] - Key Stats Here</div>
             </div>
         </section>
@@ -210,21 +207,7 @@
             }, []);
 
             return (
-                <tbody>
-                    {players.map(player => (
-                        <tr key={player.id} className="border-t border-gray-300">
-                            <td className="p-3 text-gray-900">{player.name}</td>
-                            <td className="p-3 text-gray-900">{player.position}</td>
-                            <td className="p-3 text-gray-900">{player.projectedPoints.toFixed(1)}</td>
-                        </tr>
-                    ))}
-                </tbody>
-            );
-        };
-
-        const App = () => {
-            return (
-                <table id="player-table">
+                <table className="w-full mb-6">
                     <thead>
                         <tr className="bg-teal-100">
                             <th className="p-3 text-gray-900">Name</th>
@@ -232,13 +215,25 @@
                             <th className="p-3 text-gray-900">Proj Pts</th>
                         </tr>
                     </thead>
-                    <PlayerTable />
+                    <tbody>
+                        {players.map(player => (
+                            <tr key={player.id} className="border-t border-gray-300">
+                                <td className="p-3 text-gray-900">{player.name}</td>
+                                <td className="p-3 text-gray-900">{player.position}</td>
+                                <td className="p-3 text-gray-900">{player.projectedPoints.toFixed(1)}</td>
+                            </tr>
+                        ))}
+                    </tbody>
                 </table>
             );
         };
 
-        // Mount the App to the goat-page div
-        ReactDOM.render(<App />, document.getElementById('goat-page'));
+        const App = () => {
+            return <PlayerTable />;
+        };
+
+        // Mount the App to the player-table-root div within player-research
+        ReactDOM.render(<App />, document.getElementById('player-table-root'));
     </script>
     <script src="https://unpkg.com/react@17/umd/react.development.js"></script>
     <script src="https://unpkg.com/react-dom@17/umd/react-dom.development.js"></script>
