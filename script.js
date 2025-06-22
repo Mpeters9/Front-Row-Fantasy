@@ -272,19 +272,23 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Calculate total roster size dynamically (excluding IR spots for draft)
         const totalRosterSize = lineupConfig.length + benchSize; // Starting lineup + bench
+        const totalRounds = Math.ceil(totalRosterSize / leagueSize); // Number of rounds needed
 
-        // Simulate snake draft for the user's pick
+        // Simulate snake draft picks for the user's position
         const draftPicks = [];
         let currentPick = pick;
-        let round = 1;
-        while (draftPicks.length < totalRosterSize) {
+        for (let round = 1; round <= totalRounds; round++) {
             draftPicks.push(currentPick);
-            round++;
-            currentPick = (round % 2 === 0) ? (leagueSize * 2 + 1 - currentPick) : (leagueSize * (round - 1) + pick);
+            if (round < totalRounds) {
+                currentPick = (round % 2 === 0) ? (leagueSize * 2 + 1 - currentPick) : (leagueSize * (round - 1) + pick);
+            }
+        }
+        while (draftPicks.length < totalRosterSize) {
+            draftPicks.push(draftPicks[draftPicks.length - 1] + leagueSize); // Fill remaining picks in later rounds
         }
 
         // Adjust ADP threshold dynamically based on round
-        const pickThresholds = draftPicks.map((pick, i) => pick + (leagueSize * (Math.floor(i / leagueSize) + 1))); // Increase threshold per round
+        const pickThresholds = draftPicks.map((pick, i) => pick + (leagueSize * (Math.floor(i / leagueSize) + 1)));
 
         // Apply scoring adjustments
         availablePlayers = availablePlayers.map(p => {
@@ -320,28 +324,30 @@ document.addEventListener('DOMContentLoaded', () => {
         const lineup = [];
         let remainingBench = benchSize;
 
-        // Simulate draft for each round
-        for (let i = 0; i < draftPicks.length; i++) {
-            const pickThreshold = pickThresholds[i];
-            let roundPlayers = availablePlayers.filter(p => p.adp >= draftPicks[i] && p.adp <= pickThreshold && !lineup.some(entry => entry.player === p));
+        // Simulate draft round by round
+        for (let round = 1; round <= totalRounds && lineup.length < totalRosterSize; round++) {
+            const pickIndex = round - 1;
+            const pickNumber = draftPicks[pickIndex];
+            const pickThreshold = pickThresholds[pickIndex];
+            let roundPlayers = availablePlayers.filter(p => p.adp >= pickNumber && p.adp <= pickThreshold && !lineup.some(entry => entry.player === p));
 
             // Prioritize DST and K in the last two rounds if they are in the lineup
             if (lineupConfig.includes('1DST') && lineupConfig.includes('1K')) {
-                if (i === draftPicks.length - 2 && usedPositions['DST'] === 0) {
+                if (round === totalRounds - 1 && usedPositions['DST'] === 0) {
                     roundPlayers = roundPlayers.filter(p => p.pos === 'DST');
-                } else if (i === draftPicks.length - 1 && usedPositions['K'] === 0) {
+                } else if (round === totalRounds && usedPositions['K'] === 0) {
                     roundPlayers = roundPlayers.filter(p => p.pos === 'K');
                 } else {
                     roundPlayers = roundPlayers.filter(p => p.pos !== 'DST' && p.pos !== 'K');
                 }
-            } else if (lineupConfig.includes('1DST') && usedPositions['DST'] === 0 && i >= draftPicks.length - 2) {
+            } else if (lineupConfig.includes('1DST') && usedPositions['DST'] === 0 && round >= totalRounds - 1) {
                 roundPlayers = roundPlayers.filter(p => p.pos === 'DST');
-            } else if (lineupConfig.includes('1K') && usedPositions['K'] === 0 && i >= draftPicks.length - 1) {
+            } else if (lineupConfig.includes('1K') && usedPositions['K'] === 0 && round === totalRounds) {
                 roundPlayers = roundPlayers.filter(p => p.pos === 'K');
             }
 
             let player = null;
-            if (i < lineupConfig.length) {
+            if (lineup.length < lineupConfig.length) {
                 // Fill starting lineup
                 for (let p of roundPlayers) {
                     if (usedPositions[p.pos] < requirements[p.pos] || (p.pos !== 'FLEX' && usedPositions['FLEX'] < requirements['FLEX'])) {
@@ -356,7 +362,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     }
                 }
                 if (!player && roundPlayers.length > 0) {
-                    player = roundPlayers[0]; // Fallback to best available if requirements aren't met
+                    player = roundPlayers[0]; // Fallback to best available
                     if (['RB', 'WR', 'TE'].includes(player.pos)) usedPositions['FLEX']++;
                     else usedPositions[player.pos]++;
                 }
@@ -382,12 +388,11 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
             if (player) {
-                lineup.push({ round: Math.floor((i + pick - 1) / leagueSize) + 1, pick: draftPicks[i], player });
-                availablePlayers = availablePlayers.filter(p => p !== player); // Remove selected player
+                lineup.push({ round, pick: pickNumber, player });
+                availablePlayers = availablePlayers.filter(p => p !== player);
             } else if (availablePlayers.length > 0) {
-                // Last resort: pick the best remaining player if no specific match
                 player = availablePlayers[0];
-                lineup.push({ round: Math.floor((i + pick - 1) / leagueSize) + 1, pick: draftPicks[i], player });
+                lineup.push({ round, pick: pickNumber, player });
                 availablePlayers = availablePlayers.filter(p => p !== player);
             }
         }
