@@ -283,8 +283,8 @@ document.addEventListener('DOMContentLoaded', () => {
             currentPick = (round % 2 === 0) ? (leagueSize * 2 + 1 - currentPick) : (leagueSize * (round - 1) + pick);
         }
 
-        // Adjust ADP threshold for each pick
-        const pickThresholds = draftPicks.map(pick => pick + (leagueSize * 1.5)); // Approximate availability window
+        // Adjust ADP threshold dynamically based on round
+        const pickThresholds = draftPicks.map((pick, i) => pick + (leagueSize * (Math.floor(i / leagueSize) + 1))); // Increase threshold per round
 
         // Apply scoring adjustments
         availablePlayers = availablePlayers.map(p => {
@@ -334,19 +334,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 } else {
                     roundPlayers = roundPlayers.filter(p => p.pos !== 'DST' && p.pos !== 'K');
                 }
-            } else if (lineupConfig.includes('1DST') && usedPositions['DST'] === 0 && i === draftPicks.length - 1) {
+            } else if (lineupConfig.includes('1DST') && usedPositions['DST'] === 0 && i >= draftPicks.length - 2) {
                 roundPlayers = roundPlayers.filter(p => p.pos === 'DST');
-            } else if (lineupConfig.includes('1K') && usedPositions['K'] === 0 && i === draftPicks.length - 1) {
+            } else if (lineupConfig.includes('1K') && usedPositions['K'] === 0 && i >= draftPicks.length - 1) {
                 roundPlayers = roundPlayers.filter(p => p.pos === 'K');
             }
-
-            if (roundPlayers.length === 0 && i < draftPicks.length - 1) {
-                // If no players match, expand the ADP window slightly for the next iteration
-                continue; // Move to the next pick if no valid players are found
-            }
-
-            // Sort round players by adjusted points
-            roundPlayers.sort((a, b) => b.adjustedPoints - a.adjustedPoints);
 
             let player = null;
             if (i < lineupConfig.length) {
@@ -363,10 +355,15 @@ document.addEventListener('DOMContentLoaded', () => {
                         break;
                     }
                 }
+                if (!player && roundPlayers.length > 0) {
+                    player = roundPlayers[0]; // Fallback to best available if requirements aren't met
+                    if (['RB', 'WR', 'TE'].includes(player.pos)) usedPositions['FLEX']++;
+                    else usedPositions[player.pos]++;
+                }
             } else if (remainingBench > 0 || (lineupConfig.includes('1DST') && usedPositions['DST'] === 0) || (lineupConfig.includes('1K') && usedPositions['K'] === 0)) {
                 // Fill bench or remaining special positions
                 for (let p of roundPlayers) {
-                    if (remainingBench > 0 && ['RB', 'WR'].includes(p.pos)) {
+                    if (remainingBench > 0) {
                         player = p;
                         remainingBench--;
                         break;
@@ -378,15 +375,20 @@ document.addEventListener('DOMContentLoaded', () => {
                         usedPositions['K']++;
                     }
                 }
-                if (!player && remainingBench > 0) {
-                    player = roundPlayers[0]; // Take the best available player for bench if no preference
+                if (!player && roundPlayers.length > 0) {
+                    player = roundPlayers[0]; // Fallback to best available for bench
                     remainingBench--;
                 }
             }
 
             if (player) {
                 lineup.push({ round: Math.floor((i + pick - 1) / leagueSize) + 1, pick: draftPicks[i], player });
-                availablePlayers = availablePlayers.filter(p => p !== player); // Remove selected player from available pool
+                availablePlayers = availablePlayers.filter(p => p !== player); // Remove selected player
+            } else if (availablePlayers.length > 0) {
+                // Last resort: pick the best remaining player if no specific match
+                player = availablePlayers[0];
+                lineup.push({ round: Math.floor((i + pick - 1) / leagueSize) + 1, pick: draftPicks[i], player });
+                availablePlayers = availablePlayers.filter(p => p !== player);
             }
         }
 
