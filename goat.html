@@ -155,9 +155,9 @@
         <section id="player-research" class="mb-12">
             <h2 class="text-3xl font-semibold mb-6 text-teal-700 text-center">Player Research</h2>
             <div class="p-6 bg-teal-50 rounded-lg shadow-lg hover:shadow-xl transition-shadow">
-                <table class="w-full mb-6">
+                <table class="w-full mb-6" id="player-table">
                     <thead><tr class="bg-teal-100"><th class="p-3 text-gray-900">Name</th><th class="p-3 text-gray-900">Pos</th><th class="p-3 text-gray-900">Proj Pts</th></tr></thead>
-                    <tbody id="player-table"></tbody>
+                    <tbody></tbody> <!-- React will populate this tbody -->
                 </table>
                 <div id="player-spotlight" class="p-4 bg-teal-100 rounded-lg text-gray-900">Spotlight: [Player Name] - Key Stats Here</div>
             </div>
@@ -192,10 +192,12 @@
     </footer>
 
     <script type="text/babel">
-        const { useState, useEffect } = React;
+        const { useState, useEffect, useRef } = React;
 
         const PlayerTable = () => {
+            const tbodyRef = useRef(null);
             const [players, setPlayers] = useState([]);
+
             useEffect(() => {
                 const data = `1,Patrick Mahomes,KC,7,Quarterback,22.5
 2,Josh Allen,BUF,9,Quarterback,23.1
@@ -208,25 +210,29 @@
                 setPlayers(data);
             }, []);
 
-            return (
-                <table>
-                    <tbody>
-                        {players.map(player => (
+            useEffect(() => {
+                if (tbodyRef.current) {
+                    ReactDOM.render(
+                        <>{players.map(player => (
                             <tr key={player.id} className="border-t border-gray-300">
                                 <td className="p-3 text-gray-900">{player.name}</td>
                                 <td className="p-3 text-gray-900">{player.position}</td>
                                 <td className="p-3 text-gray-900">{player.projectedPoints.toFixed(1)}</td>
                             </tr>
-                        ))}
-                    </tbody>
-                </table>
-            );
+                        ))}</>,
+                        tbodyRef.current
+                    );
+                }
+            }, [players]);
+
+            return <tbody ref={tbodyRef}></tbody>;
         };
 
         const App = () => {
             return (
                 <div>
-                    <div id="player-table"><PlayerTable /></div>
+                    {/* PlayerTable will manage its own rendering into the tbody */}
+                    <PlayerTable />
                 </div>
             );
         };
