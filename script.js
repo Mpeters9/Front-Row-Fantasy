@@ -134,20 +134,25 @@ document.addEventListener('DOMContentLoaded', () => {
             return { ...p, adjustedPoints: points };
         });
 
-        // Snake draft logic: one pick per round, alternating order
+        // Snake draft logic: one pick per round, alternating order, plausible by ADP
         for (let i = 0; i < totalRosterSize; i++) {
-            const round = i + 1;
-            let draftOrder;
-            if (Math.floor(i / leagueSize) % 2 === 0) {
-                draftOrder = pick;
-            } else {
-                draftOrder = leagueSize - pick + 1;
-            }
-            // Calculate overall pick number
-            const overallPick = (Math.floor(i / leagueSize) * leagueSize) + draftOrder;
+            const round = Math.floor(i / leagueSize) + 1;
+            const pickInRound = (round % 2 === 1) ? pick : leagueSize - pick + 1;
+            const overallPick = (round - 1) * leagueSize + pickInRound;
 
-            // Only allow players with ADP >= overallPick (simulate plausible draft)
-            let candidates = availablePlayers.filter(p => p.adp >= overallPick && !lineup.some(entry => entry.player === p));
+            // Plausibility: Simulate chance of being available based on ADP
+            let candidates = availablePlayers.filter(p => {
+                if (p.adp < overallPick - 1) return false; // Gone
+                if (p.adp === overallPick - 1) return Math.random() < 0.10; // 10% chance
+                if (p.adp === overallPick) return Math.random() < 0.30; // 30% chance
+                return true; // ADP > overallPick, available
+            });
+
+            // If no plausible candidate, allow next best available (simulate draft chaos)
+            if (candidates.length === 0) {
+                candidates = availablePlayers.filter(p => !lineup.some(entry => entry.player === p));
+            }
+
             if (focus !== 'balanced') {
                 candidates = candidates.sort((a, b) => (a.pos === focus ? -1 : b.pos === focus ? 1 : 0) || b.adjustedPoints - a.adjustedPoints);
             } else {
@@ -179,7 +184,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (candidates.length > 0) player = candidates[0];
             }
             if (player) {
-                lineup.push({ player, round, pick: draftOrder });
+                lineup.push({ player, round, pick: pickInRound });
                 availablePlayers = availablePlayers.filter(p => p !== player);
             }
         }
@@ -190,7 +195,7 @@ document.addEventListener('DOMContentLoaded', () => {
             <h3 class="text-xl font-bold">Optimal Draft</h3>
             <p>Total Points: ${totalPoints.toFixed(1)}</p>
             <ul class="list-disc pl-5">
-                ${lineup.map(entry => `<li>Round ${entry.round}: ${entry.player.name} (${entry.player.pos}) - ${entry.player.adjustedPoints.toFixed(1)} pts (Pick ${entry.pick})</li>`).join('')}
+                ${lineup.map((entry, idx) => `<li>Round ${entry.round}, Pick ${entry.pick}: ${entry.player.name} (${entry.player.pos}) - ${entry.player.adjustedPoints.toFixed(1)} pts</li>`).join('')}
             </ul>
         `;
         return lineup;
