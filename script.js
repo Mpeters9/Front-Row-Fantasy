@@ -379,13 +379,7 @@ document.addEventListener('DOMContentLoaded', () => {
         buildResultDraft.innerHTML = `
             <h3 class="text-xl font-bold">Optimal Draft</h3>
             <p>Total Points: ${totalPoints.toFixed(1)}</p>
-            <ul class="list-disc pl-5">Here’s the remaining code following the provided snippet, completing the generateOptimalDraft, generateOptimalLineupWeekly, and compareLineups functions to ensure the script is fully functional.
-
-javascript
-
-
-
-
+            <ul class="list-disc pl-5">
 ${lineup.map(entry => `<li>${entry.player.name} (${entry.player.pos}) - ${entry.player.adjustedPoints.toFixed(1)} pts (Round ${entry.round}, Pick ${entry.pick})</li>`).join('')}
             </ul>
         `;
