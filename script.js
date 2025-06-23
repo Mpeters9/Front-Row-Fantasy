@@ -46,16 +46,24 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
-    // Clamp draft pick input on league size change/input
+    // --- Set defaults ---
+    if (leagueSizeSelect) leagueSizeSelect.value = 12;
+    if (draftPickInput) draftPickInput.value = 1;
+    if (draftPickValue) draftPickValue.textContent = 1;
+    if (scoringTypeSelect) scoringTypeSelect.value = 'standard';
+
+    // --- Clamp draft pick input on league size change/input ---
     if (leagueSizeSelect && draftPickInput && draftPickValue) {
         const clampDraftPick = () => {
             draftPickInput.max = leagueSizeSelect.value;
             draftPickInput.min = 1;
-            draftPickInput.value = clamp(parseInt(draftPickInput.value), 1, parseInt(leagueSizeSelect.value));
+            // If current value is out of range, clamp it
+            draftPickInput.value = clamp(parseInt(draftPickInput.value) || 1, 1, parseInt(leagueSizeSelect.value));
             draftPickValue.textContent = draftPickInput.value;
         };
         leagueSizeSelect.addEventListener('change', clampDraftPick);
         draftPickInput.addEventListener('input', clampDraftPick);
+        clampDraftPick(); // run once on load
     }
 
     // Sync bench size between sections
@@ -67,7 +75,7 @@ document.addEventListener('DOMContentLoaded', () => {
         lineupBenchSizeSelect.addEventListener('change', syncBench);
     }
 
-    // Updated player data with ADP from FantasyPros PPR (June 20, 2025)
+    // Player data (unchanged)
     const players = [
         { name: 'Christian McCaffrey', pos: 'RB', team: 'SF', adp: 1, points: 22.5, td: 1, fumble: 0, passTds: 0, receptions: 80 },
         { name: 'CeeDee Lamb', pos: 'WR', team: 'DAL', adp: 6, points: 20.1, td: 1, fumble: 0, passTds: 0, receptions: 100 },
@@ -99,60 +107,122 @@ document.addEventListener('DOMContentLoaded', () => {
         { name: 'Harrison Butker', pos: 'K', team: 'KC', adp: 160, points: 7.5, td: 0, fumble: 0, passTds: 0, receptions: 0 },
     ];
 
-    // Generate Optimal Draft
-    if (generateDraftButton && leagueSizeSelect && startingLineupSelect && benchSizeSelect && scoringTypeSelect && bonusTDCheckbox && penaltyFumbleCheckbox && positionFocusSelect && draftPickInput && progressBarDraft && progressDraft && buildResultDraft) {
-        generateDraftButton.addEventListener('click', () => {
-            const leagueSize = parseInt(leagueSizeSelect.value) || 10;
-            const draftPick = clamp(parseInt(draftPickInput.value), 1, leagueSize);
-            if (leagueSize < 8 || leagueSize > 14) return alert('League size must be between 8 and 14.');
-
-            showProgress(progressBarDraft, progressDraft, () => {
-                generateOptimalDraft(
-                    leagueSize,
-                    parseLineupConfig(startingLineupSelect.value),
-                    parseInt(benchSizeSelect.value) || 7,
-                    scoringTypeSelect.value,
-                    bonusTDCheckbox.checked,
-                    penaltyFumbleCheckbox.checked,
-                    positionFocusSelect.value,
-                    draftPick
-                );
-            });
+    // --- Generate Optimal Draft ---
+    function generateOptimalDraft(leagueSize, lineupConfig, benchSize, scoring, bonusTD, penaltyFumble, focus, pick) {
+        let availablePlayers = [...players].sort((a, b) => a.adp - b.adp);
+        const totalRosterSize = lineupConfig.length + benchSize;
+        const requirements = {};
+        lineupConfig.forEach(req => {
+            const [count, pos] = req.match(/(\d+)([A-Z]+)/);
+            requirements[pos] = parseInt(count);
         });
-    }
+        requirements['FLEX'] = requirements['FLEX'] || 0;
+        const usedPositions = {};
+        for (let pos in requirements) usedPositions[pos] = 0;
+        const lineup = [];
 
-    // Generate Optimal Weekly Lineup
-    if (generateLineupWeeklyButton && lineupSizeInput && lineupStartingSelect && lineupBenchSizeSelect && lineupIrSpotsSelect && lineupScoringSelect && lineupBonusTDCheckbox && lineupPenaltyFumbleCheckbox && currentRosterInput && progressBarWeekly && progressWeekly && lineupResult) {
-        generateLineupWeeklyButton.addEventListener('click', () => {
-            showProgress(progressBarWeekly, progressWeekly, () => {
-                generateOptimalLineupWeekly(
-                    parseInt(lineupSizeInput.value) || 15,
-                    parseLineupConfig(lineupStartingSelect.value),
-                    parseInt(lineupBenchSizeSelect.value) || 7,
-                    parseInt(lineupIrSpotsSelect.value) || 1,
-                    lineupScoringSelect.value,
-                    lineupBonusTDCheckbox.checked,
-                    lineupPenaltyFumbleCheckbox.checked,
-                    parseRoster(currentRosterInput.value)
-                );
-            });
+        // Apply scoring adjustments
+        availablePlayers = availablePlayers.map(p => {
+            let points = p.points;
+            if (scoring === 'ppr') points += p.receptions;
+            else if (scoring === 'halfppr') points += p.receptions * 0.5;
+            else if (scoring === 'tep' && p.pos === 'TE') points *= 1.5;
+            else if (scoring === 'tefullppr' && p.pos === 'TE') points += p.receptions * 2;
+            else if (scoring === '6ptpass') points += (p.passTds * 2);
+            if (bonusTD && p.td > 0) points += 6;
+            if (penaltyFumble && p.fumble > 0) points -= 2;
+            return { ...p, adjustedPoints: points };
         });
+
+        // Snake draft logic: one pick per round, alternating order
+        for (let i = 0; i < totalRosterSize; i++) {
+            const round = i + 1;
+            let draftOrder;
+            if (Math.floor(i / leagueSize) % 2 === 0) {
+                draftOrder = pick;
+            } else {
+                draftOrder = leagueSize - pick + 1;
+            }
+            // Calculate overall pick number
+            const overallPick = (Math.floor(i / leagueSize) * leagueSize) + draftOrder;
+
+            // Only allow players with ADP >= overallPick (simulate plausible draft)
+            let candidates = availablePlayers.filter(p => p.adp >= overallPick && !lineup.some(entry => entry.player === p));
+            if (focus !== 'balanced') {
+                candidates = candidates.sort((a, b) => (a.pos === focus ? -1 : b.pos === focus ? 1 : 0) || b.adjustedPoints - a.adjustedPoints);
+            } else {
+                candidates = candidates.sort((a, b) => b.adjustedPoints - a.adjustedPoints);
+            }
+
+            let player = null;
+            // Fill starting lineup first
+            if (i < lineupConfig.length) {
+                for (let p of candidates) {
+                    if (usedPositions[p.pos] < requirements[p.pos] || (p.pos !== 'FLEX' && usedPositions['FLEX'] < requirements['FLEX'])) {
+                        if (usedPositions[p.pos] < requirements[p.pos]) {
+                            player = p;
+                            usedPositions[p.pos]++;
+                        } else if (usedPositions['FLEX'] < requirements['FLEX'] && ['RB', 'WR', 'TE'].includes(p.pos)) {
+                            player = p;
+                            usedPositions['FLEX']++;
+                        }
+                        break;
+                    }
+                }
+                if (!player && candidates.length > 0) {
+                    player = candidates[0];
+                    if (['RB', 'WR', 'TE'].includes(player.pos)) usedPositions['FLEX']++;
+                    else usedPositions[player.pos]++;
+                }
+            } else {
+                // Fill bench
+                if (candidates.length > 0) player = candidates[0];
+            }
+            if (player) {
+                lineup.push({ player, round, pick: draftOrder });
+                availablePlayers = availablePlayers.filter(p => p !== player);
+            }
+        }
+
+        // Display result
+        const totalPoints = lineup.reduce((sum, entry) => sum + entry.player.adjustedPoints, 0);
+        buildResultDraft.innerHTML = `
+            <h3 class="text-xl font-bold">Optimal Draft</h3>
+            <p>Total Points: ${totalPoints.toFixed(1)}</p>
+            <ul class="list-disc pl-5">
+                ${lineup.map(entry => `<li>Round ${entry.round}: ${entry.player.name} (${entry.player.pos}) - ${entry.player.adjustedPoints.toFixed(1)} pts (Pick ${entry.pick})</li>`).join('')}
+            </ul>
+        `;
+        return lineup;
     }
 
-    // Swap Players
-    if (swapPlayersButton && currentRosterInput) {
-        swapPlayersButton.addEventListener('click', () => {
-            const currentRoster = parseRoster(currentRosterInput.value);
-            alert(currentRoster.length ? 'Players swapped! Review and generate lineup.' : 'Enter players in the roster field first!');
+    // --- Event listeners ---
+    if (generateDraftButton) generateDraftButton.addEventListener('click', () => {
+        const leagueSize = parseInt(leagueSizeSelect.value) || 12;
+        const draftPick = clamp(parseInt(draftPickInput.value) || 1, 1, leagueSize);
+        if (draftPick > leagueSize) {
+            alert(`Draft position cannot exceed league size (${leagueSize}).`);
+            draftPickInput.value = leagueSize;
+            draftPickValue.textContent = leagueSize;
+            return;
+        }
+        showProgress(progressBarDraft, progressDraft, () => {
+            generateOptimalDraft(
+                leagueSize,
+                parseLineupConfig(startingLineupSelect.value),
+                parseInt(benchSizeSelect.value) || 7,
+                scoringTypeSelect.value,
+                bonusTDCheckbox.checked,
+                penaltyFumbleCheckbox.checked,
+                positionFocusSelect.value,
+                draftPick
+            );
         });
-    }
+    });
 
-    // Save/Export Draft
-    if (saveDraftButton && buildResultDraft) {
-        saveDraftButton.addEventListener('click', () =>
-            saveExport(buildResultDraft, 'savedDraft', 'fantasy_draft.txt', 'Draft saved and exported!')
-        );
-    }
+    if (saveDraftButton) saveDraftButton.addEventListener('click', () =>
+        saveExport(buildResultDraft, 'savedDraft', 'fantasy_draft.txt', 'Draft saved and exported!')
+    );
 
     // Save/Export Weekly Lineup
     if (saveLineupWeeklyButton && lineupResult) {
@@ -220,143 +290,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 compareLineups(lineup1, lineup2, 'weekly');
             });
         });
-    }
-
-    function generateOptimalDraft(leagueSize, lineupConfig, benchSize, scoring, bonusTD, penaltyFumble, focus, pick) {
-        let availablePlayers = [...players];
-        availablePlayers.sort((a, b) => a.adp - b.adp); // Sort by ADP
-
-        // Calculate total roster size dynamically (excluding IR spots for draft)
-        const totalRosterSize = lineupConfig.length + benchSize; // Starting lineup + bench
-
-        // Generate draft picks for the user's position using snake draft pattern
-        const draftPicks = [];
-        let currentPick = pick;
-        for (let i = 0; i < totalRosterSize; i++) {
-            const round = Math.floor(i / leagueSize) + 1;
-            draftPicks.push(currentPick);
-            if (i < totalRosterSize - 1) {
-                currentPick = (round % 2 === 0) ? (leagueSize * (round - 1) + (leagueSize + 1 - pick)) : (leagueSize * round + pick);
-            }
-        }
-
-        // Adjust ADP threshold dynamically based on round
-        const pickThresholds = draftPicks.map((pick, i) => pick + (leagueSize * Math.floor(i / leagueSize)));
-
-        // Apply scoring adjustments
-        availablePlayers = availablePlayers.map(p => {
-            let points = p.points;
-            if (scoring === 'ppr') points += p.receptions;
-            else if (scoring === 'halfppr') points += p.receptions * 0.5;
-            else if (scoring === 'tep' && p.pos === 'TE') points *= 1.5;
-            else if (scoring === 'tefullppr' && p.pos === 'TE') points += p.receptions * 2;
-            else if (scoring === '6ptpass') points += (p.passTds * 2); // Add 2 points per passing TD (from 4 to 6)
-            if (bonusTD && p.td > 0) points += 6;
-            if (penaltyFumble && p.fumble > 0) points -= 2;
-            return { ...p, adjustedPoints: points };
-        });
-
-        // Sort by adjusted points with focus priority
-        if (focus !== 'balanced') {
-            availablePlayers.sort((a, b) => (a.pos === focus ? -1 : b.pos === focus ? 1 : 0) || b.adjustedPoints - a.adjustedPoints);
-        } else {
-            availablePlayers.sort((a, b) => b.adjustedPoints - a.adjustedPoints);
-        }
-
-        // Parse lineup requirements
-        const requirements = {};
-        lineupConfig.forEach(req => {
-            const [count, pos] = req.match(/(\d+)([A-Z]+)/);
-            requirements[pos] = parseInt(count);
-        });
-        requirements['FLEX'] = requirements['FLEX'] || 0;
-
-        // Track roster composition
-        const usedPositions = {};
-        for (let pos in requirements) usedPositions[pos] = 0;
-        const lineup = [];
-        let remainingBench = benchSize;
-
-        // Simulate draft pick by pick
-        for (let i = 0; i < totalRosterSize; i++) {
-            const round = Math.floor(i / leagueSize) + 1;
-            const pickNumber = draftPicks[i];
-            const pickThreshold = pickThresholds[i];
-            let roundPlayers = availablePlayers.filter(p => p.adp >= pickNumber && p.adp <= pickThreshold && !lineup.some(entry => entry.player === p));
-
-            // Prioritize DST and K in the last two rounds if they are in the lineup
-            if (lineupConfig.includes('1DST') && lineupConfig.includes('1K')) {
-                if (round === Math.ceil(totalRosterSize / leagueSize) - 1 && usedPositions['DST'] === 0) {
-                    roundPlayers = roundPlayers.filter(p => p.pos === 'DST');
-                } else if (round === Math.ceil(totalRosterSize / leagueSize) && usedPositions['K'] === 0) {
-                    roundPlayers = roundPlayers.filter(p => p.pos === 'K');
-                } else {
-                    roundPlayers = roundPlayers.filter(p => p.pos !== 'DST' && p.pos !== 'K');
-                }
-            } else if (lineupConfig.includes('1DST') && usedPositions['DST'] === 0 && round >= Math.ceil(totalRosterSize / leagueSize) - 1) {
-                roundPlayers = roundPlayers.filter(p => p.pos === 'DST');
-            } else if (lineupConfig.includes('1K') && usedPositions['K'] === 0 && round === Math.ceil(totalRosterSize / leagueSize)) {
-                roundPlayers = roundPlayers.filter(p => p.pos === 'K');
-            }
-
-            let player = null;
-            if (i < lineupConfig.length) {
-                // Fill starting lineup
-                for (let p of roundPlayers) {
-                    if (usedPositions[p.pos] < requirements[p.pos] || (p.pos !== 'FLEX' && usedPositions['FLEX'] < requirements['FLEX'])) {
-                        if (usedPositions[p.pos] < requirements[p.pos]) {
-                            player = p;
-                            usedPositions[p.pos]++;
-                        } else if (usedPositions['FLEX'] < requirements['FLEX'] && ['RB', 'WR', 'TE'].includes(p.pos)) {
-                            player = p;
-                            usedPositions['FLEX']++;
-                        }
-                        break;
-                    }
-                }
-                if (!player && roundPlayers.length > 0) {
-                    player = roundPlayers[0]; // Fallback to best available
-                    if (['RB', 'WR', 'TE'].includes(player.pos)) usedPositions['FLEX']++;
-                    else usedPositions[player.pos]++;
-                }
-            } else if (remainingBench > 0 || (lineupConfig.includes('1DST') && usedPositions['DST'] === 0) || (lineupConfig.includes('1K') && usedPositions['K'] === 0)) {
-                // Fill bench or remaining special positions
-                for (let p of roundPlayers) {
-                    if (remainingBench > 0) {
-                        player = p;
-                        remainingBench--;
-                        break;
-                    } else if (p.pos === 'DST' && usedPositions['DST'] === 0 && lineupConfig.includes('1DST')) {
-                        player = p;
-                        usedPositions['DST']++;
-                        break;
-                    } else if (p.pos === 'K' && usedPositions['K'] === 0 && lineupConfig.includes('1K')) {
-                        player = p;
-                        usedPositions['K']++;
-                        break;
-                    }
-                }
-                if (!player && roundPlayers.length > 0) {
-                    player = roundPlayers[0]; // Fallback to best available
-                    remainingBench--;
-                }
-            }
-            if (player) {
-                lineup.push({ player, round, pick: pickNumber });
-                availablePlayers = availablePlayers.filter(p => p !== player);
-            }
-        }
-
-        // Display result
-        const totalPoints = lineup.reduce((sum, entry) => sum + entry.player.adjustedPoints, 0);
-        buildResultDraft.innerHTML = `
-            <h3 class="text-xl font-bold">Optimal Draft</h3>
-            <p>Total Points: ${totalPoints.toFixed(1)}</p>
-            <ul class="list-disc pl-5">
-                ${lineup.map(entry => `<li>${entry.player.name} (${entry.player.pos}) - ${entry.player.adjustedPoints.toFixed(1)} pts (Round ${entry.round}, Pick ${entry.pick})</li>`).join('')}
-            </ul>
-        `;
-        return lineup;
     }
 
     function generateOptimalLineupWeekly(lineupSize, lineupConfig, benchSize, irSpots, scoring, bonusTD, penaltyFumble, currentRoster, alternate = false) {
