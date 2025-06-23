@@ -474,4 +474,13 @@ document.addEventListener('DOMContentLoaded', () => {
         html += `</ul><strong>Total Points: ${totalPoints.toFixed(1)}</strong>`;
         document.getElementById('build-result').innerHTML = html;
     }
+
+    // Example: Load CSV (using fetch and PapaParse, or convert to JSON)
+    fetch('fantasypros_adp_ppr.json')
+      .then(res => res.json())
+      .then(players => {
+        // players is now an array sorted by ADP
+        const draftResults = runSnakeDraft(players, numTeams, numRounds);
+        renderDraftResults(draftResults);
+      });
 });
