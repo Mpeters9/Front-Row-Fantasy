@@ -280,12 +280,12 @@ document.addEventListener('DOMContentLoaded', () => {
             const round = Math.floor(i / leagueSize) + 1;
             draftPicks.push(currentPick);
             if (i < totalRosterSize - 1) {
-                currentPick = (round % 2 === 0) ? (leagueSize * 2 + 1 - currentPick) : (leagueSize * round + pick);
+                currentPick = (round % 2 === 0) ? (leagueSize * (round - 1) + (leagueSize + 1 - pick)) : (leagueSize * round + pick);
             }
         }
 
         // Adjust ADP threshold dynamically based on round
-        const pickThresholds = draftPicks.map((pick, i) => pick + (leagueSize * (Math.floor(i / leagueSize) + 1)));
+        const pickThresholds = draftPicks.map((pick, i) => pick + (leagueSize * Math.floor(i / leagueSize)));
 
         // Apply scoring adjustments
         availablePlayers = availablePlayers.map(p => {
@@ -450,8 +450,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         for (let player of availablePlayers) {
             if (lineup.length >= effectiveSize) break;
-            let posToFill = player.pos;
-            if (usedPositions[player.pos] < requirements[player.pos] || (player.pos !== 'FLEX' && usedPositions['FLEX'] < requirements['FLEX'])) {
+            if (usedPositions[player.pos] < requirements[player.pos] || (['RB', 'WR', 'TE'].includes(player.pos) && usedPositions['FLEX'] < requirements['FLEX'])) {
                 if (usedPositions[player.pos] < requirements[player.pos]) {
                     lineup.push(player);
                     usedPositions[player.pos]++;
@@ -459,6 +458,19 @@ document.addEventListener('DOMContentLoaded', () => {
                     lineup.push(player);
                     usedPositions['FLEX']++;
                 }
+            } else if (lineup.length < lineupConfig.length + benchSize) {
+                lineup.push(player); // Fill bench if within size limit
+            }
+        }
+
+        // Fill remaining spots with IR if applicable
+        while (lineup.length < effectiveSize && irSpots > 0) {
+            const irPlayer = availablePlayers.find(p => !lineup.includes(p));
+            if (irPlayer) {
+                lineup.push(irPlayer);
+                irSpots--;
+            } else {
+                break;
             }
         }
 
@@ -473,85 +485,20 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function compareLineups(lineup1, lineup2, type) {
-        const resultDiv = type === 'draft' ? buildResultDraft : lineupResult;
-        const total1 = lineup1.reduce((sum, entry) => sum + (entry.player ? entry.player.adjustedPoints : entry.adjustedPoints), 0).toFixed(1);
-        const total2 = lineup2.reduce((sum, entry) => sum + (entry.player ? entry.player.adjustedPoints : entry.adjustedPoints), 0).toFixed(1);
-        resultDiv.innerHTML = `
-            <h3 class="text-xl font-semibold mb-4 text-teal-700">Lineup Comparison</h3>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div class="p-4 bg-teal-50 rounded-lg shadow">
-                    <h4 class="font-semibold">Optimal ${type === 'draft' ? 'Draft' : 'Weekly'}</h4>
-                    <ul class="list-disc pl-5 space-y-2 mt-2">
-                        ${lineup1.map(entry => `<li>${type === 'draft' ? `Round ${entry.round} (Pick ${entry.pick}): ` : ''}${entry.player ? entry.player.name : entry.name} (${entry.player ? entry.player.pos : entry.pos}) - ${(entry.player ? entry.player.adjustedPoints : entry.adjustedPoints).toFixed(1)} pts</li>`).join('')}
-                    </ul>
-                    <p class="mt-2 text-gray-600">Total: ${total1} pts</p>
-                </div>
-                <div class="p-4 bg-teal-50 rounded-lg shadow">
-                    <h4 class="font-semibold">Balanced ${type === 'draft' ? 'Draft' : 'Weekly'}</h4>
-                    <ul class="list-disc pl-5 space-y-2 mt-2">
-                        ${lineup2.map(entry => `<li>${type === 'draft' ? `Round ${entry.round} (Pick ${entry.pick}): ` : ''}${entry.player ? entry.player.name : entry.name} (${entry.player ? entry.player.pos : entry.pos}) - ${(entry.player ? entry.player.adjustedPoints : entry.adjustedPoints).toFixed(1)} pts</li>`).join('')}
-                    </ul>
-                    <p class="mt-2 text-gray-600">Total: ${total2} pts</p>
-                </div>
-            </div>
+        const totalPoints1 = lineup1.reduce((sum, entry) => sum + entry.player.adjustedPoints, 0).toFixed(1);
+        const totalPoints2 = lineup2.reduce((sum, entry) => sum + entry.player.adjustedPoints, 0).toFixed(1);
+
+        const resultElement = type === 'draft' ? buildResultDraft : lineupResult;
+        resultElement.innerHTML = `
+            <h3 class="text-xl font-semibold mb-4 text-teal-700">Comparison of ${type === 'draft' ? 'Draft' : 'Weekly'} Lineups</h3>
+            <h4 class="text-lg font-medium">Lineup 1 (Focus: ${type === 'draft' ? lineup1[0].player.pos : 'Current'}) - ${totalPoints1} pts</h4>
+            <ul class="list-disc pl-5 space-y-2">
+                ${lineup1.map(entry => `<li>${entry.player.name} (${entry.player.pos}) - ${entry.player.adjustedPoints.toFixed(1)} pts${type === 'draft' ? ` (Round ${entry.round}, Pick ${entry.pick})` : ''}</li>`).join('')}
+            </ul>
+            <h4 class="text-lg font-medium">Lineup 2 (Focus: ${type === 'draft' ? 'Balanced' : 'Alternate'}) - ${totalPoints2} pts</h4>
+            <ul class="list-disc pl-5 space-y-2">
+                ${lineup2.map(entry =>`<li>${entry.player.name} (${entry.player.pos}) - ${entry.player.adjustedPoints.toFixed(1)} pts${type === 'draft' ? ` (Round ${entry.round}, Pick ${entry.pick})` : ''}</li>`).join('')}
+            </ul>
+            <p class="mt-2 text-gray-600">${totalPoints1 > totalPoints2 ? 'Lineup 1 is better by ' + (totalPoints1 - totalPoints2) + ' points!' : totalPoints2 > totalPoints1 ? 'Lineup 2 is better by ' + (totalPoints2 - totalPoints1) + ' points!' : 'Both lineups are equal in points!'}</p>
         `;
     }
-
-    // Best Draft Strategies Functionality
-    const strategies = {
-        redraft: [
-            { title: 'Zero-RB', content: 'Zero-RB Guide: Focus on WRs early (rounds 1-3), then target RBs in mid-to-late rounds (6-10). Ideal for PPR/Half PPR leagues. Target high-upside RBs like Jaylen Warren or Rachaad White. Risk: Depth at RB if injuries occur. Best for leagues with deep WR talent pools.' },
-            { title: 'Late-Round QB', content: 'Late-Round QB: Target QBs in rounds 8+ (e.g., Josh Allen, Patrick Mahomes). Prioritize elite WRs/RBs early. Risk: QB production may lag if top options are taken. Works well in 6pt Passing TD formats to maximize value.' },
-            { title: 'Hero-RB', content: 'Hero-RB: Draft a top RB early (rounds 1-2, e.g., Christian McCaffrey), then load up on WRs and a mid-tier QB. Ideal for standard leagues. Risk: Weakness at other positions if RB underperforms. Pair with TEP or TE Full PPR if TE depth is strong.' },
-            { title: 'Balanced Approach', content: 'Balanced Approach: Draft a mix of positions early (e.g., RB, WR, QB by round 5), avoiding over-focusing on one. Aim for consistency with players like Justin Jefferson or Breece Hall. Risk: May miss elite upside. Suits all scoring types.' },
-            { title: 'WR-Heavy', content: 'WR-Heavy: Load up on WRs in rounds 1-4 (e.g., Ja\'Marr Chase, Amon-Ra St. Brown), then fill RB and QB later. Great for PPR/Half PPR. Risk: RB scarcity in later rounds. Target high-reception WRs like Tyreek Hill.' }
-        ],
-        dynasty: [
-            { title: 'Zero-RB', content: 'Zero-RB Guide: Prioritize young WRs (e.g., Garrett Wilson, Drake London) in early rounds, then acquire rookie RBs (e.g., Jaylen Warren) via trades or late picks. Ideal for long-term PPR value. Risk: Early RB injuries hurt depth.' },
-            { title: 'Late-Round QB', content: 'Late-Round QB: Delay QB picks (e.g., Josh Allen in later rounds), focusing on young skill players. Trade up for elite QBs later. Risk: QB depth may thin out. Best with 6pt Passing TDs to boost late-round value.' },
-            { title: 'Hero-RB', content: 'Hero-RB: Secure a young RB star (e.g., Breece Hall) early, then build around with WRs and a mid-tier QB. Ideal for dynasty stability. Risk: Over-reliance on one player. Pair with TEP or TE Full PPR for TE support.' },
-            { title: 'Rookie Focus', content: 'Rookie Focus: Target rookie WRs/RBs (e.g., Puka Nacua) in early rounds, leveraging their long-term potential. Trade veterans for picks. Risk: Inconsistent early production. Works with any scoring type.' },
-            { title: 'Balanced Approach', content: 'Balanced Approach: Draft a mix of young stars (e.g., Justin Jefferson) and veterans (e.g., Travis Kelce) across positions. Maintain trade flexibility. Risk: May miss breakout rookies. Suits all scoring formats.' }
-        ],
-        superflex: [
-            { title: 'Early QB', content: 'Early QB: Draft two QBs early (e.g., Patrick Mahomes, Josh Allen) in rounds 1-4 to exploit Superflex value. Fill WR/RB later. Risk: Weak skill positions. Optimized for 6pt Passing TDs.' },
-            { title: 'Zero-RB', content: 'Zero-RB Guide: Focus on QBs and WRs early (e.g., Ja\'Marr Chase), then target RBs late (e.g., Rachaad White). Leverage QB depth. Risk: RB injuries. Best for PPR/Half PPR.' },
-            { title: 'Hero-RB', content: 'Hero-RB: Grab a top RB (e.g., Christian McCaffrey) early, then secure two QBs (e.g., Josh Allen) for Superflex. Risk: QB scarcity later. Pair with TEP or TE Full PPR for TE support.' },
-            { title: 'QB-WR Stack', content: 'QB-WR Stack: Draft a QB (e.g., Patrick Mahomes) and his top WR (e.g., Travis Kelce) early, then add a second QB. Boosts consistency. Risk: RB depth issues. Works with 6pt Passing TDs.' },
-            { title: 'Balanced Superflex', content: 'Balanced Superflex: Take one QB early (e.g., Josh Allen), then mix WRs (e.g., Justin Jefferson) and RBs (e.g., Breece Hall). Add a second QB later. Risk: Elite QB miss. Suits all scoring types.' }
-        ]
-    };
-
-    // Populate strategy cards based on league type
-    const leagueTypeSelect = document.getElementById('leagueType');
-    const strategyCardsDiv = document.getElementById('strategyCards');
-    if (leagueTypeSelect && strategyCardsDiv) {
-        function updateStrategies() {
-            const leagueType = leagueTypeSelect.value;
-            strategyCardsDiv.innerHTML = '';
-            strategies[leagueType].forEach((strategy, index) => {
-                const card = document.createElement('div');
-                card.className = 'strategy-card p-4 bg-teal-100 rounded-lg';
-                card.innerHTML = `
-                    <h4 class="font-semibold">${strategy.title}</h4>
-                    <p class="strategy-preview text-sm">${strategy.content.substring(0, 100)}...</p>
-                    <p class="full-content text-sm mt-2">${strategy.content}</p>
-                    <span class="expand-toggle" onclick="this.parentElement.classList.toggle('expanded');">Show more</span>
-                `;
-                strategyCardsDiv.appendChild(card);
-            });
-        }
-        leagueTypeSelect.addEventListener('change', updateStrategies);
-        updateStrategies(); // Ensure initial load
-    }
-
-    // Reset Strategies
-    const resetStrategiesButton = document.getElementById('resetStrategies');
-    if (resetStrategiesButton) {
-        resetStrategiesButton.addEventListener('click', () => {
-            document.querySelectorAll('.strategy-card').forEach(card => {
-                card.classList.remove('expanded');
-            });
-        });
-    }
-});
