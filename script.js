@@ -107,19 +107,19 @@ document.addEventListener('DOMContentLoaded', () => {
         { name: 'Harrison Butker', pos: 'K', team: 'KC', adp: 160, points: 7.5, td: 0, fumble: 0, passTds: 0, receptions: 0 },
     ];
 
-    // --- Generate Optimal Draft ---
-    function generateOptimalDraft(leagueSize, lineupConfig, benchSize, scoring, bonusTD, penaltyFumble, focus, pick) {
+    // --- Generate Optimal Draft with Snake Draft Logic ---
+    function generateOptimalDraft(leagueSize, lineupConfig, benchSize, scoring, bonusTD, penaltyFumble, focus, userDraftPick) {
+        // Prepare player pool, sorted by ADP
         let availablePlayers = [...players].sort((a, b) => a.adp - b.adp);
         const totalRosterSize = lineupConfig.length + benchSize;
         const requirements = {};
         lineupConfig.forEach(req => {
-            const [count, pos] = req.match(/(\d+)([A-Z]+)/);
-            requirements[pos] = parseInt(count);
+            const [_, count, pos] = req.match(/(\d+)([A-Z]+)/) || [];
+            if (count && pos) requirements[pos] = parseInt(count);
         });
         requirements['FLEX'] = requirements['FLEX'] || 0;
         const usedPositions = {};
         for (let pos in requirements) usedPositions[pos] = 0;
-        const lineup = [];
 
         // Apply scoring adjustments
         availablePlayers = availablePlayers.map(p => {
@@ -134,75 +134,80 @@ document.addEventListener('DOMContentLoaded', () => {
             return { ...p, adjustedPoints: points };
         });
 
-        for (let i = 0; i < totalRosterSize; i++) {
-            // Calculate round and pick in round (snake draft)
-            const round = i + 1;
-            const roundNum = Math.floor(i / leagueSize) + 1;
-            const pickInRound = (roundNum % 2 === 1)
-                ? pick
-                : leagueSize - pick + 1;
-            const overallPick = (roundNum - 1) * leagueSize + pickInRound;
+        // Snake draft simulation
+        const draftPicks = [];
+        let pickNum = 1;
+        let round = 1;
+        let totalPicks = totalRosterSize;
+        let userPickIdx = userDraftPick - 1; // 0-based index
 
-            // Plausibility: Simulate chance of being available based on ADP
-            let candidates = availablePlayers.filter(p => {
-                if (p.adp < overallPick - 1) return false; // Gone
-                if (p.adp === overallPick - 1) return Math.random() < 0.10; // 10% chance
-                if (p.adp === overallPick) return Math.random() < 0.30; // 30% chance
-                return true; // ADP > overallPick, available
-            });
+        for (let i = 0; i < totalPicks; i++) {
+            round = Math.floor(i / leagueSize) + 1;
+            let pickInRound = i % leagueSize;
+            let isEvenRound = round % 2 === 0;
+            let actualPick = isEvenRound ? leagueSize - pickInRound - 1 : pickInRound;
+            let overallPick = (round - 1) * leagueSize + (actualPick + 1);
 
-            if (candidates.length === 0) {
-                candidates = availablePlayers.filter(p => !lineup.some(entry => entry.player === p));
-            }
+            // Only select for the user's team (userPickIdx)
+            if (actualPick === userPickIdx) {
+                // Filter candidates for lineup requirements
+                let candidates = availablePlayers;
+                if (focus !== 'balanced') {
+                    candidates = candidates.sort((a, b) => (a.pos === focus ? -1 : b.pos === focus ? 1 : 0) || b.adjustedPoints - a.adjustedPoints);
+                } else {
+                    candidates = candidates.sort((a, b) => b.adjustedPoints - a.adjustedPoints);
+                }
 
-            if (focus !== 'balanced') {
-                candidates = candidates.sort((a, b) => (a.pos === focus ? -1 : b.pos === focus ? 1 : 0) || b.adjustedPoints - a.adjustedPoints);
-            } else {
-                candidates = candidates.sort((a, b) => b.adjustedPoints - a.adjustedPoints);
-            }
-
-            let player = null;
-            // Fill starting lineup first
-            if (i < lineupConfig.length) {
-                for (let p of candidates) {
-                    if (usedPositions[p.pos] < requirements[p.pos] || (p.pos !== 'FLEX' && usedPositions['FLEX'] < requirements['FLEX'])) {
-                        if (usedPositions[p.pos] < requirements[p.pos]) {
+                let player = null;
+                // Fill starting lineup first
+                if (draftPicks.length < lineupConfig.length) {
+                    for (let p of candidates) {
+                        if (usedPositions[p.pos] < (requirements[p.pos] || 0)) {
                             player = p;
                             usedPositions[p.pos]++;
+                            break;
                         } else if (usedPositions['FLEX'] < requirements['FLEX'] && ['RB', 'WR', 'TE'].includes(p.pos)) {
                             player = p;
                             usedPositions['FLEX']++;
+                            break;
                         }
-                        break;
                     }
+                    if (!player && candidates.length > 0) {
+                        player = candidates[0];
+                        if (['RB', 'WR', 'TE'].includes(player.pos)) usedPositions['FLEX']++;
+                        else usedPositions[player.pos] = (usedPositions[player.pos] || 0) + 1;
+                    }
+                } else {
+                    // Fill bench
+                    if (candidates.length > 0) player = candidates[0];
                 }
-                if (!player && candidates.length > 0) {
-                    player = candidates[0];
-                    if (['RB', 'WR', 'TE'].includes(player.pos)) usedPositions['FLEX']++;
-                    else usedPositions[player.pos]++;
+                if (player) {
+                    draftPicks.push({
+                        player,
+                        round,
+                        pick: actualPick + 1,
+                        overall: overallPick
+                    });
+                    availablePlayers = availablePlayers.filter(p => p !== player);
                 }
             } else {
-                // Fill bench
-                if (candidates.length > 0) player = candidates[0];
-            }
-            if (player) {
-                lineup.push({ player, round: roundNum, pick: pickInRound, overall: overallPick });
-                availablePlayers = availablePlayers.filter(p => p !== player);
+                // Simulate other teams picking best available
+                availablePlayers.shift();
             }
         }
 
         // Display result
-        const totalPoints = lineup.reduce((sum, entry) => sum + entry.player.adjustedPoints, 0);
+        const totalPoints = draftPicks.reduce((sum, entry) => sum + entry.player.adjustedPoints, 0);
         buildResultDraft.innerHTML = `
             <h3 class="text-xl font-bold">Optimal Draft</h3>
             <p>Total Points: ${totalPoints.toFixed(1)}</p>
             <ul class="list-disc pl-5">
-                ${lineup.map(entry =>
+                ${draftPicks.map(entry =>
                     `<li>Round ${entry.round}, Pick ${entry.pick} (Overall ${entry.overall}): ${entry.player.name} (${entry.player.pos}) - ${entry.player.adjustedPoints.toFixed(1)} pts</li>`
                 ).join('')}
             </ul>
         `;
-        return lineup;
+        return draftPicks;
     }
 
     // --- Event listeners ---
@@ -466,7 +471,6 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('build-result').innerHTML = html;
     }
 
-    // Example: Load CSV (using fetch and PapaParse, or convert to JSON)
     fetch('fantasypros_adp_ppr.json')
       .then(res => res.json())
       .then(players => {
