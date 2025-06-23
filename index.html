@@ -1,105 +1,33 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width,initial-scale=1.0">
-    <meta name="description" content="Front Row Fantasy GOAT Page - Build the greatest fantasy football teams with expert tools and insights.">
-    <meta name="keywords" content="fantasy football, GOAT, team building, draft strategies, player research">
-    <meta name="author" content="Mpeters9">
-    <title>Front Row Fantasy - GOAT Page</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
-    <script src="https://cdn.tailwindcss.com"></script>
-</head>
-<body class="text-black bg-gray-100 font-sans" aria-label="GOAT Page Content">
-    <header class="bg-gradient-to-r from-teal-600 to-teal-800 shadow-md py-3 text-white" role="banner">
-        <div class="max-w-7xl mx-auto px-4 flex justify-between items-center">
-            <h1 class="text-2xl font-bold">GOAT - Greatest of All Time</h1>
-            <nav class="space-x-4">
-                <a href="index.html" class="hover:underline">Home</a>
-                <a href="tools.html" class="hover:underline">Expert Tools</a>
-                <a href="#about" class="hover:underline">About</a>
-                <a href="#games" class="hover:underline">Games</a>
-                <a href="#contact" class="hover:underline">Contact</a>
-            </nav>
-        </div>
-    </header>
-    <main class="max-w-7xl mx-auto px-4 py-6 bg-gray-100">
-        <section class="bg-gradient-to-r from-teal-500 to-teal-700 text-white p-8 rounded-lg shadow-lg mb-8 text-center">
-            <h2 class="text-4xl font-bold mb-4">Unleash Your Fantasy GOAT</h2>
-            <p class="text-lg mb-6">Master the art of fantasy football with elite strategies, in-depth research, and a thriving community to build the ultimate team.</p>
-            <button class="bg-white text-teal-600 px-6 py-3 rounded-lg hover:bg-gray-200 transition">Get Started</button>
-        </section>
-        <section id="best-draft-builds" class="mb-12">
-            <h2 class="text-3xl font-semibold mb-6 text-teal-700 text-center">Best Draft Builds</h2>
-            <div class="p-6 bg-teal-50 rounded-lg shadow-lg hover:shadow-xl transition-shadow">
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-                    <div>
-                        <label class="block mb-2 text-gray-900">League Size: <select id="leagueSize" class="bg-white p-3 rounded border border-gray-300 w-full"><option>8</option><option selected>10</option><option>12</option><option>14</option></select></label>
-                        <label class="block mb-2 text-gray-900">Starting Lineup: <select id="startingLineup" class="bg-white p-3 rounded border border-gray-300 w-full">
-                            <option selected>1QB,2RB,2WR,1TE,1FLEX,1DST,1K</option>
-                            <option>1QB,2RB,3WR,1TE,1FLEX,1DST,1K</option>
-                            <option>1QB,2RB,2WR,1TE,2FLEX,1DST,1K</option>
-                            <option>1QB,3RB,2WR,1TE,1FLEX,1DST,1K</option>
-                            <option>1QB,2RB,3WR,1TE,1DST,1K</option>
-                            <option>1QB,2RB,2WR,1TE,1FLEX</option>
-                            <option>1QB,2RB,3WR,1TE,1FLEX</option>
-                            <option>1QB,2RB,2WR,1TE,2FLEX</option>
-                            <option>1QB,3RB,2WR,1TE,1FLEX</option>
-                            <option>1QB,2RB,3WR,1TE</option>
-                        </select></label>
-                        <label class="block mb-2 text-gray-900">Bench Size: <select id="benchSize" class="bg-white p-3 rounded border border-gray-300 w-full"><option>5</option><option>6</option><option selected>7</option><option>8</option></select></label>
-                        <label class="block mb-2 text-gray-900">Scoring: <select id="scoringType" class="bg-white p-3 rounded border border-gray-300 w-full">
-                            <option>Standard</option>
-                            <option>PPR (+1 pt/reception)</option>
-                            <option>Half PPR (0.5 pt/reception)</option>
-                            <option>TEP (1.5x TE points)</option>
-                            <option>TE Full PPR (2x pt/reception for TE)</option>
-                            <option>6pt Passing TDs</option>
-                        </select></label>
-                        <label class="block mb-2 text-gray-900">Bonuses/Penalties: <input type="checkbox" id="bonusTD" class="mr-2">+6 pts for TDs <input type="checkbox" id="penaltyFumble" class="ml-4 mr-2">-2 pts for fumbles</label>
+<nav class="space-x-4">
+<a href="#home" class="nav-link hover:underline text-teal-600">Home</a>
+<a href="tools.html" class="nav-link hover:underline text-teal-600">Expert Tools</a>
+                <a href="goat.html" class="nav-link hover:underline text-teal-600">GOAT</a>
+<a href="#about" class="nav-link hover:underline text-teal-600">About</a>
+<a href="#games" class="nav-link hover:underline text-teal-600">Games</a>
+<a href="#contact" class="nav-link hover:underline text-teal-600">Contact</a>
+@@ -41,8 +42,17 @@ <h2 class="text-3xl font-bold mb-4">Welcome to Front Row Fantasy</h2>
+<p class="text-lg mb-6">Your front-row seat to dominate the fantasy football season! Dive into real-time stats, join a passionate community, and elevate your game.</p>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+<div class="p-4 bg-teal-700 rounded-lg shadow">
+                    <h3 class="text-xl font-semibold">Top Player</h3>
+                    <p class="mt-2">Josh Allen (BUF) - 25.4 pts</p>
+                    <h3 class="text-xl font-semibold border-b border-teal-500 pb-2 mb-2">Top Players</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-2 mt-2">
+                        <div class="p-2 bg-teal-800 rounded-lg hover:bg-teal-900 transition-colors text-white"><strong>QB:</strong> Josh Allen (BUF) - 25.4 pts</div>
+                        <div class="p-2 bg-teal-800 rounded-lg hover:bg-teal-900 transition-colors text-white"><strong>QB:</strong> Patrick Mahomes (KC) - 24.8 pts</div>
+                        <div class="p-2 bg-teal-800 rounded-lg hover:bg-teal-900 transition-colors text-white"><strong>RB:</strong> Christian McCaffrey (SF) - 20.5 pts</div>
+                        <div class="p-2 bg-teal-800 rounded-lg hover:bg-teal-900 transition-colors text-white"><strong>RB:</strong> Derrick Henry (TEN) - 19.6 pts</div>
+                        <div class="p-2 bg-teal-800 rounded-lg hover:bg-teal-900 transition-colors text-white"><strong>WR:</strong> Tyreek Hill (MIA) - 19.8 pts</div>
+                        <div class="p-2 bg-teal-800 rounded-lg hover:bg-teal-900 transition-colors text-white"><strong>WR:</strong> Justin Jefferson (MIN) - 19.2 pts</div>
+                        <div class="p-2 bg-teal-800 rounded-lg hover:bg-teal-900 transition-colors text-white"><strong>TE:</strong> Travis Kelce (KC) - 18.9 pts</div>
+                        <div class="p-2 bg-teal-800 rounded-lg hover:bg-teal-900 transition-colors text-white"><strong>TE:</strong> George Kittle (SF) - 18.2 pts</div>
                     </div>
-                    <div>
-                        <label class="block mb-2 text-gray-900">Position Focus: <select id="positionFocus" class="bg-white p-3 rounded border border-gray-300 w-full"><option>Balanced</option><option>QB</option><option>RB</option><option>WR</option><option>TE</option></select></label>
-                        <label class="block mb-2 text-gray-900">Draft Position: <input type="range" id="draftPick" min="1" max="14" class="w-full" value="5"><span id="draftPickValue" class="ml-2">5</span></label>
-                        <button id="generateLineup" class="bg-teal-600 text-white px-6 py-3 rounded-lg hover:bg-teal-700 transition w-full">Generate Optimal Draft</button>
-                        <button id="saveLineup" class="bg-teal-500 text-white px-6 py-3 rounded-lg hover:bg-teal-600 transition w-full mt-2">Save/Export Draft</button>
-                        <button id="compareLineups" class="bg-teal-400 text-white px-6 py-3 rounded-lg hover:bg-teal-500 transition w-full mt-2">Compare Lineups</button>
-                    </div>
-                </div>
-                <div id="progressBar" class="h-2 bg-gray-300 rounded mb-4 hidden"><div id="progress" class="h-full bg-teal-600 rounded" style="width:0%"></div></div>
-                <div id="build-result" class="mt-6 text-gray-900"></div>
-            </div>
-        </section>
-        <section id="best-lineup-builds" class="mb-12">
-            <h2 class="text-3xl font-semibold mb-6 text-teal-700 text-center">Best Lineup Builds</h2>
-            <div class="p-6 bg-teal-50 rounded-lg shadow-lg hover:shadow-xl transition-shadow">
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-                    <div>
-                        <label class="block mb-2 text-gray-900">Roster Size: <input type="number" id="lineupSize" min="9" max="20" class="bg-white p-3 rounded border border-gray-300 w-full" placeholder="e.g., 15" value="15"></label>
-                        <label class="block mb-2 text-gray-900">Starting Lineup: <select id="lineupStarting" class="bg-white p-3 rounded border border-gray-300 w-full">
-                            <option>1QB,2RB,3WR,1TE,1FLEX,1DST,1K</option>
-                            <option>1QB,2RB,2WR,1TE,2FLEX,1DST,1K</option>
-                            <option>1QB,3RB,2WR,1TE,1FLEX,1DST,1K</option>
-                            <option>1QB,2RB,3WR,1TE,1DST,1K</option>
-                            <option>1QB,2RB,3WR,1TE,1FLEX</option>
-                            <option>1QB,2RB,2WR,1TE,2FLEX</option>
-                            <option>1QB,3RB,2WR,1TE,1FLEX</option>
-                            <option>1QB,2RB,3WR,1TE</option>
-                        </select></label>
-                        <label class="block mb-2 text-gray-900">Bench Size: <select id="lineupBenchSize" class="bg-white p-3 rounded border border-gray-300 w-full"><option>5</option><option>6</option><option selected>7</option><option>8</option></select></label>
-                        <label class="block mb-2 text-gray-900">IR Spots: <select id="lineupIrSpots" class="bg-white p-3 rounded border border-gray-300 w-full"><option>0</option><option selected>1</option><option>2</option></select></label>
-                        <label class="block mb-2 text-gray-900">Scoring: <select id="lineupScoring" class="bg-white p-3 rounded border border-gray-300 w-full">
-                            <option>Standard</option>
-                            <option>PPR (+1 pt/reception)</option>
-                            <option>Half PPR (0.5 pt/reception)</option>
-                            <option>TEP (1.5x TE points)</option>
-                            <option>TE Full PPR (2x pt/reception for TE)</option>
-                            <option>6pt Passing TDs</option>
-                        </select></label>
-                        <label class="block mb-2 text-gray-900">Bonuses/Penalties: <input type="checkbox" id="lineupBonusTD" class="mr-2">+6 pts for TDs <input type="checkbox" id="lineupPenaltyFumble" class="ml-4 mr-2">-2 pts for fumbles</label>
-                        <label class="block mb-2 text-gray-900">Current Roster: <textarea id="currentRoster" class="bg-white p-3 rounded border border-gray-300 w-full h-24" placeholder="Enter players (e.g., Patrick Mahomes,QB; Christian McCaffrey,RB)"></textarea></label>
-                    </div>
-                    <div>
-                        <button id="swapPlayers" class="bg-teal-400 text-white px-6 py-3 rounded-lg hover:bg-teal-500 transition w-full mb-2">Swap Players</button>
-                        <button id="generateLineupWeekly" class="bg-teal-600 text-white px-6 py-3 rounded-lg hover:bg-teal-700 transition w-full">Generate Optimal Lineup</button>
-                        <button id="saveLineupWeekly" class="bg-teal-500 text-white px-6 py-3 rounded-lg hover:bg-teal-600 transition w
+</div>
+<div class="p-4 bg-teal-700 rounded-lg shadow">
+<h3 class="text-xl font-semibold">Active Leagues</h3>
+@@ -102,5 +112,3 @@ <h2 class="text-2xl font-bold text-gray-900">Contact</h2>
+</footer>
+
+<script src="script.js"></script>
+</body>
+</html>
