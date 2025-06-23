@@ -234,8 +234,32 @@
 
         // Mount the App to the player-table-root div within player-research
         ReactDOM.render(<App />, document.getElementById('player-table-root'));
+
+        const NUM_TEAMS = 12;
+        const ROUNDS = 14;
+
+        // Example: players is a sorted array of player objects by ADP or ranking
+        function runSnakeDraft(players) {
+          const teams = Array.from({ length: NUM_TEAMS }, () => []);
+          let availablePlayers = [...players];
+
+          for (let round = 0; round < ROUNDS; round++) {
+            const order = round % 2 === 0
+              ? [...Array(NUM_TEAMS).keys()] // 0 to 11
+              : [...Array(NUM_TEAMS).keys()].reverse(); // 11 to 0
+
+            for (let pick of order) {
+              // For realism, pick the highest-ranked available player
+              const selectedPlayer = availablePlayers.shift();
+              teams[pick].push(selectedPlayer);
+            }
+          }
+          return teams;
+        }
     </script>
     <script src="https://unpkg.com/react@17/umd/react.development.js"></script>
     <script src="https://unpkg.com/react-dom@17/umd/react-dom.development.js"></script>
     <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
     <script src="script.js"></script>
+</body>
+</html>
