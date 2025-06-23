@@ -429,16 +429,15 @@ document.addEventListener('DOMContentLoaded', () => {
         const teams = Array.from({ length: numTeams }, () => []);
         let availablePlayers = [...players];
         let draftOrder = [];
-
         let overallPick = 1;
-        for (let round = 1; round <= numRounds; round++) {
-            // Determine pick order for this round
-            let order = (round % 2 === 1)
-                ? [...Array(numTeams).keys()] // 0 to numTeams-1
-                : [...Array(numTeams).keys()].reverse(); // numTeams-1 to 0
 
-            for (let i = 0; i < order.length; i++) {
-                const teamIdx = order[i];
+        for (let round = 1; round <= numRounds; round++) {
+            let order = (round % 2 === 1)
+                ? [...Array(numTeams).keys()]
+                : [...Array(numTeams).keys()].reverse();
+
+            for (let pickInRound = 0; pickInRound < order.length; pickInRound++) {
+                const teamIdx = order[pickInRound];
                 const player = availablePlayers.shift();
                 if (!player) break;
 
@@ -446,7 +445,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 draftOrder.push({
                     round,
-                    pickInRound: i + 1,
+                    pickInRound: pickInRound + 1,
                     overallPick: overallPick++,
                     team: teamIdx + 1,
                     player
@@ -456,16 +455,8 @@ document.addEventListener('DOMContentLoaded', () => {
         return draftOrder;
     }
 
-    // Example usage:
-    // const players = [
-    //     // ...array of player objects sorted by ADP/rank...
-    // ];
-    // const numTeams = 12, numRounds = 14;
-    // const draftResults = runSnakeDraft(players, numTeams, numRounds);
-
-    // To display:
     function renderDraftResults(draftResults) {
-        let html = `<h3>Optimal Draft</h3><ul>`;
+        let html = `<h3 class="text-xl font-bold mb-2">Optimal Draft</h3><ul class="list-disc pl-6">`;
         let totalPoints = 0;
         draftResults.forEach(pick => {
             totalPoints += pick.player.projectedPoints || 0;
