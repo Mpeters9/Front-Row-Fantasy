@@ -155,52 +155,36 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         let availablePlayers = [...adpPlayers].sort((a, b) => a.adp - b.adp);
         const totalRosterSize = lineupConfig.length + benchSize;
-        const requirements = {};
-        lineupConfig.forEach(req => {
-            const [_, count, pos] = req.match(/(\d+)([A-Z]+)/) || [];
-            if (count && pos) requirements[pos] = parseInt(count);
-        });
-        requirements['FLEX'] = requirements['FLEX'] || 0;
-        const usedPositions = {};
-        for (let pos in requirements) usedPositions[pos] = 0;
-
-        // Simulate a full snake draft, picking for all teams, but only keep user's picks
-        const draftPicks = [];
+        const userTeam = [];
         let userPickIdx = userDraftPick - 1; // 0-based index
-        let totalPicks = totalRosterSize * leagueSize;
 
-        for (let i = 0; i < totalRosterSize * leagueSize; i++) {
-            let round = Math.floor(i / leagueSize) + 1;
-            let pickInRound = i % leagueSize;
-            let isEvenRound = round % 2 === 0;
-            let actualPick = isEvenRound ? leagueSize - pickInRound - 1 : pickInRound;
-
-            if (actualPick === userPickIdx && draftPicks.length < totalRosterSize) {
-                // User's pick
-                let player = availablePlayers[0];
-                draftPicks.push({
-                    player,
-                    round,
-                    pick: actualPick + 1,
-                    overall: i + 1
-                });
-                availablePlayers = availablePlayers.filter(p => p !== player);
-            } else {
-                // Other teams pick best available
+        // Simulate a full snake draft for all teams, but only keep your team's picks
+        for (let round = 0; round < totalRosterSize; round++) {
+            let pickNum = round * leagueSize + (round % 2 === 0 ? userPickIdx : leagueSize - userPickIdx - 1);
+            // Remove already drafted players
+            let player = availablePlayers.shift();
+            userTeam.push({
+                player,
+                round: round + 1,
+                pick: (round % 2 === 0 ? userPickIdx + 1 : leagueSize - userPickIdx),
+                overall: pickNum + 1
+            });
+            // Remove other teams' picks for this round
+            for (let i = 1; i < leagueSize; i++) {
                 availablePlayers.shift();
             }
         }
 
         // Display result
         buildResultDraft.innerHTML = `
-            <h3 class="text-xl font-bold">Optimal Draft</h3>
+            <h3 class="text-xl font-bold">Your Drafted Team</h3>
             <ul class="list-disc pl-5">
-                ${draftPicks.map(entry =>
+                ${userTeam.map(entry =>
                     `<li>Round ${entry.round}, Pick ${entry.pick} (Overall ${entry.overall}): ${entry.player.name} (${entry.player.pos})</li>`
                 ).join('')}
             </ul>
         `;
-        return draftPicks;
+        return userTeam;
     }
 
     // --- Generate Optimal Draft with Snake Draft Logic ---
