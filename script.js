@@ -122,7 +122,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- Load CSV and Initialize Draft ---
     let adpPlayers = [];
 
-    fetch('FantasyPros_2025_Overall_ADP_Rankings (1).csv')
+    fetch('FantasyPros_2025_Overall_ADP_Rankings.csv')
         .then(res => {
             if (!res.ok) throw new Error('CSV file not found or not accessible.');
             return res.text();
