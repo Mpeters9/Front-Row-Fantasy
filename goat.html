@@ -36,54 +36,7 @@
         <section id="best-draft-builds" class="mb-12">
             <h2 class="text-3xl font-semibold mb-6 text-teal-700 text-center">Best Draft Builds</h2>
             <div class="p-6 bg-teal-50 rounded-lg shadow-lg hover:shadow-xl transition-shadow">
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-                    <div>
-                        <label class="block mb-2 text-gray-900">League Size: <select id="leagueSize" class="bg-white p-3 rounded border border-gray-300 w-full">
-                            <option value="8">8</option>
-                            <option value="10" selected>10</option>
-                            <option value="12">12</option>
-                            <option value="14">14</option>
-                        </select></label>
-                        <label class="block mb-2 text-gray-900">Starting Lineup: <select id="startingLineup" class="bg-white p-3 rounded border border-gray-300 w-full">
-                            <option value="1QB,2RB,2WR,1TE,1FLEX,1DST,1K" selected>1QB, 2RB, 2WR, 1TE, 1FLEX, 1DST, 1K</option>
-                            <option value="1QB,2RB,3WR,1TE,1FLEX,1DST,1K">1QB, 2RB, 3WR, 1TE, 1FLEX, 1DST, 1K</option>
-                            <option value="1QB,2RB,2WR,1TE,2FLEX,1DST,1K">1QB, 2RB, 2WR, 1TE, 2FLEX, 1DST, 1K</option>
-                            <option value="1QB,3RB,2WR,1TE,1FLEX,1DST,1K">1QB, 3RB, 2WR, 1TE, 1FLEX, 1DST, 1K</option>
-                            <option value="1QB,2RB,3WR,1TE,1DST,1K">1QB, 2RB, 3WR, 1TE, 1DST, 1K</option>
-                            <option value="1QB,2RB,2WR,1TE,1FLEX">1QB, 2RB, 2WR, 1TE, 1FLEX</option>
-                            <option value="1QB,2RB,3WR,1TE,1FLEX">1QB, 2RB, 3WR, 1TE, 1FLEX</option>
-                            <option value="1QB,2RB,2WR,1TE,2FLEX">1QB, 2RB, 2WR, 1TE, 2FLEX</option>
-                            <option value="1QB,3RB,2WR,1TE,1FLEX">1QB, 3RB, 2WR, 1TE, 1FLEX</option>
-                            <option value="1QB,2RB,3WR,1TE">1QB, 2RB, 3WR, 1TE</option>
-                        </select></label>
-                        <label class="block mb-2 text-gray-900">Bench Size: <select id="benchSize" class="bg-white p-3 rounded border border-gray-300 w-full">
-                            <option value="5">5</option>
-                            <option value="6">6</option>
-                            <option value="7" selected>7</option>
-                            <option value="8">8</option>
-                        </select></label>
-                        <label class="block mb-2 text-gray-900">Scoring: <select id="scoringType" class="bg-white p-3 rounded border border-gray-300 w-full">
-                            <option value="standard">Standard</option>
-                            <option value="ppr">PPR (+1 pt/reception)</option>
-                            <option value="halfppr">Half PPR (0.5 pt/reception)</option>
-                            <option value="tep">TEP (1.5x TE points)</option>
-                            <option value="tefullppr">TE Full PPR (2x pt/reception for TE)</option>
-                            <option value="6ptpass">6pt Passing TDs</option>
-                        </select></label>
-                        <label class="block mb-2 text-gray-900">Bonuses/Penalties: <input type="checkbox" id="bonusTD" class="mr-2">+6 pts for TDs <input type="checkbox" id="penaltyFumble" class="ml-4 mr-2">-2 pts for fumbles</label>
-                    </div>
-                    <div>
-                        <label class="block mb-2 text-gray-900">Position Focus: <select id="positionFocus" class="bg-white p-3 rounded border border-gray-300 w-full"><option value="balanced">Balanced</option><option value="qb">QB</option><option value="rb">RB</option><option value="wr">WR</option><option value="te">TE</option></select></label>
-                        <label class="block mb-2 text-gray-900">Draft Position: <input type="range" id="draftPick" min="1" max="14" class="w-full" value="5"><span id="draftPickValue" class="ml-2">5</span></label>
-                        <button id="generateLineup" class="bg-teal-600 text-white px-6 py-3 rounded-lg hover:bg-teal-700 transition w-full">Generate Optimal Draft</button>
-                        <button id="saveLineup" class="bg-teal-500 text-white px-6 py-3 rounded-lg hover:bg-teal-600 transition w-full mt-2">Save/Export Draft</button>
-                        <button id="compareLineups" class="bg-teal-400 text-white px-6 py-3 rounded-lg hover:bg-teal-500 transition w-full mt-2">Compare Lineups</button>
-                    </div>
-                </div>
-                <div id="progressBar" class="h-2 bg-gray-300 rounded mb-4 hidden">
-                    <div id="progress" class="h-full bg-teal-600 rounded" style="width: 0%;"></div>
-                </div>
-                <div id="build-result" class="mt-6 text-gray-900"></div>
+                <div id="build-result"></div>
             </div>
         </section>
 
@@ -238,7 +191,6 @@
         const NUM_TEAMS = 12;
         const ROUNDS = 14;
 
-        // Example: players is a sorted array of player objects by ADP or ranking
         function runSnakeDraft(players) {
           const teams = Array.from({ length: NUM_TEAMS }, () => []);
           let availablePlayers = [...players];
