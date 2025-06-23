@@ -514,23 +514,4 @@ document.addEventListener('DOMContentLoaded', () => {
         html += `</ul><strong>Total Points: ${totalPoints.toFixed(1)}</strong>`;
         document.getElementById(targetId).innerHTML = html;
     }
-
-    // --- User Draft Button Logic ---
-    if (generateDraftButton) {
-        generateDraftButton.addEventListener('click', () => {
-            const leagueSize = parseInt(leagueSizeSelect.value) || 12;
-            const rounds = parseLineupConfig(startingLineupSelect.value).length + (parseInt(benchSizeSelect.value) || 7);
-            const userDraftPick = clamp(parseInt(draftPickInput.value) || 1, 1, leagueSize);
-
-            // If you want to use adjusted scoring, map your players first:
-            const scoredPlayers = players.map(p => {
-                let points = p.points;
-                // ...apply your scoring logic here if needed...
-                return { ...p, adjustedPoints: points };
-            });
-
-            const draftResults = runUserSnakeDraft(scoredPlayers, leagueSize, rounds, userDraftPick);
-            renderUserDraftResults(draftResults);
-        });
-    }
 });
