@@ -373,48 +373,46 @@ document.addEventListener('DOMContentLoaded', () => {
                     } else if (p.pos === 'DST' && usedPositions['DST'] === 0 && lineupConfig.includes('1DST')) {
                         player = p;
                         usedPositions['DST']++;
+                        break;
                     } else if (p.pos === 'K' && usedPositions['K'] === 0 && lineupConfig.includes('1K')) {
                         player = p;
                         usedPositions['K']++;
+                        break;
                     }
                 }
                 if (!player && roundPlayers.length > 0) {
-                    player = roundPlayers[0]; // Fallback to best available for bench
+                    player = roundPlayers[0]; // Fallback to best available
                     remainingBench--;
                 }
             }
-
             if (player) {
-                lineup.push({ round, pick: pickNumber, player });
-                availablePlayers = availablePlayers.filter(p => p !== player);
-            } else if (availablePlayers.length > 0) {
-                player = availablePlayers[0];
-                lineup.push({ round, pick: pickNumber, player });
+                lineup.push({ player, round, pick: pickNumber });
                 availablePlayers = availablePlayers.filter(p => p !== player);
             }
         }
 
+        // Display result
+        const totalPoints = lineup.reduce((sum, entry) => sum + entry.player.adjustedPoints, 0);
         buildResultDraft.innerHTML = `
-            <h3 class="text-xl font-semibold mb-4 text-teal-700">Optimal Draft Build</h3>
-            <ul class="list-disc pl-5 space-y-2">
-                ${lineup.map(entry => `<li>Round ${entry.round} (Pick ${entry.pick}): ${entry.player.name} (${entry.player.pos}) - ${entry.player.adjustedPoints.toFixed(1)} pts (ADP: ${entry.player.adp})</li>`).join('')}
+            <h3 class="text-xl font-bold">Optimal Draft</h3>
+            <p>Total Points: ${totalPoints.toFixed(1)}</p>
+            <ul class="list-disc pl-5">
+                ${lineup.map(entry => `<li>${entry.player.name} (${entry.player.pos}) - ${entry.player.adjustedPoints.toFixed(1)} pts (Round ${entry.round}, Pick ${entry.pick})</li>`).join('')}
             </ul>
-            <p class="mt-2 text-gray-600">Total Projected Points: ${lineup.reduce((sum, entry) => sum + entry.player.adjustedPoints, 0).toFixed(1)}</p>
         `;
         return lineup;
     }
 
-    function generateOptimalLineupWeekly(size, lineupConfig, benchSize, irSpots, scoring, bonusTD, penaltyFumble, currentRoster = []) {
+    function generateOptimalLineupWeekly(lineupSize, lineupConfig, benchSize, irSpots, scoring, bonusTD, penaltyFumble, currentRoster, alternate = false) {
         let availablePlayers = [...players];
         if (currentRoster.length) {
-            availablePlayers = currentRoster.map(p => {
-                const [name, pos] = p.split(',');
-                const player = players.find(pl => pl.name === name && pl.pos === pos);
+            const rosterPlayers = currentRoster.map(name => {
+                const player = players.find(p => p.name === name.split(',')[0].trim());
                 return player ? { ...player, adjustedPoints: player.points } : null;
             }).filter(p => p);
-        } else {
-            availablePlayers.sort((a, b) => b.points - a.points);
+            availablePlayers = rosterPlayers.length ? rosterPlayers : availablePlayers;
         }
+        availablePlayers.sort((a, b) => b.points - a.points); // Sort by base points initially
 
         // Apply scoring adjustments
         availablePlayers = availablePlayers.map(p => {
@@ -423,17 +421,11 @@ document.addEventListener('DOMContentLoaded', () => {
             else if (scoring === 'halfppr') points += p.receptions * 0.5;
             else if (scoring === 'tep' && p.pos === 'TE') points *= 1.5;
             else if (scoring === 'tefullppr' && p.pos === 'TE') points += p.receptions * 2;
-            else if (scoring === '6ptpass') points += (p.passTds * 2); // Add 2 points per passing TD (from 4 to 6)
+            else if (scoring === '6ptpass') points += (p.passTds * 2); // Add 2 points per passing TD
             if (bonusTD && p.td > 0) points += 6;
             if (penaltyFumble && p.fumble > 0) points -= 2;
             return { ...p, adjustedPoints: points };
         });
-
-        // Calculate total roster size including IR spots
-        const totalRosterSize = lineupConfig.length + benchSize + irSpots;
-
-        // Use the provided lineup size or the calculated total roster size
-        const effectiveSize = Math.min(size, totalRosterSize);
 
         // Parse lineup requirements
         const requirements = {};
@@ -443,62 +435,95 @@ document.addEventListener('DOMContentLoaded', () => {
         });
         requirements['FLEX'] = requirements['FLEX'] || 0;
 
-        // Greedy selection
-        const lineup = [];
+        // Track roster composition
         const usedPositions = {};
         for (let pos in requirements) usedPositions[pos] = 0;
+        const lineup = [];
+        let remainingBench = benchSize;
+        let remainingIr = irSpots;
 
-        for (let player of availablePlayers) {
-            if (lineup.length >= effectiveSize) break;
-            if (usedPositions[player.pos] < requirements[player.pos] || (['RB', 'WR', 'TE'].includes(player.pos) && usedPositions['FLEX'] < requirements['FLEX'])) {
-                if (usedPositions[player.pos] < requirements[player.pos]) {
-                    lineup.push(player);
-                    usedPositions[player.pos]++;
-                } else if (usedPositions['FLEX'] < requirements['FLEX'] && ['RB', 'WR', 'TE'].includes(player.pos)) {
-                    lineup.push(player);
-                    usedPositions['FLEX']++;
+        // Select players
+        availablePlayers = availablePlayers.filter(p => !lineup.some(entry => entry.player === p));
+        for (let i = 0; i < lineupSize; i++) {
+            let player = null;
+            if (i < lineupConfig.length) {
+                // Fill starting lineup
+                for (let p of availablePlayers) {
+                    if (usedPositions[p.pos] < requirements[p.pos] || (p.pos !== 'FLEX' && usedPositions['FLEX'] < requirements['FLEX'])) {
+                        if (usedPositions[p.pos] < requirements[p.pos]) {
+                            player = p;
+                            usedPositions[p.pos]++;
+                        } else if (usedPositions['FLEX'] < requirements['FLEX'] && ['RB', 'WR', 'TE'].includes(p.pos)) {
+                            player = p;
+                            usedPositions['FLEX']++;
+                        }
+                        break;
+                    }
                 }
-            } else if (lineup.length < lineupConfig.length + benchSize) {
-                lineup.push(player); // Fill bench if within size limit
+                if (!player && availablePlayers.length > 0) {
+                    player = availablePlayers[0]; // Fallback to best available
+                    if (['RB', 'WR', 'TE'].includes(player.pos)) usedPositions['FLEX']++;
+                    else usedPositions[player.pos]++;
+                }
+            } else if (remainingBench > 0 || remainingIr > 0) {
+                // Fill bench or IR
+                for (let p of availablePlayers) {
+                    if (remainingBench > 0) {
+                        player = p;
+                        remainingBench--;
+                        break;
+                    } else if (remainingIr > 0 && alternate) { // Use IR for alternate lineup
+                        player = p;
+                        remainingIr--;
+                        break;
+                    }
+                }
+                if (!player && availablePlayers.length > 0) {
+                    player = availablePlayers[0];
+                    remainingBench--;
+                }
+            }
+            if (player) {
+                lineup.push({ player, round: 1, pick: i + 1 });
+                availablePlayers = availablePlayers.filter(p => p !== player);
             }
         }
 
-        // Fill remaining spots with IR if applicable
-        while (lineup.length < effectiveSize && irSpots > 0) {
-            const irPlayer = availablePlayers.find(p => !lineup.includes(p));
-            if (irPlayer) {
-                lineup.push(irPlayer);
-                irSpots--;
-            } else {
-                break;
-            }
-        }
-
+        // Display result
+        const totalPoints = lineup.reduce((sum, entry) => sum + entry.player.adjustedPoints, 0);
         lineupResult.innerHTML = `
-            <h3 class="text-xl font-semibold mb-4 text-teal-700">Optimal Weekly Lineup</h3>
-            <ul class="list-disc pl-5 space-y-2">
-                ${lineup.map(player => `<li>${player.name} (${player.pos}) - ${player.adjustedPoints.toFixed(1)} pts</li>`).join('')}
+            <h3 class="text-xl font-bold">Optimal Weekly Lineup</h3>
+            <p>Total Points: ${totalPoints.toFixed(1)}</p>
+            <ul class="list-disc pl-5">
+                ${lineup.map(entry => `<li>${entry.player.name} (${entry.player.pos}) - ${entry.player.adjustedPoints.toFixed(1)} pts</li>`).join('')}
             </ul>
-            <p class="mt-2 text-gray-600">Total Projected Points: ${lineup.reduce((sum, p) => sum + p.adjustedPoints, 0).toFixed(1)}</p>
         `;
         return lineup;
     }
 
     function compareLineups(lineup1, lineup2, type) {
-        const totalPoints1 = lineup1.reduce((sum, entry) => sum + entry.player.adjustedPoints, 0).toFixed(1);
-        const totalPoints2 = lineup2.reduce((sum, entry) => sum + entry.player.adjustedPoints, 0).toFixed(1);
-
+        const totalPoints1 = lineup1.reduce((sum, entry) => sum + entry.player.adjustedPoints, 0);
+        const totalPoints2 = lineup2.reduce((sum, entry) => sum + entry.player.adjustedPoints, 0);
         const resultElement = type === 'draft' ? buildResultDraft : lineupResult;
         resultElement.innerHTML = `
-            <h3 class="text-xl font-semibold mb-4 text-teal-700">Comparison of ${type === 'draft' ? 'Draft' : 'Weekly'} Lineups</h3>
-            <h4 class="text-lg font-medium">Lineup 1 (Focus: ${type === 'draft' ? lineup1[0].player.pos : 'Current'}) - ${totalPoints1} pts</h4>
-            <ul class="list-disc pl-5 space-y-2">
-                ${lineup1.map(entry => `<li>${entry.player.name} (${entry.player.pos}) - ${entry.player.adjustedPoints.toFixed(1)} pts${type === 'draft' ? ` (Round ${entry.round}, Pick ${entry.pick})` : ''}</li>`).join('')}
-            </ul>
-            <h4 class="text-lg font-medium">Lineup 2 (Focus: ${type === 'draft' ? 'Balanced' : 'Alternate'}) - ${totalPoints2} pts</h4>
-            <ul class="list-disc pl-5 space-y-2">
-                ${lineup2.map(entry =>`<li>${entry.player.name} (${entry.player.pos}) - ${entry.player.adjustedPoints.toFixed(1)} pts${type === 'draft' ? ` (Round ${entry.round}, Pick ${entry.pick})` : ''}</li>`).join('')}
-            </ul>
-            <p class="mt-2 text-gray-600">${totalPoints1 > totalPoints2 ? 'Lineup 1 is better by ' + (totalPoints1 - totalPoints2) + ' points!' : totalPoints2 > totalPoints1 ? 'Lineup 2 is better by ' + (totalPoints2 - totalPoints1) + ' points!' : 'Both lineups are equal in points!'}</p>
+            <h3 class="text-xl font-bold">Comparison of ${type === 'draft' ? 'Drafts' : 'Weekly Lineups'}</h3>
+            <div class="grid grid-cols-2 gap-4">
+                <div>
+                    <h4>Lineup 1</h4>
+                    <ul class="list-disc pl-5">
+                        ${lineup1.map(entry => `<li>${entry.player.name} (${entry.player.pos}) - ${entry.player.adjustedPoints.toFixed(1)} pts${type === 'draft' ? ` (Round ${entry.round}, Pick ${entry.pick})` : ''}</li>`).join('')}
+                    </ul>
+                    <p>Total: ${totalPoints1.toFixed(1)} pts</p>
+                </div>
+                <div>
+                    <h4>Lineup 2</h4>
+                    <ul class="list-disc pl-5">
+                        ${lineup2.map(entry => `<li>${entry.player.name} (${entry.player.pos}) - ${entry.player.adjustedPoints.toFixed(1)} pts${type === 'draft' ? ` (Round ${entry.round}, Pick ${entry.pick})` : ''}</li>`).join('')}
+                    </ul>
+                    <p>Total: ${totalPoints2.toFixed(1)} pts</p>
+                </div>
+            </div>
+            <p class="mt-2">${totalPoints1 > totalPoints2 ? 'Lineup 1 is better by ' + (totalPoints1 - totalPoints2).toFixed(1) + ' points!' : totalPoints2 > totalPoints1 ? 'Lineup 2 is better by ' + (totalPoints2 - totalPoints1).toFixed(1) + ' points!' : 'Both lineups are equal in points!'}</p>
         `;
     }
+});
