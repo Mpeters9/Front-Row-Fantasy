@@ -133,13 +133,14 @@ document.addEventListener('DOMContentLoaded', () => {
                 pos: p.POS.replace(/\d+/, '').replace('QB', 'QB').replace('RB', 'RB').replace('WR', 'WR').replace('TE', 'TE').replace('K', 'K').replace('DST', 'DST'),
                 team: p.Team,
                 adp: parseFloat(p.AVG),
-                points: 0 // You can add projections if you have them
+                points: 0
             }));
-            // Remove loading message if present
             if (buildResultDraft) buildResultDraft.innerHTML = '';
         })
         .catch(err => {
-            if (buildResultDraft) buildResultDraft.innerHTML = `<p style="color:red;">Error loading player data: ${err.message}</p>`;
+            // Fallback to built-in players if CSV fails
+            adpPlayers = [...players];
+            if (buildResultDraft) buildResultDraft.innerHTML = `<p style="color:orange;">Using built-in player data (CSV not loaded): ${err.message}</p>`;
         });
 
     // --- Generate Optimal Draft for User's Full Team ---
