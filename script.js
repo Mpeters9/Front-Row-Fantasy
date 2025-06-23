@@ -134,11 +134,14 @@ document.addEventListener('DOMContentLoaded', () => {
             return { ...p, adjustedPoints: points };
         });
 
-        // Snake draft logic: one pick per round, alternating order, plausible by ADP
         for (let i = 0; i < totalRosterSize; i++) {
-            const round = Math.floor(i / leagueSize) + 1;
-            const pickInRound = (round % 2 === 1) ? pick : leagueSize - pick + 1;
-            const overallPick = (round - 1) * leagueSize + pickInRound;
+            // Calculate round and pick in round (snake draft)
+            const round = i + 1;
+            const roundNum = Math.floor(i / leagueSize) + 1;
+            const pickInRound = (roundNum % 2 === 1)
+                ? pick
+                : leagueSize - pick + 1;
+            const overallPick = (roundNum - 1) * leagueSize + pickInRound;
 
             // Plausibility: Simulate chance of being available based on ADP
             let candidates = availablePlayers.filter(p => {
@@ -148,7 +151,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 return true; // ADP > overallPick, available
             });
 
-            // If no plausible candidate, allow next best available (simulate draft chaos)
             if (candidates.length === 0) {
                 candidates = availablePlayers.filter(p => !lineup.some(entry => entry.player === p));
             }
@@ -184,7 +186,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (candidates.length > 0) player = candidates[0];
             }
             if (player) {
-                lineup.push({ player, round, pick: pickInRound });
+                lineup.push({ player, round: roundNum, pick: pickInRound, overall: overallPick });
                 availablePlayers = availablePlayers.filter(p => p !== player);
             }
         }
@@ -195,13 +197,9 @@ document.addEventListener('DOMContentLoaded', () => {
             <h3 class="text-xl font-bold">Optimal Draft</h3>
             <p>Total Points: ${totalPoints.toFixed(1)}</p>
             <ul class="list-disc pl-5">
-                ${lineup.map((entry, idx) => {
-                    // Calculate overall pick number for each entry
-                    const round = entry.round;
-                    const pickInRound = entry.pick;
-                    const overallPick = (round - 1) * leagueSize + pickInRound;
-                    return `<li>Round ${round}, Pick ${pickInRound} (Overall ${overallPick}): ${entry.player.name} (${entry.player.pos}) - ${entry.player.adjustedPoints.toFixed(1)} pts</li>`;
-                }).join('')}
+                ${lineup.map(entry =>
+                    `<li>Round ${entry.round}, Pick ${entry.pick} (Overall ${entry.overall}): ${entry.player.name} (${entry.player.pos}) - ${entry.player.adjustedPoints.toFixed(1)} pts</li>`
+                ).join('')}
             </ul>
         `;
         return lineup;
