@@ -48,11 +48,15 @@
                     </label>
                     <label>Starting Lineup:
                         <select id="startingLineup" class="bg-white p-2 rounded border border-gray-300 w-full">
-                            <option value="1QB,2RB,2WR,1TE,1FLEX,1DST,1K" selected>1QB, 2RB, 2WR, 1TE, 1FLEX, 1DST, 1K</option>
+                            <option value="1QB,2RB,2WR,1TE,1FLEX,1DST,1K" selected>1QB, 2RB, 2WR, 1TE, 1FLEX, 1DST, 1K (ESPN Default)</option>
                             <option value="1QB,2RB,3WR,1TE,1FLEX,1DST,1K">1QB, 2RB, 3WR, 1TE, 1FLEX, 1DST, 1K</option>
                             <option value="1QB,2RB,2WR,1TE,2FLEX,1DST,1K">1QB, 2RB, 2WR, 1TE, 2FLEX, 1DST, 1K</option>
                             <option value="1QB,2RB,2WR,1TE,1FLEX,1DST">1QB, 2RB, 2WR, 1TE, 1FLEX, 1DST</option>
                             <option value="1QB,2RB,2WR,1TE,2FLEX,1DST">1QB, 2RB, 2WR, 1TE, 2FLEX, 1DST</option>
+                            <option value="1QB,2RB,3WR,1TE,1FLEX,1SUPERFLEX,1DST,1K">1QB, 2RB, 3WR, 1TE, 1FLEX, 1SUPERFLEX, 1DST, 1K (SuperFlex)</option>
+                            <option value="1QB,2RB,2WR,1TE,2FLEX,1SUPERFLEX,1DST,1K">1QB, 2RB, 2WR, 1TE, 2FLEX, 1SUPERFLEX, 1DST, 1K (SuperFlex)</option>
+                            <option value="1QB,2RB,3WR,1TE,1FLEX,1SUPERFLEX">1QB, 2RB, 3WR, 1TE, 1FLEX, 1SUPERFLEX (SuperFlex, No DST/K)</option>
+                            <option value="1QB,2RB,2WR,1TE,2FLEX,1SUPERFLEX">1QB, 2RB, 2WR, 1TE, 2FLEX, 1SUPERFLEX (SuperFlex, No DST/K)</option>
                             <option value="1QB,2RB,2WR,1TE,1FLEX,1DST,1K,1SUPERFLEX">1QB, 2RB, 2WR, 1TE, 1FLEX, 1DST, 1K, 1SUPERFLEX</option>
                         </select>
                     </label>
@@ -102,14 +106,16 @@
                     <div>
                         <label class="block mb-2 text-gray-900">Roster Size: <input type="number" id="lineupSize" min="9" max="20" class="bg-white p-3 rounded border border-gray-300 w-full" placeholder="e.g., 15" value="15"></label>
                         <label class="block mb-2 text-gray-900">Starting Lineup: <select id="lineupStarting" class="bg-white p-3 rounded border border-gray-300 w-full">
+                            <option value="1QB,2RB,2WR,1TE,1FLEX,1DST,1K" selected>1QB, 2RB, 2WR, 1TE, 1FLEX, 1DST, 1K (ESPN Default)</option>
                             <option value="1QB,2RB,3WR,1TE,1FLEX,1DST,1K">1QB, 2RB, 3WR, 1TE, 1FLEX, 1DST, 1K</option>
                             <option value="1QB,2RB,2WR,1TE,2FLEX,1DST,1K">1QB, 2RB, 2WR, 1TE, 2FLEX, 1DST, 1K</option>
-                            <option value="1QB,3RB,2WR,1TE,1FLEX,1DST,1K">1QB, 3RB, 2WR, 1TE, 1FLEX, 1DST, 1K</option>
-                            <option value="1QB,2RB,3WR,1TE,1DST,1K">1QB, 2RB, 3WR, 1TE, 1DST, 1K</option>
-                            <option value="1QB,2RB,3WR,1TE,1FLEX">1QB, 2RB, 3WR, 1TE, 1FLEX</option>
-                            <option value="1QB,2RB,2WR,1TE,2FLEX">1QB, 2RB, 2WR, 1TE, 2FLEX</option>
-                            <option value="1QB,3RB,2WR,1TE,1FLEX">1QB, 3RB, 2WR, 1TE, 1FLEX</option>
-                            <option value="1QB,2RB,3WR,1TE">1QB, 2RB, 3WR, 1TE</option>
+                            <option value="1QB,2RB,2WR,1TE,1FLEX,1DST">1QB, 2RB, 2WR, 1TE, 1FLEX, 1DST</option>
+                            <option value="1QB,2RB,2WR,1TE,2FLEX,1DST">1QB, 2RB, 2WR, 1TE, 2FLEX, 1DST</option>
+                            <option value="1QB,2RB,3WR,1TE,1FLEX,1SUPERFLEX,1DST,1K">1QB, 2RB, 3WR, 1TE, 1FLEX, 1SUPERFLEX, 1DST, 1K (SuperFlex)</option>
+                            <option value="1QB,2RB,2WR,1TE,2FLEX,1SUPERFLEX,1DST,1K">1QB, 2RB, 2WR, 1TE, 2FLEX, 1SUPERFLEX, 1DST, 1K (SuperFlex)</option>
+                            <option value="1QB,2RB,3WR,1TE,1FLEX,1SUPERFLEX">1QB, 2RB, 3WR, 1TE, 1FLEX, 1SUPERFLEX (SuperFlex, No DST/K)</option>
+                            <option value="1QB,2RB,2WR,1TE,2FLEX,1SUPERFLEX">1QB, 2RB, 2WR, 1TE, 2FLEX, 1SUPERFLEX (SuperFlex, No DST/K)</option>
+                            <option value="1QB,2RB,2WR,1TE,1FLEX,1DST,1K,1SUPERFLEX">1QB, 2RB, 2WR, 1TE, 1FLEX, 1DST, 1K, 1SUPERFLEX</option>
                         </select></label>
                         <label class="block mb-2 text-gray-900">Bench Size: <select id="lineupBenchSize" class="bg-white p-3 rounded border border-gray-300 w-full">
                             <option value="5">5</option>
