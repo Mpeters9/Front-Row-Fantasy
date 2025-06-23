@@ -471,11 +471,66 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('build-result').innerHTML = html;
     }
 
-    fetch('fantasypros_adp_ppr.json')
-      .then(res => res.json())
-      .then(players => {
-        // players is now an array sorted by ADP
-        const draftResults = runSnakeDraft(players, numTeams, numRounds);
-        renderDraftResults(draftResults);
-      });
+    // Snake draft for user's team only
+    function runUserSnakeDraft(players, leagueSize, rounds, userDraftPick) {
+        let availablePlayers = [...players].sort((a, b) => a.adp - b.adp);
+        const draftPicks = [];
+        const userPickIdx = userDraftPick - 1; // 0-based
+        let totalPicks = rounds * leagueSize;
+
+        for (let i = 0; i < totalPicks; i++) {
+            let round = Math.floor(i / leagueSize) + 1;
+            let pickInRound = i % leagueSize;
+            let isEvenRound = round % 2 === 0;
+            let actualPick = isEvenRound ? leagueSize - pickInRound - 1 : pickInRound;
+            let overallPick = (round - 1) * leagueSize + (actualPick + 1);
+
+            if (actualPick === userPickIdx) {
+                const player = availablePlayers.shift();
+                if (!player) break;
+                draftPicks.push({
+                    player,
+                    round,
+                    pick: actualPick + 1,
+                    overall: overallPick
+                });
+            } else {
+                availablePlayers.shift();
+            }
+        }
+        return draftPicks;
+    }
+
+    // Render function for the above draft
+    function renderUserDraftResults(draftResults, targetId = 'build-result') {
+        let html = `<h3 class="text-xl font-bold mb-2">Optimal Draft</h3><ul class="list-disc pl-6">`;
+        let totalPoints = 0;
+        draftResults.forEach(pick => {
+            // Use .points or .adjustedPoints depending on your scoring logic
+            const pts = pick.player.adjustedPoints !== undefined ? pick.player.adjustedPoints : pick.player.points;
+            totalPoints += pts || 0;
+            html += `<li>Round ${pick.round}, Pick ${pick.pick} (Overall ${pick.overall}): ${pick.player.name} (${pick.player.pos}) - ${pts?.toFixed(1) || 0} pts</li>`;
+        });
+        html += `</ul><strong>Total Points: ${totalPoints.toFixed(1)}</strong>`;
+        document.getElementById(targetId).innerHTML = html;
+    }
+
+    // --- User Draft Button Logic ---
+    if (generateDraftButton) {
+        generateDraftButton.addEventListener('click', () => {
+            const leagueSize = parseInt(leagueSizeSelect.value) || 12;
+            const rounds = parseLineupConfig(startingLineupSelect.value).length + (parseInt(benchSizeSelect.value) || 7);
+            const userDraftPick = clamp(parseInt(draftPickInput.value) || 1, 1, leagueSize);
+
+            // If you want to use adjusted scoring, map your players first:
+            const scoredPlayers = players.map(p => {
+                let points = p.points;
+                // ...apply your scoring logic here if needed...
+                return { ...p, adjustedPoints: points };
+            });
+
+            const draftResults = runUserSnakeDraft(scoredPlayers, leagueSize, rounds, userDraftPick);
+            renderUserDraftResults(draftResults);
+        });
+    }
 });
