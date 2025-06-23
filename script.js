@@ -107,8 +107,104 @@ document.addEventListener('DOMContentLoaded', () => {
         { name: 'Harrison Butker', pos: 'K', team: 'KC', adp: 160, points: 7.5, td: 0, fumble: 0, passTds: 0, receptions: 0 },
     ];
 
-    // --- Generate Optimal Draft with Snake Draft Logic ---
+    // --- CSV Parsing Utility ---
+    function parseCSV(csvText) {
+        const lines = csvText.trim().split('\n');
+        const headers = lines[0].replace(/"/g, '').split(',');
+        return lines.slice(1).map(line => {
+            const values = line.match(/(".*?"|[^",\s]+)(?=\s*,|\s*$)/g)?.map(v => v.replace(/"/g, '')) || [];
+            const obj = {};
+            headers.forEach((h, i) => obj[h] = values[i]);
+            return obj;
+        }).filter(row => row.Player && row.POS && row.AVG);
+    }
+
+    // --- Load CSV and Initialize Draft ---
+    let adpPlayers = [];
+
+    fetch('FantasyPros_2025_Overall_ADP_Rankings (1).csv')
+        .then(res => res.text())
+        .then(csv => {
+            adpPlayers = parseCSV(csv).map(p => ({
+                name: p.Player,
+                pos: p.POS.replace(/\d+/, '').replace('QB', 'QB').replace('RB', 'RB').replace('WR', 'WR').replace('TE', 'TE').replace('K', 'K').replace('DST', 'DST'),
+                team: p.Team,
+                adp: parseFloat(p.AVG),
+                points: 0 // You can add projections if you have them
+            }));
+            // Auto-generate on load
+            if (buildResultDraft && leagueSizeSelect && startingLineupSelect && benchSizeSelect && scoringTypeSelect && bonusTDCheckbox && penaltyFumbleCheckbox && positionFocusSelect && draftPickInput) {
+                generateOptimalDraft(
+                    parseInt(leagueSizeSelect.value) || 12,
+                    parseLineupConfig(startingLineupSelect.value),
+                    parseInt(benchSizeSelect.value) || 7,
+                    scoringTypeSelect.value,
+                    bonusTDCheckbox.checked,
+                    penaltyFumbleCheckbox.checked,
+                    positionFocusSelect.value,
+                    clamp(parseInt(draftPickInput.value) || 1, 1, parseInt(leagueSizeSelect.value))
+                );
+            }
+        });
+
+    // --- Generate Optimal Draft for User's Full Team ---
     function generateOptimalDraft(leagueSize, lineupConfig, benchSize, scoring, bonusTD, penaltyFumble, focus, userDraftPick) {
+        if (!adpPlayers.length) {
+            buildResultDraft.innerHTML = `<p>Loading player data...</p>`;
+            return;
+        }
+        let availablePlayers = [...adpPlayers].sort((a, b) => a.adp - b.adp);
+        const totalRosterSize = lineupConfig.length + benchSize;
+        const requirements = {};
+        lineupConfig.forEach(req => {
+            const [_, count, pos] = req.match(/(\d+)([A-Z]+)/) || [];
+            if (count && pos) requirements[pos] = parseInt(count);
+        });
+        requirements['FLEX'] = requirements['FLEX'] || 0;
+        const usedPositions = {};
+        for (let pos in requirements) usedPositions[pos] = 0;
+
+        // Simulate a full snake draft, picking for all teams, but only keep user's picks
+        const draftPicks = [];
+        let userPickIdx = userDraftPick - 1; // 0-based index
+        let totalPicks = totalRosterSize * leagueSize;
+
+        for (let i = 0; i < totalRosterSize * leagueSize; i++) {
+            let round = Math.floor(i / leagueSize) + 1;
+            let pickInRound = i % leagueSize;
+            let isEvenRound = round % 2 === 0;
+            let actualPick = isEvenRound ? leagueSize - pickInRound - 1 : pickInRound;
+
+            if (actualPick === userPickIdx && draftPicks.length < totalRosterSize) {
+                // User's pick
+                let player = availablePlayers[0];
+                draftPicks.push({
+                    player,
+                    round,
+                    pick: actualPick + 1,
+                    overall: i + 1
+                });
+                availablePlayers = availablePlayers.filter(p => p !== player);
+            } else {
+                // Other teams pick best available
+                availablePlayers.shift();
+            }
+        }
+
+        // Display result
+        buildResultDraft.innerHTML = `
+            <h3 class="text-xl font-bold">Optimal Draft</h3>
+            <ul class="list-disc pl-5">
+                ${draftPicks.map(entry =>
+                    `<li>Round ${entry.round}, Pick ${entry.pick} (Overall ${entry.overall}): ${entry.player.name} (${entry.player.pos})</li>`
+                ).join('')}
+            </ul>
+        `;
+        return draftPicks;
+    }
+
+    // --- Generate Optimal Draft with Snake Draft Logic ---
+    function generateOptimalDraftLegacy(leagueSize, lineupConfig, benchSize, scoring, bonusTD, penaltyFumble, focus, userDraftPick) {
         // Prepare player pool, sorted by ADP
         let availablePlayers = [...players].sort((a, b) => a.adp - b.adp);
         const totalRosterSize = lineupConfig.length + benchSize;
