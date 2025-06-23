@@ -36,6 +36,54 @@
         <section id="best-draft-builds" class="mb-12">
             <h2 class="text-3xl font-semibold mb-6 text-teal-700 text-center">Best Draft Builds</h2>
             <div class="p-6 bg-teal-50 rounded-lg shadow-lg hover:shadow-xl transition-shadow">
+                <!-- Add these controls for script.js compatibility -->
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+                    <label>League Size:
+                        <select id="leagueSize" class="bg-white p-2 rounded border border-gray-300 w-full">
+                            <option value="8">8</option>
+                            <option value="10">10</option>
+                            <option value="12" selected>12</option>
+                            <option value="14">14</option>
+                        </select>
+                    </label>
+                    <label>Starting Lineup:
+                        <select id="startingLineup" class="bg-white p-2 rounded border border-gray-300 w-full">
+                            <option value="1QB,2RB,3WR,1TE,1FLEX,1DST,1K" selected>1QB, 2RB, 3WR, 1TE, 1FLEX, 1DST, 1K</option>
+                            <option value="1QB,2RB,2WR,1TE,2FLEX,1DST,1K">1QB, 2RB, 2WR, 1TE, 2FLEX, 1DST, 1K</option>
+                        </select>
+                    </label>
+                    <label>Bench Size:
+                        <select id="benchSize" class="bg-white p-2 rounded border border-gray-300 w-full">
+                            <option value="5">5</option>
+                            <option value="6">6</option>
+                            <option value="7" selected>7</option>
+                            <option value="8">8</option>
+                        </select>
+                    </label>
+                    <label>Scoring Type:
+                        <select id="scoringType" class="bg-white p-2 rounded border border-gray-300 w-full">
+                            <option value="standard">Standard</option>
+                            <option value="ppr" selected>PPR</option>
+                            <option value="halfppr">Half PPR</option>
+                        </select>
+                    </label>
+                </div>
+                <!-- Add any other controls your script.js expects, e.g., bonusTD, penaltyFumble, positionFocus, draftPick -->
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+                    <label><input type="checkbox" id="bonusTD"> Bonus TD</label>
+                    <label><input type="checkbox" id="penaltyFumble"> Penalty Fumble</label>
+                    <label>Position Focus:
+                        <select id="positionFocus" class="bg-white p-2 rounded border border-gray-300 w-full">
+                            <option value="none" selected>None</option>
+                            <option value="rb">RB</option>
+                            <option value="wr">WR</option>
+                            <option value="qb">QB</option>
+                        </select>
+                    </label>
+                    <label>Draft Pick:
+                        <input type="number" id="draftPick" min="1" max="12" value="1" class="bg-white p-2 rounded border border-gray-300 w-full">
+                    </label>
+                </div>
                 <div id="build-result"></div>
             </div>
         </section>
