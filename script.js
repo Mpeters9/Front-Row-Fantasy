@@ -195,7 +195,13 @@ document.addEventListener('DOMContentLoaded', () => {
             <h3 class="text-xl font-bold">Optimal Draft</h3>
             <p>Total Points: ${totalPoints.toFixed(1)}</p>
             <ul class="list-disc pl-5">
-                ${lineup.map((entry, idx) => `<li>Round ${entry.round}, Pick ${entry.pick}: ${entry.player.name} (${entry.player.pos}) - ${entry.player.adjustedPoints.toFixed(1)} pts</li>`).join('')}
+                ${lineup.map((entry, idx) => {
+                    // Calculate overall pick number for each entry
+                    const round = entry.round;
+                    const pickInRound = entry.pick;
+                    const overallPick = (round - 1) * leagueSize + pickInRound;
+                    return `<li>Round ${round}, Pick ${pickInRound} (Overall ${overallPick}): ${entry.player.name} (${entry.player.pos}) - ${entry.player.adjustedPoints.toFixed(1)} pts</li>`;
+                }).join('')}
             </ul>
         `;
         return lineup;
