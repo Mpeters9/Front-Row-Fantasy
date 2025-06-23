@@ -1,33 +1,106 @@
-<nav class="space-x-4">
-<a href="#home" class="nav-link hover:underline text-teal-600">Home</a>
-<a href="tools.html" class="nav-link hover:underline text-teal-600">Expert Tools</a>
-                <a href="goat.html" class="nav-link hover:underline text-teal-600">GOAT</a>
-<a href="#about" class="nav-link hover:underline text-teal-600">About</a>
-<a href="#games" class="nav-link hover:underline text-teal-600">Games</a>
-<a href="#contact" class="nav-link hover:underline text-teal-600">Contact</a>
-@@ -41,8 +42,17 @@ <h2 class="text-3xl font-bold mb-4">Welcome to Front Row Fantasy</h2>
-<p class="text-lg mb-6">Your front-row seat to dominate the fantasy football season! Dive into real-time stats, join a passionate community, and elevate your game.</p>
-<div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-<div class="p-4 bg-teal-700 rounded-lg shadow">
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Front Row Fantasy - Your ultimate NFL fantasy football hub with real-time stats, tools, and news.">
+    <meta name="keywords" content="fantasy football, NFL, stats, trade analyzer, matchup predictor">
+    <meta name="author" content="Mpeters9">
+    <title>Front Row Fantasy - Your NFL Fantasy Hub</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body class="text-black bg-gray-100" aria-label="Main content">
+    <header class="bg-gray-100 shadow-md py-3" role="banner">
+        <div class="max-w-7xl mx-auto px-4 flex justify-between items-center">
+            <h1 class="text-2xl font-bold text-teal-600">Front Row Fantasy</h1>
+            <nav class="space-x-4">
+                <a href="#home" class="nav-link hover:underline text-teal-600">Home</a>
+                <a href="tools.html" class="nav-link hover:underline text-teal-600">Expert Tools</a>
+                <a href="#about" class="nav-link hover:underline text-teal-600">About</a>
+                <a href="#games" class="nav-link hover:underline text-teal-600">Games</a>
+                <a href="#contact" class="nav-link hover:underline text-teal-600">Contact</a>
+            </nav>
+        </div>
+    </header>
+
+    <section class="marquee mb-6">
+        <div class="bg-teal-800 text-white p-2 rounded flex justify-between items-center">
+            <span class="text-xl font-bold">Fantasy Points Ticker</span>
+            <button id="pauseButton" class="text-teal-300 hover:text-white px-3 py-1 rounded">Pause</button>
+        </div>
+        <div class="marquee-content bg-teal-800 text-white p-3" id="tickerContent">
+            <span class="loading">Loading fantasy points...</span>
+        </div>
+    </section>
+
+    <main class="max-w-7xl mx-auto px-4 py-6 bg-gray-100">
+        <section id="home" class="splash-section bg-teal-600 text-white p-6 rounded-lg text-center mb-6">
+            <h2 class="text-3xl font-bold mb-4">Welcome to Front Row Fantasy</h2>
+            <p class="text-lg mb-6">Your front-row seat to dominate the fantasy football season! Dive into real-time stats, join a passionate community, and elevate your game.</p>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                <div class="p-4 bg-teal-700 rounded-lg shadow">
                     <h3 class="text-xl font-semibold">Top Player</h3>
                     <p class="mt-2">Josh Allen (BUF) - 25.4 pts</p>
-                    <h3 class="text-xl font-semibold border-b border-teal-500 pb-2 mb-2">Top Players</h3>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-2 mt-2">
-                        <div class="p-2 bg-teal-800 rounded-lg hover:bg-teal-900 transition-colors text-white"><strong>QB:</strong> Josh Allen (BUF) - 25.4 pts</div>
-                        <div class="p-2 bg-teal-800 rounded-lg hover:bg-teal-900 transition-colors text-white"><strong>QB:</strong> Patrick Mahomes (KC) - 24.8 pts</div>
-                        <div class="p-2 bg-teal-800 rounded-lg hover:bg-teal-900 transition-colors text-white"><strong>RB:</strong> Christian McCaffrey (SF) - 20.5 pts</div>
-                        <div class="p-2 bg-teal-800 rounded-lg hover:bg-teal-900 transition-colors text-white"><strong>RB:</strong> Derrick Henry (TEN) - 19.6 pts</div>
-                        <div class="p-2 bg-teal-800 rounded-lg hover:bg-teal-900 transition-colors text-white"><strong>WR:</strong> Tyreek Hill (MIA) - 19.8 pts</div>
-                        <div class="p-2 bg-teal-800 rounded-lg hover:bg-teal-900 transition-colors text-white"><strong>WR:</strong> Justin Jefferson (MIN) - 19.2 pts</div>
-                        <div class="p-2 bg-teal-800 rounded-lg hover:bg-teal-900 transition-colors text-white"><strong>TE:</strong> Travis Kelce (KC) - 18.9 pts</div>
-                        <div class="p-2 bg-teal-800 rounded-lg hover:bg-teal-900 transition-colors text-white"><strong>TE:</strong> George Kittle (SF) - 18.2 pts</div>
-                    </div>
-</div>
-<div class="p-4 bg-teal-700 rounded-lg shadow">
-<h3 class="text-xl font-semibold">Active Leagues</h3>
-@@ -102,5 +112,3 @@ <h2 class="text-2xl font-bold text-gray-900">Contact</h2>
-</footer>
+                </div>
+                <div class="p-4 bg-teal-700 rounded-lg shadow">
+                    <h3 class="text-xl font-semibold">Active Leagues</h3>
+                    <p class="mt-2">1,234 Leagues</p>
+                </div>
+                <div class="p-4 bg-teal-700 rounded-lg shadow">
+                    <h3 class="text-xl font-semibold">Community Members</h3>
+                    <p class="mt-2">50,000+ Fans</p>
+                </div>
+            </div>
+            <a href="tools.html" class="bg-white text-teal-600 px-6 py-3 rounded-lg hover:bg-gray-200 transition">Explore Expert Tools</a>
+        </section>
 
-<script src="script.js"></script>
+        <section class="bg-teal-100 p-6 rounded-lg shadow-md mb-6">
+            <h2 class="text-2xl font-semibold text-gray-900 text-center mb-4">Why Choose Front Row Fantasy?</h2>
+            <p class="text-center mb-4 text-gray-900">Whether you're a beginner or a pro, our platform offers real-time updates, expert insights, and a vibrant community to help you win.</p>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div class="p-4 bg-teal-50 rounded shadow">
+                    <h3 class="text-lg font-semibold text-gray-900">Latest Stats</h3>
+                    <ul class="mt-2 text-gray-900">
+                        <li>Christian McCaffrey (RB, SF) - 20.5 pts</li>
+                        <li>Tyreek Hill (WR, MIA) - 19.8 pts</li>
+                        <li>Travis Kelce (TE, KC) - 18.9 pts</li>
+                    </ul>
+                </div>
+                <div class="p-4 bg-teal-50 rounded shadow">
+                    <h3 class="text-lg font-semibold text-gray-900">Community</h3>
+                    <p class="mt-2 text-gray-900">Join our thriving fantasy football community!</p>
+                    <a href="https://discord.com/invite/fantasyfootball" target="_blank" class="mt-2 inline-block text-teal-600 hover:underline">Join Discord</a>
+                </div>
+                <div class="p-4 bg-teal-50 rounded shadow">
+                    <h3 class="text-lg font-semibold text-gray-900">Get Started</h3>
+                    <p class="mt-2 text-gray-900">Sign up to unlock all features.</p>
+                    <button class="mt-2 bg-teal-600 text-white px-4 py-2 rounded hover:bg-teal-700">Sign Up</button>
+                </div>
+            </div>
+        </section>
+
+        <section id="about" class="p-4 bg-gray-100 mb-6">
+            <h2 class="text-2xl font-bold text-gray-900">About Us</h2>
+            <p class="text-gray-900">Learn more about Front Row Fantasy, our mission, and our team.</p>
+        </section>
+
+        <section id="games" class="p-4 bg-gray-100 mb-6">
+            <h2 class="text-2xl font-bold text-gray-900">Games & Tools</h2>
+            <p class="text-gray-900">Explore our fantasy football games and expert tools.</p>
+        </section>
+
+        <section id="contact" class="p-4 bg-gray-100">
+            <h2 class="text-2xl font-bold text-gray-900">Contact</h2>
+            <p class="text-gray-900">Get in touch with us via email or social media.</p>
+        </section>
+    </main>
+
+    <footer class="bg-gray-100 text-teal-600 py-4 text-center mt-6">
+        <p>© 2025 Front Row Fantasy. All rights reserved.</p>
+    </footer>
+
+    <script src="script.js"></script>
 </body>
 </html>
