@@ -424,4 +424,54 @@ document.addEventListener('DOMContentLoaded', () => {
             <p class="mt-2">${totalPoints1 > totalPoints2 ? 'Lineup 1 is better by ' + (totalPoints1 - totalPoints2).toFixed(1) + ' points!' : totalPoints2 > totalPoints1 ? 'Lineup 2 is better by ' + (totalPoints2 - totalPoints1).toFixed(1) + ' points!' : 'Both lineups are equal in points!'}</p>
         `;
     }
+
+    function runSnakeDraft(players, numTeams, numRounds) {
+        const teams = Array.from({ length: numTeams }, () => []);
+        let availablePlayers = [...players];
+        let draftOrder = [];
+
+        let overallPick = 1;
+        for (let round = 1; round <= numRounds; round++) {
+            // Determine pick order for this round
+            let order = (round % 2 === 1)
+                ? [...Array(numTeams).keys()] // 0 to numTeams-1
+                : [...Array(numTeams).keys()].reverse(); // numTeams-1 to 0
+
+            for (let i = 0; i < order.length; i++) {
+                const teamIdx = order[i];
+                const player = availablePlayers.shift();
+                if (!player) break;
+
+                teams[teamIdx].push(player);
+
+                draftOrder.push({
+                    round,
+                    pickInRound: i + 1,
+                    overallPick: overallPick++,
+                    team: teamIdx + 1,
+                    player
+                });
+            }
+        }
+        return draftOrder;
+    }
+
+    // Example usage:
+    // const players = [
+    //     // ...array of player objects sorted by ADP/rank...
+    // ];
+    // const numTeams = 12, numRounds = 14;
+    // const draftResults = runSnakeDraft(players, numTeams, numRounds);
+
+    // To display:
+    function renderDraftResults(draftResults) {
+        let html = `<h3>Optimal Draft</h3><ul>`;
+        let totalPoints = 0;
+        draftResults.forEach(pick => {
+            totalPoints += pick.player.projectedPoints || 0;
+            html += `<li>Round ${pick.round}, Pick ${pick.pickInRound} (Overall ${pick.overallPick}): ${pick.player.name} (${pick.player.position}) - ${pick.player.projectedPoints?.toFixed(1) || 0} pts</li>`;
+        });
+        html += `</ul><strong>Total Points: ${totalPoints.toFixed(1)}</strong>`;
+        document.getElementById('build-result').innerHTML = html;
+    }
 });
