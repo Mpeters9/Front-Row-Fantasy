@@ -514,4 +514,19 @@ document.addEventListener('DOMContentLoaded', () => {
         html += `</ul><strong>Total Points: ${totalPoints.toFixed(1)}</strong>`;
         document.getElementById(targetId).innerHTML = html;
     }
+
+    // --- Auto-generate Best Draft Builds on page load if section exists ---
+    if (buildResultDraft && leagueSizeSelect && startingLineupSelect && benchSizeSelect && scoringTypeSelect && bonusTDCheckbox && penaltyFumbleCheckbox && positionFocusSelect && draftPickInput) {
+        // Use current/default values from selects/inputs
+        generateOptimalDraft(
+            parseInt(leagueSizeSelect.value) || 12,
+            parseLineupConfig(startingLineupSelect.value),
+            parseInt(benchSizeSelect.value) || 7,
+            scoringTypeSelect.value,
+            bonusTDCheckbox.checked,
+            penaltyFumbleCheckbox.checked,
+            positionFocusSelect.value,
+            clamp(parseInt(draftPickInput.value) || 1, 1, parseInt(leagueSizeSelect.value))
+        );
+    }
 });
