@@ -123,7 +123,10 @@ document.addEventListener('DOMContentLoaded', () => {
     let adpPlayers = [];
 
     fetch('FantasyPros_2025_Overall_ADP_Rankings (1).csv')
-        .then(res => res.text())
+        .then(res => {
+            if (!res.ok) throw new Error('CSV file not found or not accessible.');
+            return res.text();
+        })
         .then(csv => {
             adpPlayers = parseCSV(csv).map(p => ({
                 name: p.Player,
@@ -132,19 +135,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 adp: parseFloat(p.AVG),
                 points: 0 // You can add projections if you have them
             }));
-            // Auto-generate on load
-            if (buildResultDraft && leagueSizeSelect && startingLineupSelect && benchSizeSelect && scoringTypeSelect && bonusTDCheckbox && penaltyFumbleCheckbox && positionFocusSelect && draftPickInput) {
-                generateOptimalDraft(
-                    parseInt(leagueSizeSelect.value) || 12,
-                    parseLineupConfig(startingLineupSelect.value),
-                    parseInt(benchSizeSelect.value) || 7,
-                    scoringTypeSelect.value,
-                    bonusTDCheckbox.checked,
-                    penaltyFumbleCheckbox.checked,
-                    positionFocusSelect.value,
-                    clamp(parseInt(draftPickInput.value) || 1, 1, parseInt(leagueSizeSelect.value))
-                );
-            }
+            // Remove loading message if present
+            if (buildResultDraft) buildResultDraft.innerHTML = '';
+        })
+        .catch(err => {
+            if (buildResultDraft) buildResultDraft.innerHTML = `<p style="color:red;">Error loading player data: ${err.message}</p>`;
         });
 
     // --- Generate Optimal Draft for User's Full Team ---
@@ -294,12 +289,6 @@ document.addEventListener('DOMContentLoaded', () => {
     if (generateDraftButton) generateDraftButton.addEventListener('click', () => {
         const leagueSize = parseInt(leagueSizeSelect.value) || 12;
         const draftPick = clamp(parseInt(draftPickInput.value) || 1, 1, leagueSize);
-        if (draftPick > leagueSize) {
-            alert(`Draft position cannot exceed league size (${leagueSize}).`);
-            draftPickInput.value = leagueSize;
-            draftPickValue.textContent = leagueSize;
-            return;
-        }
         showProgress(progressBarDraft, progressDraft, () => {
             generateOptimalDraft(
                 leagueSize,
@@ -313,300 +302,88 @@ document.addEventListener('DOMContentLoaded', () => {
             );
         });
     });
-
-    if (saveDraftButton) saveDraftButton.addEventListener('click', () =>
-        saveExport(buildResultDraft, 'savedDraft', 'fantasy_draft.txt', 'Draft saved and exported!')
-    );
-
-    // Save/Export Weekly Lineup
-    if (saveLineupWeeklyButton && lineupResult) {
-        saveLineupWeeklyButton.addEventListener('click', () =>
-            saveExport(lineupResult, 'savedLineup', 'fantasy_lineup.txt', 'Lineup saved and exported!')
-        );
-    }
-
-    // Compare Draft Lineups
-    if (compareDraftButton && leagueSizeSelect && startingLineupSelect && benchSizeSelect && scoringTypeSelect && bonusTDCheckbox && penaltyFumbleCheckbox && positionFocusSelect && draftPickInput && progressBarDraft && progressDraft && buildResultDraft) {
-        compareDraftButton.addEventListener('click', () => {
-            const leagueSize = parseInt(leagueSizeSelect.value) || 10;
-            const draftPick = clamp(parseInt(draftPickInput.value), 1, leagueSize);
-            showProgress(progressBarDraft, progressDraft, () => {
-                const lineup1 = generateOptimalDraft(
-                    leagueSize,
-                    parseLineupConfig(startingLineupSelect.value),
-                    parseInt(benchSizeSelect.value) || 7,
-                    scoringTypeSelect.value,
-                    bonusTDCheckbox.checked,
-                    penaltyFumbleCheckbox.checked,
-                    positionFocusSelect.value,
-                    draftPick
-                );
-                const lineup2 = generateOptimalDraft(
-                    leagueSize,
-                    parseLineupConfig(startingLineupSelect.value),
-                    parseInt(benchSizeSelect.value) || 7,
-                    scoringTypeSelect.value,
-                    bonusTDCheckbox.checked,
-                    penaltyFumbleCheckbox.checked,
-                    'balanced',
-                    draftPick
-                );
-                compareLineups(lineup1, lineup2, 'draft');
-            });
-        });
-    }
-
-    // Compare Weekly Lineups
-    if (compareLineupsWeeklyButton && lineupSizeInput && lineupStartingSelect && lineupBenchSizeSelect && lineupIrSpotsSelect && lineupScoringSelect && lineupBonusTDCheckbox && lineupPenaltyFumbleCheckbox && currentRosterInput && progressBarWeekly && progressWeekly && lineupResult) {
-        compareLineupsWeeklyButton.addEventListener('click', () => {
-            showProgress(progressBarWeekly, progressWeekly, () => {
-                const lineup1 = generateOptimalLineupWeekly(
-                    parseInt(lineupSizeInput.value) || 15,
-                    parseLineupConfig(lineupStartingSelect.value),
-                    parseInt(lineupBenchSizeSelect.value) || 7,
-                    parseInt(lineupIrSpotsSelect.value) || 1,
-                    lineupScoringSelect.value,
-                    lineupBonusTDCheckbox.checked,
-                    lineupPenaltyFumbleCheckbox.checked,
-                    parseRoster(currentRosterInput.value)
-                );
-                const lineup2 = generateOptimalLineupWeekly(
-                    parseInt(lineupSizeInput.value) || 15,
-                    parseLineupConfig(lineupStartingSelect.value),
-                    parseInt(lineupBenchSizeSelect.value) || 7,
-                    parseInt(lineupIrSpotsSelect.value) || 1,
-                    lineupScoringSelect.value,
-                    lineupBonusTDCheckbox.checked,
-                    lineupPenaltyFumbleCheckbox.checked,
-                    parseRoster(currentRosterInput.value),
-                    true
-                );
-                compareLineups(lineup1, lineup2, 'weekly');
-            });
-        });
-    }
-
-    function generateOptimalLineupWeekly(lineupSize, lineupConfig, benchSize, irSpots, scoring, bonusTD, penaltyFumble, currentRoster, alternate = false) {
-        let availablePlayers = [...players];
-        if (currentRoster.length) {
-            const rosterPlayers = currentRoster.map(name => {
-                const player = players.find(p => p.name === name.split(',')[0].trim());
-                return player ? { ...player, adjustedPoints: player.points } : null;
-            }).filter(p => p);
-            availablePlayers = rosterPlayers.length ? rosterPlayers : availablePlayers;
-        }
-        availablePlayers.sort((a, b) => b.points - a.points); // Sort by base points initially
-
-        // Apply scoring adjustments
-        availablePlayers = availablePlayers.map(p => {
-            let points = p.points;
-            if (scoring === 'ppr') points += p.receptions;
-            else if (scoring === 'halfppr') points += p.receptions * 0.5;
-            else if (scoring === 'tep' && p.pos === 'TE') points *= 1.5;
-            else if (scoring === 'tefullppr' && p.pos === 'TE') points += p.receptions * 2;
-            else if (scoring === '6ptpass') points += (p.passTds * 2); // Add 2 points per passing TD
-            if (bonusTD && p.td > 0) points += 6;
-            if (penaltyFumble && p.fumble > 0) points -= 2;
-            return { ...p, adjustedPoints: points };
-        });
-
-        // Parse lineup requirements
-        const requirements = {};
-        lineupConfig.forEach(req => {
-            const [count, pos] = req.match(/(\d+)([A-Z]+)/);
-            requirements[pos] = parseInt(count);
-        });
-        requirements['FLEX'] = requirements['FLEX'] || 0;
-
-        // Track roster composition
-        const usedPositions = {};
-        for (let pos in requirements) usedPositions[pos] = 0;
-        const lineup = [];
-        let remainingBench = benchSize;
-        let remainingIr = irSpots;
-
-        // Select players
-        availablePlayers = availablePlayers.filter(p => !lineup.some(entry => entry.player === p));
-        for (let i = 0; i < lineupSize; i++) {
-            let player = null;
-            if (i < lineupConfig.length) {
-                // Fill starting lineup
-                for (let p of availablePlayers) {
-                    if (usedPositions[p.pos] < requirements[p.pos] || (p.pos !== 'FLEX' && usedPositions['FLEX'] < requirements['FLEX'])) {
-                        if (usedPositions[p.pos] < requirements[p.pos]) {
-                            player = p;
-                            usedPositions[p.pos]++;
-                        } else if (usedPositions['FLEX'] < requirements['FLEX'] && ['RB', 'WR', 'TE'].includes(p.pos)) {
-                            player = p;
-                            usedPositions['FLEX']++;
-                        }
-                        break;
-                    }
-                }
-                if (!player && availablePlayers.length > 0) {
-                    player = availablePlayers[0]; // Fallback to best available
-                    if (['RB', 'WR', 'TE'].includes(player.pos)) usedPositions['FLEX']++;
-                    else usedPositions[player.pos]++;
-                }
-            } else if (remainingBench > 0 || remainingIr > 0) {
-                // Fill bench or IR
-                for (let p of availablePlayers) {
-                    if (remainingBench > 0) {
-                        player = p;
-                        remainingBench--;
-                        break;
-                    } else if (remainingIr > 0 && alternate) { // Use IR for alternate lineup
-                        player = p;
-                        remainingIr--;
-                        break;
-                    }
-                }
-                if (!player && availablePlayers.length > 0) {
-                    player = availablePlayers[0];
-                    remainingBench--;
-                }
+    if (saveDraftButton) saveDraftButton.addEventListener('click', () => {
+        saveExport(buildResultDraft, 'savedDraft', 'my_fantasy_draft.txt', 'Draft saved!');
+    });
+    if (compareDraftButton) compareDraftButton.addEventListener('click', () => {
+        const userDraft = buildResultDraft.innerHTML;
+        const aiDraft = generateOptimalDraftLegacy(12, parseLineupConfig(startingLineupSelect.value), parseInt(benchSizeSelect.value), scoringTypeSelect.value, bonusTDCheckbox.checked, penaltyFumbleCheckbox.checked, positionFocusSelect.value, 1);
+        // Compare logic here (simple example)
+        let differences = '';
+        aiDraft.forEach((entry, idx) => {
+            if (entry.player.name !== userDraft[idx]?.player?.name) {
+                differences += `<li>Round ${entry.round}: You - ${userDraft[idx]?.player?.name || 'N/A'}, AI - ${entry.player.name}</li>`;
             }
-            if (player) {
-                lineup.push({ player, round: 1, pick: i + 1 });
-                availablePlayers = availablePlayers.filter(p => p !== player);
-            }
-        }
-
-        // Display result
-        const totalPoints = lineup.reduce((sum, entry) => sum + entry.player.adjustedPoints, 0);
-        lineupResult.innerHTML = `
-            <h3 class="text-xl font-bold">Optimal Weekly Lineup</h3>
-            <p>Total Points: ${totalPoints.toFixed(1)}</p>
+        });
+        buildResultDraft.innerHTML += `
+            <h3 class="text-xl font-bold mt-5">Draft Comparison</h3>
             <ul class="list-disc pl-5">
-                ${lineup.map(entry => `<li>${entry.player.name} (${entry.player.pos}) - ${entry.player.adjustedPoints.toFixed(1)} pts</li>`).join('')}
+                ${differences || '<li>No differences found.</li>'}
             </ul>
         `;
-        return lineup;
-    }
+    });
 
-    function compareLineups(lineup1, lineup2, type) {
-        const totalPoints1 = lineup1.reduce((sum, entry) => sum + entry.player.adjustedPoints, 0);
-        const totalPoints2 = lineup2.reduce((sum, entry) => sum + entry.player.adjustedPoints, 0);
-        const resultElement = type === 'draft' ? buildResultDraft : lineupResult;
-        resultElement.innerHTML = `
-            <h3 class="text-xl font-bold">Comparison of ${type === 'draft' ? 'Drafts' : 'Weekly Lineups'}</h3>
-            <div class="grid grid-cols-2 gap-4">
-                <div>
-                    <h4>Lineup 1</h4>
-                    <ul class="list-disc pl-5">
-                        ${lineup1.map(entry => `<li>${entry.player.name} (${entry.player.pos}) - ${entry.player.adjustedPoints.toFixed(1)} pts${type === 'draft' ? ` (Round ${entry.round}, Pick ${entry.pick})` : ''}</li>`).join('')}
-                    </ul>
-                    <p>Total: ${totalPoints1.toFixed(1)} pts</p>
-                </div>
-                <div>
-                    <h4>Lineup 2</h4>
-                    <ul class="list-disc pl-5">
-                        ${lineup2.map(entry => `<li>${entry.player.name} (${entry.player.pos}) - ${entry.player.adjustedPoints.toFixed(1)} pts${type === 'draft' ? ` (Round ${entry.round}, Pick ${entry.pick})` : ''}</li>`).join('')}
-                    </ul>
-                    <p>Total: ${totalPoints2.toFixed(1)} pts</p>
-                </div>
-            </div>
-            <p class="mt-2">${totalPoints1 > totalPoints2 ? 'Lineup 1 is better by ' + (totalPoints1 - totalPoints2).toFixed(1) + ' points!' : totalPoints2 > totalPoints1 ? 'Lineup 2 is better by ' + (totalPoints2 - totalPoints1).toFixed(1) + ' points!' : 'Both lineups are equal in points!'}</p>
+    // --- Weekly Lineup Generation (stub) ---
+    if (generateLineupWeeklyButton) generateLineupWeeklyButton.addEventListener('click', () => {
+        const roster = parseRoster(currentRosterInput.value);
+        const lineupSize = parseInt(lineupSizeInput.value) || 0;
+        const benchSize = parseInt(lineupBenchSizeSelect.value) || 0;
+        const irSpots = parseInt(lineupIrSpotsSelect.value) || 0;
+        const scoring = lineupScoringSelect.value;
+        const bonusTD = lineupBonusTDCheckbox.checked;
+        const penaltyFumble = lineupPenaltyFumbleCheckbox.checked;
+        // Simple validation
+        if (roster.length === 0) {
+            alert('Current roster is empty!');
+            return;
+        }
+        if (lineupSize + benchSize + irSpots !== roster.length) {
+            alert('Lineup size, bench size, and IR spots must match the current roster size.');
+            return;
+        }
+        // Weekly lineup logic (stub)
+        const weeklyLineup = roster.slice(0, lineupSize).map((player, idx) => ({
+            player,
+            position: player.pos,
+            order: idx + 1
+        }));
+        const bench = roster.slice(lineupSize, lineupSize + benchSize).map((player, idx) => ({
+            player,
+            position: player.pos,
+            order: idx + 1 + lineupSize
+        }));
+        const ir = roster.slice(lineupSize + benchSize, lineupSize + benchSize + irSpots).map(player => ({
+            player,
+            position: player.pos
+        }));
+        // Display result
+        lineupResult.innerHTML = `
+            <h3 class="text-xl font-bold">Generated Weekly Lineup</h3>
+            <h4 class="font-semibold">Starters (${lineupSize})</h4>
+            <ul class="list-disc pl-5">
+                ${weeklyLineup.map(entry =>
+                    `<li>${entry.order}. ${entry.player.name} (${entry.player.pos})</li>`
+                ).join('')}
+            </ul>
+            <h4 class="font-semibold">Bench (${benchSize})</h4>
+            <ul class="list-disc pl-5">
+                ${bench.map(entry =>
+                    `<li>${entry.order}. ${entry.player.name} (${entry.player.pos})</li>`
+                ).join('')}
+            </ul>
+            ${ir.length > 0 ? `<h4 class="font-semibold">IR (${irSpots})</h4>
+            <ul class="list-disc pl-5">
+                ${ir.map(entry =>
+                    `<li>${entry.player.name} (${entry.player.pos})</li>`
+                ).join('')}
+            </ul>` : ''}
         `;
-    }
-
-    function runSnakeDraft(players, numTeams, numRounds) {
-        const teams = Array.from({ length: numTeams }, () => []);
-        let availablePlayers = [...players];
-        let draftOrder = [];
-        let overallPick = 1;
-
-        for (let round = 1; round <= numRounds; round++) {
-            let order = (round % 2 === 1)
-                ? [...Array(numTeams).keys()]
-                : [...Array(numTeams).keys()].reverse();
-
-            for (let pickInRound = 0; pickInRound < order.length; pickInRound++) {
-                const teamIdx = order[pickInRound];
-                const player = availablePlayers.shift();
-                if (!player) break;
-
-                teams[teamIdx].push(player);
-
-                draftOrder.push({
-                    round,
-                    pickInRound: pickInRound + 1,
-                    overallPick: overallPick++,
-                    team: teamIdx + 1,
-                    player
-                });
-            }
-        }
-        return draftOrder;
-    }
-
-    function renderDraftResults(draftResults) {
-        let html = `<h3 class="text-xl font-bold mb-2">Optimal Draft</h3><ul class="list-disc pl-6">`;
-        let totalPoints = 0;
-        draftResults.forEach(pick => {
-            totalPoints += pick.player.projectedPoints || 0;
-            html += `<li>Round ${pick.round}, Pick ${pick.pickInRound} (Overall ${pick.overallPick}): ${pick.player.name} (${pick.player.position}) - ${pick.player.projectedPoints?.toFixed(1) || 0} pts</li>`;
-        });
-        html += `</ul><strong>Total Points: ${totalPoints.toFixed(1)}</strong>`;
-        document.getElementById('build-result').innerHTML = html;
-    }
-
-    // Snake draft for user's team only
-    function runUserSnakeDraft(players, leagueSize, rounds, userDraftPick) {
-        let availablePlayers = [...players].sort((a, b) => a.adp - b.adp);
-        const draftPicks = [];
-        const userPickIdx = userDraftPick - 1; // 0-based
-        let totalPicks = rounds * leagueSize;
-
-        for (let i = 0; i < totalPicks; i++) {
-            let round = Math.floor(i / leagueSize) + 1;
-            let pickInRound = i % leagueSize;
-            let isEvenRound = round % 2 === 0;
-            let actualPick = isEvenRound ? leagueSize - pickInRound - 1 : pickInRound;
-            let overallPick = (round - 1) * leagueSize + (actualPick + 1);
-
-            if (actualPick === userPickIdx) {
-                const player = availablePlayers.shift();
-                if (!player) break;
-                draftPicks.push({
-                    player,
-                    round,
-                    pick: actualPick + 1,
-                    overall: overallPick
-                });
-            } else {
-                availablePlayers.shift();
-            }
-        }
-        return draftPicks;
-    }
-
-    // Render function for the above draft
-    function renderUserDraftResults(draftResults, targetId = 'build-result') {
-        let html = `<h3 class="text-xl font-bold mb-2">Optimal Draft</h3><ul class="list-disc pl-6">`;
-        let totalPoints = 0;
-        draftResults.forEach(pick => {
-            // Use .points or .adjustedPoints depending on your scoring logic
-            const pts = pick.player.adjustedPoints !== undefined ? pick.player.adjustedPoints : pick.player.points;
-            totalPoints += pts || 0;
-            html += `<li>Round ${pick.round}, Pick ${pick.pick} (Overall ${pick.overall}): ${pick.player.name} (${pick.player.pos}) - ${pts?.toFixed(1) || 0} pts</li>`;
-        });
-        html += `</ul><strong>Total Points: ${totalPoints.toFixed(1)}</strong>`;
-        document.getElementById(targetId).innerHTML = html;
-    }
-
-    // --- Auto-generate Best Draft Builds on page load if section exists ---
-    if (buildResultDraft && leagueSizeSelect && startingLineupSelect && benchSizeSelect && scoringTypeSelect && bonusTDCheckbox && penaltyFumbleCheckbox && positionFocusSelect && draftPickInput) {
-        // Use current/default values from selects/inputs
-        generateOptimalDraft(
-            parseInt(leagueSizeSelect.value) || 12,
-            parseLineupConfig(startingLineupSelect.value),
-            parseInt(benchSizeSelect.value) || 7,
-            scoringTypeSelect.value,
-            bonusTDCheckbox.checked,
-            penaltyFumbleCheckbox.checked,
-            positionFocusSelect.value,
-            clamp(parseInt(draftPickInput.value) || 1, 1, parseInt(leagueSizeSelect.value))
-        );
-    }
+    });
+    if (saveLineupWeeklyButton) saveLineupWeeklyButton.addEventListener('click', () => {
+        saveExport(lineupResult, 'savedLineup', 'my_weekly_lineup.txt', 'Lineup saved!');
+    });
+    if (compareLineupsWeeklyButton) compareLineupsWeeklyButton.addEventListener('click', () => {
+        // Compare logic for weekly lineups (stub)
+        alert('Compare lineups feature is not yet implemented.');
+    });
 });
