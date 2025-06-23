@@ -1,64 +1,70 @@
 document.addEventListener('DOMContentLoaded', () => {
-    // Best Draft Builds and Best Lineup Builds Functionality
-    const leagueSizeSelect = document.getElementById('leagueSize');
-    const startingLineupSelect = document.getElementById('startingLineup');
-    const benchSizeSelect = document.getElementById('benchSize');
-    const scoringTypeSelect = document.getElementById('scoringType');
-    const bonusTDCheckbox = document.getElementById('bonusTD');
-    const penaltyFumbleCheckbox = document.getElementById('penaltyFumble');
-    const positionFocusSelect = document.getElementById('positionFocus');
-    const draftPickInput = document.getElementById('draftPick');
-    const draftPickValue = document.getElementById('draftPickValue');
-    const generateDraftButton = document.getElementById('generateLineup');
-    const saveDraftButton = document.getElementById('saveLineup');
-    const compareDraftButton = document.getElementById('compareLineups');
-    const progressBarDraft = document.getElementById('progressBar');
-    const progressDraft = document.getElementById('progress');
-    const buildResultDraft = document.getElementById('build-result');
+    // Element references
+    const $ = id => document.getElementById(id);
+    const leagueSizeSelect = $('leagueSize'), startingLineupSelect = $('startingLineup'), benchSizeSelect = $('benchSize'),
+        scoringTypeSelect = $('scoringType'), bonusTDCheckbox = $('bonusTD'), penaltyFumbleCheckbox = $('penaltyFumble'),
+        positionFocusSelect = $('positionFocus'), draftPickInput = $('draftPick'), draftPickValue = $('draftPickValue'),
+        generateDraftButton = $('generateLineup'), saveDraftButton = $('saveLineup'), compareDraftButton = $('compareLineups'),
+        progressBarDraft = $('progressBar'), progressDraft = $('progress'), buildResultDraft = $('build-result'),
+        lineupSizeInput = $('lineupSize'), lineupStartingSelect = $('lineupStarting'), lineupBenchSizeSelect = $('lineupBenchSize'),
+        lineupIrSpotsSelect = $('lineupIrSpots'), lineupScoringSelect = $('lineupScoring'), lineupBonusTDCheckbox = $('lineupBonusTD'),
+        lineupPenaltyFumbleCheckbox = $('lineupPenaltyFumble'), currentRosterInput = $('currentRoster'), swapPlayersButton = $('swapPlayers'),
+        generateLineupWeeklyButton = $('generateLineupWeekly'), saveLineupWeeklyButton = $('saveLineupWeekly'),
+        compareLineupsWeeklyButton = $('compareLineupsWeekly'), progressBarWeekly = $('progressBarWeekly'),
+        progressWeekly = $('progressWeekly'), lineupResult = $('lineup-result');
 
-    // Lineup Builds Elements
-    const lineupSizeInput = document.getElementById('lineupSize');
-    const lineupStartingSelect = document.getElementById('lineupStarting');
-    const lineupBenchSizeSelect = document.getElementById('lineupBenchSize');
-    const lineupIrSpotsSelect = document.getElementById('lineupIrSpots');
-    const lineupScoringSelect = document.getElementById('lineupScoring');
-    const lineupBonusTDCheckbox = document.getElementById('lineupBonusTD');
-    const lineupPenaltyFumbleCheckbox = document.getElementById('lineupPenaltyFumble');
-    const currentRosterInput = document.getElementById('currentRoster');
-    const swapPlayersButton = document.getElementById('swapPlayers');
-    const generateLineupWeeklyButton = document.getElementById('generateLineupWeekly');
-    const saveLineupWeeklyButton = document.getElementById('saveLineupWeekly');
-    const compareLineupsWeeklyButton = document.getElementById('compareLineupsWeekly');
-    const progressBarWeekly = document.getElementById('progressBarWeekly');
-    const progressWeekly = document.getElementById('progressWeekly');
-    const lineupResult = document.getElementById('lineup-result');
-
-    // Update draft pick slider max based on league size
-    if (leagueSizeSelect) {
-        leagueSizeSelect.addEventListener('change', () => {
-            if (draftPickInput && draftPickValue) {
-                draftPickInput.max = leagueSizeSelect.value;
-                draftPickInput.min = 1;
-                // Clamp value
-                if (parseInt(draftPickInput.value) > parseInt(leagueSizeSelect.value)) {
-                    draftPickInput.value = leagueSizeSelect.value;
-                }
-                if (parseInt(draftPickInput.value) < 1) {
-                    draftPickInput.value = 1;
-                }
-                draftPickValue.textContent = draftPickInput.value;
+    // Utility functions
+    const clamp = (val, min, max) => Math.max(min, Math.min(val, max));
+    const parseLineupConfig = str => str.split(',').map(s => s.trim().toUpperCase());
+    const parseRoster = str => str.split(';').map(p => p.trim()).filter(Boolean);
+    const showProgress = (bar, prog, cb) => {
+        bar.classList.remove('hidden');
+        let width = 0, interval = setInterval(() => {
+            if (width >= 100) {
+                clearInterval(interval);
+                cb();
+                bar.classList.add('hidden');
+            } else {
+                width += 10;
+                prog.style.width = `${width}%`;
             }
-        });
+        }, 200);
+    };
+    const saveExport = (el, key, filename, alertMsg) => {
+        const result = el.innerHTML;
+        if (result) {
+            const text = el.textContent;
+            localStorage.setItem(key, text);
+            const blob = new Blob([text], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url; a.download = filename; a.click();
+            URL.revokeObjectURL(url);
+            alert(alertMsg);
+        } else {
+            alert('Generate a result first!');
+        }
+    };
+
+    // Clamp draft pick input on league size change/input
+    if (leagueSizeSelect && draftPickInput && draftPickValue) {
+        const clampDraftPick = () => {
+            draftPickInput.max = leagueSizeSelect.value;
+            draftPickInput.min = 1;
+            draftPickInput.value = clamp(parseInt(draftPickInput.value), 1, parseInt(leagueSizeSelect.value));
+            draftPickValue.textContent = draftPickInput.value;
+        };
+        leagueSizeSelect.addEventListener('change', clampDraftPick);
+        draftPickInput.addEventListener('input', clampDraftPick);
     }
 
     // Sync bench size between sections
     if (benchSizeSelect && lineupBenchSizeSelect) {
-        benchSizeSelect.addEventListener('change', () => {
-            lineupBenchSizeSelect.value = benchSizeSelect.value;
-        });
-        lineupBenchSizeSelect.addEventListener('change', () => {
-            benchSizeSelect.value = lineupBenchSizeSelect.value;
-        });
+        const syncBench = e => {
+            benchSizeSelect.value = lineupBenchSizeSelect.value = e.target.value;
+        };
+        benchSizeSelect.addEventListener('change', syncBench);
+        lineupBenchSizeSelect.addEventListener('change', syncBench);
     }
 
     // Updated player data with ADP from FantasyPros PPR (June 20, 2025)
@@ -93,188 +99,126 @@ document.addEventListener('DOMContentLoaded', () => {
         { name: 'Harrison Butker', pos: 'K', team: 'KC', adp: 160, points: 7.5, td: 0, fumble: 0, passTds: 0, receptions: 0 },
     ];
 
-    // Update draft pick value display
-    if (draftPickInput && draftPickValue) {
-        draftPickInput.addEventListener('input', () => {
-            draftPickValue.textContent = draftPickInput.value;
-        });
-    }
-
     // Generate Optimal Draft
     if (generateDraftButton && leagueSizeSelect && startingLineupSelect && benchSizeSelect && scoringTypeSelect && bonusTDCheckbox && penaltyFumbleCheckbox && positionFocusSelect && draftPickInput && progressBarDraft && progressDraft && buildResultDraft) {
         generateDraftButton.addEventListener('click', () => {
             const leagueSize = parseInt(leagueSizeSelect.value) || 10;
-            const draftPick = parseInt(draftPickInput.value) || 1;
-            if (draftPick < 1 || draftPick > leagueSize) {
-                alert(`Draft position must be between 1 and ${leagueSize}.`);
-                draftPickInput.value = Math.max(1, Math.min(draftPick, leagueSize));
-                draftPickValue.textContent = draftPickInput.value;
-                return;
-            }
+            const draftPick = clamp(parseInt(draftPickInput.value), 1, leagueSize);
+            if (leagueSize < 8 || leagueSize > 14) return alert('League size must be between 8 and 14.');
 
-            const startingLineup = startingLineupSelect.value.split(',').map(s => s.trim().toUpperCase());
-            const benchSize = parseInt(benchSizeSelect.value) || 7;
-            const scoringType = scoringTypeSelect.value;
-            const bonusTD = bonusTDCheckbox.checked;
-            const penaltyFumble = penaltyFumbleCheckbox.checked;
-            const positionFocus = positionFocusSelect.value;
-
-            if (leagueSize < 8 || leagueSize > 14) {
-                alert('League size must be between 8 and 14.');
-                return;
-            }
-
-            progressBarDraft.classList.remove('hidden');
-            let width = 0;
-            const interval = setInterval(() => {
-                if (width >= 100) {
-                    clearInterval(interval);
-                    generateOptimalDraft(leagueSize, startingLineup, benchSize, scoringType, bonusTD, penaltyFumble, positionFocus, draftPick);
-                    progressBarDraft.classList.add('hidden');
-                } else {
-                    width += 10;
-                    progressDraft.style.width = `${width}%`;
-                }
-            }, 200);
+            showProgress(progressBarDraft, progressDraft, () => {
+                generateOptimalDraft(
+                    leagueSize,
+                    parseLineupConfig(startingLineupSelect.value),
+                    parseInt(benchSizeSelect.value) || 7,
+                    scoringTypeSelect.value,
+                    bonusTDCheckbox.checked,
+                    penaltyFumbleCheckbox.checked,
+                    positionFocusSelect.value,
+                    draftPick
+                );
+            });
         });
     }
 
     // Generate Optimal Weekly Lineup
     if (generateLineupWeeklyButton && lineupSizeInput && lineupStartingSelect && lineupBenchSizeSelect && lineupIrSpotsSelect && lineupScoringSelect && lineupBonusTDCheckbox && lineupPenaltyFumbleCheckbox && currentRosterInput && progressBarWeekly && progressWeekly && lineupResult) {
         generateLineupWeeklyButton.addEventListener('click', () => {
-            const lineupSize = parseInt(lineupSizeInput.value) || 15;
-            const startingLineup = lineupStartingSelect.value.split(',').map(s => s.trim().toUpperCase());
-            const benchSize = parseInt(lineupBenchSizeSelect.value) || 7;
-            const irSpots = parseInt(lineupIrSpotsSelect.value) || 1;
-            const scoringType = lineupScoringSelect.value;
-            const bonusTD = lineupBonusTDCheckbox.checked;
-            const penaltyFumble = lineupPenaltyFumbleCheckbox.checked;
-            const currentRoster = currentRosterInput.value.split(';').map(p => p.trim()).filter(p => p);
-
-            progressBarWeekly.classList.remove('hidden');
-            let width = 0;
-            const interval = setInterval(() => {
-                if (width >= 100) {
-                    clearInterval(interval);
-                    generateOptimalLineupWeekly(lineupSize, startingLineup, benchSize, irSpots, scoringType, bonusTD, penaltyFumble, currentRoster);
-                    progressBarWeekly.classList.add('hidden');
-                } else {
-                    width += 10;
-                    progressWeekly.style.width = `${width}%`;
-                }
-            }, 200);
+            showProgress(progressBarWeekly, progressWeekly, () => {
+                generateOptimalLineupWeekly(
+                    parseInt(lineupSizeInput.value) || 15,
+                    parseLineupConfig(lineupStartingSelect.value),
+                    parseInt(lineupBenchSizeSelect.value) || 7,
+                    parseInt(lineupIrSpotsSelect.value) || 1,
+                    lineupScoringSelect.value,
+                    lineupBonusTDCheckbox.checked,
+                    lineupPenaltyFumbleCheckbox.checked,
+                    parseRoster(currentRosterInput.value)
+                );
+            });
         });
     }
 
     // Swap Players
     if (swapPlayersButton && currentRosterInput) {
         swapPlayersButton.addEventListener('click', () => {
-            const currentRoster = currentRosterInput.value.split(';').map(p => p.trim()).filter(p => p);
-            if (currentRoster.length) {
-                alert('Players swapped! Review and generate lineup.');
-            } else {
-                alert('Enter players in the roster field first!');
-            }
+            const currentRoster = parseRoster(currentRosterInput.value);
+            alert(currentRoster.length ? 'Players swapped! Review and generate lineup.' : 'Enter players in the roster field first!');
         });
     }
 
     // Save/Export Draft
     if (saveDraftButton && buildResultDraft) {
-        saveDraftButton.addEventListener('click', () => {
-            const result = buildResultDraft.innerHTML;
-            if (result) {
-                const lineupText = buildResultDraft.textContent;
-                localStorage.setItem('savedDraft', lineupText);
-                const blob = new Blob([lineupText], { type: 'text/plain' });
-                const url = URL.createObjectURL(blob);
-                const a = document.createElement('a');
-                a.href = url;
-                a.download = 'fantasy_draft.txt';
-                a.click();
-                URL.revokeObjectURL(url);
-                alert('Draft saved and exported!');
-            } else {
-                alert('Generate a draft first!');
-            }
-        });
+        saveDraftButton.addEventListener('click', () =>
+            saveExport(buildResultDraft, 'savedDraft', 'fantasy_draft.txt', 'Draft saved and exported!')
+        );
     }
 
     // Save/Export Weekly Lineup
     if (saveLineupWeeklyButton && lineupResult) {
-        saveLineupWeeklyButton.addEventListener('click', () => {
-            const result = lineupResult.innerHTML;
-            if (result) {
-                const lineupText = lineupResult.textContent;
-                localStorage.setItem('savedLineup', lineupText);
-                const blob = new Blob([lineupText], { type: 'text/plain' });
-                const url = URL.createObjectURL(blob);
-                const a = document.createElement('a');
-                a.href = url;
-                a.download = 'fantasy_lineup.txt';
-                a.click();
-                URL.revokeObjectURL(url);
-                alert('Lineup saved and exported!');
-            } else {
-                alert('Generate a lineup first!');
-            }
-        });
+        saveLineupWeeklyButton.addEventListener('click', () =>
+            saveExport(lineupResult, 'savedLineup', 'fantasy_lineup.txt', 'Lineup saved and exported!')
+        );
     }
 
     // Compare Draft Lineups
     if (compareDraftButton && leagueSizeSelect && startingLineupSelect && benchSizeSelect && scoringTypeSelect && bonusTDCheckbox && penaltyFumbleCheckbox && positionFocusSelect && draftPickInput && progressBarDraft && progressDraft && buildResultDraft) {
         compareDraftButton.addEventListener('click', () => {
             const leagueSize = parseInt(leagueSizeSelect.value) || 10;
-            const startingLineup = startingLineupSelect.value.split(',').map(s => s.trim().toUpperCase());
-            const benchSize = parseInt(benchSizeSelect.value) || 7;
-            const scoringType = scoringTypeSelect.value;
-            const bonusTD = bonusTDCheckbox.checked;
-            const penaltyFumble = penaltyFumbleCheckbox.checked;
-            const positionFocus = positionFocusSelect.value;
-            const draftPick = parseInt(draftPickInput.value) || 5;
-
-            progressBarDraft.classList.remove('hidden');
-            let width = 0;
-            const interval = setInterval(() => {
-                if (width >= 100) {
-                    clearInterval(interval);
-                    const lineup1 = generateOptimalDraft(leagueSize, startingLineup, benchSize, scoringType, bonusTD, penaltyFumble, positionFocus, draftPick);
-                    const lineup2 = generateOptimalDraft(leagueSize, startingLineup, benchSize, scoringType, bonusTD, penaltyFumble, 'balanced', draftPick);
-                    compareLineups(lineup1, lineup2, 'draft');
-                    progressBarDraft.classList.add('hidden');
-                } else {
-                    width += 10;
-                    progressDraft.style.width = `${width}%`;
-                }
-            }, 200);
+            const draftPick = clamp(parseInt(draftPickInput.value), 1, leagueSize);
+            showProgress(progressBarDraft, progressDraft, () => {
+                const lineup1 = generateOptimalDraft(
+                    leagueSize,
+                    parseLineupConfig(startingLineupSelect.value),
+                    parseInt(benchSizeSelect.value) || 7,
+                    scoringTypeSelect.value,
+                    bonusTDCheckbox.checked,
+                    penaltyFumbleCheckbox.checked,
+                    positionFocusSelect.value,
+                    draftPick
+                );
+                const lineup2 = generateOptimalDraft(
+                    leagueSize,
+                    parseLineupConfig(startingLineupSelect.value),
+                    parseInt(benchSizeSelect.value) || 7,
+                    scoringTypeSelect.value,
+                    bonusTDCheckbox.checked,
+                    penaltyFumbleCheckbox.checked,
+                    'balanced',
+                    draftPick
+                );
+                compareLineups(lineup1, lineup2, 'draft');
+            });
         });
     }
 
     // Compare Weekly Lineups
     if (compareLineupsWeeklyButton && lineupSizeInput && lineupStartingSelect && lineupBenchSizeSelect && lineupIrSpotsSelect && lineupScoringSelect && lineupBonusTDCheckbox && lineupPenaltyFumbleCheckbox && currentRosterInput && progressBarWeekly && progressWeekly && lineupResult) {
         compareLineupsWeeklyButton.addEventListener('click', () => {
-            const lineupSize = parseInt(lineupSizeInput.value) || 15;
-            const startingLineup = lineupStartingSelect.value.split(',').map(s => s.trim().toUpperCase());
-            const benchSize = parseInt(lineupBenchSizeSelect.value) || 7;
-            const irSpots = parseInt(lineupIrSpotsSelect.value) || 1;
-            const scoringType = lineupScoringSelect.value;
-            const bonusTD = lineupBonusTDCheckbox.checked;
-            const penaltyFumble = lineupPenaltyFumbleCheckbox.checked;
-            const currentRoster = currentRosterInput.value.split(';').map(p => p.trim()).filter(p => p);
-
-            progressBarWeekly.classList.remove('hidden');
-            let width = 0;
-            const interval = setInterval(() => {
-                if (width >= 100) {
-                    clearInterval(interval);
-                    const lineup1 = generateOptimalLineupWeekly(lineupSize, startingLineup, benchSize, irSpots, scoringType, bonusTD, penaltyFumble, currentRoster);
-                    const lineup2 = generateOptimalLineupWeekly(lineupSize, startingLineup, benchSize, irSpots, scoringType, bonusTD, penaltyFumble, currentRoster, true);
-                    compareLineups(lineup1, lineup2, 'weekly');
-                    progressBarWeekly.classList.add('hidden');
-                } else {
-                    width += 10;
-                    progressWeekly.style.width = `${width}%`;
-                }
-            }, 200);
+            showProgress(progressBarWeekly, progressWeekly, () => {
+                const lineup1 = generateOptimalLineupWeekly(
+                    parseInt(lineupSizeInput.value) || 15,
+                    parseLineupConfig(lineupStartingSelect.value),
+                    parseInt(lineupBenchSizeSelect.value) || 7,
+                    parseInt(lineupIrSpotsSelect.value) || 1,
+                    lineupScoringSelect.value,
+                    lineupBonusTDCheckbox.checked,
+                    lineupPenaltyFumbleCheckbox.checked,
+                    parseRoster(currentRosterInput.value)
+                );
+                const lineup2 = generateOptimalLineupWeekly(
+                    parseInt(lineupSizeInput.value) || 15,
+                    parseLineupConfig(lineupStartingSelect.value),
+                    parseInt(lineupBenchSizeSelect.value) || 7,
+                    parseInt(lineupIrSpotsSelect.value) || 1,
+                    lineupScoringSelect.value,
+                    lineupBonusTDCheckbox.checked,
+                    lineupPenaltyFumbleCheckbox.checked,
+                    parseRoster(currentRosterInput.value),
+                    true
+                );
+                compareLineups(lineup1, lineup2, 'weekly');
+            });
         });
     }
 
