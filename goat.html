@@ -1,442 +1,409 @@
-let playersData = []; // Make playersData global
+/* --- FANTASY FOOTBALL PREMIUM DESIGN SYSTEM --- */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
-document.addEventListener('DOMContentLoaded', async () => {
-    const $ = id => document.getElementById(id);
+/* --- Base --- */
+html, body {
+    min-height: 100%;
+    background: linear-gradient(135deg, #0f2027 0%, #2c5364 100%);
+    color: #f1f5f9;
+    font-family: 'Poppins', 'Segoe UI', Arial, sans-serif;
+    scroll-behavior: smooth;
+}
 
-    // --- Use all projections files for player pool ---
-    const projectionFiles = {
-        QB: 'QB Projections.json',
-        RB: 'RB Projections.json',
-        WR: 'WR Projections.json',
-        TE: 'TE Projections.json',
-        K:  'K Projections.json',
-        Flex: 'Flex Projections.json'
-    };
+body {
+    background-attachment: fixed;
+    background-size: cover;
+    background-repeat: no-repeat;
+}
 
-    function getProjectionFile(pos, scoringType = 'standard') {
-        if (pos === 'K') return projectionFiles.K;
-        if (pos === 'Flex') {
-            if (scoringType === 'ppr') return 'Flex Projections PPR.json';
-            if (scoringType === 'half') return 'Flex Half PPR.json';
-            return 'Flex Projections.json';
-        }
-        let base = projectionFiles[pos];
-        if (!base) return null;
-        if (scoringType === 'ppr') return base.replace('.json', ' PPR.json');
-        if (scoringType === 'half') return base.replace('.json', ' Half PPR.json');
-        return base;
-    }
+/* --- Header & Navigation --- */
+header {
+    background: rgba(17,24,39,0.98);
+    box-shadow: 0 4px 24px rgba(0,0,0,0.25);
+    border-bottom: 2px solid #14b8a6;
+    position: sticky;
+    top: 0;
+    z-index: 50;
+}
 
-    // Fetch and merge all projections (QB, RB, WR, TE, K, Flex)
-    async function fetchAllProjections(scoringType = 'standard') {
-        const positions = ['QB', 'RB', 'WR', 'TE', 'K', 'Flex'];
-        let allPlayers = [];
-        for (const pos of positions) {
-            const file = getProjectionFile(pos, scoringType);
-            if (!file) continue;
-            try {
-                const res = await fetch(file);
-                const data = await res.json();
-                data.forEach((p, i) => {
-                    // Defensive: skip header/empty rows, try to infer player info if present
-                    if (!p.FPTS || isNaN(Number(p.FPTS))) return;
-                    allPlayers.push({
-                        name: p.Player && typeof p.Player === "string" && p.Player.trim() !== "" ? p.Player : `Player ${pos} ${i + 1}`,
-                        pos: (p.POS && typeof p.POS === "string" && p.POS.trim() !== "") ? p.POS.replace(/[0-9]/g, '').toUpperCase() : pos,
-                        team: p.Team && typeof p.Team === "string" && p.Team.trim() !== "" ? p.Team : "-",
-                        points: Number(p.FPTS),
-                        fantasy_points_2023: Number(p.FPTS),
-                        pts: Number(p.FPTS),
-                        value: Number(p.FPTS),
-                        img: p.img || 'https://static.www.nfl.com/image/private/t_headshot_desktop/league/api/players/default.png',
-                        injury_status: p.injury_status || "Healthy",
-                        bye: p.Bye || "—",
-                        age: p.age || "—"
-                    });
-                });
-            } catch (e) {
-                console.warn(`Could not load ${file}:`, e);
-            }
-        }
-        allPlayers.sort((a, b) => b.value - a.value);
-        playersData = allPlayers;
-    }
+nav {
+    display: flex;
+    gap: 1.5rem;
+}
 
-    // Use projections instead of csvjson.json
-    await fetchAllProjections('standard');
+nav a {
+    color: #14b8a6;
+    font-weight: 700;
+    padding-bottom: 4px;
+    border-bottom: 2px solid transparent;
+    letter-spacing: 0.02em;
+    transition: border-color 0.2s, color 0.2s, background 0.2s;
+    border-radius: 0.25rem;
+    outline: none;
+}
+nav a:hover, nav a[aria-current="page"], .nav-link.active {
+    color: #fbbf24;
+    border-bottom: 2px solid #fbbf24;
+    background: rgba(20,184,166,0.08);
+}
 
-    let team1 = [];
-    let team2 = [];
-    $('analyzeTradeBtn').disabled = true;
-    $('clearAllBtn').disabled = true;
-    $('exportTradeBtn').disabled = true;
-    $('swapTeamsBtn').disabled = true;
+/* --- Hero / Splash Section --- */
+.splash-section {
+    background: linear-gradient(120deg, #14b8a6 0%, #0ea5e9 100%);
+    box-shadow: 0 8px 32px rgba(20,184,166,0.12);
+    border-radius: 1.5rem;
+    margin-bottom: 2rem;
+    padding: 3rem 2rem;
+    position: relative;
+    overflow: hidden;
+    color: #fff;
+}
+.splash-section::before {
+    content: "";
+    position: absolute;
+    top: -40px; left: -40px;
+    width: 200px; height: 200px;
+    background: radial-gradient(circle, #fbbf24 0%, transparent 70%);
+    opacity: 0.12;
+    z-index: 0;
+}
+.splash-section h2, .splash-section p, .splash-section a {
+    position: relative;
+    z-index: 1;
+}
 
-    autocomplete('player1-search', 'player1-autocomplete', team1, team2, 'team1-players');
-    autocomplete('player2-search', 'player2-autocomplete', team2, team1, 'team2-players');
-    renderTeam('team1-players', team1, 'team1');
-    renderTeam('team2-players', team2, 'team2');
-    renderRecentTrades();
-    document.getElementById('analyzeTradeBtn').onclick = analyzeTrade;
-    document.getElementById('clearAllBtn').onclick = clearAll;
-    document.getElementById('exportTradeBtn').onclick = exportTrade;
-    document.getElementById('swapTeamsBtn').onclick = swapTeams;
+/* --- Call To Action Button --- */
+.cta-btn, .button, button, input[type="submit"] {
+    background: linear-gradient(90deg, #fbbf24 0%, #14b8a6 100%);
+    color: #111827;
+    font-weight: 800;
+    border-radius: 9999px;
+    padding: 0.75rem 2rem;
+    box-shadow: 0 2px 12px rgba(20,184,166,0.15);
+    transition: transform 0.15s, box-shadow 0.15s, background 0.2s, color 0.2s;
+    border: none;
+    outline: none;
+    cursor: pointer;
+    font-size: 1.1rem;
+}
+.cta-btn:hover, .button:hover, button:hover, input[type="submit"]:hover,
+.cta-btn:focus, .button:focus, button:focus, input[type="submit"]:focus {
+    transform: scale(1.05);
+    box-shadow: 0 4px 24px #fbbf24aa;
+    color: #fff;
+    background: linear-gradient(90deg, #14b8a6 0%, #fbbf24 100%);
+}
 
-    const leagueSizeSelect = $('leagueSize'), startingLineupSelect = $('startingLineup'), benchSizeSelect = $('benchSize'),
-        scoringTypeSelect = $('scoringType'), bonusTDCheckbox = $('bonusTD'), penaltyFumbleCheckbox = $('penaltyFumble'),
-        positionFocusSelect = $('positionFocus'), draftPickInput = $('draftPick'), draftPickValue = $('draftPickValue'),
-        generateDraftButton = $('generateLineup'), saveDraftButton = $('saveLineup'), compareDraftButton = $('compareLineups'),
-        progressBarDraft = $('progressBar'), progressDraft = $('progress'), buildResultDraft = $('build-result'),
-        lineupSizeInput = $('lineupSize'), lineupStartingSelect = $('lineupStarting'), lineupBenchSizeSelect = $('lineupBenchSize'),
-        lineupIrSpotsSelect = $('lineupIrSpots'), lineupScoringSelect = $('lineupScoring'), lineupBonusTDCheckbox = $('lineupBonusTD'),
-        lineupPenaltyFumbleCheckbox = $('lineupPenaltyFumble'), currentRosterInput = $('currentRoster'), swapPlayersButton = $('swapPlayers'),
-        generateLineupWeeklyButton = $('generateLineupWeekly'), saveLineupWeeklyButton = $('saveLineupWeekly'),
-        compareLineupsWeeklyButton = $('compareLineupsWeekly'), progressBarWeekly = $('progressBarWeekly'),
-        progressWeekly = $('progressWeekly'), lineupResult = $('lineup-result');
+/* --- Card / Glassmorphism --- */
+.card, .glass, .trade-analyzer, .matchup-predictor {
+    background: rgba(17,24,39,0.85);
+    border-radius: 1.25rem;
+    box-shadow: 0 2px 16px rgba(20,184,166,0.10), 0 1.5px 8px #0004;
+    padding: 2rem 1.5rem;
+    margin-bottom: 1.5rem;
+    backdrop-filter: blur(6px);
+    border: 1.5px solid rgba(20,184,166,0.08);
+    transition: box-shadow 0.2s, transform 0.2s;
+}
+.card:hover, .glass:hover, .trade-analyzer:hover, .matchup-predictor:hover {
+    box-shadow: 0 8px 32px #14b8a6cc, 0 2px 16px #0006;
+    transform: translateY(-4px) scale(1.02);
+}
 
-    // --- Utility functions ---
-    const clamp = (val, min, max) => Math.max(min, Math.min(val, max));
-    const parseLineupConfig = str => str.split(',').map(s => s.trim().toUpperCase());
-    const parseRoster = str => str.split(';').map(p => p.trim()).filter(Boolean);
-    const showProgress = (bar, prog, cb) => {
-        bar.classList.remove('hidden');
-        let width = 0, interval = setInterval(() => {
-            if (width >= 100) {
-                clearInterval(interval);
-                cb();
-                bar.classList.add('hidden');
-            } else {
-                width += 10;
-                prog.style.width = `${width}%`;
-            }
-        }, 200);
-    };
-    const saveExport = (el, key, filename, alertMsg) => {
-        const result = el.innerHTML;
-        if (result) {
-            const text = el.textContent;
-            localStorage.setItem(key, text);
-            const blob = new Blob([text], { type: 'text/plain' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url; a.download = filename; a.click();
-            URL.revokeObjectURL(url);
-            alert(alertMsg);
-        } else {
-            alert('Generate a result first!');
-        }
-    };
-    function showLoadingSpinner(show) {
-        const spinner = document.getElementById('loading-spinner');
-        if (spinner) spinner.classList.toggle('hidden', !show);
-    }
+/* --- Fantasy Ticker --- */
+.marquee, .fantasy-ticker {
+    background: linear-gradient(90deg, #0f2027 0%, #14b8a6 100%);
+    padding: 0;
+    border-radius: 1rem;
+    overflow: hidden;
+    position: relative;
+    width: 100%;
+    margin-bottom: 1.5rem;
+    box-shadow: 0 2px 12px #14b8a655;
+}
+#tickerContent {
+    will-change: transform;
+    font-size: 1.15rem;
+    font-weight: 700;
+    min-width: 100vw;
+    pointer-events: none;
+    user-select: none;
+    letter-spacing: 0.01em;
+    text-shadow: 0 2px 8px #000a;
+    display: flex;
+    align-items: center;
+    height: 2.5rem;
+    padding-left: 1rem;
+}
+.ticker-player {
+    margin-right: 3rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 1.05rem;
+    background: rgba(255,255,255,0.04);
+    border-radius: 0.5rem;
+    padding: 0.2rem 0.8rem;
+}
+.ticker-player .player-name { font-weight: 700; }
+.ticker-player .player-team { font-size: 0.95em; opacity: 0.8; }
+.ticker-player .player-pts { color: #fbbf24; font-weight: 700; margin-left: 0.5rem; }
+.ticker-player.player-pos-QB { color: #f59e42; }
+.ticker-player.player-pos-RB { color: #34d399; }
+.ticker-player.player-pos-WR { color: #60a5fa; }
+.ticker-player.player-pos-TE { color: #a78bfa; }
 
-    // --- Set defaults ---
-    if (leagueSizeSelect) leagueSizeSelect.value = 12;
-    if (draftPickInput) draftPickInput.value = 1;
-    if (draftPickValue) draftPickValue.textContent = 1;
-    if (scoringTypeSelect) scoringTypeSelect.value = 'standard';
+/* --- Section Titles --- */
+section h2, .section-title {
+    font-size: 2rem;
+    font-weight: 800;
+    color: #fbbf24;
+    margin-bottom: 1rem;
+    letter-spacing: 0.01em;
+    text-shadow: 0 2px 8px #0004;
+}
 
-    // --- Clamp draft pick input on league size change/input ---
-    if (leagueSizeSelect && draftPickInput && draftPickValue) {
-        const clampDraftPick = () => {
-            draftPickInput.max = leagueSizeSelect.value;
-            draftPickInput.min = 1;
-            draftPickInput.value = clamp(parseInt(draftPickInput.value) || 1, 1, parseInt(leagueSizeSelect.value));
-            draftPickValue.textContent = draftPickInput.value;
-        };
-        leagueSizeSelect.addEventListener('change', clampDraftPick);
-        draftPickInput.addEventListener('input', clampDraftPick);
-        clampDraftPick();
-    }
+/* --- Table Styles --- */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    background: rgba(17,24,39,0.92);
+    border-radius: 1rem;
+    overflow: hidden;
+    margin-bottom: 1.5rem;
+}
+th, td {
+    padding: 0.75rem 1rem;
+    border-bottom: 1px solid #14b8a655;
+    color: #f1f5f9;
+}
+th {
+    background: #14b8a6;
+    color: #111827;
+    font-weight: 700;
+    font-size: 1.05rem;
+}
+tr:last-child td {
+    border-bottom: none;
+}
 
-    // --- Sync bench size between sections ---
-    if (benchSizeSelect && lineupBenchSizeSelect) {
-        const syncBench = e => {
-            benchSizeSelect.value = lineupBenchSizeSelect.value = e.target.value;
-        };
-        benchSizeSelect.addEventListener('change', syncBench);
-        lineupBenchSizeSelect.addEventListener('change', syncBench);
-    }
+/* --- Inputs & Forms --- */
+input, select, textarea {
+    background: rgba(17,24,39,0.85);
+    color: #f1f5f9;
+    border: 1.5px solid #14b8a6;
+    border-radius: 0.75rem;
+    padding: 0.7rem 1rem;
+    font-size: 1rem;
+    margin-bottom: 1rem;
+    outline: none;
+    transition: border 0.2s, box-shadow 0.2s;
+}
+input:focus, select:focus, textarea:focus {
+    border-color: #fbbf24;
+    box-shadow: 0 0 0 2px #fbbf24aa;
+}
 
-    // 2. Trade Value Calculation (advanced)
-    function calculateTradeValue(player, currentWeek = 1) {
-        let base = player.fantasy_points_2023 || 0;
-        if (player.position === 'RB') base *= 1.18;
-        if (player.position === 'WR') base *= 1.12;
-        if (player.position === 'TE') base *= 1.01;
-        if (player.position === 'QB') base *= 0.92;
-        if (player.age) {
-            if (player.position === 'RB' && player.age <= 25) base *= 1.07;
-            if (player.position === 'WR' && player.age <= 25) base *= 1.04;
-            if (player.position === 'TE' && player.age >= 30) base *= 0.93;
-            if (player.position === 'QB' && player.age >= 33) base *= 0.95;
-        }
-        if (player.injury_status && player.injury_status !== "Healthy") base *= 0.7;
-        if (player.bye && Math.abs(player.bye - currentWeek) <= 2) base *= 0.93;
-        if (!base) base = 10;
-        return Math.round(base);
-    }
+/* --- Footer --- */
+footer {
+    background: #111827;
+    color: #14b8a6;
+    padding: 2rem 0 1rem 0;
+    text-align: center;
+    font-size: 1.1rem;
+    border-top: 2px solid #14b8a6;
+    margin-top: 2rem;
+    letter-spacing: 0.01em;
+}
 
-    // 3. Autocomplete (shows injury/team)
-    function autocomplete(inputId, listId, teamArr, otherTeamArr, teamDivId) {
-        const input = document.getElementById(inputId);
-        const list = document.getElementById(listId);
-        input.addEventListener('input', function () {
-            const val = input.value.toLowerCase();
-            list.innerHTML = '';
-            if (!val) return;
-            const matches = playersData.filter(p =>
-                p.name.toLowerCase().includes(val) &&
-                !teamArr.some(tp => tp.name === p.name) &&
-                !otherTeamArr.some(tp => tp.name === p.name)
-            );
-            if (matches.length === 0) {
-                const li = document.createElement('li');
-                li.textContent = "No matches found";
-                li.className = "text-gray-400 px-2 py-1";
-                list.appendChild(li);
-                return;
-            }
-            matches.slice(0, 8).forEach(player => {
-                const li = document.createElement('li');
-                li.innerHTML = `<span>${player.name} (${player.team} ${player.pos})</span>
-                    <span class="text-xs ml-2 ${player.injury_status !== "Healthy" ? "text-red-600" : "text-green-600"}">${player.injury_status}</span>`;
-                li.onclick = () => {
-                    teamArr.push(player);
-                    renderTeam(teamDivId, teamArr, teamArr === team1 ? 'team1' : 'team2');
-                    input.value = '';
-                    list.innerHTML = '';
-                };
-                list.appendChild(li);
-            });
-        });
-        input.addEventListener('blur', () => setTimeout(() => list.innerHTML = '', 150));
-    }
+/* --- Utility Classes --- */
+.text-glow {
+    text-shadow: 0 0 8px #14b8a6, 0 0 16px #fbbf24;
+}
+.shadow-glow {
+    box-shadow: 0 0 16px #14b8a6cc, 0 0 32px #fbbf24aa;
+}
+.bg-glass {
+    background: rgba(255,255,255,0.08);
+    backdrop-filter: blur(8px);
+}
+.rounded-xl { border-radius: 1.25rem; }
+.font-bold { font-weight: 800; }
+.font-semibold { font-weight: 700; }
+.text-yellow { color: #fbbf24; }
+.text-teal { color: #14b8a6; }
+.text-orange { color: #f59e42; }
+.text-green { color: #34d399; }
+.text-blue { color: #60a5fa; }
+.text-purple { color: #a78bfa; }
 
-    // 4. Render Team (shows tooltip with age/injury)
-    function renderTeam(divId, teamArr, teamKey) {
-        const div = document.getElementById(divId);
-        div.innerHTML = '';
-        teamArr.forEach((player, idx) => {
-            const card = document.createElement('div');
-            card.className = `player-card player-pos-${player.pos}`;
-            card.draggable = true;
-            card.title = `${player.name} (${player.team} ${player.pos})
-Age: ${player.age || "?"} | Injury: ${player.injury_status || "Healthy"} | Bye: ${player.bye}`;
-            card.innerHTML = `
-                <img src="${player.img}" alt="${player.name}" class="w-10 h-10 rounded-full border-2 border-yellow-400 object-cover" onerror="this.src='https://static.www.nfl.com/image/private/t_headshot_desktop/league/api/players/default.png'">
-                <div>
-                    <div class="font-bold">${player.name} <span class="text-teal">(${player.team} ${player.pos})</span></div>
-                    <div class="text-yellow font-semibold">${player.pts} pts</div>
-                    <div class="text-xs text-gray-400">Bye: ${player.bye} | <span class="${player.injury_status !== "Healthy" ? "text-red-600" : "text-green-600"}">${player.injury_status}</span></div>
-                </div>
-                <button class="remove-btn" title="Remove Player">&times;</button>
-            `;
-            card.querySelector('.remove-btn').onclick = () => {
-                teamArr.splice(idx, 1);
-                renderTeam(divId, teamArr, teamKey);
-            };
-            card.ondragstart = e => {
-                e.dataTransfer.setData('playerIdx', idx);
-                e.dataTransfer.setData('teamKey', teamKey);
-            };
-            div.appendChild(card);
-        });
-        div.ondragover = e => e.preventDefault();
-        div.ondrop = e => {
-            const fromIdx = +e.dataTransfer.getData('playerIdx');
-            const fromTeam = e.dataTransfer.getData('teamKey');
-            if (fromTeam !== teamKey) {
-                const player = (fromTeam === 'team1' ? team1 : team2).splice(fromIdx, 1)[0];
-                teamArr.push(player);
-                renderTeam('team1-players', team1, 'team1');
-                renderTeam('team2-players', team2, 'team2');
-            }
-        };
-    }
+/* --- Responsive --- */
+@media (max-width: 900px) {
+    .splash-section { padding: 2rem 1rem; }
+    .card, .glass, .trade-analyzer, .matchup-predictor { padding: 1.2rem 0.7rem; }
+    nav { gap: 0.7rem; }
+    #tickerContent { font-size: 1rem; }
+}
+@media (max-width: 640px) {
+    h1 { font-size: 1.5rem; }
+    h2, .section-title { font-size: 1.2rem; }
+    .card, .glass, .trade-analyzer, .matchup-predictor { padding: 0.7rem 0.3rem; }
+    .splash-section { padding: 1rem 0.5rem; }
+    nav { flex-direction: column; gap: 0.2rem; }
+    #tickerContent { font-size: 0.92rem; }
+}
 
-    // 5. Swap Teams
-    function swapTeams() {
-        [team1, team2] = [team2, team1];
-        renderTeam('team1-players', team1, 'team1');
-        renderTeam('team2-players', team2, 'team2');
-    }
+/* --- Animations --- */
+@keyframes slideDown {
+    from { transform: translateY(-10px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}
+@keyframes marquee {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+}
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
 
-    // 6. Analyze Trade (contextual advice and warnings)
-    function analyzeTrade() {
-        if (!team1.length && !team2.length) return;
-        const team1Value = team1.reduce((a, p) => a + (p.value || 0), 0);
-        const team2Value = team2.reduce((a, p) => a + (p.value || 0), 0);
-        const fairness = Math.abs(team1Value - team2Value);
-        let fairnessText = '';
-        let color = '';
-        let emoji = '';
-        if (fairness < 10) { fairnessText = "Perfectly Balanced"; color = "bg-green-600"; emoji = "🟢"; }
-        else if (fairness < 30) { fairnessText = "Fair Trade"; color = "bg-yellow-500"; emoji = "🟡"; }
-        else { fairnessText = "Lopsided!"; color = "bg-red-600"; emoji = "🔴"; }
-        document.getElementById('trade-fairness').innerHTML = `<span class="px-3 py-1 rounded ${color} text-white">${emoji} ${fairnessText}</span>`;
+/* --- Spinner --- */
+.spinner {
+    border: 4px solid rgba(0, 0, 0, 0.1);
+    border-left: 4px solid #14b8a6;
+    border-radius: 50%;
+    width: 24px;
+    height: 24px;
+    animation: spin 1s linear infinite;
+    margin: 0 auto;
+}
 
-        // Chart
-        const ctx = document.getElementById('tradeValueChart').getContext('2d');
-        if (window.tradeChart) window.tradeChart.destroy();
-        window.tradeChart = new Chart(ctx, {
-            type: 'bar',
-            data: {
-                labels: ['Team 1', 'Team 2'],
-                datasets: [{
-                    label: 'Trade Value',
-                    data: [team1Value, team2Value],
-                    backgroundColor: ['#facc15', '#14b8a6']
-                }]
-            },
-            options: { plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true } } }
-        });
+/* --- Player Popup --- */
+#player-popup {
+    min-width: 250px;
+    max-width: 350px;
+    pointer-events: auto;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.18);
+    transition: opacity 0.2s;
+    background: rgba(17,24,39,0.98);
+    color: #f1f5f9;
+    border-radius: 1rem;
+    z-index: 100;
+}
+#player-popup .close-btn {
+    float: right;
+    cursor: pointer;
+    font-weight: bold;
+    color: #fbbf24;
+    font-size: 1.3rem;
+}
 
-        // Contextual AI Advice
-        let advice = '';
-        const t1Injured = team1.filter(p => p.injury_status && p.injury_status !== "Healthy");
-        const t2Injured = team2.filter(p => p.injury_status && p.injury_status !== "Healthy");
-        const t1Byes = team1.map(p => p.bye).filter(Boolean);
-        const t2Byes = team2.map(p => p.bye).filter(Boolean);
-        const t1RBs = team1.filter(p => p.pos === 'RB');
-        const t2RBs = team2.filter(p => p.pos === 'RB');
-        const t1WRs = team1.filter(p => p.pos === 'WR');
-        const t2WRs = team2.filter(p => p.pos === 'WR');
+/* --- Misc --- */
+::-webkit-scrollbar {
+    width: 8px;
+    background: #0f2027;
+}
+::-webkit-scrollbar-thumb {
+    background: #14b8a6;
+    border-radius: 8px;
+}
+a, .link {
+    color: #14b8a6;
+    text-decoration: none;
+    transition: color 0.2s;
+}
+a:hover, .link:hover {
+    color: #fbbf24;
+    text-decoration: underline;
+}
 
-        if (fairness < 10) advice = "This trade is as even as it gets. Both teams win!";
-        else if (team1Value > team2Value) advice = `Team 1 is getting more value. Team 2, ask for a sweetener!`;
-        else advice = `Team 2 is getting the edge. Team 1, try to negotiate for more!`;
+/* Trade Analyzer Styles */
+.autocomplete-list {
+  position: absolute;
+  z-index: 10;
+  background: #fff;
+  border-radius: 0.5rem;
+  box-shadow: 0 4px 24px 0 rgba(0,0,0,0.12);
+  width: 100%;
+  max-height: 200px;
+  overflow-y: auto;
+  margin-top: 2px;
+  padding: 0;
+  list-style: none;
+}
+.autocomplete-list li {
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+  border-bottom: 1px solid #e5e7eb;
+  transition: background 0.15s;
+}
+.autocomplete-list li:last-child { border-bottom: none; }
+.autocomplete-list li:hover, .autocomplete-list li.active {
+  background: #f1f5f9;
+}
+.player-card {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  background: rgba(255,255,255,0.12);
+  border-radius: 0.75rem;
+  padding: 0.5rem 1rem;
+  box-shadow: 0 2px 8px 0 rgba(0,0,0,0.08);
+  position: relative;
+}
+.player-card .remove-btn {
+  position: absolute;
+  right: 0.5rem;
+  top: 0.5rem;
+  background: #f87171;
+  color: #fff;
+  border: none;
+  border-radius: 9999px;
+  width: 1.5rem;
+  height: 1.5rem;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.player-card .remove-btn:hover {
+  background: #dc2626;
+}
+.recent-trades-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.recent-trades-list li {
+  padding: 0.5rem 0.75rem;
+  border-bottom: 1px solid #e5e7eb22;
+  font-size: 0.95rem;
+}
+.recent-trades-list li:last-child { border-bottom: none; }
+/* --- Make Trade Analyzer Autocomplete Dropdowns Easy to See --- */
+#player1-autocomplete, #player2-autocomplete {
+  position: absolute;
+  background: #fff;
+  border: 2px solid #facc15;
+  border-radius: 0.5rem;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+  z-index: 1000;
+  max-height: 250px;
+  overflow-y: auto;
+  min-width: 220px;
+  font-size: 1rem;
+  padding: 0.25rem 0;
+}
 
-        // Bye week overlap warning
-        if (t1Byes.some(bye => t2Byes.includes(bye))) advice += " ⚠️ Watch out for bye week overlap!";
-        // Injured player warning
-        if (t1Injured.length || t2Injured.length) advice += ` ⚠️ Injured player(s) in trade: ${[...t1Injured, ...t2Injured].map(p => p.name).join(', ')}`;
-        // Roster depth warning
-        if (team1.length > 0 && t1RBs.length === 0 && t1WRs.length === 0) advice += " ⚠️ Team 1 is trading away all RBs/WRs!";
-        if (team2.length > 0 && t2RBs.length === 0 && t2WRs.length === 0) advice += " ⚠️ Team 2 is trading away all RBs/WRs!";
+#player1-autocomplete li, #player2-autocomplete li {
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+  transition: background 0.15s;
+  color: #222;
+}
 
-        document.getElementById('ai-advice').textContent = advice;
-
-        // Save to recent trades
-        const tradeSummary = `${team1.map(p=>p.name).join(', ') || 'None'} ⇄ ${team2.map(p=>p.name).join(', ') || 'None'} (${fairnessText})`;
-        let trades = JSON.parse(localStorage.getItem('recentTrades') || '[]');
-        trades.unshift(tradeSummary);
-        trades = trades.slice(0, 5);
-        localStorage.setItem('recentTrades', JSON.stringify(trades));
-        renderRecentTrades();
-
-        // Enable buttons only if there are players
-        document.getElementById('analyzeTradeBtn').disabled = false;
-        document.getElementById('clearAllBtn').disabled = false;
-        document.getElementById('exportTradeBtn').disabled = false;
-        document.getElementById('swapTeamsBtn').disabled = false;
-    }
-
-    // 7. Recent Trades
-    function renderRecentTrades() {
-        const trades = JSON.parse(localStorage.getItem('recentTrades') || '[]');
-        const ul = document.getElementById('recentTrades');
-        ul.innerHTML = '';
-        trades.forEach(trade => {
-            const li = document.createElement('li');
-            li.textContent = trade;
-            ul.appendChild(li);
-        });
-    }
-
-    // 8. Clear All
-    function clearAll() {
-        team1 = [];
-        team2 = [];
-        renderTeam('team1-players', team1, 'team1');
-        renderTeam('team2-players', team2, 'team2');
-        document.getElementById('trade-fairness').innerHTML = '';
-        document.getElementById('ai-advice').textContent = '';
-        if (window.tradeChart) window.tradeChart.destroy();
-    }
-
-    // 9. Export/Share
-    function exportTrade() {
-        const summary = `${team1.map(p=>p.name).join(', ') || 'None'} ⇄ ${team2.map(p=>p.name).join(', ') || 'None'}`;
-        navigator.clipboard.writeText(`Check out this trade on Front Row Fantasy: ${summary}`).then(() => {
-            alert('Trade copied to clipboard! Share it anywhere.');
-        });
-    }
-
-    // 10. Initialize everything after fetching players
-});
-
-// Fantasy Ticker - pull from projections
-document.addEventListener('DOMContentLoaded', function () {
-    const tickerContent = document.getElementById('tickerContent');
-    const pauseButton = document.getElementById('pauseButton');
-    if (!tickerContent || !pauseButton) return;
-    let paused = false, animationFrame, pos = 0;
-
-    function posColor(pos) {
-        switch (pos) {
-            case "QB": return "player-pos-QB";
-            case "RB": return "player-pos-RB";
-            case "WR": return "player-pos-WR";
-            case "TE": return "player-pos-TE";
-            default: return "";
-        }
-    }
-
-    async function buildTickerFromLocal() {
-        tickerContent.innerHTML = '<span class="loading text-white">Loading fantasy points...</span>';
-        try {
-            if (!playersData.length) {
-                await fetchAllProjections('standard');
-            }
-            if (!playersData.length) {
-                tickerContent.innerHTML = '<span class="text-red-400">No player data available.</span>';
-                return;
-            }
-            const sorted = [...playersData].sort((a, b) => {
-                const aPts = a.fantasy_points_2023 ?? a.points ?? 0;
-                const bPts = b.fantasy_points_2023 ?? b.points ?? 0;
-                return bPts - aPts;
-            }).slice(0, 10);
-
-            tickerContent.innerHTML = '';
-            sorted.forEach(item => {
-                const span = document.createElement('span');
-                span.className = `ticker-player ${item.pos ? 'player-pos-' + item.pos : ''} mr-8`;
-                span.innerHTML = `
-                    <span class="player-name font-bold">${item.name}</span>
-                    <span class="player-team text-teal-300">(${item.team} ${item.pos})</span>
-                    <span class="player-pts text-yellow-300 font-bold">${(item.fantasy_points_2023 ?? item.points ?? 0).toFixed(1)} pts</span>
-                `;
-                tickerContent.appendChild(span);
-            });
-            if (tickerContent.innerHTML === '') {
-                tickerContent.innerHTML = '<span class="text-red-400">No ticker data found.</span>';
-            }
-        } catch (e) {
-            console.error('Ticker local JSON error:', e);
-            tickerContent.innerHTML = '<span class="text-red-400">Failed to load ticker data.</span>';
-        }
-    }
-
-    function animateTicker() {
-        if (!paused) {
-            pos -= 1.1;
-            if (Math.abs(pos) >= tickerContent.scrollWidth / 2) pos = 0;
-            tickerContent.style.transform = `translateX(${pos}px)`;
-        }
-        animationFrame = requestAnimationFrame(animateTicker);
-    }
-
-    pauseButton.addEventListener('click', function () {
-        paused = !paused;
-        pauseButton.setAttribute('aria-pressed', paused ? 'true' : 'false');
-        pauseButton.textContent = paused ? 'Resume' : 'Pause';
-    });
-
-    buildTickerFromLocal();
-    animateTicker();
-
-    setInterval(buildTickerFromLocal, 300000);
-});
+#player1-autocomplete li:hover, #player2-autocomplete li:hover {
+  background: #facc15;
+  color: #000;
+  font-weight: bold;
+}
