@@ -1,409 +1,186 @@
-/* --- FANTASY FOOTBALL PREMIUM DESIGN SYSTEM --- */
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Front Row Fantasy GOAT Page - Build the greatest fantasy football teams with expert tools and insights.">
+    <meta name="keywords" content="fantasy football, GOAT, team building, draft strategies, player research">
+    <meta name="author" content="Mpeters9">
+    <title>Front Row Fantasy - GOAT Page</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="icon" href="favicon.ico" type="image/x-icon">
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body aria-label="GOAT Page Content">
 
-/* --- Base --- */
-html, body {
-    min-height: 100%;
-    background: linear-gradient(135deg, #0f2027 0%, #2c5364 100%);
-    color: #f1f5f9;
-    font-family: 'Poppins', 'Segoe UI', Arial, sans-serif;
-    scroll-behavior: smooth;
-}
+    <!-- Header -->
+    <header>
+        <div class="max-w-7xl mx-auto px-4 flex justify-between items-center py-3">
+            <h1 class="text-2xl font-bold text-yellow text-glow">GOAT - Greatest of All Time</h1>
+            <nav>
+                <a href="index.html" class="nav-link">Home</a>
+                <a href="tools.html" class="nav-link">Expert Tools</a>
+                <a href="#about" class="nav-link">About</a>
+                <a href="#games" class="nav-link">Games</a>
+                <a href="#contact" class="nav-link">Contact</a>
+            </nav>
+        </div>
+    </header>
 
-body {
-    background-attachment: fixed;
-    background-size: cover;
-    background-repeat: no-repeat;
-}
+    <!-- Hero / Splash -->
+    <main class="max-w-7xl mx-auto px-4 py-6">
+        <section class="splash-section text-center mb-8">
+            <h2 class="text-4xl font-bold mb-4 text-glow">Unleash Your Fantasy GOAT</h2>
+            <p class="text-lg mb-6">Master the art of fantasy football with elite strategies, in-depth research, and a thriving community to build the ultimate team.</p>
+            <a href="#best-draft-builds" class="cta-btn">Get Started</a>
+        </section>
 
-/* --- Header & Navigation --- */
-header {
-    background: rgba(17,24,39,0.98);
-    box-shadow: 0 4px 24px rgba(0,0,0,0.25);
-    border-bottom: 2px solid #14b8a6;
-    position: sticky;
-    top: 0;
-    z-index: 50;
-}
+        <!-- Fantasy Points Ticker -->
+        <section class="marquee mb-8" aria-label="Fantasy Points Ticker">
+            <div class="bg-teal-900 text-white p-2 rounded-t flex justify-between items-center shadow">
+                <span class="text-xl font-bold tracking-wide flex items-center gap-2">
+                    <svg class="inline w-6 h-6 text-yellow-300" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12c0 4.97-4.03 9-9 9s-9-4.03-9-9 4.03-9 9-9 9 4.03 9 9z"/></svg>
+                    Fantasy Points Ticker
+                </span>
+                <button id="pauseButton" class="cta-btn px-4 py-1" aria-pressed="false" aria-label="Pause ticker">Pause</button>
+            </div>
+            <div class="relative overflow-hidden bg-teal-800 rounded-b" style="height:2.5rem;">
+                <div id="tickerContent" class="absolute left-0 top-0 h-full flex items-center whitespace-nowrap transition-none" tabindex="0" aria-live="polite">
+                    <span class="loading text-white">Loading fantasy points...</span>
+                </div>
+            </div>
+        </section>
 
-nav {
-    display: flex;
-    gap: 1.5rem;
-}
+        <!-- Example Card Section -->
+        <section id="best-draft-builds" class="mb-12">
+            <h2 class="section-title text-center">Best Draft Builds</h2>
+            <div class="card">
+                <!-- ...your draft build form and content here... -->
+                <button class="cta-btn mt-4">Generate Draft</button>
+            </div>
+        </section>
 
-nav a {
-    color: #14b8a6;
-    font-weight: 700;
-    padding-bottom: 4px;
-    border-bottom: 2px solid transparent;
-    letter-spacing: 0.02em;
-    transition: border-color 0.2s, color 0.2s, background 0.2s;
-    border-radius: 0.25rem;
-    outline: none;
-}
-nav a:hover, nav a[aria-current="page"], .nav-link.active {
-    color: #fbbf24;
-    border-bottom: 2px solid #fbbf24;
-    background: rgba(20,184,166,0.08);
-}
+        <!-- Example Player Table with Popup -->
+        <section id="player-research" class="mb-12">
+            <h2 class="section-title text-center">Player Research</h2>
+            <div class="card">
+                <table class="w-full mb-6">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Pos</th>
+                            <th>Proj Pts</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="player-row" data-player="Patrick Mahomes">
+                            <td class="player-name player-pos-QB">Patrick Mahomes</td>
+                            <td>QB</td>
+                            <td>25.1</td>
+                        </tr>
+                        <tr class="player-row" data-player="Christian McCaffrey">
+                            <td class="player-name player-pos-RB">Christian McCaffrey</td>
+                            <td>RB</td>
+                            <td>22.3</td>
+                        </tr>
+                        <tr class="player-row" data-player="Justin Jefferson">
+                            <td class="player-name player-pos-WR">Justin Jefferson</td>
+                            <td>WR</td>
+                            <td>20.7</td>
+                        </tr>
+                        <tr class="player-row" data-player="Travis Kelce">
+                            <td class="player-name player-pos-TE">Travis Kelce</td>
+                            <td>TE</td>
+                            <td>19.8</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </main>
 
-/* --- Hero / Splash Section --- */
-.splash-section {
-    background: linear-gradient(120deg, #14b8a6 0%, #0ea5e9 100%);
-    box-shadow: 0 8px 32px rgba(20,184,166,0.12);
-    border-radius: 1.5rem;
-    margin-bottom: 2rem;
-    padding: 3rem 2rem;
-    position: relative;
-    overflow: hidden;
-    color: #fff;
-}
-.splash-section::before {
-    content: "";
-    position: absolute;
-    top: -40px; left: -40px;
-    width: 200px; height: 200px;
-    background: radial-gradient(circle, #fbbf24 0%, transparent 70%);
-    opacity: 0.12;
-    z-index: 0;
-}
-.splash-section h2, .splash-section p, .splash-section a {
-    position: relative;
-    z-index: 1;
-}
+    <footer>
+        <p>© 2025 Front Row Fantasy. All rights reserved.</p>
+    </footer>
 
-/* --- Call To Action Button --- */
-.cta-btn, .button, button, input[type="submit"] {
-    background: linear-gradient(90deg, #fbbf24 0%, #14b8a6 100%);
-    color: #111827;
-    font-weight: 800;
-    border-radius: 9999px;
-    padding: 0.75rem 2rem;
-    box-shadow: 0 2px 12px rgba(20,184,166,0.15);
-    transition: transform 0.15s, box-shadow 0.15s, background 0.2s, color 0.2s;
-    border: none;
-    outline: none;
-    cursor: pointer;
-    font-size: 1.1rem;
-}
-.cta-btn:hover, .button:hover, button:hover, input[type="submit"]:hover,
-.cta-btn:focus, .button:focus, button:focus, input[type="submit"]:focus {
-    transform: scale(1.05);
-    box-shadow: 0 4px 24px #fbbf24aa;
-    color: #fff;
-    background: linear-gradient(90deg, #14b8a6 0%, #fbbf24 100%);
-}
+    <!-- Player Popup Modal -->
+    <div id="player-popup" tabindex="0" aria-live="polite" class="hidden fixed z-50 bg-white border rounded shadow-lg p-4 max-w-xs" style="top:100px;left:100px;"></div>
 
-/* --- Card / Glassmorphism --- */
-.card, .glass, .trade-analyzer, .matchup-predictor {
-    background: rgba(17,24,39,0.85);
-    border-radius: 1.25rem;
-    box-shadow: 0 2px 16px rgba(20,184,166,0.10), 0 1.5px 8px #0004;
-    padding: 2rem 1.5rem;
-    margin-bottom: 1.5rem;
-    backdrop-filter: blur(6px);
-    border: 1.5px solid rgba(20,184,166,0.08);
-    transition: box-shadow 0.2s, transform 0.2s;
-}
-.card:hover, .glass:hover, .trade-analyzer:hover, .matchup-predictor:hover {
-    box-shadow: 0 8px 32px #14b8a6cc, 0 2px 16px #0006;
-    transform: translateY(-4px) scale(1.02);
-}
+    <!-- Fantasy Ticker Script -->
+    <script>
+    // Fantasy Ticker
+    document.addEventListener('DOMContentLoaded', function () {
+        const tickerContent = document.getElementById('tickerContent');
+        const pauseButton = document.getElementById('pauseButton');
+        let paused = false, animationFrame, pos = 0;
+        const tickerData = [
+            { player: "Josh Allen", team: "BUF", pos: "QB", pts: 25.4 },
+            { player: "Patrick Mahomes", team: "KC", pos: "QB", pts: 24.8 },
+            { player: "Christian McCaffrey", team: "SF", pos: "RB", pts: 20.5 },
+            { player: "Tyreek Hill", team: "MIA", pos: "WR", pts: 19.8 },
+            { player: "Justin Jefferson", team: "MIN", pos: "WR", pts: 19.2 },
+            { player: "Travis Kelce", team: "KC", pos: "TE", pts: 18.9 }
+        ];
+        function posColor(pos) {
+            switch (pos) {
+                case "QB": return "player-pos-QB";
+                case "RB": return "player-pos-RB";
+                case "WR": return "player-pos-WR";
+                case "TE": return "player-pos-TE";
+                default: return "";
+            }
+        }
+        function buildTicker() {
+            tickerContent.innerHTML = '';
+            for (let loop = 0; loop < 2; loop++) {
+                tickerData.forEach(item => {
+                    const span = document.createElement('span');
+                    span.className = `ticker-player ${posColor(item.pos)}`;
+                    span.innerHTML = `
+                        <span class="player-name">${item.player}</span>
+                        <span class="player-team">(${item.team} ${item.pos})</span>
+                        <span class="player-pts">${item.pts} pts</span>
+                    `;
+                    tickerContent.appendChild(span);
+                });
+            }
+        }
+        function animateTicker() {
+            if (!paused) {
+                pos -= 1.1;
+                if (Math.abs(pos) >= tickerContent.scrollWidth / 2) pos = 0;
+                tickerContent.style.transform = `translateX(${pos}px)`;
+            }
+            animationFrame = requestAnimationFrame(animateTicker);
+        }
+        pauseButton.addEventListener('click', function () {
+            paused = !paused;
+            pauseButton.setAttribute('aria-pressed', paused ? 'true' : 'false');
+            pauseButton.textContent = paused ? 'Resume' : 'Pause';
+        });
+        buildTicker();
+        animateTicker();
+    });
 
-/* --- Fantasy Ticker --- */
-.marquee, .fantasy-ticker {
-    background: linear-gradient(90deg, #0f2027 0%, #14b8a6 100%);
-    padding: 0;
-    border-radius: 1rem;
-    overflow: hidden;
-    position: relative;
-    width: 100%;
-    margin-bottom: 1.5rem;
-    box-shadow: 0 2px 12px #14b8a655;
-}
-#tickerContent {
-    will-change: transform;
-    font-size: 1.15rem;
-    font-weight: 700;
-    min-width: 100vw;
-    pointer-events: none;
-    user-select: none;
-    letter-spacing: 0.01em;
-    text-shadow: 0 2px 8px #000a;
-    display: flex;
-    align-items: center;
-    height: 2.5rem;
-    padding-left: 1rem;
-}
-.ticker-player {
-    margin-right: 3rem;
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    font-size: 1.05rem;
-    background: rgba(255,255,255,0.04);
-    border-radius: 0.5rem;
-    padding: 0.2rem 0.8rem;
-}
-.ticker-player .player-name { font-weight: 700; }
-.ticker-player .player-team { font-size: 0.95em; opacity: 0.8; }
-.ticker-player .player-pts { color: #fbbf24; font-weight: 700; margin-left: 0.5rem; }
-.ticker-player.player-pos-QB { color: #f59e42; }
-.ticker-player.player-pos-RB { color: #34d399; }
-.ticker-player.player-pos-WR { color: #60a5fa; }
-.ticker-player.player-pos-TE { color: #a78bfa; }
-
-/* --- Section Titles --- */
-section h2, .section-title {
-    font-size: 2rem;
-    font-weight: 800;
-    color: #fbbf24;
-    margin-bottom: 1rem;
-    letter-spacing: 0.01em;
-    text-shadow: 0 2px 8px #0004;
-}
-
-/* --- Table Styles --- */
-table {
-    width: 100%;
-    border-collapse: collapse;
-    background: rgba(17,24,39,0.92);
-    border-radius: 1rem;
-    overflow: hidden;
-    margin-bottom: 1.5rem;
-}
-th, td {
-    padding: 0.75rem 1rem;
-    border-bottom: 1px solid #14b8a655;
-    color: #f1f5f9;
-}
-th {
-    background: #14b8a6;
-    color: #111827;
-    font-weight: 700;
-    font-size: 1.05rem;
-}
-tr:last-child td {
-    border-bottom: none;
-}
-
-/* --- Inputs & Forms --- */
-input, select, textarea {
-    background: rgba(17,24,39,0.85);
-    color: #f1f5f9;
-    border: 1.5px solid #14b8a6;
-    border-radius: 0.75rem;
-    padding: 0.7rem 1rem;
-    font-size: 1rem;
-    margin-bottom: 1rem;
-    outline: none;
-    transition: border 0.2s, box-shadow 0.2s;
-}
-input:focus, select:focus, textarea:focus {
-    border-color: #fbbf24;
-    box-shadow: 0 0 0 2px #fbbf24aa;
-}
-
-/* --- Footer --- */
-footer {
-    background: #111827;
-    color: #14b8a6;
-    padding: 2rem 0 1rem 0;
-    text-align: center;
-    font-size: 1.1rem;
-    border-top: 2px solid #14b8a6;
-    margin-top: 2rem;
-    letter-spacing: 0.01em;
-}
-
-/* --- Utility Classes --- */
-.text-glow {
-    text-shadow: 0 0 8px #14b8a6, 0 0 16px #fbbf24;
-}
-.shadow-glow {
-    box-shadow: 0 0 16px #14b8a6cc, 0 0 32px #fbbf24aa;
-}
-.bg-glass {
-    background: rgba(255,255,255,0.08);
-    backdrop-filter: blur(8px);
-}
-.rounded-xl { border-radius: 1.25rem; }
-.font-bold { font-weight: 800; }
-.font-semibold { font-weight: 700; }
-.text-yellow { color: #fbbf24; }
-.text-teal { color: #14b8a6; }
-.text-orange { color: #f59e42; }
-.text-green { color: #34d399; }
-.text-blue { color: #60a5fa; }
-.text-purple { color: #a78bfa; }
-
-/* --- Responsive --- */
-@media (max-width: 900px) {
-    .splash-section { padding: 2rem 1rem; }
-    .card, .glass, .trade-analyzer, .matchup-predictor { padding: 1.2rem 0.7rem; }
-    nav { gap: 0.7rem; }
-    #tickerContent { font-size: 1rem; }
-}
-@media (max-width: 640px) {
-    h1 { font-size: 1.5rem; }
-    h2, .section-title { font-size: 1.2rem; }
-    .card, .glass, .trade-analyzer, .matchup-predictor { padding: 0.7rem 0.3rem; }
-    .splash-section { padding: 1rem 0.5rem; }
-    nav { flex-direction: column; gap: 0.2rem; }
-    #tickerContent { font-size: 0.92rem; }
-}
-
-/* --- Animations --- */
-@keyframes slideDown {
-    from { transform: translateY(-10px); opacity: 0; }
-    to { transform: translateY(0); opacity: 1; }
-}
-@keyframes marquee {
-    0% { transform: translateX(0); }
-    100% { transform: translateX(-50%); }
-}
-@keyframes spin {
-    to { transform: rotate(360deg); }
-}
-
-/* --- Spinner --- */
-.spinner {
-    border: 4px solid rgba(0, 0, 0, 0.1);
-    border-left: 4px solid #14b8a6;
-    border-radius: 50%;
-    width: 24px;
-    height: 24px;
-    animation: spin 1s linear infinite;
-    margin: 0 auto;
-}
-
-/* --- Player Popup --- */
-#player-popup {
-    min-width: 250px;
-    max-width: 350px;
-    pointer-events: auto;
-    box-shadow: 0 8px 32px rgba(0,0,0,0.18);
-    transition: opacity 0.2s;
-    background: rgba(17,24,39,0.98);
-    color: #f1f5f9;
-    border-radius: 1rem;
-    z-index: 100;
-}
-#player-popup .close-btn {
-    float: right;
-    cursor: pointer;
-    font-weight: bold;
-    color: #fbbf24;
-    font-size: 1.3rem;
-}
-
-/* --- Misc --- */
-::-webkit-scrollbar {
-    width: 8px;
-    background: #0f2027;
-}
-::-webkit-scrollbar-thumb {
-    background: #14b8a6;
-    border-radius: 8px;
-}
-a, .link {
-    color: #14b8a6;
-    text-decoration: none;
-    transition: color 0.2s;
-}
-a:hover, .link:hover {
-    color: #fbbf24;
-    text-decoration: underline;
-}
-
-/* Trade Analyzer Styles */
-.autocomplete-list {
-  position: absolute;
-  z-index: 10;
-  background: #fff;
-  border-radius: 0.5rem;
-  box-shadow: 0 4px 24px 0 rgba(0,0,0,0.12);
-  width: 100%;
-  max-height: 200px;
-  overflow-y: auto;
-  margin-top: 2px;
-  padding: 0;
-  list-style: none;
-}
-.autocomplete-list li {
-  padding: 0.5rem 1rem;
-  cursor: pointer;
-  border-bottom: 1px solid #e5e7eb;
-  transition: background 0.15s;
-}
-.autocomplete-list li:last-child { border-bottom: none; }
-.autocomplete-list li:hover, .autocomplete-list li.active {
-  background: #f1f5f9;
-}
-.player-card {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  background: rgba(255,255,255,0.12);
-  border-radius: 0.75rem;
-  padding: 0.5rem 1rem;
-  box-shadow: 0 2px 8px 0 rgba(0,0,0,0.08);
-  position: relative;
-}
-.player-card .remove-btn {
-  position: absolute;
-  right: 0.5rem;
-  top: 0.5rem;
-  background: #f87171;
-  color: #fff;
-  border: none;
-  border-radius: 9999px;
-  width: 1.5rem;
-  height: 1.5rem;
-  font-size: 1rem;
-  cursor: pointer;
-  transition: background 0.15s;
-}
-.player-card .remove-btn:hover {
-  background: #dc2626;
-}
-.recent-trades-list {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
-.recent-trades-list li {
-  padding: 0.5rem 0.75rem;
-  border-bottom: 1px solid #e5e7eb22;
-  font-size: 0.95rem;
-}
-.recent-trades-list li:last-child { border-bottom: none; }
-/* --- Make Trade Analyzer Autocomplete Dropdowns Easy to See --- */
-#player1-autocomplete, #player2-autocomplete {
-  position: absolute;
-  background: #fff;
-  border: 2px solid #facc15;
-  border-radius: 0.5rem;
-  box-shadow: 0 4px 16px rgba(0,0,0,0.15);
-  z-index: 1000;
-  max-height: 250px;
-  overflow-y: auto;
-  min-width: 220px;
-  font-size: 1rem;
-  padding: 0.25rem 0;
-}
-
-#player1-autocomplete li, #player2-autocomplete li {
-  padding: 0.5rem 1rem;
-  cursor: pointer;
-  transition: background 0.15s;
-  color: #222;
-}
-
-#player1-autocomplete li:hover, #player2-autocomplete li:hover {
-  background: #facc15;
-  color: #000;
-  font-weight: bold;
-}
+    // Player Popup Modal
+    document.querySelectorAll('.player-row').forEach(row => {
+        row.addEventListener('click', function (e) {
+            const player = row.dataset.player;
+            const popup = document.getElementById('player-popup');
+            popup.innerHTML = `
+                <span class="close-btn" onclick="document.getElementById('player-popup').classList.add('hidden')">&times;</span>
+                <h4 class="font-bold text-lg mb-1">${player}</h4>
+                <div class="mb-2">Position: <span class="${row.querySelector('.player-name').classList[1]}">${row.children[1].textContent}</span></div>
+                <div class="mb-2">Projected Points: <span class="text-yellow">${row.children[2].textContent}</span></div>
+                <div class="mb-2">Team: <span class="text-teal">${row.children[0].textContent.split(' ')[1] || 'N/A'}</span></div>
+                <div class="mb-2">Bio: <span class="text-gray-700">Elite fantasy performer. Click for more stats soon!</span></div>
+            `;
+            popup.classList.remove('hidden');
+            popup.style.top = (e.clientY + 10) + 'px';
+            popup.style.left = (e.clientX + 10) + 'px';
+        });
+    });
+    </script>
+</body>
+</html>
