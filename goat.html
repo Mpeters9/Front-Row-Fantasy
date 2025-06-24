@@ -12,7 +12,6 @@
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="text-black bg-gray-100 font-sans" aria-label="GOAT Page Content">
-    <div id="goat-page"></div> <!-- Retained for potential future use, but not used for table -->
 
     <header class="bg-gradient-to-r from-teal-600 to-teal-800 shadow-md py-3 text-white" role="banner">
         <div class="max-w-7xl mx-auto px-4 flex justify-between items-center">
@@ -37,7 +36,6 @@
         <section id="best-draft-builds" class="mb-12">
             <h2 class="text-3xl font-semibold mb-6 text-teal-700 text-center">Best Draft Builds</h2>
             <div class="p-6 bg-teal-50 rounded-lg shadow-lg hover:shadow-xl transition-shadow">
-                <!-- Add these controls for script.js compatibility -->
                 <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
                     <label>League Size:
                         <select id="leagueSize" class="bg-white p-2 rounded border border-gray-300 w-full">
@@ -80,16 +78,16 @@
                         </select>
                     </label>
                 </div>
-                <!-- Add any other controls your script.js expects, e.g., bonusTD, penaltyFumble, positionFocus, draftPick -->
                 <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
                     <label><input type="checkbox" id="bonusTD"> Bonus TD</label>
                     <label><input type="checkbox" id="penaltyFumble"> Penalty Fumble</label>
                     <label>Position Focus:
                         <select id="positionFocus" class="bg-white p-2 rounded border border-gray-300 w-full">
-                            <option value="none" selected>None</option>
-                            <option value="rb">RB</option>
-                            <option value="wr">WR</option>
-                            <option value="qb">QB</option>
+                            <option value="balanced" selected>Balanced</option>
+                            <option value="RB">RB Heavy</option>
+                            <option value="WR">WR Heavy</option>
+                            <option value="QB">QB Heavy</option>
+                            <option value="TE">TE Heavy</option>
                         </select>
                     </label>
                     <label>Draft Pick:
@@ -176,7 +174,7 @@
         <section id="player-research" class="mb-12">
             <h2 class="text-3xl font-semibold mb-6 text-teal-700 text-center">Player Research</h2>
             <div class="p-6 bg-teal-50 rounded-lg shadow-lg hover:shadow-xl transition-shadow">
-                <div id="player-table-root"></div> <!-- New mount point for React table -->
+                <div id="player-table-root"></div>
                 <div id="player-spotlight" class="p-4 bg-teal-100 rounded-lg text-gray-900">Spotlight: [Player Name] - Key Stats Here</div>
             </div>
         </section>
@@ -208,6 +206,14 @@
     <footer class="bg-gray-100 text-teal-600 py-4 text-center mt-6">
         <p>© 2025 Front Row Fantasy. All rights reserved.</p>
     </footer>
+
+    <div id="loading-spinner" class="hidden fixed z-50 top-1/2 left-1/2 bg-white border rounded shadow-lg p-4 flex items-center justify-center" style="transform:translate(-50%,-50%);">
+      <svg class="animate-spin h-8 w-8 text-blue-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"></path>
+      </svg>
+      <span class="ml-2 text-blue-700">Loading player data...</span>
+    </div>
 
     <script type="text/babel">
         const { useState, useEffect } = React;
@@ -253,34 +259,12 @@
             return <PlayerTable />;
         };
 
-        // Mount the App to the player-table-root div within player-research
         ReactDOM.render(<App />, document.getElementById('player-table-root'));
-
-        const NUM_TEAMS = 12;
-        const ROUNDS = 14;
-
-        function runSnakeDraft(players) {
-          const teams = Array.from({ length: NUM_TEAMS }, () => []);
-          let availablePlayers = [...players];
-
-          for (let round = 0; round < ROUNDS; round++) {
-            const order = round % 2 === 0
-              ? [...Array(NUM_TEAMS).keys()] // 0 to 11
-              : [...Array(NUM_TEAMS).keys()].reverse(); // 11 to 0
-
-            for (let pick of order) {
-              // For realism, pick the highest-ranked available player
-              const selectedPlayer = availablePlayers.shift();
-              teams[pick].push(selectedPlayer);
-            }
-          }
-          return teams;
-        }
     </script>
     <script src="https://unpkg.com/react@17/umd/react.development.js"></script>
     <script src="https://unpkg.com/react-dom@17/umd/react-dom.development.js"></script>
     <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
     <script src="script.js"></script>
-    <div id="player-popup" class="hidden fixed z-50 bg-white border rounded shadow-lg p-4 max-w-xs" style="top:100px;left:100px;"></div>
+    <div id="player-popup" tabindex="0" aria-live="polite" class="hidden fixed z-50 bg-white border rounded shadow-lg p-4 max-w-xs" style="top:100px;left:100px;"></div>
 </body>
 </html>
