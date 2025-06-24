@@ -122,25 +122,26 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- Load CSV and Initialize Draft ---
     let adpPlayers = [];
 
-    fetch('FantasyPros_2025_Overall_ADP_Rankings.csv')
+    fetch('csvjson.json')
         .then(res => {
-            if (!res.ok) throw new Error('CSV file not found or not accessible.');
-            return res.text();
+            if (!res.ok) throw new Error('JSON file not found or not accessible.');
+            return res.json();
         })
-        .then(csv => {
-            adpPlayers = parseCSV(csv).map(p => ({
+        .then(data => {
+            // Map JSON data to your internal player format
+            adpPlayers = data.map(p => ({
                 name: p.Player,
-                pos: p.POS.replace(/\d+/, '').replace('QB', 'QB').replace('RB', 'RB').replace('WR', 'WR').replace('TE', 'TE').replace('K', 'K').replace('DST', 'DST'),
+                pos: p.POS.replace(/\d+/, ''), // "WR1" -> "WR"
                 team: p.Team,
                 adp: parseFloat(p.AVG),
                 points: 0
             }));
-            if (buildResultDraft) buildResultDraft.innerHTML = '';
+            if (typeof buildResultDraft !== 'undefined' && buildResultDraft) buildResultDraft.innerHTML = '';
         })
         .catch(err => {
-            // Fallback to built-in players if CSV fails
+            // Fallback to built-in players if JSON fails
             adpPlayers = [...players];
-            if (buildResultDraft) buildResultDraft.innerHTML = `<p style="color:orange;">Using built-in player data (CSV not loaded): ${err.message}</p>`;
+            if (typeof buildResultDraft !== 'undefined' && buildResultDraft) buildResultDraft.innerHTML = `<p style="color:orange;">Using built-in player data (JSON not loaded): ${err.message}</p>`;
         });
 
     // --- Generate Optimal Draft for User's Full Team ---
