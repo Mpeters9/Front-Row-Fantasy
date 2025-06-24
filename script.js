@@ -1,38 +1,35 @@
 let playersData = []; // Make playersData global
 
 document.addEventListener('DOMContentLoaded', async () => {
-    // --- Element references ---
     const $ = id => document.getElementById(id);
 
-    // --- Fetch ESPN Players for Analyzer ---
-    async function fetchESPNPlayers() {
+    // --- Fetch Players from csv.json.json for Analyzer ---
+    async function fetchLocalPlayers() {
         try {
-            // Use a CORS proxy for local development
-            const res = await fetch('https://corsproxy.io/?https://site.api.espn.com/apis/site/v2/sports/football/nfl/players');
+            const res = await fetch('csv.json.json');
             const data = await res.json();
-            playersData = (data.players || [])
-                .filter(p => p.team && p.position && ['QB','RB','WR','TE'].includes(p.position.abbreviation))
-                .map(p => ({
-                    name: p.fullName,
-                    pos: p.position.abbreviation,
-                    team: p.team.abbreviation,
-                    points: (Math.random() * 10 + 15).toFixed(1), // Dummy points, replace if you have real stats
-                    injury_status: p.injuryStatus || "Healthy",
-                    bye: p.byeWeek || "?",
-                    age: p.age || "?",
-                    fantasy_points_2023: (Math.random() * 10 + 15).toFixed(1), // Dummy points
-                    img: p.headshot ? p.headshot.href : `https://static.www.nfl.com/image/private/t_headshot_desktop/league/api/players/default.png`,
-                    pts: (Math.random() * 10 + 15).toFixed(1),
-                    value: (Math.random() * 10 + 15).toFixed(1)
-                }));
+            // Adjust this mapping to match your JSON structure!
+            playersData = data.map(p => ({
+                name: p.name,
+                pos: p.pos,
+                team: p.team,
+                points: p.points,
+                injury_status: p.injury_status || "Healthy",
+                bye: p.bye || "?",
+                age: p.age || "?",
+                fantasy_points_2023: p.fantasy_points_2023 || p.points,
+                img: p.img || `https://static.www.nfl.com/image/private/t_headshot_desktop/league/api/players/default.png`,
+                pts: p.pts || p.points,
+                value: p.value || p.points
+            }));
             playersData.sort((a, b) => b.value - a.value);
         } catch (e) {
-            console.error('ESPN API error for analyzer:', e);
-            // fallback: keep playersData as empty or use your static fallback if needed
+            console.error('Local JSON error for analyzer:', e);
+            playersData = [];
         }
     }
 
-    await fetchESPNPlayers();
+    await fetchLocalPlayers();
 
     let team1 = [];
     let team2 = [];
@@ -329,7 +326,7 @@ Age: ${player.age || "?"} | Injury: ${player.injury_status || "Healthy"} | Bye: 
     // 10. Initialize everything after fetching players
 });
 
-// Fantasy Ticker - API player names, dummy points
+// Fantasy Ticker - pull from local JSON
 document.addEventListener('DOMContentLoaded', function () {
     const tickerContent = document.getElementById('tickerContent');
     const pauseButton = document.getElementById('pauseButton');
@@ -346,38 +343,15 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 
-    async function buildTickerFromAPI() {
+    async function buildTickerFromLocal() {
         tickerContent.innerHTML = '<span class="loading text-white">Loading fantasy points...</span>';
         try {
-            const res = await fetch('https://site.api.espn.com/apis/site/v2/sports/football/nfl/players');
-            const data = await res.json();
-            // ESPN returns an array of player objects in data.players
-            const players = (data.players || [])
-                .filter(p => p.team && p.position && ['QB','RB','WR','TE'].includes(p.position.abbreviation))
-                .slice(0, 6)
-                .map(p => ({
-                    player: p.fullName,
-                    team: p.team.abbreviation,
-                    pos: p.position.abbreviation,
-                    pts: (Math.random() * 10 + 15).toFixed(1) // Dummy points 15-25
-                }));
-            if (players.length === 0) throw new Error('No players found from API');
-            tickerContent.innerHTML = '';
-            for (let loop = 0; loop < 2; loop++) {
-                players.forEach(item => {
-                    const span = document.createElement('span');
-                    span.className = `ticker-player ${posColor(item.pos)}`;
-                    span.innerHTML = `
-                        <span class="player-name">${item.player}</span>
-                        <span class="player-team">(${item.team} ${item.pos})</span>
-                        <span class="player-pts">${item.pts} pts</span>
-                    `;
-                    tickerContent.appendChild(span);
-                });
+            // Use the already-loaded playersData if available
+            if (!playersData.length) {
+                const res = await fetch('csv.json.json');
+                const data = await res.json();
+                playersData = data;
             }
-        } catch (e) {
-            console.error('Ticker API error:', e);
-            // Fallback to local data
             tickerContent.innerHTML = '';
             playersData.slice(0, 6).forEach(item => {
                 const span = document.createElement('span');
@@ -390,8 +364,11 @@ document.addEventListener('DOMContentLoaded', function () {
                 tickerContent.appendChild(span);
             });
             if (tickerContent.innerHTML === '') {
-                tickerContent.innerHTML = '<span class="text-red-400">Failed to load ticker data.</span>';
+                tickerContent.innerHTML = '<span class="text-red-400">No ticker data found.</span>';
             }
+        } catch (e) {
+            console.error('Ticker local JSON error:', e);
+            tickerContent.innerHTML = '<span class="text-red-400">Failed to load ticker data.</span>';
         }
     }
 
@@ -410,6 +387,8 @@ document.addEventListener('DOMContentLoaded', function () {
         pauseButton.textContent = paused ? 'Resume' : 'Pause';
     });
 
-    buildTickerFromAPI();
+    buildTickerFromLocal();
     animateTicker();
+
+    setInterval(buildTickerFromLocal, 300000);
 });
