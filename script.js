@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
-    // Element references
+    // --- Element references ---
     const $ = id => document.getElementById(id);
     const leagueSizeSelect = $('leagueSize'), startingLineupSelect = $('startingLineup'), benchSizeSelect = $('benchSize'),
         scoringTypeSelect = $('scoringType'), bonusTDCheckbox = $('bonusTD'), penaltyFumbleCheckbox = $('penaltyFumble'),
@@ -13,7 +13,7 @@ document.addEventListener('DOMContentLoaded', () => {
         compareLineupsWeeklyButton = $('compareLineupsWeekly'), progressBarWeekly = $('progressBarWeekly'),
         progressWeekly = $('progressWeekly'), lineupResult = $('lineup-result');
 
-    // Utility functions
+    // --- Utility functions ---
     const clamp = (val, min, max) => Math.max(min, Math.min(val, max));
     const parseLineupConfig = str => str.split(',').map(s => s.trim().toUpperCase());
     const parseRoster = str => str.split(';').map(p => p.trim()).filter(Boolean);
@@ -61,16 +61,15 @@ document.addEventListener('DOMContentLoaded', () => {
         const clampDraftPick = () => {
             draftPickInput.max = leagueSizeSelect.value;
             draftPickInput.min = 1;
-            // If current value is out of range, clamp it
             draftPickInput.value = clamp(parseInt(draftPickInput.value) || 1, 1, parseInt(leagueSizeSelect.value));
             draftPickValue.textContent = draftPickInput.value;
         };
         leagueSizeSelect.addEventListener('change', clampDraftPick);
         draftPickInput.addEventListener('input', clampDraftPick);
-        clampDraftPick(); // run once on load
+        clampDraftPick();
     }
 
-    // Sync bench size between sections
+    // --- Sync bench size between sections ---
     if (benchSizeSelect && lineupBenchSizeSelect) {
         const syncBench = e => {
             benchSizeSelect.value = lineupBenchSizeSelect.value = e.target.value;
@@ -79,7 +78,7 @@ document.addEventListener('DOMContentLoaded', () => {
         lineupBenchSizeSelect.addEventListener('change', syncBench);
     }
 
-    // Player data (unchanged)
+    // --- Player data fallback ---
     const players = [
         { name: 'Christian McCaffrey', pos: 'RB', team: 'SF', adp: 1, points: 22.5, td: 1, fumble: 0, passTds: 0, receptions: 80 },
         { name: 'CeeDee Lamb', pos: 'WR', team: 'DAL', adp: 6, points: 20.1, td: 1, fumble: 0, passTds: 0, receptions: 100 },
@@ -149,15 +148,15 @@ document.addEventListener('DOMContentLoaded', () => {
                     team: p.Team,
                     adp: parseFloat(p.AVG),
                     points: 0,
-                    receptions: p.Receptions || 0, // add if available
-                    passTds: p.PassTD || 0 // add if available
+                    receptions: p.Receptions || 0,
+                    passTds: p.PassTD || 0
                 }));
-                if (typeof buildResultDraft !== 'undefined' && buildResultDraft) buildResultDraft.innerHTML = '';
+                if (buildResultDraft) buildResultDraft.innerHTML = '';
                 if (callback) callback();
             })
             .catch(err => {
                 adpPlayers = [...players];
-                if (typeof buildResultDraft !== 'undefined' && buildResultDraft) buildResultDraft.innerHTML = `<p style="color:orange;">Using built-in player data (JSON not loaded): ${err.message}</p>`;
+                if (buildResultDraft) buildResultDraft.innerHTML = `<p style="color:orange;">Using built-in player data (JSON not loaded): ${err.message}</p>`;
                 if (callback) callback();
             });
     }
@@ -175,20 +174,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- Generate Optimal Draft for User's Full Team ---
     function generateOptimalDraft(leagueSize, lineupConfig, benchSize, scoring, bonusTD, penaltyFumble, focus, userDraftPick) {
-        // Build requirements from lineupConfig
         const requirements = {};
         lineupConfig.forEach(req => {
             const [_, count, pos] = req.match(/(\d+)([A-Z]+)/) || [];
             if (count && pos) requirements[pos] = parseInt(count);
         });
         requirements['FLEX'] = requirements['FLEX'] || 0;
-        // Typical bench mix: 1 QB, 1 TE, rest RB/WR
         const benchPlan = { QB: 1, TE: 1, RB: 0, WR: 0 };
         let benchLeft = benchSize - 2;
         benchPlan.RB = Math.floor(benchLeft / 2);
         benchPlan.WR = benchLeft - benchPlan.RB;
 
-        // Track how many of each position drafted
         const drafted = { QB: 0, RB: 0, WR: 0, TE: 0, FLEX: 0, K: 0, DST: 0 };
         let availablePlayers = [...adpPlayers].map(p => {
             const stddev = getDraftStdDev(p.adp);
@@ -205,16 +201,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
         for (let round = 0; round < totalRosterSize; round++) {
             let pickNum = round * leagueSize + (round % 2 === 0 ? userPickIdx : leagueSize - userPickIdx - 1);
-
-            // Only keep your team's picks
             let player = null;
-            // Fill starters first
             if (userTeam.length < lineupConfig.length) {
-                // Find player for needed position
                 let neededPos = Object.keys(requirements).find(pos => drafted[pos] < (requirements[pos] || 0));
-                // If FLEX is needed, allow RB/WR/TE
                 if (neededPos === 'FLEX') {
-                    // If focus is RB/WR/TE, boost those for FLEX
                     let candidates = availablePlayers.filter(p => ['RB', 'WR', 'TE'].includes(p.pos));
                     if (focus !== 'balanced' && ['RB', 'WR', 'TE'].includes(focus)) {
                         candidates = candidates.sort((a, b) => {
@@ -226,24 +216,20 @@ document.addEventListener('DOMContentLoaded', () => {
                     player = candidates[0];
                     drafted.FLEX++;
                 } else {
-                    // If focus matches neededPos, "overdraft" by boosting ADP (pick earlier)
                     let candidates = availablePlayers.filter(p => p.pos === neededPos);
                     if (focus === neededPos) {
-                        candidates = candidates.sort((a, b) => (a.randomizedADP - 10) - (b.randomizedADP - 10)); // reach by 10 ADP spots
+                        candidates = candidates.sort((a, b) => (a.randomizedADP - 10) - (b.randomizedADP - 10));
                     } else {
                         candidates = candidates.sort((a, b) => a.randomizedADP - b.randomizedADP);
                     }
                     player = candidates[0];
                     drafted[neededPos]++;
                 }
-                // Fallback: best available
                 if (!player) player = availablePlayers[0];
             } else {
-                // Bench logic: follow benchPlan, then best available RB/WR
                 let benchPos = Object.keys(benchPlan).find(pos => drafted[pos] - (requirements[pos] || 0) < benchPlan[pos]);
                 if (benchPos) {
                     let candidates = availablePlayers.filter(p => p.pos === benchPos);
-                    // If focus matches, overdraft
                     if (focus === benchPos) {
                         candidates = candidates.sort((a, b) => (a.randomizedADP - 10) - (b.randomizedADP - 10));
                     } else {
@@ -252,7 +238,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     player = candidates[0];
                     drafted[benchPos]++;
                 }
-                // If focus is set, prioritize that position for remaining bench
                 if (!player && focus !== 'balanced') {
                     let candidates = availablePlayers.filter(p => p.pos === focus);
                     if (candidates.length) {
@@ -261,13 +246,11 @@ document.addEventListener('DOMContentLoaded', () => {
                         drafted[focus]++;
                     }
                 }
-                // Fallback: best available RB/WR
                 if (!player) {
                     let candidates = availablePlayers.filter(p => ['RB', 'WR'].includes(p.pos));
                     player = candidates[0];
                     if (player) drafted[player.pos]++;
                 }
-                // Last fallback: any available
                 if (!player) player = availablePlayers[0];
             }
             if (player) {
@@ -279,7 +262,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 });
                 availablePlayers = availablePlayers.filter(p => p.name !== player.name);
             }
-            // Simulate other teams picking
             for (let i = 1; i < leagueSize; i++) {
                 availablePlayers.shift();
             }
@@ -332,16 +314,16 @@ document.addEventListener('DOMContentLoaded', () => {
         while (u === 0) u = Math.random();
         while (v === 0) v = Math.random();
         let num = Math.sqrt(-2.0 * Math.log(u)) * Math.cos(2.0 * Math.PI * v);
-        return Math.max(1, mean + stddev * num); // ADP can't be less than 1
+        return Math.max(1, mean + stddev * num);
     }
 
     // --- Get Draft Standard Deviation ---
     function getDraftStdDev(adp) {
-        if (adp <= 12) return 0.7;           // Top 12 picks: very little randomness
-        if (adp <= 24) return 1.5;           // Picks 13-24: a little more
-        if (adp <= 50) return adp * 0.10;    // Picks 25-50: 10% of ADP
-        if (adp <= 100) return adp * 0.20;   // Picks 51-100: 20% of ADP
-        return adp * 0.35;                   // Picks 101+: 35% of ADP
+        if (adp <= 12) return 0.7;
+        if (adp <= 24) return 1.5;
+        if (adp <= 50) return adp * 0.10;
+        if (adp <= 100) return adp * 0.20;
+        return adp * 0.35;
     }
 
     // --- Listen for scoring type changes and reload data ---
@@ -352,7 +334,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // --- Event listeners ---
+    // --- Draft Button ---
     if (generateDraftButton) generateDraftButton.addEventListener('click', () => {
         currentScoringType = scoringTypeSelect.value;
         loadPlayerData(currentScoringType, () => {
@@ -374,23 +356,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
     if (saveDraftButton) saveDraftButton.addEventListener('click', () => {
         saveExport(buildResultDraft, 'savedDraft', 'my_fantasy_draft.txt', 'Draft saved!');
-    });
-    if (compareDraftButton) compareDraftButton.addEventListener('click', () => {
-        const userDraft = buildResultDraft.innerHTML;
-        const aiDraft = generateOptimalDraftLegacy(12, parseLineupConfig(startingLineupSelect.value), parseInt(benchSizeSelect.value), scoringTypeSelect.value, bonusTDCheckbox.checked, penaltyFumbleCheckbox.checked, positionFocusSelect.value, 1);
-        // Compare logic here (simple example)
-        let differences = '';
-        aiDraft.forEach((entry, idx) => {
-            if (entry.player.name !== userDraft[idx]?.player?.name) {
-                differences += `<li>Round ${entry.round}: You - ${userDraft[idx]?.player?.name || 'N/A'}, AI - ${entry.player.name}</li>`;
-            }
-        });
-        buildResultDraft.innerHTML += `
-            <h3 class="text-xl font-bold mt-5">Draft Comparison</h3>
-            <ul class="list-disc pl-5">
-                ${differences || '<li>No differences found.</li>'}
-            </ul>
-        `;
     });
 
     // --- Weekly Lineup Generation (stub) ---
@@ -452,19 +417,14 @@ document.addEventListener('DOMContentLoaded', () => {
     if (saveLineupWeeklyButton) saveLineupWeeklyButton.addEventListener('click', () => {
         saveExport(lineupResult, 'savedLineup', 'my_weekly_lineup.txt', 'Lineup saved!');
     });
-    if (compareLineupsWeeklyButton) compareLineupsWeeklyButton.addEventListener('click', () => {
-        // Compare logic for weekly lineups (stub)
-        alert('Compare lineups feature is not yet implemented.');
-    });
 
+    // --- Sleeper API Player Details ---
     let playerDetailsMap = {};
-
     function loadPlayerDetailsFromSleeper(callback) {
         showLoadingSpinner(true);
         fetch('https://api.sleeper.app/v1/players/nfl')
             .then(res => res.json())
             .then(data => {
-                // Filter and map only active, relevant players
                 playerDetailsMap = {};
                 Object.values(data).forEach(p => {
                     if (p.active && p.team && p.position && p.full_name) {
@@ -487,23 +447,20 @@ document.addEventListener('DOMContentLoaded', () => {
                 showLoadingSpinner(false);
                 if (callback) callback();
             })
-            .catch(() => { 
-                playerDetailsMap = {}; 
+            .catch(() => {
+                playerDetailsMap = {};
                 showLoadingSpinner(false);
                 alert('Could not load player data from Sleeper API. Some features may not work.');
-                if (callback) callback(); 
+                if (callback) callback();
             });
     }
-
-    // Load player details from Sleeper API on page load
     loadPlayerDetailsFromSleeper();
 
-    // --- START MOVE: Place this ONCE, outside of generateOptimalDraft, near the bottom of your DOMContentLoaded handler ---
+    // --- Popup close on outside click ---
     document.addEventListener('click', function(e) {
         const popup = document.getElementById('player-popup');
         if (popup && !popup.contains(e.target) && !e.target.classList.contains('player-list-item')) {
             popup.classList.add('hidden');
         }
     });
-    // --- END MOVE ---
 });
