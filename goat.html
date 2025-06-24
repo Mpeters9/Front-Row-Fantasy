@@ -88,6 +88,43 @@
                                 <option>7</option>
                             </select>
                         </label>
+                        <label>
+                            Draft Lineup Preset
+                            <select id="draftLineupPreset" class="ml-2">
+                                <option value="std">Standard: 1QB, 2RB, 2WR, 1TE, 1FLX, 1DST, 1K</option>
+                                <option value="ppr">PPR: 1QB, 2RB, 3WR, 1TE, 1FLX, 1DST, 1K</option>
+                                <option value="superflex">Superflex: 1QB, 2RB, 2WR, 1TE, 2FLX, 1DST, 1K</option>
+                                <option value="custom">Custom</option>
+                            </select>
+                        </label>
+                        <label>
+                            QB
+                            <input type="number" id="draftQbCount" min="0" max="3" value="1" class="ml-2 w-12 text-center" />
+                        </label>
+                        <label>
+                            RB
+                            <input type="number" id="draftRbCount" min="0" max="5" value="2" class="ml-2 w-12 text-center" />
+                        </label>
+                        <label>
+                            WR
+                            <input type="number" id="draftWrCount" min="0" max="5" value="2" class="ml-2 w-12 text-center" />
+                        </label>
+                        <label>
+                            TE
+                            <input type="number" id="draftTeCount" min="0" max="3" value="1" class="ml-2 w-12 text-center" />
+                        </label>
+                        <label>
+                            FLEX
+                            <input type="number" id="draftFlexCount" min="0" max="3" value="1" class="ml-2 w-12 text-center" />
+                        </label>
+                        <label>
+                            DST
+                            <input type="number" id="draftDstCount" min="0" max="2" value="1" class="ml-2 w-12 text-center" />
+                        </label>
+                        <label>
+                            K
+                            <input type="number" id="draftKCount" min="0" max="2" value="1" class="ml-2 w-12 text-center" />
+                        </label>
                     </div>
                     <button type="button" id="generateLineup" class="cta-btn mt-2">Generate Draft Build</button>
                 </form>
@@ -256,24 +293,57 @@
                 });
             });
 
+            // --- Draft Lineup Preset logic ---
+            document.getElementById('draftLineupPreset').addEventListener('change', function () {
+                const preset = this.value;
+                if (preset === 'std') {
+                    draftQbCount.value = 1; draftRbCount.value = 2; draftWrCount.value = 2; draftTeCount.value = 1; draftFlexCount.value = 1; draftDstCount.value = 1; draftKCount.value = 1;
+                } else if (preset === 'ppr') {
+                    draftQbCount.value = 1; draftRbCount.value = 2; draftWrCount.value = 3; draftTeCount.value = 1; draftFlexCount.value = 1; draftDstCount.value = 1; draftKCount.value = 1;
+                } else if (preset === 'superflex') {
+                    draftQbCount.value = 1; draftRbCount.value = 2; draftWrCount.value = 2; draftTeCount.value = 1; draftFlexCount.value = 2; draftDstCount.value = 1; draftKCount.value = 1;
+                }
+                // Custom: do not change values
+            });
+
             // --- Best Draft Builds Tool ---
             document.getElementById('generateLineup').addEventListener('click', function () {
                 const leagueSize = parseInt(document.getElementById('leagueSize').value, 10);
                 const draftPick = parseInt(document.getElementById('draftPick').value, 10);
                 const scoringType = document.getElementById('scoringType').value;
                 const benchSize = parseInt(document.getElementById('benchSize').value, 10);
+
+                // Get lineup counts from form
+                const qb = parseInt(document.getElementById('draftQbCount').value, 10);
+                const rb = parseInt(document.getElementById('draftRbCount').value, 10);
+                const wr = parseInt(document.getElementById('draftWrCount').value, 10);
+                const te = parseInt(document.getElementById('draftTeCount').value, 10);
+                const flex = parseInt(document.getElementById('draftFlexCount').value, 10);
+                const dst = parseInt(document.getElementById('draftDstCount').value, 10);
+                const k = parseInt(document.getElementById('draftKCount').value, 10);
+
                 const result = document.getElementById('build-result');
 
-                // For demo: just take top N by ADP for each position
                 function getPos(pos, n) {
+                    if (pos === 'FLEX') {
+                        return allPlayers.filter(p => /^(RB|WR|TE)/.test(p.POS)).slice(0, n);
+                    }
+                    if (pos === 'DST') {
+                        return allPlayers.filter(p => p.POS === 'DST').slice(0, n);
+                    }
+                    if (pos === 'K') {
+                        return allPlayers.filter(p => p.POS === 'K').slice(0, n);
+                    }
                     return allPlayers.filter(p => p.POS.startsWith(pos)).slice(0, n);
                 }
                 const starters = [
-                    ...getPos('QB', 1),
-                    ...getPos('RB', 2),
-                    ...getPos('WR', 2),
-                    ...getPos('TE', 1),
-                    ...getPos('RB', 3).slice(2, 3) // FLEX: next best RB/WR/TE
+                    ...getPos('QB', qb),
+                    ...getPos('RB', rb),
+                    ...getPos('WR', wr),
+                    ...getPos('TE', te),
+                    ...getPos('FLEX', flex),
+                    ...getPos('DST', dst),
+                    ...getPos('K', k)
                 ].filter(Boolean);
 
                 // Bench: next best available, not in starters
