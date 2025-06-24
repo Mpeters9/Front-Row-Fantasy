@@ -34,7 +34,7 @@ body {
     font-size: 1rem;
     font-weight: 600;
     color: #FFFFFF;
-    min-width: 200%; /* Ensure full width for duplication */
+    min-width: 200%;
     animation: marquee 40s linear infinite;
 }
 
@@ -178,53 +178,49 @@ html {
 }
 
 @media (max-width: 640px) {
-    h1 {
-        @apply text-2xl;
-    }
-    h2 {
-        @apply text-xl;
-    }
-    .card {
-        @apply p-3;
-    }
-    .button {
-        @apply px-4 py-2;
-    }
-    .marquee-content {
-        font-size: 0.9rem;
-    }
-    .trade-analyzer .filter-section {
-        @apply grid-cols-1;
-    }
-    .trade-analyzer button {
-        @apply w-full;
-    }
-    #trade-comparison table {
-        @apply text-sm;
-    }
-    .autocomplete-dropdown {
-        @apply max-h-40;
-    }
-    .splash-section {
-        @apply p-4;
-    }
-    .splash-section h2 {
-        @apply text-2xl;
-    }
-    .splash-section p {
-        @apply text-base;
+    h1 { @apply text-2xl; }
+    h2 { @apply text-xl; }
+    .card { @apply p-3; }
+    .button { @apply px-4 py-2; }
+    .marquee-content { font-size: 0.9rem; }
+    .trade-analyzer .filter-section { @apply grid-cols-1; }
+    .trade-analyzer button { @apply w-full; }
+    #trade-comparison table { @apply text-sm; }
+    .autocomplete-dropdown { @apply max-h-40; }
+    .splash-section { @apply p-4; }
+    .splash-section h2 { @apply text-2xl; }
+    .splash-section p { @apply text-base; }
+    #player-popup {
+        left: 5vw !important;
+        right: 5vw !important;
+        top: 20vw !important;
+        min-width: unset;
+        max-width: 90vw;
+        font-size: 1rem;
     }
 }
 
 #player-popup {
-  min-width: 250px;
-  max-width: 350px;
-  pointer-events: auto;
-  box-shadow: 0 8px 32px rgba(0,0,0,0.18);
-  transition: opacity 0.2s;
+    min-width: 250px;
+    max-width: 350px;
+    pointer-events: auto;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.18);
+    transition: opacity 0.2s;
 }
 #player-popup .close-btn {
-  float: right;
-  cursor: pointer;
-  font-weight: bold;
+    float: right;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+#loading-spinner {
+    min-width: 200px;
+    min-height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255,255,255,0.95);
+    border: 1px solid #cbd5e1;
+    border-radius: 0.5rem;
+    z-index: 100;
 }
