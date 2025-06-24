@@ -140,27 +140,8 @@
                             <th>Proj Pts</th>
                         </tr>
                     </thead>
-                    <tbody>
-                        <tr class="player-row" data-player="Patrick Mahomes">
-                            <td class="player-name player-pos-QB">Patrick Mahomes</td>
-                            <td>QB</td>
-                            <td>25.1</td>
-                        </tr>
-                        <tr class="player-row" data-player="Christian McCaffrey">
-                            <td class="player-name player-pos-RB">Christian McCaffrey</td>
-                            <td>RB</td>
-                            <td>22.3</td>
-                        </tr>
-                        <tr class="player-row" data-player="Justin Jefferson">
-                            <td class="player-name player-pos-WR">Justin Jefferson</td>
-                            <td>WR</td>
-                            <td>20.7</td>
-                        </tr>
-                        <tr class="player-row" data-player="Travis Kelce">
-                            <td class="player-name player-pos-TE">Travis Kelce</td>
-                            <td>TE</td>
-                            <td>19.8</td>
-                        </tr>
+                    <tbody id="player-table-body">
+                        <!-- Filled by JS -->
                     </tbody>
                 </table>
             </div>
@@ -174,124 +155,175 @@
     <!-- Player Popup Modal -->
     <div id="player-popup" tabindex="0" aria-live="polite" class="hidden fixed z-50 bg-white border rounded shadow-lg p-4 max-w-xs" style="top:100px;left:100px;"></div>
 
-    <!-- Fantasy Ticker Script and Tools Logic -->
+    <!-- Fantasy Ticker, Draft & Lineup Tools -->
+    <script src="script.js"></script>
     <script>
-    // Fantasy Ticker
-    document.addEventListener('DOMContentLoaded', function () {
-        const tickerContent = document.getElementById('tickerContent');
-        const pauseButton = document.getElementById('pauseButton');
-        let paused = false, animationFrame, pos = 0;
-        const tickerData = [
-            { player: "Josh Allen", team: "BUF", pos: "QB", pts: 25.4 },
-            { player: "Patrick Mahomes", team: "KC", pos: "QB", pts: 24.8 },
-            { player: "Christian McCaffrey", team: "SF", pos: "RB", pts: 20.5 },
-            { player: "Tyreek Hill", team: "MIA", pos: "WR", pts: 19.8 },
-            { player: "Justin Jefferson", team: "MIN", pos: "WR", pts: 19.2 },
-            { player: "Travis Kelce", team: "KC", pos: "TE", pts: 18.9 }
-        ];
-        function posColor(pos) {
-            switch (pos) {
-                case "QB": return "player-pos-QB";
-                case "RB": return "player-pos-RB";
-                case "WR": return "player-pos-WR";
-                case "TE": return "player-pos-TE";
-                default: return "";
+    // --- Load All Players.json and use for all tools ---
+    let allPlayers = [];
+    fetch('All Players.json')
+        .then(res => res.json())
+        .then(data => {
+            allPlayers = data;
+
+            // --- Ticker ---
+            const tickerContent = document.getElementById('tickerContent');
+            const pauseButton = document.getElementById('pauseButton');
+            let paused = false, animationFrame, pos = 0;
+            function posColor(pos) {
+                if (pos.startsWith('QB')) return "player-pos-QB";
+                if (pos.startsWith('RB')) return "player-pos-RB";
+                if (pos.startsWith('WR')) return "player-pos-WR";
+                if (pos.startsWith('TE')) return "player-pos-TE";
+                return "";
             }
-        }
-        function buildTicker() {
-            tickerContent.innerHTML = '';
-            for (let loop = 0; loop < 2; loop++) {
-                tickerData.forEach(item => {
-                    const span = document.createElement('span');
-                    span.className = `ticker-player ${posColor(item.pos)}`;
-                    span.innerHTML = `
-                        <span class="player-name">${item.player}</span>
-                        <span class="player-team">(${item.team} ${item.pos})</span>
-                        <span class="player-pts">${item.pts} pts</span>
+            function buildTicker() {
+                tickerContent.innerHTML = '';
+                // Show top 8 by Rank, loop twice for smooth scroll
+                for (let loop = 0; loop < 2; loop++) {
+                    allPlayers.slice(0, 8).forEach(item => {
+                        const span = document.createElement('span');
+                        span.className = `ticker-player ${posColor(item.POS)}`;
+                        span.innerHTML = `
+                            <span class="player-name">${item.Player}</span>
+                            <span class="player-team">(${item.Team} ${item.POS})</span>
+                            <span class="player-pts">${item.AVG} ADP</span>
+                        `;
+                        tickerContent.appendChild(span);
+                    });
+                }
+            }
+            function animateTicker() {
+                if (!paused) {
+                    pos -= 1.1;
+                    if (Math.abs(pos) >= tickerContent.scrollWidth / 2) pos = 0;
+                    tickerContent.style.transform = `translateX(${pos}px)`;
+                }
+                animationFrame = requestAnimationFrame(animateTicker);
+            }
+            pauseButton.addEventListener('click', function () {
+                paused = !paused;
+                pauseButton.setAttribute('aria-pressed', paused ? 'true' : 'false');
+                pauseButton.textContent = paused ? 'Resume' : 'Pause';
+            });
+            buildTicker();
+            animateTicker();
+
+            // --- Player Table ---
+            const tableBody = document.getElementById('player-table-body');
+            tableBody.innerHTML = allPlayers.slice(0, 20).map(p => `
+                <tr class="player-row" data-player="${p.Player}">
+                    <td class="player-name ${posColor(p.POS)}">${p.Player}</td>
+                    <td>${p.POS}</td>
+                    <td>${p.AVG}</td>
+                </tr>
+            `).join('');
+
+            // --- Player Popup Modal ---
+            document.querySelectorAll('.player-row').forEach(row => {
+                row.addEventListener('click', function (e) {
+                    const player = row.dataset.player;
+                    const p = allPlayers.find(x => x.Player === player);
+                    const popup = document.getElementById('player-popup');
+                    popup.innerHTML = `
+                        <span class="close-btn" onclick="document.getElementById('player-popup').classList.add('hidden')">&times;</span>
+                        <h4 class="font-bold text-lg mb-1">${p.Player}</h4>
+                        <div class="mb-2">Position: <span class="${posColor(p.POS)}">${p.POS}</span></div>
+                        <div class="mb-2">Team: <span class="text-teal">${p.Team}</span></div>
+                        <div class="mb-2">Bye: <span class="text-yellow">${p.Bye}</span></div>
+                        <div class="mb-2">ADP: <span class="text-yellow">${p.AVG}</span></div>
+                        <div class="mb-2">Bio: <span class="text-gray-700">Elite fantasy performer. Click for more stats soon!</span></div>
                     `;
-                    tickerContent.appendChild(span);
+                    popup.classList.remove('hidden');
+                    popup.style.top = (e.clientY + 10) + 'px';
+                    popup.style.left = (e.clientX + 10) + 'px';
                 });
-            }
-        }
-        function animateTicker() {
-            if (!paused) {
-                pos -= 1.1;
-                if (Math.abs(pos) >= tickerContent.scrollWidth / 2) pos = 0;
-                tickerContent.style.transform = `translateX(${pos}px)`;
-            }
-            animationFrame = requestAnimationFrame(animateTicker);
-        }
-        pauseButton.addEventListener('click', function () {
-            paused = !paused;
-            pauseButton.setAttribute('aria-pressed', paused ? 'true' : 'false');
-            pauseButton.textContent = paused ? 'Resume' : 'Pause';
+            });
+
+            // --- Best Draft Builds Tool ---
+            document.getElementById('generateLineup').addEventListener('click', function () {
+                const leagueSize = parseInt(document.getElementById('leagueSize').value, 10);
+                const draftPick = parseInt(document.getElementById('draftPick').value, 10);
+                const scoringType = document.getElementById('scoringType').value;
+                const benchSize = parseInt(document.getElementById('benchSize').value, 10);
+                const result = document.getElementById('build-result');
+
+                // For demo: just take top N by ADP for each position
+                function getPos(pos, n) {
+                    return allPlayers.filter(p => p.POS.startsWith(pos)).slice(0, n);
+                }
+                const starters = [
+                    ...getPos('QB', 1),
+                    ...getPos('RB', 2),
+                    ...getPos('WR', 2),
+                    ...getPos('TE', 1),
+                    ...getPos('RB', 3).slice(2, 3) // FLEX: next best RB/WR/TE
+                ].filter(Boolean);
+
+                // Bench: next best available, not in starters
+                const taken = new Set(starters.map(p => p.Player));
+                const bench = allPlayers.filter(p => !taken.has(p.Player)).slice(0, benchSize);
+
+                result.innerHTML = `
+                    <div class="bg-glass rounded-xl p-4 mt-2">
+                        <h3 class="font-bold text-lg mb-2 text-yellow">Recommended Draft Build (${scoringType.toUpperCase()})</h3>
+                        <ul class="list-disc ml-6 text-left">
+                            <li>League Size: <span class="text-teal">${leagueSize}</span></li>
+                            <li>Draft Pick: <span class="text-teal">${draftPick}</span></li>
+                            <li>Scoring: <span class="text-teal">${scoringType.toUpperCase()}</span></li>
+                            <li>Bench Size: <span class="text-teal">${benchSize}</span></li>
+                        </ul>
+                        <h4 class="font-semibold mt-4 mb-2 text-orange">Your Starters</h4>
+                        <ul class="ml-6">
+                            ${starters.map(p => `<li><span class="font-bold ${posColor(p.POS)}">${p.Player}</span> (${p.Team} ${p.POS}) - <span class="text-yellow">ADP ${p.AVG}</span></li>`).join('')}
+                        </ul>
+                        <h4 class="font-semibold mt-4 mb-2 text-blue">Bench</h4>
+                        <ul class="ml-6">
+                            ${bench.map(p => `<li><span class="font-bold ${posColor(p.POS)}">${p.Player}</span> (${p.Team} ${p.POS}) - <span class="text-yellow">ADP ${p.AVG}</span></li>`).join('')}
+                        </ul>
+                        <div class="mt-4 text-green font-semibold">Strategy: Go RB/WR heavy early, target value QBs and TEs in the middle rounds. Stack FLEX and bench with high-upside players.</div>
+                    </div>
+                `;
+            });
+
+            // --- Best Lineup Builds Tool ---
+            document.getElementById('generateLineupBuild').addEventListener('click', function () {
+                const qb = parseInt(document.getElementById('qbCount').value, 10);
+                const rb = parseInt(document.getElementById('rbCount').value, 10);
+                const wr = parseInt(document.getElementById('wrCount').value, 10);
+                const te = parseInt(document.getElementById('teCount').value, 10);
+                const flex = parseInt(document.getElementById('flexCount').value, 10);
+                const result = document.getElementById('lineup-result');
+
+                function getPos(pos, n) {
+                    return allPlayers.filter(p => p.POS.startsWith(pos)).slice(0, n);
+                }
+                const lineup = [
+                    ...getPos('QB', qb),
+                    ...getPos('RB', rb),
+                    ...getPos('WR', wr),
+                    ...getPos('TE', te),
+                    ...getPos('RB', flex)
+                ].filter(Boolean);
+
+                result.innerHTML = `
+                    <div class="bg-glass rounded-xl p-4 mt-2">
+                        <h3 class="font-bold text-lg mb-2 text-yellow">Optimal Lineup Build</h3>
+                        <ul class="list-disc ml-6 text-left">
+                            <li>QB: <span class="text-teal">${qb}</span></li>
+                            <li>RB: <span class="text-teal">${rb}</span></li>
+                            <li>WR: <span class="text-teal">${wr}</span></li>
+                            <li>TE: <span class="text-teal">${te}</span></li>
+                            <li>FLEX: <span class="text-teal">${flex}</span></li>
+                        </ul>
+                        <h4 class="font-semibold mt-4 mb-2 text-orange">Suggested Lineup</h4>
+                        <ul class="ml-6">
+                            ${lineup.map(p => `<li><span class="font-bold ${posColor(p.POS)}">${p.Player}</span> (${p.Team} ${p.POS}) - <span class="text-yellow">ADP ${p.AVG}</span></li>`).join('')}
+                        </ul>
+                        <div class="mt-4 text-green font-semibold">Tip: Prioritize RB/WR depth, use FLEX for best available, and stream TE/QB if needed.</div>
+                    </div>
+                `;
+            });
         });
-        buildTicker();
-        animateTicker();
-    });
-
-    // Best Draft Builds Tool Logic
-    document.getElementById('generateLineup').addEventListener('click', function () {
-        const leagueSize = document.getElementById('leagueSize').value;
-        const draftPick = document.getElementById('draftPick').value;
-        const scoringType = document.getElementById('scoringType').value;
-        const benchSize = document.getElementById('benchSize').value;
-        const result = document.getElementById('build-result');
-        result.innerHTML = `
-            <div class="bg-glass rounded-xl p-4 mt-2">
-                <h3 class="font-bold text-lg mb-2 text-yellow">Recommended Draft Build</h3>
-                <ul class="list-disc ml-6 text-left">
-                    <li>League Size: <span class="text-teal">${leagueSize}</span></li>
-                    <li>Draft Pick: <span class="text-teal">${draftPick}</span></li>
-                    <li>Scoring: <span class="text-teal">${scoringType.toUpperCase()}</span></li>
-                    <li>Bench Size: <span class="text-teal">${benchSize}</span></li>
-                    <li class="mt-2 text-green">Strategy: <span class="font-semibold">Go RB/WR heavy early, target value QBs and TEs in the middle rounds. Stack FLEX and bench with high-upside players.</span></li>
-                </ul>
-            </div>
-        `;
-    });
-
-    // Best Lineup Builds Tool Logic
-    document.getElementById('generateLineupBuild').addEventListener('click', function () {
-        const qb = document.getElementById('qbCount').value;
-        const rb = document.getElementById('rbCount').value;
-        const wr = document.getElementById('wrCount').value;
-        const te = document.getElementById('teCount').value;
-        const flex = document.getElementById('flexCount').value;
-        const result = document.getElementById('lineup-result');
-        result.innerHTML = `
-            <div class="bg-glass rounded-xl p-4 mt-2">
-                <h3 class="font-bold text-lg mb-2 text-yellow">Optimal Lineup Build</h3>
-                <ul class="list-disc ml-6 text-left">
-                    <li>QB: <span class="text-teal">${qb}</span></li>
-                    <li>RB: <span class="text-teal">${rb}</span></li>
-                    <li>WR: <span class="text-teal">${wr}</span></li>
-                    <li>TE: <span class="text-teal">${te}</span></li>
-                    <li>FLEX: <span class="text-teal">${flex}</span></li>
-                    <li class="mt-2 text-green">Tip: <span class="font-semibold">Prioritize RB/WR depth, use FLEX for best available, and stream TE/QB if needed.</span></li>
-                </ul>
-            </div>
-        `;
-    });
-
-    // Player Popup Modal
-    document.querySelectorAll('.player-row').forEach(row => {
-        row.addEventListener('click', function (e) {
-            const player = row.dataset.player;
-            const popup = document.getElementById('player-popup');
-            popup.innerHTML = `
-                <span class="close-btn" onclick="document.getElementById('player-popup').classList.add('hidden')">&times;</span>
-                <h4 class="font-bold text-lg mb-1">${player}</h4>
-                <div class="mb-2">Position: <span class="${row.querySelector('.player-name').classList[1]}">${row.children[1].textContent}</span></div>
-                <div class="mb-2">Projected Points: <span class="text-yellow">${row.children[2].textContent}</span></div>
-                <div class="mb-2">Team: <span class="text-teal">${row.children[0].textContent.split(' ')[1] || 'N/A'}</span></div>
-                <div class="mb-2">Bio: <span class="text-gray-700">Elite fantasy performer. Click for more stats soon!</span></div>
-            `;
-            popup.classList.remove('hidden');
-            popup.style.top = (e.clientY + 10) + 'px';
-            popup.style.left = (e.clientX + 10) + 'px';
-        });
-    });
     </script>
 </body>
 </html>
