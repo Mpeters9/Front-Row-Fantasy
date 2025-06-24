@@ -102,24 +102,41 @@
                 <form id="lineup-build-form" class="flex flex-col gap-4">
                     <div class="flex flex-wrap gap-4 justify-center">
                         <label>
+                            Lineup Preset
+                            <select id="lineupPreset" class="ml-2">
+                                <option value="std">Standard: 1QB, 2RB, 2WR, 1TE, 1FLX, 1DST, 1K</option>
+                                <option value="ppr">PPR: 1QB, 2RB, 3WR, 1TE, 1FLX, 1DST, 1K</option>
+                                <option value="superflex">Superflex: 1QB, 2RB, 2WR, 1TE, 2FLX, 1DST, 1K</option>
+                                <option value="custom">Custom</option>
+                            </select>
+                        </label>
+                        <label>
                             QB
-                            <input type="number" id="qbCount" min="1" max="2" value="1" class="ml-2 w-12 text-center" />
+                            <input type="number" id="qbCount" min="0" max="3" value="1" class="ml-2 w-12 text-center" />
                         </label>
                         <label>
                             RB
-                            <input type="number" id="rbCount" min="1" max="4" value="2" class="ml-2 w-12 text-center" />
+                            <input type="number" id="rbCount" min="0" max="5" value="2" class="ml-2 w-12 text-center" />
                         </label>
                         <label>
                             WR
-                            <input type="number" id="wrCount" min="1" max="4" value="2" class="ml-2 w-12 text-center" />
+                            <input type="number" id="wrCount" min="0" max="5" value="2" class="ml-2 w-12 text-center" />
                         </label>
                         <label>
                             TE
-                            <input type="number" id="teCount" min="1" max="2" value="1" class="ml-2 w-12 text-center" />
+                            <input type="number" id="teCount" min="0" max="3" value="1" class="ml-2 w-12 text-center" />
                         </label>
                         <label>
                             FLEX
                             <input type="number" id="flexCount" min="0" max="3" value="1" class="ml-2 w-12 text-center" />
+                        </label>
+                        <label>
+                            DST
+                            <input type="number" id="dstCount" min="0" max="2" value="1" class="ml-2 w-12 text-center" />
+                        </label>
+                        <label>
+                            K
+                            <input type="number" id="kCount" min="0" max="2" value="1" class="ml-2 w-12 text-center" />
                         </label>
                     </div>
                     <button type="button" id="generateLineupBuild" class="cta-btn mt-2">Generate Lineup Build</button>
@@ -286,15 +303,39 @@
             });
 
             // --- Best Lineup Builds Tool ---
+            document.getElementById('lineupPreset').addEventListener('change', function () {
+                const preset = this.value;
+                if (preset === 'std') {
+                    qbCount.value = 1; rbCount.value = 2; wrCount.value = 2; teCount.value = 1; flexCount.value = 1; dstCount.value = 1; kCount.value = 1;
+                } else if (preset === 'ppr') {
+                    qbCount.value = 1; rbCount.value = 2; wrCount.value = 3; teCount.value = 1; flexCount.value = 1; dstCount.value = 1; kCount.value = 1;
+                } else if (preset === 'superflex') {
+                    qbCount.value = 1; rbCount.value = 2; wrCount.value = 2; teCount.value = 1; flexCount.value = 2; dstCount.value = 1; kCount.value = 1;
+                }
+                // Custom: do not change values
+            });
+
             document.getElementById('generateLineupBuild').addEventListener('click', function () {
                 const qb = parseInt(document.getElementById('qbCount').value, 10);
                 const rb = parseInt(document.getElementById('rbCount').value, 10);
                 const wr = parseInt(document.getElementById('wrCount').value, 10);
                 const te = parseInt(document.getElementById('teCount').value, 10);
                 const flex = parseInt(document.getElementById('flexCount').value, 10);
+                const dst = parseInt(document.getElementById('dstCount').value, 10);
+                const k = parseInt(document.getElementById('kCount').value, 10);
                 const result = document.getElementById('lineup-result');
 
                 function getPos(pos, n) {
+                    // For FLEX, allow RB/WR/TE, for DST/K use exact match
+                    if (pos === 'FLEX') {
+                        return allPlayers.filter(p => /^(RB|WR|TE)/.test(p.POS)).slice(0, n);
+                    }
+                    if (pos === 'DST') {
+                        return allPlayers.filter(p => p.POS === 'DST').slice(0, n);
+                    }
+                    if (pos === 'K') {
+                        return allPlayers.filter(p => p.POS === 'K').slice(0, n);
+                    }
                     return allPlayers.filter(p => p.POS.startsWith(pos)).slice(0, n);
                 }
                 const lineup = [
@@ -302,7 +343,9 @@
                     ...getPos('RB', rb),
                     ...getPos('WR', wr),
                     ...getPos('TE', te),
-                    ...getPos('RB', flex)
+                    ...getPos('FLEX', flex),
+                    ...getPos('DST', dst),
+                    ...getPos('K', k)
                 ].filter(Boolean);
 
                 result.innerHTML = `
@@ -314,6 +357,8 @@
                             <li>WR: <span class="text-teal">${wr}</span></li>
                             <li>TE: <span class="text-teal">${te}</span></li>
                             <li>FLEX: <span class="text-teal">${flex}</span></li>
+                            <li>DST: <span class="text-teal">${dst}</span></li>
+                            <li>K: <span class="text-teal">${k}</span></li>
                         </ul>
                         <h4 class="font-semibold mt-4 mb-2 text-orange">Suggested Lineup</h4>
                         <ul class="ml-6">
