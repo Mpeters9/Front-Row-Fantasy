@@ -206,13 +206,47 @@ document.addEventListener('DOMContentLoaded', () => {
         buildResultDraft.innerHTML = `
             <h3 class="text-xl font-bold">Your Drafted Team</h3>
             <ul class="list-disc pl-5">
-                ${userTeam.map(entry =>
-                    `<li class="player-list-item" data-player="${encodeURIComponent(entry.player.name)}">
+                ${userTeam.map(entry => {
+                    let color = entry.player.pos === 'RB' ? 'text-green-700'
+                        : entry.player.pos === 'WR' ? 'text-blue-700'
+                        : entry.player.pos === 'QB' ? 'text-orange-700'
+                        : entry.player.pos === 'TE' ? 'text-purple-700'
+                        : 'text-gray-800';
+                    return `<li class="player-list-item ${color}" data-player="${encodeURIComponent(entry.player.name)}">
                         Round ${entry.round}, Pick ${entry.pick} (Overall ${entry.overall}): ${entry.player.name} (${entry.player.pos})
-                    </li>`
-                ).join('')}
+                    </li>`;
+                }).join('')}
             </ul>
         `;
+        document.querySelectorAll('.player-list-item').forEach(item => {
+            item.addEventListener('click', e => {
+                const playerName = decodeURIComponent(item.dataset.player);
+                const details = playerDetailsMap[playerName];
+                if (!details) {
+                    alert('No details found for this player.');
+                    return;
+                }
+                const popup = document.getElementById('player-popup');
+                popup.innerHTML = `
+                    <span class="close-btn" onclick="this.parentElement.classList.add('hidden')">&times;</span>
+                    <h4 class="font-bold text-lg mb-1">${details.name} (${details.pos}, ${details.team})</h4>
+                    <div class="text-xs text-gray-600 mb-2">Age: ${details.age || 'N/A'} | Bye: ${details.bye || 'N/A'}</div>
+                    <div class="mb-2">College: ${details.college || 'N/A'}</div>
+                    <div class="mb-2">Height/Weight: ${details.height || 'N/A'} / ${details.weight || 'N/A'}</div>
+                    <div class="mb-2">Experience: ${details.years_exp || 'N/A'} years</div>
+                    <div class="mb-2">Injury Status: ${details.injury_status || 'Healthy'}</div>
+                `;
+                popup.classList.remove('hidden');
+                popup.style.top = (e.clientY + 10) + 'px';
+                popup.style.left = (e.clientX + 10) + 'px';
+            });
+        });
+        document.addEventListener('click', function(e) {
+            const popup = document.getElementById('player-popup');
+            if (!popup.contains(e.target) && !e.target.classList.contains('player-list-item')) {
+                popup.classList.add('hidden');
+            }
+        });
         return userTeam;
     }
 
