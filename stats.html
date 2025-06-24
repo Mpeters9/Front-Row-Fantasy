@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Player Stats - Front Row Fantasy</title>
-    <meta name="description" content="Real-time fantasy football stats, advanced analytics, and player breakdowns.">
+    <title>Front Row Fantasy - [Page Name]</title>
+    <meta
     <meta name="keywords" content="fantasy football, stats, analytics, NFL, player stats">
     <meta name="author" content="Mpeters9">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
@@ -20,12 +20,12 @@
             <a href="index.html" class="text-2xl font-bold text-yellow text-glow">Front Row Fantasy</a>
             <nav>
                 <a href="index.html" class="nav-link">Home</a>
-                <a href="tools.html" class="nav-link">Expert Tools</a>
+                <a href="tools.html" class="nav-link" aria-current="page">Expert Tools</a>
                 <a href="goat.html" class="nav-link">GOAT</a>
                 <a href="guides.html" class="nav-link">Guides</a>
                 <a href="community.html" class="nav-link">Community</a>
                 <a href="players.html" class="nav-link">Players</a>
-                <a href="stats.html" class="nav-link" aria-current="page">Stats</a>
+                <a href="stats.html" class="nav-link">Stats</a>
                 <a href="#contact" class="nav-link">Contact</a>
             </nav>
         </div>
@@ -124,6 +124,26 @@
         </div>
         © 2025 Front Row Fantasy. All rights reserved.
     </footer>
+    <div id="loading-spinner" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-30 z-50 hidden">
+      <div class="loader ease-linear rounded-full border-8 border-t-8 border-gray-200 h-16 w-16"></div>
+    </div>
     <script src="script.js"></script>
+    <script>
+        async function buildTickerFromLocal() {
+            tickerContent.innerHTML = '<span class="loading text-white">Loading fantasy points...</span>';
+            try {
+                if (!playersData.length) {
+                    await fetchAllProjections('standard');
+                }
+                if (!playersData.length) {
+                    tickerContent.innerHTML = '<span class="text-red-400">No player data available.</span>';
+                    return;
+                }
+                // ...existing ticker code...
+            } catch (e) {
+                tickerContent.innerHTML = '<span class="text-red-400">Failed to load ticker data.</span>';
+            }
+        }
+    </script>
 </body>
 </html>
