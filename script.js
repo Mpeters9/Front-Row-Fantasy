@@ -504,18 +504,28 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // --- Trade Analyzer with Sleeper API ---
+    // --- Trade Analyzer with Enhanced Sleeper API Logic ---
 
-    // 1. Fetch live player data from Sleeper API
     let playersData = [];
     let team1 = [], team2 = [];
 
+    // Helper: Get current NFL week (for bye/matchup logic)
+    async function getCurrentNFLWeek() {
+        try {
+            const res = await fetch('https://api.sleeper.app/v1/state/nfl');
+            const data = await res.json();
+            return data.week || 1;
+        } catch {
+            return 1;
+        }
+    }
+
+    // 1. Fetch live player data from Sleeper API
     async function fetchSleeperPlayers() {
-        // Fetch all NFL players
         const res = await fetch('https://api.sleeper.app/v1/players/nfl');
         const data = await res.json();
+        const currentWeek = await getCurrentNFLWeek();
 
-        // Filter for active, fantasy-relevant players (QB, RB, WR, TE)
         playersData = Object.values(data)
             .filter(p =>
                 p.active &&
@@ -527,16 +537,16 @@ document.addEventListener('DOMContentLoaded', () => {
                 name: p.full_name,
                 pos: p.position,
                 team: p.team,
-                pts: p.fantasy_points_2023 || 0, // Use last season's points if available
-                value: calculateTradeValue(p),
+                pts: p.fantasy_points_2023 || 0,
+                value: calculateTradeValue(p, currentWeek),
                 bye: p.bye_week || '',
+                age: p.age,
+                injury_status: p.injury_status || "Healthy",
                 matchup: '', // You can enhance this with another API call if desired
                 img: p.headshot_url || 'https://static.www.nfl.com/image/private/t_headshot_desktop/league/api/players/default.png'
             }))
-            // Sort by value descending for better UX
             .sort((a, b) => b.value - a.value);
 
-        // Initialize analyzer with new data
         autocomplete('player1-search', 'player1-autocomplete', team1, team2, 'team1-players');
         autocomplete('player2-search', 'player2-autocomplete', team2, team1, 'team2-players');
         renderTeam('team1-players', team1, 'team1');
@@ -544,21 +554,36 @@ document.addEventListener('DOMContentLoaded', () => {
         renderRecentTrades();
     }
 
-    // 2. Trade Value Calculation (improve this logic as you wish)
-    function calculateTradeValue(player) {
-        // If fantasy points available, use as base value
+    // 2. Trade Value Calculation (advanced)
+    function calculateTradeValue(player, currentWeek = 1) {
         let base = player.fantasy_points_2023 || 0;
-        // Give positional bonuses (QBs and TEs are less valuable in 1QB leagues)
-        if (player.position === 'RB') base *= 1.15;
-        if (player.position === 'WR') base *= 1.10;
-        if (player.position === 'TE') base *= 0.95;
-        if (player.position === 'QB') base *= 0.85;
+
+        // Position scarcity/league value
+        if (player.position === 'RB') base *= 1.18;
+        if (player.position === 'WR') base *= 1.12;
+        if (player.position === 'TE') base *= 1.01;
+        if (player.position === 'QB') base *= 0.92;
+
+        // Age adjustment (younger RB/WRs get a boost, older QBs/TEs get a penalty)
+        if (player.age) {
+            if (player.position === 'RB' && player.age <= 25) base *= 1.07;
+            if (player.position === 'WR' && player.age <= 25) base *= 1.04;
+            if (player.position === 'TE' && player.age >= 30) base *= 0.93;
+            if (player.position === 'QB' && player.age >= 33) base *= 0.95;
+        }
+
+        // Injury penalty
+        if (player.injury_status && player.injury_status !== "Healthy") base *= 0.7;
+
+        // Bye week penalty (if bye is within next 2 weeks)
+        if (player.bye && Math.abs(player.bye - currentWeek) <= 2) base *= 0.93;
+
         // If no points, assign a low value
         if (!base) base = 10;
         return Math.round(base);
     }
 
-    // 3. Autocomplete (unchanged, but now uses live data)
+    // 3. Autocomplete (shows injury/team)
     function autocomplete(inputId, listId, teamArr, otherTeamArr, teamDivId) {
         const input = document.getElementById(inputId);
         const list = document.getElementById(listId);
@@ -573,7 +598,8 @@ document.addEventListener('DOMContentLoaded', () => {
             );
             matches.slice(0, 8).forEach(player => {
                 const li = document.createElement('li');
-                li.textContent = `${player.name} (${player.team} ${player.pos})`;
+                li.innerHTML = `<span>${player.name} (${player.team} ${player.pos})</span>
+                    <span class="text-xs ml-2 ${player.injury_status !== "Healthy" ? "text-red-600" : "text-green-600"}">${player.injury_status}</span>`;
                 li.onclick = () => {
                     teamArr.push(player);
                     renderTeam(teamDivId, teamArr, teamArr === team1 ? 'team1' : 'team2');
@@ -586,7 +612,7 @@ document.addEventListener('DOMContentLoaded', () => {
         input.addEventListener('blur', () => setTimeout(() => list.innerHTML = '', 150));
     }
 
-    // 4. Render Team (unchanged)
+    // 4. Render Team (shows tooltip with age/injury)
     function renderTeam(divId, teamArr, teamKey) {
         const div = document.getElementById(divId);
         div.innerHTML = '';
@@ -594,12 +620,14 @@ document.addEventListener('DOMContentLoaded', () => {
             const card = document.createElement('div');
             card.className = `player-card player-pos-${player.pos}`;
             card.draggable = true;
+            card.title = `${player.name} (${player.team} ${player.pos})
+Age: ${player.age || "?"} | Injury: ${player.injury_status || "Healthy"} | Bye: ${player.bye}`;
             card.innerHTML = `
                 <img src="${player.img}" alt="${player.name}" class="w-10 h-10 rounded-full border-2 border-yellow-400 object-cover" onerror="this.src='https://static.www.nfl.com/image/private/t_headshot_desktop/league/api/players/default.png'">
                 <div>
                     <div class="font-bold">${player.name} <span class="text-teal">(${player.team} ${player.pos})</span></div>
                     <div class="text-yellow font-semibold">${player.pts} pts</div>
-                    <div class="text-xs text-gray-400">Bye: ${player.bye}</div>
+                    <div class="text-xs text-gray-400">Bye: ${player.bye} | <span class="${player.injury_status !== "Healthy" ? "text-red-600" : "text-green-600"}">${player.injury_status}</span></div>
                 </div>
                 <button class="remove-btn" title="Remove Player">&times;</button>
             `;
@@ -607,14 +635,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 teamArr.splice(idx, 1);
                 renderTeam(divId, teamArr, teamKey);
             };
-            // Drag & drop
             card.ondragstart = e => {
                 e.dataTransfer.setData('playerIdx', idx);
                 e.dataTransfer.setData('teamKey', teamKey);
             };
             div.appendChild(card);
         });
-        // Allow drop from other team
         div.ondragover = e => e.preventDefault();
         div.ondrop = e => {
             const fromIdx = +e.dataTransfer.getData('playerIdx');
@@ -635,7 +661,7 @@ document.addEventListener('DOMContentLoaded', () => {
         renderTeam('team2-players', team2, 'team2');
     }
 
-    // 6. Analyze Trade (uses live trade values)
+    // 6. Analyze Trade (contextual advice and warnings)
     function analyzeTrade() {
         if (!team1.length && !team2.length) return;
         const team1Value = team1.reduce((a, p) => a + p.value, 0);
@@ -665,12 +691,29 @@ document.addEventListener('DOMContentLoaded', () => {
             options: { plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true } } }
         });
 
-        // AI Advice (edit advice logic here)
+        // Contextual AI Advice
         let advice = '';
+        const t1Injured = team1.filter(p => p.injury_status && p.injury_status !== "Healthy");
+        const t2Injured = team2.filter(p => p.injury_status && p.injury_status !== "Healthy");
+        const t1Byes = team1.map(p => p.bye).filter(Boolean);
+        const t2Byes = team2.map(p => p.bye).filter(Boolean);
+        const t1RBs = team1.filter(p => p.pos === 'RB');
+        const t2RBs = team2.filter(p => p.pos === 'RB');
+        const t1WRs = team1.filter(p => p.pos === 'WR');
+        const t2WRs = team2.filter(p => p.pos === 'WR');
+
         if (fairness < 10) advice = "This trade is as even as it gets. Both teams win!";
         else if (team1Value > team2Value) advice = `Team 1 is getting more value. Team 2, ask for a sweetener!`;
         else advice = `Team 2 is getting the edge. Team 1, try to negotiate for more!`;
-        if (team1.some(p => p.bye && team2.some(tp => tp.bye === p.bye))) advice += " Watch out for bye week overlap!";
+
+        // Bye week overlap warning
+        if (t1Byes.some(bye => t2Byes.includes(bye))) advice += " ⚠️ Watch out for bye week overlap!";
+        // Injured player warning
+        if (t1Injured.length || t2Injured.length) advice += ` ⚠️ Injured player(s) in trade: ${[...t1Injured, ...t2Injured].map(p => p.name).join(', ')}`;
+        // Roster depth warning
+        if (team1.length > 0 && t1RBs.length === 0 && t1WRs.length === 0) advice += " ⚠️ Team 1 is trading away all RBs/WRs!";
+        if (team2.length > 0 && t2RBs.length === 0 && t2WRs.length === 0) advice += " ⚠️ Team 2 is trading away all RBs/WRs!";
+
         document.getElementById('ai-advice').textContent = advice;
 
         // Save to recent trades
