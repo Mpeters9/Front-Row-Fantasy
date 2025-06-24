@@ -317,3 +317,66 @@ a:hover, .link:hover {
     color: #fbbf24;
     text-decoration: underline;
 }
+
+/* Trade Analyzer Styles */
+.autocomplete-list {
+  position: absolute;
+  z-index: 10;
+  background: #fff;
+  border-radius: 0.5rem;
+  box-shadow: 0 4px 24px 0 rgba(0,0,0,0.12);
+  width: 100%;
+  max-height: 200px;
+  overflow-y: auto;
+  margin-top: 2px;
+  padding: 0;
+  list-style: none;
+}
+.autocomplete-list li {
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+  border-bottom: 1px solid #e5e7eb;
+  transition: background 0.15s;
+}
+.autocomplete-list li:last-child { border-bottom: none; }
+.autocomplete-list li:hover, .autocomplete-list li.active {
+  background: #f1f5f9;
+}
+.player-card {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  background: rgba(255,255,255,0.12);
+  border-radius: 0.75rem;
+  padding: 0.5rem 1rem;
+  box-shadow: 0 2px 8px 0 rgba(0,0,0,0.08);
+  position: relative;
+}
+.player-card .remove-btn {
+  position: absolute;
+  right: 0.5rem;
+  top: 0.5rem;
+  background: #f87171;
+  color: #fff;
+  border: none;
+  border-radius: 9999px;
+  width: 1.5rem;
+  height: 1.5rem;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.player-card .remove-btn:hover {
+  background: #dc2626;
+}
+.recent-trades-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.recent-trades-list li {
+  padding: 0.5rem 0.75rem;
+  border-bottom: 1px solid #e5e7eb22;
+  font-size: 0.95rem;
+}
+.recent-trades-list li:last-child { border-bottom: none; }
