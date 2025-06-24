@@ -21,7 +21,7 @@ document.addEventListener('DOMContentLoaded', () => {
         { name: 'Josh Allen', pos: 'QB', team: 'BUF', adp: 18, points: 22.8, td: 1, fumble: 0, passTds: 30, receptions: 0 },
         { name: 'Sam LaPorta', pos: 'TE', team: 'DET', adp: 20, points: 17.5, td: 1, fumble: 0, passTds: 0, receptions: 60 },
         { name: 'James Cook', pos: 'RB', team: 'BUF', adp: 25, points: 17.0, td: 1, fumble: 0, passTds: 0, receptions: 45 },
-        { name: 'Deebo Samuel', pos: 'WR', team: 'SF', adp: 30, points: 16.5, td: 1, fumble: 0, passTds: 0, receptions: 55 },
+        { name: 'Deebo Samuel', pos: 'RB', team: 'SF', adp: 30, points: 16.5, td: 1, fumble: 0, passTds: 0, receptions: 55 },
         { name: 'Alvin Kamara', pos: 'RB', team: 'NO', adp: 35, points: 16.0, td: 1, fumble: 0, passTds: 0, receptions: 65 },
         { name: 'Mike Evans', pos: 'WR', team: 'TB', adp: 40, points: 15.8, td: 1, fumble: 0, passTds: 0, receptions: 50 },
         { name: 'David Montgomery', pos: 'RB', team: 'DET', adp: 50, points: 15.2, td: 1, fumble: 0, passTds: 0, receptions: 30 },
@@ -366,17 +366,16 @@ document.addEventListener('DOMContentLoaded', function () {
     async function buildTickerFromAPI() {
         tickerContent.innerHTML = '<span class="loading text-white">Loading fantasy points...</span>';
         try {
-            const res = await fetch('https://api.sleeper.app/v1/players/nfl');
+            const res = await fetch('https://site.api.espn.com/apis/site/v2/sports/football/nfl/players');
             const data = await res.json();
-            console.log('Sleeper API data:', data); // <-- Add this line
-            // Get top 6 active players with a team and position
-            const players = Object.values(data)
-                .filter(p => p.active && p.team && ['QB','RB','WR','TE'].includes(p.position))
+            // ESPN returns an array of player objects in data.players
+            const players = (data.players || [])
+                .filter(p => p.team && p.position && ['QB','RB','WR','TE'].includes(p.position.abbreviation))
                 .slice(0, 6)
                 .map(p => ({
-                    player: p.full_name,
-                    team: p.team,
-                    pos: p.position,
+                    player: p.fullName,
+                    team: p.team.abbreviation,
+                    pos: p.position.abbreviation,
                     pts: (Math.random() * 10 + 15).toFixed(1) // Dummy points 15-25
                 }));
             if (players.length === 0) throw new Error('No players found from API');
@@ -394,7 +393,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 });
             }
         } catch (e) {
-            console.error('Ticker API error:', e); // <-- Add this line
+            console.error('Ticker API error:', e);
             // Fallback to local data
             tickerContent.innerHTML = '';
             playersData.slice(0, 6).forEach(item => {
