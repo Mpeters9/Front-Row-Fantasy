@@ -121,28 +121,53 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- Load CSV and Initialize Draft ---
     let adpPlayers = [];
+    let currentScoringType = 'ppr'; // default
 
-    fetch('csvjson.json')
-        .then(res => {
-            if (!res.ok) throw new Error('JSON file not found or not accessible.');
-            return res.json();
-        })
-        .then(data => {
-            // Map JSON data to your internal player format
-            adpPlayers = data.map(p => ({
-                name: p.Player,
-                pos: p.POS.replace(/\d+/, ''), // "WR1" -> "WR"
-                team: p.Team,
-                adp: parseFloat(p.AVG),
-                points: 0
-            }));
-            if (typeof buildResultDraft !== 'undefined' && buildResultDraft) buildResultDraft.innerHTML = '';
-        })
-        .catch(err => {
-            // Fallback to built-in players if JSON fails
-            adpPlayers = [...players];
-            if (typeof buildResultDraft !== 'undefined' && buildResultDraft) buildResultDraft.innerHTML = `<p style="color:orange;">Using built-in player data (JSON not loaded): ${err.message}</p>`;
-        });
+    function getJsonFileForScoring(scoringType) {
+        switch (scoringType) {
+            case 'standard': return 'Standard ADP.json';
+            case 'halfppr': return 'Half PPR.json';
+            default: return 'csvjson.json'; // ppr and all others default to ppr
+        }
+    }
+
+    function loadPlayerData(scoringType, callback) {
+        const file = getJsonFileForScoring(scoringType);
+        fetch(file)
+            .then(res => {
+                if (!res.ok) throw new Error('JSON file not found or not accessible.');
+                return res.json();
+            })
+            .then(data => {
+                adpPlayers = data.map(p => ({
+                    name: p.Player,
+                    pos: p.POS ? p.POS.replace(/\d+/, '') : '',
+                    team: p.Team,
+                    adp: parseFloat(p.AVG),
+                    points: 0,
+                    receptions: p.Receptions || 0, // add if available
+                    passTds: p.PassTD || 0 // add if available
+                }));
+                if (typeof buildResultDraft !== 'undefined' && buildResultDraft) buildResultDraft.innerHTML = '';
+                if (callback) callback();
+            })
+            .catch(err => {
+                adpPlayers = [...players];
+                if (typeof buildResultDraft !== 'undefined' && buildResultDraft) buildResultDraft.innerHTML = `<p style="color:orange;">Using built-in player data (JSON not loaded): ${err.message}</p>`;
+                if (callback) callback();
+            });
+    }
+
+    // --- Scoring adjustment for draft builds ---
+    function adjustDraftPlayerPoints(player, scoringType) {
+        let points = player.points || 0;
+        if (scoringType === 'ppr') points += player.receptions || 0;
+        else if (scoringType === 'halfppr') points += (player.receptions || 0) * 0.5;
+        else if (scoringType === 'tep' && player.pos === 'TE') points *= 1.5;
+        else if (scoringType === 'tefullppr' && player.pos === 'TE') points += (player.receptions || 0) * 2;
+        else if (scoringType === '6ptpass' && player.pos === 'QB') points += (player.passTds || 0) * 2;
+        return points;
+    }
 
     // --- Generate Optimal Draft for User's Full Team ---
     function generateOptimalDraft(leagueSize, lineupConfig, benchSize, scoring, bonusTD, penaltyFumble, focus, userDraftPick) {
@@ -155,9 +180,11 @@ document.addEventListener('DOMContentLoaded', () => {
             const stddev = Math.max(1, p.adp * 0.25);
             return {
                 ...p,
-                randomizedADP: randomNormal(p.adp, stddev)
+                randomizedADP: randomNormal(p.adp, stddev),
+                adjustedPoints: adjustDraftPlayerPoints(p, scoring)
             };
         }).sort((a, b) => a.randomizedADP - b.randomizedADP);
+
         const totalRosterSize = lineupConfig.length + benchSize;
         const userTeam = [];
         let userPickIdx = userDraftPick - 1; // 0-based index
@@ -165,7 +192,6 @@ document.addEventListener('DOMContentLoaded', () => {
         // Simulate a full snake draft for all teams, but only keep your team's picks
         for (let round = 0; round < totalRosterSize; round++) {
             let pickNum = round * leagueSize + (round % 2 === 0 ? userPickIdx : leagueSize - userPickIdx - 1);
-            // Remove already drafted players
             let player = availablePlayers.shift();
             userTeam.push({
                 player,
@@ -173,18 +199,16 @@ document.addEventListener('DOMContentLoaded', () => {
                 pick: (round % 2 === 0 ? userPickIdx + 1 : leagueSize - userPickIdx),
                 overall: pickNum + 1
             });
-            // Remove other teams' picks for this round
             for (let i = 1; i < leagueSize; i++) {
                 availablePlayers.shift();
             }
         }
 
-        // Display result
         buildResultDraft.innerHTML = `
             <h3 class="text-xl font-bold">Your Drafted Team</h3>
             <ul class="list-disc pl-5">
                 ${userTeam.map(entry =>
-                    `<li>Round ${entry.round}, Pick ${entry.pick} (Overall ${entry.overall}): ${entry.player.name} (${entry.player.pos})</li>`
+                    `<li>Round ${entry.round}, Pick ${entry.pick} (Overall ${entry.overall}): ${entry.player.name} (${entry.player.pos}) - ${entry.player.adjustedPoints?.toFixed(1) ?? ''} pts</li>`
                 ).join('')}
             </ul>
         `;
@@ -303,21 +327,32 @@ document.addEventListener('DOMContentLoaded', () => {
         return Math.max(1, mean + stddev * num); // ADP can't be less than 1
     }
 
+    // --- Listen for scoring type changes and reload data ---
+    if (scoringTypeSelect) {
+        scoringTypeSelect.addEventListener('change', () => {
+            currentScoringType = scoringTypeSelect.value;
+            loadPlayerData(currentScoringType);
+        });
+    }
+
     // --- Event listeners ---
     if (generateDraftButton) generateDraftButton.addEventListener('click', () => {
-        const leagueSize = parseInt(leagueSizeSelect.value) || 12;
-        const draftPick = clamp(parseInt(draftPickInput.value) || 1, 1, leagueSize);
-        showProgress(progressBarDraft, progressDraft, () => {
-            generateOptimalDraft(
-                leagueSize,
-                parseLineupConfig(startingLineupSelect.value),
-                parseInt(benchSizeSelect.value) || 7,
-                scoringTypeSelect.value,
-                bonusTDCheckbox.checked,
-                penaltyFumbleCheckbox.checked,
-                positionFocusSelect.value,
-                draftPick
-            );
+        currentScoringType = scoringTypeSelect.value;
+        loadPlayerData(currentScoringType, () => {
+            const leagueSize = parseInt(leagueSizeSelect.value) || 12;
+            const draftPick = clamp(parseInt(draftPickInput.value) || 1, 1, leagueSize);
+            showProgress(progressBarDraft, progressDraft, () => {
+                generateOptimalDraft(
+                    leagueSize,
+                    parseLineupConfig(startingLineupSelect.value),
+                    parseInt(benchSizeSelect.value) || 7,
+                    currentScoringType,
+                    bonusTDCheckbox.checked,
+                    penaltyFumbleCheckbox.checked,
+                    positionFocusSelect.value,
+                    draftPick
+                );
+            });
         });
     });
     if (saveDraftButton) saveDraftButton.addEventListener('click', () => {
