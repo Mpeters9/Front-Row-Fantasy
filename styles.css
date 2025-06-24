@@ -265,7 +265,7 @@ footer {
     100% { transform: translateX(-50%); }
 }
 @keyframes spin {
-    to { transform: rotate(360deg); }
+  to { transform: rotate(360deg); }
 }
 
 /* --- Spinner --- */
@@ -277,6 +277,10 @@ footer {
     height: 24px;
     animation: spin 1s linear infinite;
     margin: 0 auto;
+}
+.loader {
+  border-top-color: #facc15;
+  animation: spin 1s linear infinite;
 }
 
 /* --- Player Popup --- */
