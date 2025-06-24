@@ -58,64 +58,49 @@
             <!-- Trade Analyzer -->
             <div class="card trade-analyzer">
                 <h2 class="section-title text-center">Trade Analyzer</h2>
-                <div class="mb-4">
-                    <label for="platform" class="font-medium">Platform:</label>
-                    <select id="platform" class="w-full mt-2 p-2 rounded bg-white text-teal-800 border border-teal-300">
-                        <option value="sleeper">Sleeper</option>
-                        <option value="yahoo">Yahoo</option>
-                        <option value="espn">ESPN</option>
-                    </select>
+                <div class="mb-4 flex flex-col md:flex-row gap-4">
+                    <!-- Team 1 -->
+                    <div class="flex-1">
+                        <h4 class="font-semibold mb-2 text-center">Team 1</h4>
+                        <div class="relative mb-2">
+                            <input type="text" id="player1-search" class="w-full p-2 rounded bg-white text-teal-800 border border-teal-300 autocomplete-input" placeholder="Type to search players..." autocomplete="off">
+                            <ul id="player1-autocomplete" class="autocomplete-list"></ul>
+                        </div>
+                        <div id="team1-players" class="flex flex-col gap-2 min-h-[60px]"></div>
+                    </div>
+                    <!-- VS -->
+                    <div class="flex flex-col justify-center items-center">
+                        <span class="text-3xl font-bold text-yellow mb-2">VS</span>
+                        <button id="swapTeamsBtn" class="cta-btn px-3 py-1 mb-2" title="Swap Teams">⇄</button>
+                    </div>
+                    <!-- Team 2 -->
+                    <div class="flex-1">
+                        <h4 class="font-semibold mb-2 text-center">Team 2</h4>
+                        <div class="relative mb-2">
+                            <input type="text" id="player2-search" class="w-full p-2 rounded bg-white text-teal-800 border border-teal-300 autocomplete-input" placeholder="Type to search players..." autocomplete="off">
+                            <ul id="player2-autocomplete" class="autocomplete-list"></ul>
+                        </div>
+                        <div id="team2-players" class="flex flex-col gap-2 min-h-[60px]"></div>
+                    </div>
                 </div>
-                <div class="mb-4">
-                    <label for="leagueId" class="font-medium">League ID:</label>
-                    <input type="text" id="leagueId" class="w-full mt-2 p-2 rounded bg-white text-teal-800 border border-teal-300">
+                <!-- Trade Value Graph & Fairness -->
+                <div class="my-4">
+                    <canvas id="tradeValueChart" height="60"></canvas>
+                    <div id="trade-fairness" class="mt-2 p-2 rounded text-center text-lg font-bold"></div>
                 </div>
-                <button id="syncLeague" class="cta-btn w-full mb-4">Sync League</button>
-                <div class="mb-4">
-                    <label for="leagueType" class="font-medium">League Type:</label>
-                    <select id="leagueType" class="w-full mt-2 p-2 rounded bg-white text-teal-800 border border-teal-300">
-                        <option value="redraft">Redraft</option>
-                        <option value="dynasty">Dynasty</option>
-                    </select>
+                <!-- AI Advice -->
+                <div id="ai-advice" class="glass p-3 rounded mb-4 text-center text-base"></div>
+                <!-- Actions -->
+                <div class="flex flex-wrap gap-2 justify-center mb-2">
+                    <button id="analyzeTradeBtn" class="cta-btn">Analyze Trade</button>
+                    <button id="clearAllBtn" class="cta-btn bg-red-600 hover:bg-red-700">Clear All</button>
+                    <button id="exportTradeBtn" class="cta-btn bg-teal-700 hover:bg-teal-800">Export/Share</button>
                 </div>
-                <div class="mb-4">
-                    <label for="rosterType" class="font-medium">Roster Type:</label>
-                    <select id="rosterType" class="w-full mt-2 p-2 rounded bg-white text-teal-800 border border-teal-300">
-                        <option value="regular" selected>Regular</option>
-                        <option value="superflex">SuperFlex</option>
-                    </select>
+                <!-- Recent Trades -->
+                <div class="mt-4">
+                    <h4 class="font-semibold mb-2">Recent Trades</h4>
+                    <ul id="recentTrades" class="recent-trades-list"></ul>
                 </div>
-                <div class="mt-4 border-t border-teal-700 pt-4">
-                    <h4 class="font-semibold mb-2">Team 1</h4>
-                    <input type="text" id="player1" class="w-full mt-2 p-2 rounded bg-white text-teal-800 border border-teal-300 autocomplete-input" placeholder="Search Players...">
-                    <button id="add-player1" class="cta-btn w-full mt-2">Add Player</button>
-                    <div id="player1-selections" class="mt-2"></div>
-                </div>
-                <div class="mt-4 border-t border-teal-700 pt-4">
-                    <h4 class="font-semibold mb-2">Team 2</h4>
-                    <input type="text" id="player2" class="w-full mt-2 p-2 rounded bg-white text-teal-800 border border-teal-300 autocomplete-input" placeholder="Search Players...">
-                    <button id="add-player2" class="cta-btn w-full mt-2">Add Player</button>
-                    <div id="player2-selections" class="mt-2"></div>
-                </div>
-                <div id="trade-comparison" class="mt-4">
-                    <h4 class="font-semibold mb-2">Trade Comparison</h4>
-                    <table class="w-full text-white mt-2">
-                        <thead>
-                            <tr>
-                                <th class="p-2 text-left">Player</th>
-                                <th class="p-2 text-left">Position</th>
-                                <th class="p-2 text-left">Projected Points</th>
-                                <th class="p-2 text-left">Value</th>
-                            </tr>
-                        </thead>
-                        <tbody id="trade-table-body"></tbody>
-                    </table>
-                    <div id="trade-fairness" class="mt-2 p-2 rounded text-center"></div>
-                </div>
-                <button id="analyzeTradeBtn" class="cta-btn w-full mt-4">Analyze Trade</button>
-                <button id="clearAllBtn" class="cta-btn w-full mt-2 bg-red-600 hover:bg-red-700">Clear All</button>
-                <p id="tradeResult" class="mt-2 text-center"></p>
-                <div id="recentTrades"></div>
             </div>
             <!-- Matchup Predictor -->
             <div class="card matchup-predictor">
