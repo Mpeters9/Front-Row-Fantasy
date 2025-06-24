@@ -7,124 +7,200 @@
     <meta name="keywords" content="fantasy football, NFL, trade analyzer, matchup predictor">
     <meta name="author" content="Mpeters9">
     <title>Front Row Fantasy - Expert Tools</title>
-    <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="icon" href="favicon.ico" type="image/x-icon">
     <link rel="stylesheet" href="styles.css">
+    <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="text-black bg-gray-100" aria-label="Main content">
-    <header class="bg-gray-100 shadow-md py-3" role="banner">
-        <div class="max-w-7xl mx-auto px-4 flex justify-between items-center">
-            <h1 class="text-2xl font-bold text-teal-600">Front Row Fantasy</h1>
-            <nav class="space-x-4">
-                <a href="index.html" class="nav-link hover:underline text-teal-600">Home</a>
-                <a href="#tools" class="nav-link hover:underline text-teal-600">Expert Tools</a>
-                <a href="index.html#about" class="nav-link hover:underline text-teal-600">About</a>
-                <a href="index.html#games" class="nav-link hover:underline text-teal-600">Games</a>
-                <a href="index.html#contact" class="nav-link hover:underline text-teal-600">Contact</a>
+<body class="min-h-screen flex flex-col font-poppins">
+
+    <!-- Header -->
+    <header>
+        <div class="max-w-7xl mx-auto px-4 flex justify-between items-center py-3">
+            <a href="index.html" class="text-2xl font-bold text-yellow text-glow">Front Row Fantasy</a>
+            <nav>
+                <a href="index.html" class="nav-link">Home</a>
+                <a href="tools.html" class="nav-link" aria-current="page">Expert Tools</a>
+                <a href="guides.html" class="nav-link">Guides</a>
+                <a href="community.html" class="nav-link">Community</a>
+                <a href="players.html" class="nav-link">Players</a>
+                <a href="stats.html" class="nav-link">Stats</a>
             </nav>
         </div>
     </header>
 
+    <!-- Hero / Splash -->
+    <section class="splash-section text-center mb-8">
+        <h1 class="text-4xl md:text-5xl font-bold mb-4 text-glow">Expert Fantasy Tools</h1>
+        <p class="text-lg md:text-xl mb-6">Unlock powerful tools to dominate your fantasy football league.</p>
+        <a href="#tools" class="cta-btn">Jump to Tools</a>
+    </section>
+
+    <!-- Fantasy Points Ticker (optional, can remove if not needed) -->
     <section class="marquee mb-6">
-        <div class="bg-teal-800 text-white p-2 rounded flex justify-between items-center">
-            <span class="text-xl font-bold">Fantasy Points Ticker</span>
-            <button id="pauseButton" class="text-teal-300 hover:text-white px-3 py-1 rounded">Pause</button>
+        <div class="bg-teal-900 text-white p-2 rounded-t flex justify-between items-center shadow">
+            <span class="text-xl font-bold tracking-wide flex items-center gap-2">
+                <svg class="inline w-6 h-6 text-yellow-300" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12c0 4.97-4.03 9-9 9s-9-4.03-9-9 4.03-9 9-9 9 4.03 9 9z"/></svg>
+                Fantasy Points Ticker
+            </span>
+            <button id="pauseButton" class="cta-btn px-4 py-1" aria-pressed="false" aria-label="Pause ticker">Pause</button>
         </div>
-        <div class="marquee-content bg-teal-800 text-white p-3" id="tickerContent">
-            <span class="loading">Loading fantasy points...</span>
+        <div class="relative overflow-hidden bg-teal-800 rounded-b" style="height:2.5rem;">
+            <div id="tickerContent" class="absolute left-0 top-0 h-full flex items-center whitespace-nowrap transition-none" tabindex="0" aria-live="polite">
+                <span class="loading text-white">Loading fantasy points...</span>
+            </div>
         </div>
     </section>
 
-    <main class="max-w-7xl mx-auto px-4 py-6 bg-gray-100">
-        <section id="tools" class="bg-teal-600 text-white p-6 rounded-lg text-center mb-6">
-            <h2 class="text-3xl font-bold mb-4">Expert Tools</h2>
-            <p class="text-lg mb-6">Unlock powerful tools to dominate your fantasy football league.</p>
-        </section>
-
-        <section class="grid grid-cols-1 md:grid-cols-2 gap-6 bg-gray-100">
-            <div id="trade-analyzer" class="trade-analyzer bg-teal-800 text-white p-4 rounded-lg">
-                <h3 class="text-lg font-semibold">Trade Analyzer</h3>
-                <div id="trade-filter-section" class="filter-section relative">
-                    <label for="platform" class="text-white font-medium">Platform:</label>
-                    <select id="platform" class="w-full mt-2 p-2 rounded bg-gray-700 text-white border border-teal-300">
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto px-4 py-6 flex-grow">
+        <section id="tools" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <!-- Trade Analyzer -->
+            <div class="card trade-analyzer">
+                <h2 class="section-title text-center">Trade Analyzer</h2>
+                <div class="mb-4">
+                    <label for="platform" class="font-medium">Platform:</label>
+                    <select id="platform" class="w-full mt-2 p-2 rounded bg-white text-teal-800 border border-teal-300">
                         <option value="sleeper">Sleeper</option>
                         <option value="yahoo">Yahoo</option>
                         <option value="espn">ESPN</option>
                     </select>
-                    <label for="leagueId" class="text-white font-medium">League ID:</label>
-                    <input type="text" id="leagueId" class="w-full mt-2 p-2 rounded bg-gray-700 text-white border border-teal-300">
-                    <button id="syncLeague" class="mt-2 w-full bg-teal-600 text-white px-4 py-2 rounded hover:bg-teal-700">Sync League</button>
-                    <label for="leagueType" class="text-white font-medium">League Type:</label>
-                    <select id="leagueType" class="w-full mt-2 p-2 rounded bg-gray-700 text-white border border-teal-300">
+                </div>
+                <div class="mb-4">
+                    <label for="leagueId" class="font-medium">League ID:</label>
+                    <input type="text" id="leagueId" class="w-full mt-2 p-2 rounded bg-white text-teal-800 border border-teal-300">
+                </div>
+                <button id="syncLeague" class="cta-btn w-full mb-4">Sync League</button>
+                <div class="mb-4">
+                    <label for="leagueType" class="font-medium">League Type:</label>
+                    <select id="leagueType" class="w-full mt-2 p-2 rounded bg-white text-teal-800 border border-teal-300">
                         <option value="redraft">Redraft</option>
                         <option value="dynasty">Dynasty</option>
                     </select>
-                    <label for="rosterType" class="text-white font-medium">Roster Type:</label>
-                    <select id="rosterType" class="w-full mt-2 p-2 rounded bg-gray-700 text-white border border-teal-300">
+                </div>
+                <div class="mb-4">
+                    <label for="rosterType" class="font-medium">Roster Type:</label>
+                    <select id="rosterType" class="w-full mt-2 p-2 rounded bg-white text-teal-800 border border-teal-300">
                         <option value="regular" selected>Regular</option>
                         <option value="superflex">SuperFlex</option>
                     </select>
-                    <div class="mt-4 border-t border-teal-700 pt-4">
-                        <h4 class="text-md font-semibold text-white">Team 1</h4>
-                        <div class="input-wrapper">
-                            <label for="player1" class="text-white font-medium">Players:</label>
-                            <div class="relative">
-                                <input type="text" id="player1" class="w-full mt-2 p-2 rounded bg-gray-700 text-white border border-teal-300 autocomplete-input" placeholder="Search Players...">
-                                <button id="add-player1" class="mt-2 w-full bg-teal-600 text-white px-4 py-2 rounded hover:bg-teal-700">Add Player</button>
-                                <div id="player1-selections" class="mt-2"></div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="mt-4 border-t border-teal-700 pt-4">
-                        <h4 class="text-md font-semibold text-white">Team 2</h4>
-                        <div class="input-wrapper">
-                            <label for="player2" class="text-white font-medium">Players:</label>
-                            <div class="relative">
-                                <input type="text" id="player2" class="w-full mt-2 p-2 rounded bg-gray-700 text-white border border-teal-300 autocomplete-input" placeholder="Search Players...">
-                                <button id="add-player2" class="mt-2 w-full bg-teal-600 text-white px-4 py-2 rounded hover:bg-teal-700">Add Player</button>
-                                <div id="player2-selections" class="mt-2"></div>
-                            </div>
-                        </div>
-                    </div>
-                    <div id="trade-comparison" class="mt-4">
-                        <h4 class="text-md font-semibold text-white">Trade Comparison</h4>
-                        <table class="w-full text-white mt-2">
-                            <thead>
-                                <tr>
-                                    <th class="p-2 text-left">Player</th>
-                                    <th class="p-2 text-left">Position</th>
-                                    <th class="p-2 text-left">Projected Points</th>
-                                    <th class="p-2 text-left">Value</th>
-                                </tr>
-                            </thead>
-                            <tbody id="trade-table-body"></tbody>
-                        </table>
-                        <div id="trade-fairness" class="mt-2 p-2 rounded text-center"></div>
-                    </div>
-                    <button id="analyzeTradeBtn" class="mt-4 w-full bg-teal-600 text-white px-4 py-2 rounded hover:bg-teal-700">Analyze Trade</button>
-                    <button id="clearAllBtn" class="mt-2 w-full bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700">Clear All</button>
-                    <p id="tradeResult" class="mt-2 text-center"></p>
-                    <div id="recentTrades"></div>
                 </div>
+                <div class="mt-4 border-t border-teal-700 pt-4">
+                    <h4 class="font-semibold mb-2">Team 1</h4>
+                    <input type="text" id="player1" class="w-full mt-2 p-2 rounded bg-white text-teal-800 border border-teal-300 autocomplete-input" placeholder="Search Players...">
+                    <button id="add-player1" class="cta-btn w-full mt-2">Add Player</button>
+                    <div id="player1-selections" class="mt-2"></div>
+                </div>
+                <div class="mt-4 border-t border-teal-700 pt-4">
+                    <h4 class="font-semibold mb-2">Team 2</h4>
+                    <input type="text" id="player2" class="w-full mt-2 p-2 rounded bg-white text-teal-800 border border-teal-300 autocomplete-input" placeholder="Search Players...">
+                    <button id="add-player2" class="cta-btn w-full mt-2">Add Player</button>
+                    <div id="player2-selections" class="mt-2"></div>
+                </div>
+                <div id="trade-comparison" class="mt-4">
+                    <h4 class="font-semibold mb-2">Trade Comparison</h4>
+                    <table class="w-full text-white mt-2">
+                        <thead>
+                            <tr>
+                                <th class="p-2 text-left">Player</th>
+                                <th class="p-2 text-left">Position</th>
+                                <th class="p-2 text-left">Projected Points</th>
+                                <th class="p-2 text-left">Value</th>
+                            </tr>
+                        </thead>
+                        <tbody id="trade-table-body"></tbody>
+                    </table>
+                    <div id="trade-fairness" class="mt-2 p-2 rounded text-center"></div>
+                </div>
+                <button id="analyzeTradeBtn" class="cta-btn w-full mt-4">Analyze Trade</button>
+                <button id="clearAllBtn" class="cta-btn w-full mt-2 bg-red-600 hover:bg-red-700">Clear All</button>
+                <p id="tradeResult" class="mt-2 text-center"></p>
+                <div id="recentTrades"></div>
             </div>
-            <div id="matchup-predictor" class="bg-teal-800 text-white p-4 rounded-lg">
-                <h3 class="text-lg font-semibold">Matchup Predictor</h3>
-                <select class="w-full mt-2 p-2 rounded bg-gray-700 text-white border border-teal-300" id="matchupTeam1Select">
+            <!-- Matchup Predictor -->
+            <div class="card matchup-predictor">
+                <h2 class="section-title text-center">Matchup Predictor</h2>
+                <select class="w-full mt-2 p-2 rounded bg-white text-teal-800 border border-teal-300" id="matchupTeam1Select">
                     <option value="">Select Team 1</option>
                 </select>
-                <select class="w-full mt-2 p-2 rounded bg-gray-700 text-white border border-teal-300" id="matchupTeam2Select">
+                <select class="w-full mt-2 p-2 rounded bg-white text-teal-800 border border-teal-300" id="matchupTeam2Select">
                     <option value="">Select Team 2</option>
                 </select>
-                <button class="mt-4 w-full bg-teal-600 text-white px-4 py-2 rounded hover:bg-teal-700" id="predictMatchupBtn">Predict Matchup</button>
+                <button class="cta-btn w-full mt-4" id="predictMatchupBtn">Predict Matchup</button>
                 <p id="predictionResult" class="mt-2 text-center"></p>
             </div>
         </section>
     </main>
 
-    <footer class="bg-gray-100 text-teal-600 py-4 text-center mt-6">
-        <p>© 2025 Front Row Fantasy. All rights reserved.</p>
+    <!-- Footer -->
+    <footer>
+        <div class="mb-2">
+            <a href="index.html" class="hover:text-yellow mx-2">Home</a>
+            <a href="tools.html" class="hover:text-yellow mx-2">Expert Tools</a>
+            <a href="guides.html" class="hover:text-yellow mx-2">Guides</a>
+            <a href="community.html" class="hover:text-yellow mx-2">Community</a>
+            <a href="players.html" class="hover:text-yellow mx-2">Players</a>
+            <a href="stats.html" class="hover:text-yellow mx-2">Stats</a>
+        </div>
+        © 2025 Front Row Fantasy. All rights reserved.
     </footer>
 
     <script src="script.js"></script>
+    <script>
+    // Fantasy Ticker (optional, remove if not needed)
+    document.addEventListener('DOMContentLoaded', function () {
+        const tickerContent = document.getElementById('tickerContent');
+        const pauseButton = document.getElementById('pauseButton');
+        if (!tickerContent || !pauseButton) return;
+        let paused = false, animationFrame, pos = 0;
+        const tickerData = [
+            { player: "Josh Allen", team: "BUF", pos: "QB", pts: 25.4 },
+            { player: "Patrick Mahomes", team: "KC", pos: "QB", pts: 24.8 },
+            { player: "Christian McCaffrey", team: "SF", pos: "RB", pts: 20.5 },
+            { player: "Tyreek Hill", team: "MIA", pos: "WR", pts: 19.8 },
+            { player: "Justin Jefferson", team: "MIN", pos: "WR", pts: 19.2 },
+            { player: "Travis Kelce", team: "KC", pos: "TE", pts: 18.9 }
+        ];
+        function posColor(pos) {
+            switch (pos) {
+                case "QB": return "player-pos-QB";
+                case "RB": return "player-pos-RB";
+                case "WR": return "player-pos-WR";
+                case "TE": return "player-pos-TE";
+                default: return "";
+            }
+        }
+        function buildTicker() {
+            tickerContent.innerHTML = '';
+            for (let loop = 0; loop < 2; loop++) {
+                tickerData.forEach(item => {
+                    const span = document.createElement('span');
+                    span.className = `ticker-player ${posColor(item.pos)}`;
+                    span.innerHTML = `
+                        <span class="player-name">${item.player}</span>
+                        <span class="player-team">(${item.team} ${item.pos})</span>
+                        <span class="player-pts">${item.pts} pts</span>
+                    `;
+                    tickerContent.appendChild(span);
+                });
+            }
+        }
+        function animateTicker() {
+            if (!paused) {
+                pos -= 1.1;
+                if (Math.abs(pos) >= tickerContent.scrollWidth / 2) pos = 0;
+                tickerContent.style.transform = `translateX(${pos}px)`;
+            }
+            animationFrame = requestAnimationFrame(animateTicker);
+        }
+        pauseButton.addEventListener('click', function () {
+            paused = !paused;
+            pauseButton.setAttribute('aria-pressed', paused ? 'true' : 'false');
+            pauseButton.textContent = paused ? 'Resume' : 'Pause';
+        });
+        buildTicker();
+        animateTicker();
+    });
+    </script>
 </body>
 </html>
