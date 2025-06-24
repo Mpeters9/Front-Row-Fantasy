@@ -1,6 +1,14 @@
 document.addEventListener('DOMContentLoaded', () => {
     // --- Element references ---
     const $ = id => document.getElementById(id);
+
+let playersData = [];
+let team1 = [];
+let team2 = [];
+$('analyzeTradeBtn').disabled = true;
+$('clearAllBtn').disabled = true;
+$('exportTradeBtn').disabled = true;
+$('swapTeamsBtn').disabled = true;
     const leagueSizeSelect = $('leagueSize'), startingLineupSelect = $('startingLineup'), benchSizeSelect = $('benchSize'),
         scoringTypeSelect = $('scoringType'), bonusTDCheckbox = $('bonusTD'), penaltyFumbleCheckbox = $('penaltyFumble'),
         positionFocusSelect = $('positionFocus'), draftPickInput = $('draftPick'), draftPickValue = $('draftPickValue'),
@@ -720,6 +728,11 @@ Age: ${player.age || "?"} | Injury: ${player.injury_status || "Healthy"} | Bye: 
         trades = trades.slice(0, 5);
         localStorage.setItem('recentTrades', JSON.stringify(trades));
         renderRecentTrades();
+
+        $('analyzeTradeBtn').disabled = false;
+        $('clearAllBtn').disabled = false;
+        $('exportTradeBtn').disabled = false;
+        $('swapTeamsBtn').disabled = false;
     }
 
     // 7. Recent Trades
