@@ -28,6 +28,22 @@
         </div>
     </header>
 
+    <!-- Fantasy Points Ticker -->
+    <section class="marquee mb-6">
+        <div class="bg-teal-900 text-white p-2 rounded-t flex justify-between items-center shadow">
+            <span class="text-xl font-bold tracking-wide flex items-center gap-2">
+                <svg class="inline w-6 h-6 text-yellow-300" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12c0 4.97-4.03 9-9 9s-9-4.03-9-9 4.03-9 9-9 9 4.03 9 9z"/></svg>
+                Fantasy Points Ticker
+            </span>
+            <button id="pauseButton" class="cta-btn px-4 py-1" aria-pressed="false" aria-label="Pause ticker">Pause</button>
+        </div>
+        <div class="relative overflow-hidden bg-teal-800 rounded-b" style="height:2.5rem;">
+            <div id="tickerContent" class="absolute left-0 top-0 h-full flex items-center whitespace-nowrap transition-none" tabindex="0" aria-live="polite">
+                <span class="loading text-white">Loading fantasy points...</span>
+            </div>
+        </div>
+    </section>
+
     <!-- Hero / Splash -->
     <section class="splash-section text-center mb-8">
         <h1 class="text-4xl md:text-5xl font-bold mb-4 text-glow">Fantasy Football Guides</h1>
@@ -80,5 +96,6 @@
         </div>
         © 2025 Front Row Fantasy. All rights reserved.
     </footer>
+    <script src="script.js"></script>
 </body>
 </html>
