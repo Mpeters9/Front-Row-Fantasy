@@ -224,3 +224,12 @@ html {
     border-radius: 0.5rem;
     z-index: 100;
 }
+
+#tickerContent {
+    will-change: transform;
+    font-size: 1.1rem;
+    font-weight: 600;
+    min-width: 100vw;
+    pointer-events: none;
+    user-select: none;
+}
