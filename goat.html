@@ -1,147 +1,442 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Your one-stop fantasy football trade analyzer, projections, and more.">
-    <meta name="keywords" content="fantasy football, GOAT, team building, draft strategies, player research">
-    <meta name="author" content="Mpeters9">
-    <title>Front Row Fantasy - GOAT Page</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
-    <link rel="icon" href="favicon.ico" type="image/x-icon">
-    <link rel="stylesheet" href="styles.css">
-    <script src="https://cdn.tailwindcss.com"></script>
-</head>
-<body aria-label="GOAT Page Content">
+let playersData = []; // Make playersData global
 
-    <!-- Header -->
-    <header>
-        <div class="max-w-7xl mx-auto px-4 flex justify-between items-center py-3">
-            <a href="index.html" class="text-2xl font-bold text-yellow text-glow">Front Row Fantasy</a>
-            <nav>
-                <a href="index.html" class="nav-link">Home</a>
-                <a href="tools.html" class="nav-link" aria-current="page">Expert Tools</a>
-                <a href="goat.html" class="nav-link">GOAT</a>
-                <a href="guides.html" class="nav-link">Guides</a>
-                <a href="community.html" class="nav-link">Community</a>
-                <a href="players.html" class="nav-link">Players</a>
-                <a href="stats.html" class="nav-link">Stats</a>
-                <a href="#contact" class="nav-link">Contact</a>
-            </nav>
-        </div>
-    </header>
+document.addEventListener('DOMContentLoaded', async () => {
+    const $ = id => document.getElementById(id);
 
-    <!-- Fantasy Points Ticker -->
-    <section class="marquee mb-8" aria-label="Fantasy Points Ticker">
-        <div class="bg-teal-900 text-white p-2 rounded-t flex justify-between items-center shadow">
-            <span class="text-xl font-bold tracking-wide flex items-center gap-2">
-                <svg class="inline w-6 h-6 text-yellow-300" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12c0 4.97-4.03 9-9 9s-9-4.03-9-9 4.03-9 9-9 9 4.03 9 9z"/></svg>
-                Fantasy Points Ticker
-            </span>
-            <button id="pauseButton" class="cta-btn px-4 py-1" aria-pressed="false" aria-label="Pause ticker">Pause</button>
-        </div>
-        <div class="relative overflow-hidden bg-teal-800 rounded-b" style="height:2.5rem;">
-            <div id="tickerContent" class="absolute left-0 top-0 h-full flex items-center whitespace-nowrap transition-none" tabindex="0" aria-live="polite">
-                <span class="loading text-white">Loading fantasy points...</span>
-            </div>
-        </div>
-    </section>
+    // --- Use all projections files for player pool ---
+    const projectionFiles = {
+        QB: 'QB Projections.json',
+        RB: 'RB Projections.json',
+        WR: 'WR Projections.json',
+        TE: 'TE Projections.json',
+        K:  'K Projections.json',
+        Flex: 'Flex Projections.json'
+    };
 
-    <!-- Hero / Splash -->
-    <main class="max-w-7xl mx-auto px-4 py-6">
-        <section class="splash-section text-center mb-8">
-            <h2 class="text-4xl font-bold mb-4 text-glow">Unleash Your Fantasy GOAT</h2>
-            <p class="text-lg mb-6">Master the art of fantasy football with elite strategies, in-depth research, and a thriving community to build the ultimate team.</p>
-            <a href="#best-draft-builds" class="cta-btn">Get Started</a>
-        </section>
+    function getProjectionFile(pos, scoringType = 'standard') {
+        if (pos === 'K') return projectionFiles.K;
+        if (pos === 'Flex') {
+            if (scoringType === 'ppr') return 'Flex Projections PPR.json';
+            if (scoringType === 'half') return 'Flex Half PPR.json';
+            return 'Flex Projections.json';
+        }
+        let base = projectionFiles[pos];
+        if (!base) return null;
+        if (scoringType === 'ppr') return base.replace('.json', ' PPR.json');
+        if (scoringType === 'half') return base.replace('.json', ' Half PPR.json');
+        return base;
+    }
 
-        <!-- Example Card Section -->
-        <section id="best-draft-builds" class="mb-12">
-            <h2 class="section-title text-center">Best Draft Builds</h2>
-            <div class="card">
-                <!-- ...your draft build form and content here... -->
-                <button class="cta-btn mt-4">Generate Draft</button>
-            </div>
-        </section>
+    // Fetch and merge all projections (QB, RB, WR, TE, K, Flex)
+    async function fetchAllProjections(scoringType = 'standard') {
+        const positions = ['QB', 'RB', 'WR', 'TE', 'K', 'Flex'];
+        let allPlayers = [];
+        for (const pos of positions) {
+            const file = getProjectionFile(pos, scoringType);
+            if (!file) continue;
+            try {
+                const res = await fetch(file);
+                const data = await res.json();
+                data.forEach((p, i) => {
+                    // Defensive: skip header/empty rows, try to infer player info if present
+                    if (!p.FPTS || isNaN(Number(p.FPTS))) return;
+                    allPlayers.push({
+                        name: p.Player && typeof p.Player === "string" && p.Player.trim() !== "" ? p.Player : `Player ${pos} ${i + 1}`,
+                        pos: (p.POS && typeof p.POS === "string" && p.POS.trim() !== "") ? p.POS.replace(/[0-9]/g, '').toUpperCase() : pos,
+                        team: p.Team && typeof p.Team === "string" && p.Team.trim() !== "" ? p.Team : "-",
+                        points: Number(p.FPTS),
+                        fantasy_points_2023: Number(p.FPTS),
+                        pts: Number(p.FPTS),
+                        value: Number(p.FPTS),
+                        img: p.img || 'https://static.www.nfl.com/image/private/t_headshot_desktop/league/api/players/default.png',
+                        injury_status: p.injury_status || "Healthy",
+                        bye: p.Bye || "—",
+                        age: p.age || "—"
+                    });
+                });
+            } catch (e) {
+                console.warn(`Could not load ${file}:`, e);
+            }
+        }
+        allPlayers.sort((a, b) => b.value - a.value);
+        playersData = allPlayers;
+    }
 
-        <!-- Example Player Table with Popup -->
-        <section id="player-research" class="mb-12">
-            <h2 class="section-title text-center">Player Research</h2>
-            <div class="card">
-                <table class="w-full mb-6">
-                    <thead>
-                        <tr>
-                            <th>Name</th>
-                            <th>Pos</th>
-                            <th>Proj Pts</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr class="player-row" data-player="Patrick Mahomes">
-                            <td class="player-name player-pos-QB">Patrick Mahomes</td>
-                            <td>QB</td>
-                            <td>25.1</td>
-                        </tr>
-                        <tr class="player-row" data-player="Christian McCaffrey">
-                            <td class="player-name player-pos-RB">Christian McCaffrey</td>
-                            <td>RB</td>
-                            <td>22.3</td>
-                        </tr>
-                        <tr class="player-row" data-player="Justin Jefferson">
-                            <td class="player-name player-pos-WR">Justin Jefferson</td>
-                            <td>WR</td>
-                            <td>20.7</td>
-                        </tr>
-                        <tr class="player-row" data-player="Travis Kelce">
-                            <td class="player-name player-pos-TE">Travis Kelce</td>
-                            <td>TE</td>
-                            <td>19.8</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </section>
-    </main>
+    // Use projections instead of csvjson.json
+    await fetchAllProjections('standard');
 
-    <footer>
-        <div class="mb-2">
-            <a href="index.html" class="hover:text-yellow mx-2">Home</a>
-            <a href="tools.html" class="hover:text-yellow mx-2">Expert Tools</a>
-            <a href="goat.html" class="hover:text-yellow mx-2">GOAT</a>
-            <a href="guides.html" class="hover:text-yellow mx-2">Guides</a>
-            <a href="community.html" class="hover:text-yellow mx-2">Community</a>
-            <a href="players.html" class="hover:text-yellow mx-2">Players</a>
-            <a href="stats.html" class="hover:text-yellow mx-2">Stats</a>
-        </div>
-        © 2025 Front Row Fantasy. All rights reserved.
-    </footer>
+    let team1 = [];
+    let team2 = [];
+    $('analyzeTradeBtn').disabled = true;
+    $('clearAllBtn').disabled = true;
+    $('exportTradeBtn').disabled = true;
+    $('swapTeamsBtn').disabled = true;
 
-    <!-- Player Popup Modal -->
-    <div id="player-popup" tabindex="0" aria-live="polite" class="hidden fixed z-50 bg-white border rounded shadow-lg p-4 max-w-xs" style="top:100px;left:100px;"></div>
+    autocomplete('player1-search', 'player1-autocomplete', team1, team2, 'team1-players');
+    autocomplete('player2-search', 'player2-autocomplete', team2, team1, 'team2-players');
+    renderTeam('team1-players', team1, 'team1');
+    renderTeam('team2-players', team2, 'team2');
+    renderRecentTrades();
+    document.getElementById('analyzeTradeBtn').onclick = analyzeTrade;
+    document.getElementById('clearAllBtn').onclick = clearAll;
+    document.getElementById('exportTradeBtn').onclick = exportTrade;
+    document.getElementById('swapTeamsBtn').onclick = swapTeams;
 
-    <!-- Use your main JS file for ticker and logic -->
-    <script src="script.js"></script>
-    <script>
-    // Player Popup Modal logic (keep this if you want the popup feature)
-    document.addEventListener('DOMContentLoaded', function () {
-        document.querySelectorAll('.player-row').forEach(row => {
-            row.addEventListener('click', function (e) {
-                const player = row.dataset.player;
-                const popup = document.getElementById('player-popup');
-                popup.innerHTML = `
-                    <span class="close-btn" onclick="document.getElementById('player-popup').classList.add('hidden')">&times;</span>
-                    <h4 class="font-bold text-lg mb-1">${player}</h4>
-                    <div class="mb-2">Position: <span class="${row.querySelector('.player-name').classList[1]}">${row.children[1].textContent}</span></div>
-                    <div class="mb-2">Projected Points: <span class="text-yellow">${row.children[2].textContent}</span></div>
-                    <div class="mb-2">Team: <span class="text-teal">${row.children[0].textContent.split(' ')[1] || 'N/A'}</span></div>
-                    <div class="mb-2">Bio: <span class="text-gray-700">Elite fantasy performer. Click for more stats soon!</span></div>
-                `;
-                popup.classList.remove('hidden');
-                popup.style.top = (e.clientY + 10) + 'px';
-                popup.style.left = (e.clientX + 10) + 'px';
+    const leagueSizeSelect = $('leagueSize'), startingLineupSelect = $('startingLineup'), benchSizeSelect = $('benchSize'),
+        scoringTypeSelect = $('scoringType'), bonusTDCheckbox = $('bonusTD'), penaltyFumbleCheckbox = $('penaltyFumble'),
+        positionFocusSelect = $('positionFocus'), draftPickInput = $('draftPick'), draftPickValue = $('draftPickValue'),
+        generateDraftButton = $('generateLineup'), saveDraftButton = $('saveLineup'), compareDraftButton = $('compareLineups'),
+        progressBarDraft = $('progressBar'), progressDraft = $('progress'), buildResultDraft = $('build-result'),
+        lineupSizeInput = $('lineupSize'), lineupStartingSelect = $('lineupStarting'), lineupBenchSizeSelect = $('lineupBenchSize'),
+        lineupIrSpotsSelect = $('lineupIrSpots'), lineupScoringSelect = $('lineupScoring'), lineupBonusTDCheckbox = $('lineupBonusTD'),
+        lineupPenaltyFumbleCheckbox = $('lineupPenaltyFumble'), currentRosterInput = $('currentRoster'), swapPlayersButton = $('swapPlayers'),
+        generateLineupWeeklyButton = $('generateLineupWeekly'), saveLineupWeeklyButton = $('saveLineupWeekly'),
+        compareLineupsWeeklyButton = $('compareLineupsWeekly'), progressBarWeekly = $('progressBarWeekly'),
+        progressWeekly = $('progressWeekly'), lineupResult = $('lineup-result');
+
+    // --- Utility functions ---
+    const clamp = (val, min, max) => Math.max(min, Math.min(val, max));
+    const parseLineupConfig = str => str.split(',').map(s => s.trim().toUpperCase());
+    const parseRoster = str => str.split(';').map(p => p.trim()).filter(Boolean);
+    const showProgress = (bar, prog, cb) => {
+        bar.classList.remove('hidden');
+        let width = 0, interval = setInterval(() => {
+            if (width >= 100) {
+                clearInterval(interval);
+                cb();
+                bar.classList.add('hidden');
+            } else {
+                width += 10;
+                prog.style.width = `${width}%`;
+            }
+        }, 200);
+    };
+    const saveExport = (el, key, filename, alertMsg) => {
+        const result = el.innerHTML;
+        if (result) {
+            const text = el.textContent;
+            localStorage.setItem(key, text);
+            const blob = new Blob([text], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url; a.download = filename; a.click();
+            URL.revokeObjectURL(url);
+            alert(alertMsg);
+        } else {
+            alert('Generate a result first!');
+        }
+    };
+    function showLoadingSpinner(show) {
+        const spinner = document.getElementById('loading-spinner');
+        if (spinner) spinner.classList.toggle('hidden', !show);
+    }
+
+    // --- Set defaults ---
+    if (leagueSizeSelect) leagueSizeSelect.value = 12;
+    if (draftPickInput) draftPickInput.value = 1;
+    if (draftPickValue) draftPickValue.textContent = 1;
+    if (scoringTypeSelect) scoringTypeSelect.value = 'standard';
+
+    // --- Clamp draft pick input on league size change/input ---
+    if (leagueSizeSelect && draftPickInput && draftPickValue) {
+        const clampDraftPick = () => {
+            draftPickInput.max = leagueSizeSelect.value;
+            draftPickInput.min = 1;
+            draftPickInput.value = clamp(parseInt(draftPickInput.value) || 1, 1, parseInt(leagueSizeSelect.value));
+            draftPickValue.textContent = draftPickInput.value;
+        };
+        leagueSizeSelect.addEventListener('change', clampDraftPick);
+        draftPickInput.addEventListener('input', clampDraftPick);
+        clampDraftPick();
+    }
+
+    // --- Sync bench size between sections ---
+    if (benchSizeSelect && lineupBenchSizeSelect) {
+        const syncBench = e => {
+            benchSizeSelect.value = lineupBenchSizeSelect.value = e.target.value;
+        };
+        benchSizeSelect.addEventListener('change', syncBench);
+        lineupBenchSizeSelect.addEventListener('change', syncBench);
+    }
+
+    // 2. Trade Value Calculation (advanced)
+    function calculateTradeValue(player, currentWeek = 1) {
+        let base = player.fantasy_points_2023 || 0;
+        if (player.position === 'RB') base *= 1.18;
+        if (player.position === 'WR') base *= 1.12;
+        if (player.position === 'TE') base *= 1.01;
+        if (player.position === 'QB') base *= 0.92;
+        if (player.age) {
+            if (player.position === 'RB' && player.age <= 25) base *= 1.07;
+            if (player.position === 'WR' && player.age <= 25) base *= 1.04;
+            if (player.position === 'TE' && player.age >= 30) base *= 0.93;
+            if (player.position === 'QB' && player.age >= 33) base *= 0.95;
+        }
+        if (player.injury_status && player.injury_status !== "Healthy") base *= 0.7;
+        if (player.bye && Math.abs(player.bye - currentWeek) <= 2) base *= 0.93;
+        if (!base) base = 10;
+        return Math.round(base);
+    }
+
+    // 3. Autocomplete (shows injury/team)
+    function autocomplete(inputId, listId, teamArr, otherTeamArr, teamDivId) {
+        const input = document.getElementById(inputId);
+        const list = document.getElementById(listId);
+        input.addEventListener('input', function () {
+            const val = input.value.toLowerCase();
+            list.innerHTML = '';
+            if (!val) return;
+            const matches = playersData.filter(p =>
+                p.name.toLowerCase().includes(val) &&
+                !teamArr.some(tp => tp.name === p.name) &&
+                !otherTeamArr.some(tp => tp.name === p.name)
+            );
+            if (matches.length === 0) {
+                const li = document.createElement('li');
+                li.textContent = "No matches found";
+                li.className = "text-gray-400 px-2 py-1";
+                list.appendChild(li);
+                return;
+            }
+            matches.slice(0, 8).forEach(player => {
+                const li = document.createElement('li');
+                li.innerHTML = `<span>${player.name} (${player.team} ${player.pos})</span>
+                    <span class="text-xs ml-2 ${player.injury_status !== "Healthy" ? "text-red-600" : "text-green-600"}">${player.injury_status}</span>`;
+                li.onclick = () => {
+                    teamArr.push(player);
+                    renderTeam(teamDivId, teamArr, teamArr === team1 ? 'team1' : 'team2');
+                    input.value = '';
+                    list.innerHTML = '';
+                };
+                list.appendChild(li);
             });
         });
+        input.addEventListener('blur', () => setTimeout(() => list.innerHTML = '', 150));
+    }
+
+    // 4. Render Team (shows tooltip with age/injury)
+    function renderTeam(divId, teamArr, teamKey) {
+        const div = document.getElementById(divId);
+        div.innerHTML = '';
+        teamArr.forEach((player, idx) => {
+            const card = document.createElement('div');
+            card.className = `player-card player-pos-${player.pos}`;
+            card.draggable = true;
+            card.title = `${player.name} (${player.team} ${player.pos})
+Age: ${player.age || "?"} | Injury: ${player.injury_status || "Healthy"} | Bye: ${player.bye}`;
+            card.innerHTML = `
+                <img src="${player.img}" alt="${player.name}" class="w-10 h-10 rounded-full border-2 border-yellow-400 object-cover" onerror="this.src='https://static.www.nfl.com/image/private/t_headshot_desktop/league/api/players/default.png'">
+                <div>
+                    <div class="font-bold">${player.name} <span class="text-teal">(${player.team} ${player.pos})</span></div>
+                    <div class="text-yellow font-semibold">${player.pts} pts</div>
+                    <div class="text-xs text-gray-400">Bye: ${player.bye} | <span class="${player.injury_status !== "Healthy" ? "text-red-600" : "text-green-600"}">${player.injury_status}</span></div>
+                </div>
+                <button class="remove-btn" title="Remove Player">&times;</button>
+            `;
+            card.querySelector('.remove-btn').onclick = () => {
+                teamArr.splice(idx, 1);
+                renderTeam(divId, teamArr, teamKey);
+            };
+            card.ondragstart = e => {
+                e.dataTransfer.setData('playerIdx', idx);
+                e.dataTransfer.setData('teamKey', teamKey);
+            };
+            div.appendChild(card);
+        });
+        div.ondragover = e => e.preventDefault();
+        div.ondrop = e => {
+            const fromIdx = +e.dataTransfer.getData('playerIdx');
+            const fromTeam = e.dataTransfer.getData('teamKey');
+            if (fromTeam !== teamKey) {
+                const player = (fromTeam === 'team1' ? team1 : team2).splice(fromIdx, 1)[0];
+                teamArr.push(player);
+                renderTeam('team1-players', team1, 'team1');
+                renderTeam('team2-players', team2, 'team2');
+            }
+        };
+    }
+
+    // 5. Swap Teams
+    function swapTeams() {
+        [team1, team2] = [team2, team1];
+        renderTeam('team1-players', team1, 'team1');
+        renderTeam('team2-players', team2, 'team2');
+    }
+
+    // 6. Analyze Trade (contextual advice and warnings)
+    function analyzeTrade() {
+        if (!team1.length && !team2.length) return;
+        const team1Value = team1.reduce((a, p) => a + (p.value || 0), 0);
+        const team2Value = team2.reduce((a, p) => a + (p.value || 0), 0);
+        const fairness = Math.abs(team1Value - team2Value);
+        let fairnessText = '';
+        let color = '';
+        let emoji = '';
+        if (fairness < 10) { fairnessText = "Perfectly Balanced"; color = "bg-green-600"; emoji = "🟢"; }
+        else if (fairness < 30) { fairnessText = "Fair Trade"; color = "bg-yellow-500"; emoji = "🟡"; }
+        else { fairnessText = "Lopsided!"; color = "bg-red-600"; emoji = "🔴"; }
+        document.getElementById('trade-fairness').innerHTML = `<span class="px-3 py-1 rounded ${color} text-white">${emoji} ${fairnessText}</span>`;
+
+        // Chart
+        const ctx = document.getElementById('tradeValueChart').getContext('2d');
+        if (window.tradeChart) window.tradeChart.destroy();
+        window.tradeChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: ['Team 1', 'Team 2'],
+                datasets: [{
+                    label: 'Trade Value',
+                    data: [team1Value, team2Value],
+                    backgroundColor: ['#facc15', '#14b8a6']
+                }]
+            },
+            options: { plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true } } }
+        });
+
+        // Contextual AI Advice
+        let advice = '';
+        const t1Injured = team1.filter(p => p.injury_status && p.injury_status !== "Healthy");
+        const t2Injured = team2.filter(p => p.injury_status && p.injury_status !== "Healthy");
+        const t1Byes = team1.map(p => p.bye).filter(Boolean);
+        const t2Byes = team2.map(p => p.bye).filter(Boolean);
+        const t1RBs = team1.filter(p => p.pos === 'RB');
+        const t2RBs = team2.filter(p => p.pos === 'RB');
+        const t1WRs = team1.filter(p => p.pos === 'WR');
+        const t2WRs = team2.filter(p => p.pos === 'WR');
+
+        if (fairness < 10) advice = "This trade is as even as it gets. Both teams win!";
+        else if (team1Value > team2Value) advice = `Team 1 is getting more value. Team 2, ask for a sweetener!`;
+        else advice = `Team 2 is getting the edge. Team 1, try to negotiate for more!`;
+
+        // Bye week overlap warning
+        if (t1Byes.some(bye => t2Byes.includes(bye))) advice += " ⚠️ Watch out for bye week overlap!";
+        // Injured player warning
+        if (t1Injured.length || t2Injured.length) advice += ` ⚠️ Injured player(s) in trade: ${[...t1Injured, ...t2Injured].map(p => p.name).join(', ')}`;
+        // Roster depth warning
+        if (team1.length > 0 && t1RBs.length === 0 && t1WRs.length === 0) advice += " ⚠️ Team 1 is trading away all RBs/WRs!";
+        if (team2.length > 0 && t2RBs.length === 0 && t2WRs.length === 0) advice += " ⚠️ Team 2 is trading away all RBs/WRs!";
+
+        document.getElementById('ai-advice').textContent = advice;
+
+        // Save to recent trades
+        const tradeSummary = `${team1.map(p=>p.name).join(', ') || 'None'} ⇄ ${team2.map(p=>p.name).join(', ') || 'None'} (${fairnessText})`;
+        let trades = JSON.parse(localStorage.getItem('recentTrades') || '[]');
+        trades.unshift(tradeSummary);
+        trades = trades.slice(0, 5);
+        localStorage.setItem('recentTrades', JSON.stringify(trades));
+        renderRecentTrades();
+
+        // Enable buttons only if there are players
+        document.getElementById('analyzeTradeBtn').disabled = false;
+        document.getElementById('clearAllBtn').disabled = false;
+        document.getElementById('exportTradeBtn').disabled = false;
+        document.getElementById('swapTeamsBtn').disabled = false;
+    }
+
+    // 7. Recent Trades
+    function renderRecentTrades() {
+        const trades = JSON.parse(localStorage.getItem('recentTrades') || '[]');
+        const ul = document.getElementById('recentTrades');
+        ul.innerHTML = '';
+        trades.forEach(trade => {
+            const li = document.createElement('li');
+            li.textContent = trade;
+            ul.appendChild(li);
+        });
+    }
+
+    // 8. Clear All
+    function clearAll() {
+        team1 = [];
+        team2 = [];
+        renderTeam('team1-players', team1, 'team1');
+        renderTeam('team2-players', team2, 'team2');
+        document.getElementById('trade-fairness').innerHTML = '';
+        document.getElementById('ai-advice').textContent = '';
+        if (window.tradeChart) window.tradeChart.destroy();
+    }
+
+    // 9. Export/Share
+    function exportTrade() {
+        const summary = `${team1.map(p=>p.name).join(', ') || 'None'} ⇄ ${team2.map(p=>p.name).join(', ') || 'None'}`;
+        navigator.clipboard.writeText(`Check out this trade on Front Row Fantasy: ${summary}`).then(() => {
+            alert('Trade copied to clipboard! Share it anywhere.');
+        });
+    }
+
+    // 10. Initialize everything after fetching players
+});
+
+// Fantasy Ticker - pull from projections
+document.addEventListener('DOMContentLoaded', function () {
+    const tickerContent = document.getElementById('tickerContent');
+    const pauseButton = document.getElementById('pauseButton');
+    if (!tickerContent || !pauseButton) return;
+    let paused = false, animationFrame, pos = 0;
+
+    function posColor(pos) {
+        switch (pos) {
+            case "QB": return "player-pos-QB";
+            case "RB": return "player-pos-RB";
+            case "WR": return "player-pos-WR";
+            case "TE": return "player-pos-TE";
+            default: return "";
+        }
+    }
+
+    async function buildTickerFromLocal() {
+        tickerContent.innerHTML = '<span class="loading text-white">Loading fantasy points...</span>';
+        try {
+            if (!playersData.length) {
+                await fetchAllProjections('standard');
+            }
+            if (!playersData.length) {
+                tickerContent.innerHTML = '<span class="text-red-400">No player data available.</span>';
+                return;
+            }
+            const sorted = [...playersData].sort((a, b) => {
+                const aPts = a.fantasy_points_2023 ?? a.points ?? 0;
+                const bPts = b.fantasy_points_2023 ?? b.points ?? 0;
+                return bPts - aPts;
+            }).slice(0, 10);
+
+            tickerContent.innerHTML = '';
+            sorted.forEach(item => {
+                const span = document.createElement('span');
+                span.className = `ticker-player ${item.pos ? 'player-pos-' + item.pos : ''} mr-8`;
+                span.innerHTML = `
+                    <span class="player-name font-bold">${item.name}</span>
+                    <span class="player-team text-teal-300">(${item.team} ${item.pos})</span>
+                    <span class="player-pts text-yellow-300 font-bold">${(item.fantasy_points_2023 ?? item.points ?? 0).toFixed(1)} pts</span>
+                `;
+                tickerContent.appendChild(span);
+            });
+            if (tickerContent.innerHTML === '') {
+                tickerContent.innerHTML = '<span class="text-red-400">No ticker data found.</span>';
+            }
+        } catch (e) {
+            console.error('Ticker local JSON error:', e);
+            tickerContent.innerHTML = '<span class="text-red-400">Failed to load ticker data.</span>';
+        }
+    }
+
+    function animateTicker() {
+        if (!paused) {
+            pos -= 1.1;
+            if (Math.abs(pos) >= tickerContent.scrollWidth / 2) pos = 0;
+            tickerContent.style.transform = `translateX(${pos}px)`;
+        }
+        animationFrame = requestAnimationFrame(animateTicker);
+    }
+
+    pauseButton.addEventListener('click', function () {
+        paused = !paused;
+        pauseButton.setAttribute('aria-pressed', paused ? 'true' : 'false');
+        pauseButton.textContent = paused ? 'Resume' : 'Pause';
     });
-    </script>
-</body>
-</html>
+
+    buildTickerFromLocal();
+    animateTicker();
+
+    setInterval(buildTickerFromLocal, 300000);
+});
