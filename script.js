@@ -504,19 +504,61 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // --- Trade Analyzer ---
-    // 1. Player Data (add/remove players here)
-    const playersData = [
-        { name: "Josh Allen", pos: "QB", team: "BUF", pts: 25.4, value: 98, bye: 13, matchup: "vs KC", img: "https://static.www.nfl.com/image/private/t_headshot_desktop/league/api/players/JoshAllen.png" },
-        { name: "Christian McCaffrey", pos: "RB", team: "SF", pts: 20.5, value: 96, bye: 9, matchup: "vs SEA", img: "https://static.www.nfl.com/image/private/t_headshot_desktop/league/api/players/ChristianMcCaffrey.png" },
-        { name: "Tyreek Hill", pos: "WR", team: "MIA", pts: 19.8, value: 93, bye: 10, matchup: "vs NE", img: "https://static.www.nfl.com/image/private/t_headshot_desktop/league/api/players/TyreekHill.png" },
-        { name: "Travis Kelce", pos: "TE", team: "KC", pts: 18.9, value: 91, bye: 6, matchup: "vs DEN", img: "https://static.www.nfl.com/image/private/t_headshot_desktop/league/api/players/TravisKelce.png" },
-        // Add more players as needed
-    ];
+    // --- Trade Analyzer with Sleeper API ---
 
+    // 1. Fetch live player data from Sleeper API
+    let playersData = [];
     let team1 = [], team2 = [];
 
-    // 2. Autocomplete (edit logic if you want to change how search works)
+    async function fetchSleeperPlayers() {
+        // Fetch all NFL players
+        const res = await fetch('https://api.sleeper.app/v1/players/nfl');
+        const data = await res.json();
+
+        // Filter for active, fantasy-relevant players (QB, RB, WR, TE)
+        playersData = Object.values(data)
+            .filter(p =>
+                p.active &&
+                ['QB', 'RB', 'WR', 'TE'].includes(p.position) &&
+                p.full_name &&
+                p.team
+            )
+            .map(p => ({
+                name: p.full_name,
+                pos: p.position,
+                team: p.team,
+                pts: p.fantasy_points_2023 || 0, // Use last season's points if available
+                value: calculateTradeValue(p),
+                bye: p.bye_week || '',
+                matchup: '', // You can enhance this with another API call if desired
+                img: p.headshot_url || 'https://static.www.nfl.com/image/private/t_headshot_desktop/league/api/players/default.png'
+            }))
+            // Sort by value descending for better UX
+            .sort((a, b) => b.value - a.value);
+
+        // Initialize analyzer with new data
+        autocomplete('player1-search', 'player1-autocomplete', team1, team2, 'team1-players');
+        autocomplete('player2-search', 'player2-autocomplete', team2, team1, 'team2-players');
+        renderTeam('team1-players', team1, 'team1');
+        renderTeam('team2-players', team2, 'team2');
+        renderRecentTrades();
+    }
+
+    // 2. Trade Value Calculation (improve this logic as you wish)
+    function calculateTradeValue(player) {
+        // If fantasy points available, use as base value
+        let base = player.fantasy_points_2023 || 0;
+        // Give positional bonuses (QBs and TEs are less valuable in 1QB leagues)
+        if (player.position === 'RB') base *= 1.15;
+        if (player.position === 'WR') base *= 1.10;
+        if (player.position === 'TE') base *= 0.95;
+        if (player.position === 'QB') base *= 0.85;
+        // If no points, assign a low value
+        if (!base) base = 10;
+        return Math.round(base);
+    }
+
+    // 3. Autocomplete (unchanged, but now uses live data)
     function autocomplete(inputId, listId, teamArr, otherTeamArr, teamDivId) {
         const input = document.getElementById(inputId);
         const list = document.getElementById(listId);
@@ -524,7 +566,11 @@ document.addEventListener('DOMContentLoaded', () => {
             const val = input.value.toLowerCase();
             list.innerHTML = '';
             if (!val) return;
-            const matches = playersData.filter(p => p.name.toLowerCase().includes(val) && !teamArr.some(tp => tp.name === p.name) && !otherTeamArr.some(tp => tp.name === p.name));
+            const matches = playersData.filter(p =>
+                p.name.toLowerCase().includes(val) &&
+                !teamArr.some(tp => tp.name === p.name) &&
+                !otherTeamArr.some(tp => tp.name === p.name)
+            );
             matches.slice(0, 8).forEach(player => {
                 const li = document.createElement('li');
                 li.textContent = `${player.name} (${player.team} ${player.pos})`;
@@ -540,7 +586,7 @@ document.addEventListener('DOMContentLoaded', () => {
         input.addEventListener('blur', () => setTimeout(() => list.innerHTML = '', 150));
     }
 
-    // 3. Render Team (change card layout here)
+    // 4. Render Team (unchanged)
     function renderTeam(divId, teamArr, teamKey) {
         const div = document.getElementById(divId);
         div.innerHTML = '';
@@ -553,7 +599,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 <div>
                     <div class="font-bold">${player.name} <span class="text-teal">(${player.team} ${player.pos})</span></div>
                     <div class="text-yellow font-semibold">${player.pts} pts</div>
-                    <div class="text-xs text-gray-400">Bye: ${player.bye} | ${player.matchup}</div>
+                    <div class="text-xs text-gray-400">Bye: ${player.bye}</div>
                 </div>
                 <button class="remove-btn" title="Remove Player">&times;</button>
             `;
@@ -582,14 +628,14 @@ document.addEventListener('DOMContentLoaded', () => {
         };
     }
 
-    // 4. Swap Teams (easy to change logic)
+    // 5. Swap Teams
     function swapTeams() {
         [team1, team2] = [team2, team1];
         renderTeam('team1-players', team1, 'team1');
         renderTeam('team2-players', team2, 'team2');
     }
 
-    // 5. Analyze Trade (edit fairness/AI logic here)
+    // 6. Analyze Trade (uses live trade values)
     function analyzeTrade() {
         if (!team1.length && !team2.length) return;
         const team1Value = team1.reduce((a, p) => a + p.value, 0);
@@ -598,8 +644,8 @@ document.addEventListener('DOMContentLoaded', () => {
         let fairnessText = '';
         let color = '';
         let emoji = '';
-        if (fairness < 5) { fairnessText = "Perfectly Balanced"; color = "bg-green-600"; emoji = "🟢"; }
-        else if (fairness < 15) { fairnessText = "Fair Trade"; color = "bg-yellow-500"; emoji = "🟡"; }
+        if (fairness < 10) { fairnessText = "Perfectly Balanced"; color = "bg-green-600"; emoji = "🟢"; }
+        else if (fairness < 30) { fairnessText = "Fair Trade"; color = "bg-yellow-500"; emoji = "🟡"; }
         else { fairnessText = "Lopsided!"; color = "bg-red-600"; emoji = "🔴"; }
         document.getElementById('trade-fairness').innerHTML = `<span class="px-3 py-1 rounded ${color} text-white">${emoji} ${fairnessText}</span>`;
 
@@ -621,10 +667,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // AI Advice (edit advice logic here)
         let advice = '';
-        if (fairness < 5) advice = "This trade is as even as it gets. Both teams win!";
+        if (fairness < 10) advice = "This trade is as even as it gets. Both teams win!";
         else if (team1Value > team2Value) advice = `Team 1 is getting more value. Team 2, ask for a sweetener!`;
         else advice = `Team 2 is getting the edge. Team 1, try to negotiate for more!`;
-        if (team1.some(p => p.bye === team2[0]?.bye)) advice += " Watch out for bye week overlap!";
+        if (team1.some(p => p.bye && team2.some(tp => tp.bye === p.bye))) advice += " Watch out for bye week overlap!";
         document.getElementById('ai-advice').textContent = advice;
 
         // Save to recent trades
@@ -636,7 +682,7 @@ document.addEventListener('DOMContentLoaded', () => {
         renderRecentTrades();
     }
 
-    // 6. Recent Trades (change how many to show here)
+    // 7. Recent Trades
     function renderRecentTrades() {
         const trades = JSON.parse(localStorage.getItem('recentTrades') || '[]');
         const ul = document.getElementById('recentTrades');
@@ -648,7 +694,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // 7. Clear All (reset logic here)
+    // 8. Clear All
     function clearAll() {
         team1 = [];
         team2 = [];
@@ -659,7 +705,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (window.tradeChart) window.tradeChart.destroy();
     }
 
-    // 8. Export/Share (edit export logic here)
+    // 9. Export/Share
     function exportTrade() {
         const summary = `${team1.map(p=>p.name).join(', ') || 'None'} ⇄ ${team2.map(p=>p.name).join(', ') || 'None'}`;
         navigator.clipboard.writeText(`Check out this trade on Front Row Fantasy: ${summary}`).then(() => {
@@ -667,15 +713,11 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // 9. Initialize everything (add/remove features here)
-    autocomplete('player1-search', 'player1-autocomplete', team1, team2, 'team1-players');
-    autocomplete('player2-search', 'player2-autocomplete', team2, team1, 'team2-players');
-    renderTeam('team1-players', team1, 'team1');
-    renderTeam('team2-players', team2, 'team2');
-    renderRecentTrades();
-
-    document.getElementById('analyzeTradeBtn').onclick = analyzeTrade;
-    document.getElementById('clearAllBtn').onclick = clearAll;
-    document.getElementById('exportTradeBtn').onclick = exportTrade;
-    document.getElementById('swapTeamsBtn').onclick = swapTeams;
+    // 10. Initialize everything after fetching players
+    fetchSleeperPlayers().then(() => {
+        document.getElementById('analyzeTradeBtn').onclick = analyzeTrade;
+        document.getElementById('clearAllBtn').onclick = clearAll;
+        document.getElementById('exportTradeBtn').onclick = exportTrade;
+        document.getElementById('swapTeamsBtn').onclick = swapTeams;
+    });
 });
