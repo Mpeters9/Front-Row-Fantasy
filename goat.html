@@ -74,6 +74,9 @@
                             <option value="standard">Standard</option>
                             <option value="ppr" selected>PPR</option>
                             <option value="halfppr">Half PPR</option>
+                            <option value="tep">TE Premium (1.5x TE)</option>
+                            <option value="tefullppr">TE Full PPR (2x TE Rec)</option>
+                            <option value="6ptpass">6pt Passing TDs</option>
                         </select>
                     </label>
                 </div>
@@ -136,7 +139,7 @@
                             <option value="standard">Standard</option>
                             <option value="ppr">PPR (+1 pt/reception)</option>
                             <option value="halfppr">Half PPR (0.5 pt/reception)</option>
-                            <option value="tep">TEP (1.5x TE points)</option>
+                            <option value="tep">TE Premium (1.5x TE points)</option>
                             <option value="tefullppr">TE Full PPR (2x pt/reception for TE)</option>
                             <option value="6ptpass">6pt Passing TDs</option>
                         </select></label>
@@ -278,5 +281,6 @@
     <script src="https://unpkg.com/react-dom@17/umd/react-dom.development.js"></script>
     <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
     <script src="script.js"></script>
+    <div id="player-popup" class="hidden fixed z-50 bg-white border rounded shadow-lg p-4 max-w-xs" style="top:100px;left:100px;"></div>
 </body>
 </html>
