@@ -88,12 +88,19 @@
                                 <option>7</option>
                             </select>
                         </label>
+                        <!-- Draft Lineup Preset -->
                         <label>
                             Draft Lineup Preset
                             <select id="draftLineupPreset" class="ml-2">
                                 <option value="std">Standard: 1QB, 2RB, 2WR, 1TE, 1FLX, 1DST, 1K</option>
-                                <option value="ppr">PPR: 1QB, 2RB, 3WR, 1TE, 1FLX, 1DST, 1K</option>
-                                <option value="superflex">Superflex: 1QB, 2RB, 2WR, 1TE, 2FLX, 1DST, 1K</option>
+                                <option value="ppr">PPR: 1QB, 2RB, 2WR, 1TE, 1FLX, 1DST, 1K</option>
+                                <option value="superflex_redraft">SuperFlex Redraft: 1QB, 1SF, 2RB, 2WR, 1TE, 1FLX, 1DST, 1K</option>
+                                <option value="superflex_dynasty">SuperFlex Dynasty: 1QB, 1SF, 2RB, 2WR, 1TE, 2FLX, 1DST, 1K</option>
+                                <option value="half">Half-PPR: 1QB, 2RB, 2WR, 1TE, 2FLX, 1DST, 1K</option>
+                                <option value="2qb">2QB: 2QB, 2RB, 3WR, 1TE, 1FLX, 1DST, 1K</option>
+                                <option value="3wr">3WR: 1QB, 2RB, 3WR, 1TE, 1FLX, 1DST, 1K</option>
+                                <option value="2te">2TE: 1QB, 2RB, 2WR, 2TE, 1FLX, 1DST, 1K</option>
+                                <option value="deepflex">Deep FLEX: 1QB, 2RB, 2WR, 1TE, 3FLX, 1DST, 1K</option>
                                 <option value="custom">Custom</option>
                             </select>
                         </label>
@@ -138,12 +145,19 @@
             <div class="card max-w-2xl mx-auto">
                 <form id="lineup-build-form" class="flex flex-col gap-4">
                     <div class="flex flex-wrap gap-4 justify-center">
+                        <!-- Lineup Preset -->
                         <label>
                             Lineup Preset
                             <select id="lineupPreset" class="ml-2">
                                 <option value="std">Standard: 1QB, 2RB, 2WR, 1TE, 1FLX, 1DST, 1K</option>
-                                <option value="ppr">PPR: 1QB, 2RB, 3WR, 1TE, 1FLX, 1DST, 1K</option>
-                                <option value="superflex">Superflex: 1QB, 2RB, 2WR, 1TE, 2FLX, 1DST, 1K</option>
+                                <option value="ppr">PPR: 1QB, 2RB, 2WR, 1TE, 1FLX, 1DST, 1K</option>
+                                <option value="superflex_redraft">SuperFlex Redraft: 1QB, 1SF, 2RB, 2WR, 1TE, 1FLX, 1DST, 1K</option>
+                                <option value="superflex_dynasty">SuperFlex Dynasty: 1QB, 1SF, 2RB, 2WR, 1TE, 2FLX, 1DST, 1K</option>
+                                <option value="half">Half-PPR: 1QB, 2RB, 2WR, 1TE, 2FLX, 1DST, 1K</option>
+                                <option value="2qb">2QB: 2QB, 2RB, 3WR, 1TE, 1FLX, 1DST, 1K</option>
+                                <option value="3wr">3WR: 1QB, 2RB, 3WR, 1TE, 1FLX, 1DST, 1K</option>
+                                <option value="2te">2TE: 1QB, 2RB, 2WR, 2TE, 1FLX, 1DST, 1K</option>
+                                <option value="deepflex">Deep FLEX: 1QB, 2RB, 2WR, 1TE, 3FLX, 1DST, 1K</option>
                                 <option value="custom">Custom</option>
                             </select>
                         </label>
@@ -296,12 +310,22 @@
             // --- Draft Lineup Preset logic ---
             document.getElementById('draftLineupPreset').addEventListener('change', function () {
                 const preset = this.value;
-                if (preset === 'std') {
-                    draftQbCount.value = 1; draftRbCount.value = 2; draftWrCount.value = 2; draftTeCount.value = 1; draftFlexCount.value = 1; draftDstCount.value = 1; draftKCount.value = 1;
-                } else if (preset === 'ppr') {
-                    draftQbCount.value = 1; draftRbCount.value = 2; draftWrCount.value = 3; draftTeCount.value = 1; draftFlexCount.value = 1; draftDstCount.value = 1; draftKCount.value = 1;
-                } else if (preset === 'superflex') {
-                    draftQbCount.value = 1; draftRbCount.value = 2; draftWrCount.value = 2; draftTeCount.value = 1; draftFlexCount.value = 2; draftDstCount.value = 1; draftKCount.value = 1;
+                if (preset === 'std' || preset === 'ppr') {
+                    draftQbCount.value = 1; draftSfCount && (draftSfCount.value = 0); draftRbCount.value = 2; draftWrCount.value = 2; draftTeCount.value = 1; draftFlexCount.value = 1; draftDstCount.value = 1; draftKCount.value = 1;
+                } else if (preset === 'superflex_redraft') {
+                    draftQbCount.value = 1; draftSfCount && (draftSfCount.value = 1); draftRbCount.value = 2; draftWrCount.value = 2; draftTeCount.value = 1; draftFlexCount.value = 1; draftDstCount.value = 1; draftKCount.value = 1;
+                } else if (preset === 'superflex_dynasty') {
+                    draftQbCount.value = 1; draftSfCount && (draftSfCount.value = 1); draftRbCount.value = 2; draftWrCount.value = 2; draftTeCount.value = 1; draftFlexCount.value = 2; draftDstCount.value = 1; draftKCount.value = 1;
+                } else if (preset === 'half') {
+                    draftQbCount.value = 1; draftSfCount && (draftSfCount.value = 0); draftRbCount.value = 2; draftWrCount.value = 2; draftTeCount.value = 1; draftFlexCount.value = 2; draftDstCount.value = 1; draftKCount.value = 1;
+                } else if (preset === '2qb') {
+                    draftQbCount.value = 2; draftSfCount && (draftSfCount.value = 0); draftRbCount.value = 2; draftWrCount.value = 3; draftTeCount.value = 1; draftFlexCount.value = 1; draftDstCount.value = 1; draftKCount.value = 1;
+                } else if (preset === '3wr') {
+                    draftQbCount.value = 1; draftSfCount && (draftSfCount.value = 0); draftRbCount.value = 2; draftWrCount.value = 3; draftTeCount.value = 1; draftFlexCount.value = 1; draftDstCount.value = 1; draftKCount.value = 1;
+                } else if (preset === '2te') {
+                    draftQbCount.value = 1; draftSfCount && (draftSfCount.value = 0); draftRbCount.value = 2; draftWrCount.value = 2; draftTeCount.value = 2; draftFlexCount.value = 1; draftDstCount.value = 1; draftKCount.value = 1;
+                } else if (preset === 'deepflex') {
+                    draftQbCount.value = 1; draftSfCount && (draftSfCount.value = 0); draftRbCount.value = 2; draftWrCount.value = 2; draftTeCount.value = 1; draftFlexCount.value = 3; draftDstCount.value = 1; draftKCount.value = 1;
                 }
                 // Custom: do not change values
             });
@@ -315,6 +339,7 @@
 
                 // Get lineup counts from form
                 const qb = parseInt(document.getElementById('draftQbCount').value, 10);
+                const sf = document.getElementById('draftSfCount') ? parseInt(document.getElementById('draftSfCount').value, 10) : 0;
                 const rb = parseInt(document.getElementById('draftRbCount').value, 10);
                 const wr = parseInt(document.getElementById('draftWrCount').value, 10);
                 const te = parseInt(document.getElementById('draftTeCount').value, 10);
@@ -325,6 +350,10 @@
                 const result = document.getElementById('build-result');
 
                 function getPos(pos, n) {
+                    if (pos === 'SF') {
+                        // SuperFlex: allow QB, RB, WR, TE
+                        return allPlayers.filter(p => /^(QB|RB|WR|TE)/.test(p.POS)).slice(0, n);
+                    }
                     if (pos === 'FLEX') {
                         return allPlayers.filter(p => /^(RB|WR|TE)/.test(p.POS)).slice(0, n);
                     }
@@ -338,6 +367,7 @@
                 }
                 const starters = [
                     ...getPos('QB', qb),
+                    ...getPos('SF', sf),
                     ...getPos('RB', rb),
                     ...getPos('WR', wr),
                     ...getPos('TE', te),
@@ -375,18 +405,29 @@
             // --- Best Lineup Builds Tool ---
             document.getElementById('lineupPreset').addEventListener('change', function () {
                 const preset = this.value;
-                if (preset === 'std') {
-                    qbCount.value = 1; rbCount.value = 2; wrCount.value = 2; teCount.value = 1; flexCount.value = 1; dstCount.value = 1; kCount.value = 1;
-                } else if (preset === 'ppr') {
-                    qbCount.value = 1; rbCount.value = 2; wrCount.value = 3; teCount.value = 1; flexCount.value = 1; dstCount.value = 1; kCount.value = 1;
-                } else if (preset === 'superflex') {
-                    qbCount.value = 1; rbCount.value = 2; wrCount.value = 2; teCount.value = 1; flexCount.value = 2; dstCount.value = 1; kCount.value = 1;
+                if (preset === 'std' || preset === 'ppr') {
+                    qbCount.value = 1; sfCount && (sfCount.value = 0); rbCount.value = 2; wrCount.value = 2; teCount.value = 1; flexCount.value = 1; dstCount.value = 1; kCount.value = 1;
+                } else if (preset === 'superflex_redraft') {
+                    qbCount.value = 1; sfCount && (sfCount.value = 1); rbCount.value = 2; wrCount.value = 2; teCount.value = 1; flexCount.value = 1; dstCount.value = 1; kCount.value = 1;
+                } else if (preset === 'superflex_dynasty') {
+                    qbCount.value = 1; sfCount && (sfCount.value = 1); rbCount.value = 2; wrCount.value = 2; teCount.value = 1; flexCount.value = 2; dstCount.value = 1; kCount.value = 1;
+                } else if (preset === 'half') {
+                    qbCount.value = 1; sfCount && (sfCount.value = 0); rbCount.value = 2; wrCount.value = 2; teCount.value = 1; flexCount.value = 2; dstCount.value = 1; kCount.value = 1;
+                } else if (preset === '2qb') {
+                    qbCount.value = 2; sfCount && (sfCount.value = 0); rbCount.value = 2; wrCount.value = 3; teCount.value = 1; flexCount.value = 1; dstCount.value = 1; kCount.value = 1;
+                } else if (preset === '3wr') {
+                    qbCount.value = 1; sfCount && (sfCount.value = 0); rbCount.value = 2; wrCount.value = 3; teCount.value = 1; flexCount.value = 1; dstCount.value = 1; kCount.value = 1;
+                } else if (preset === '2te') {
+                    qbCount.value = 1; sfCount && (sfCount.value = 0); rbCount.value = 2; wrCount.value = 2; teCount.value = 2; flexCount.value = 1; dstCount.value = 1; kCount.value = 1;
+                } else if (preset === 'deepflex') {
+                    qbCount.value = 1; sfCount && (sfCount.value = 0); rbCount.value = 2; wrCount.value = 2; teCount.value = 1; flexCount.value = 3; dstCount.value = 1; kCount.value = 1;
                 }
                 // Custom: do not change values
             });
 
             document.getElementById('generateLineupBuild').addEventListener('click', function () {
                 const qb = parseInt(document.getElementById('qbCount').value, 10);
+                const sf = document.getElementById('sfCount') ? parseInt(document.getElementById('sfCount').value, 10) : 0;
                 const rb = parseInt(document.getElementById('rbCount').value, 10);
                 const wr = parseInt(document.getElementById('wrCount').value, 10);
                 const te = parseInt(document.getElementById('teCount').value, 10);
@@ -397,6 +438,9 @@
 
                 function getPos(pos, n) {
                     // For FLEX, allow RB/WR/TE, for DST/K use exact match
+                    if (pos === 'SF') {
+                        return allPlayers.filter(p => /^(QB|RB|WR|TE)/.test(p.POS)).slice(0, n);
+                    }
                     if (pos === 'FLEX') {
                         return allPlayers.filter(p => /^(RB|WR|TE)/.test(p.POS)).slice(0, n);
                     }
@@ -410,6 +454,7 @@
                 }
                 const lineup = [
                     ...getPos('QB', qb),
+                    ...getPos('SF', sf),
                     ...getPos('RB', rb),
                     ...getPos('WR', wr),
                     ...getPos('TE', te),
