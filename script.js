@@ -503,4 +503,179 @@ document.addEventListener('DOMContentLoaded', () => {
             popup.classList.add('hidden');
         }
     });
+
+    // --- Trade Analyzer ---
+    // 1. Player Data (add/remove players here)
+    const playersData = [
+        { name: "Josh Allen", pos: "QB", team: "BUF", pts: 25.4, value: 98, bye: 13, matchup: "vs KC", img: "https://static.www.nfl.com/image/private/t_headshot_desktop/league/api/players/JoshAllen.png" },
+        { name: "Christian McCaffrey", pos: "RB", team: "SF", pts: 20.5, value: 96, bye: 9, matchup: "vs SEA", img: "https://static.www.nfl.com/image/private/t_headshot_desktop/league/api/players/ChristianMcCaffrey.png" },
+        { name: "Tyreek Hill", pos: "WR", team: "MIA", pts: 19.8, value: 93, bye: 10, matchup: "vs NE", img: "https://static.www.nfl.com/image/private/t_headshot_desktop/league/api/players/TyreekHill.png" },
+        { name: "Travis Kelce", pos: "TE", team: "KC", pts: 18.9, value: 91, bye: 6, matchup: "vs DEN", img: "https://static.www.nfl.com/image/private/t_headshot_desktop/league/api/players/TravisKelce.png" },
+        // Add more players as needed
+    ];
+
+    let team1 = [], team2 = [];
+
+    // 2. Autocomplete (edit logic if you want to change how search works)
+    function autocomplete(inputId, listId, teamArr, otherTeamArr, teamDivId) {
+        const input = document.getElementById(inputId);
+        const list = document.getElementById(listId);
+        input.addEventListener('input', function() {
+            const val = input.value.toLowerCase();
+            list.innerHTML = '';
+            if (!val) return;
+            const matches = playersData.filter(p => p.name.toLowerCase().includes(val) && !teamArr.some(tp => tp.name === p.name) && !otherTeamArr.some(tp => tp.name === p.name));
+            matches.slice(0, 8).forEach(player => {
+                const li = document.createElement('li');
+                li.textContent = `${player.name} (${player.team} ${player.pos})`;
+                li.onclick = () => {
+                    teamArr.push(player);
+                    renderTeam(teamDivId, teamArr, teamArr === team1 ? 'team1' : 'team2');
+                    input.value = '';
+                    list.innerHTML = '';
+                };
+                list.appendChild(li);
+            });
+        });
+        input.addEventListener('blur', () => setTimeout(() => list.innerHTML = '', 150));
+    }
+
+    // 3. Render Team (change card layout here)
+    function renderTeam(divId, teamArr, teamKey) {
+        const div = document.getElementById(divId);
+        div.innerHTML = '';
+        teamArr.forEach((player, idx) => {
+            const card = document.createElement('div');
+            card.className = `player-card player-pos-${player.pos}`;
+            card.draggable = true;
+            card.innerHTML = `
+                <img src="${player.img}" alt="${player.name}" class="w-10 h-10 rounded-full border-2 border-yellow-400 object-cover" onerror="this.src='https://static.www.nfl.com/image/private/t_headshot_desktop/league/api/players/default.png'">
+                <div>
+                    <div class="font-bold">${player.name} <span class="text-teal">(${player.team} ${player.pos})</span></div>
+                    <div class="text-yellow font-semibold">${player.pts} pts</div>
+                    <div class="text-xs text-gray-400">Bye: ${player.bye} | ${player.matchup}</div>
+                </div>
+                <button class="remove-btn" title="Remove Player">&times;</button>
+            `;
+            card.querySelector('.remove-btn').onclick = () => {
+                teamArr.splice(idx, 1);
+                renderTeam(divId, teamArr, teamKey);
+            };
+            // Drag & drop
+            card.ondragstart = e => {
+                e.dataTransfer.setData('playerIdx', idx);
+                e.dataTransfer.setData('teamKey', teamKey);
+            };
+            div.appendChild(card);
+        });
+        // Allow drop from other team
+        div.ondragover = e => e.preventDefault();
+        div.ondrop = e => {
+            const fromIdx = +e.dataTransfer.getData('playerIdx');
+            const fromTeam = e.dataTransfer.getData('teamKey');
+            if (fromTeam !== teamKey) {
+                const player = (fromTeam === 'team1' ? team1 : team2).splice(fromIdx, 1)[0];
+                teamArr.push(player);
+                renderTeam('team1-players', team1, 'team1');
+                renderTeam('team2-players', team2, 'team2');
+            }
+        };
+    }
+
+    // 4. Swap Teams (easy to change logic)
+    function swapTeams() {
+        [team1, team2] = [team2, team1];
+        renderTeam('team1-players', team1, 'team1');
+        renderTeam('team2-players', team2, 'team2');
+    }
+
+    // 5. Analyze Trade (edit fairness/AI logic here)
+    function analyzeTrade() {
+        if (!team1.length && !team2.length) return;
+        const team1Value = team1.reduce((a, p) => a + p.value, 0);
+        const team2Value = team2.reduce((a, p) => a + p.value, 0);
+        const fairness = Math.abs(team1Value - team2Value);
+        let fairnessText = '';
+        let color = '';
+        let emoji = '';
+        if (fairness < 5) { fairnessText = "Perfectly Balanced"; color = "bg-green-600"; emoji = "🟢"; }
+        else if (fairness < 15) { fairnessText = "Fair Trade"; color = "bg-yellow-500"; emoji = "🟡"; }
+        else { fairnessText = "Lopsided!"; color = "bg-red-600"; emoji = "🔴"; }
+        document.getElementById('trade-fairness').innerHTML = `<span class="px-3 py-1 rounded ${color} text-white">${emoji} ${fairnessText}</span>`;
+
+        // Chart
+        const ctx = document.getElementById('tradeValueChart').getContext('2d');
+        if (window.tradeChart) window.tradeChart.destroy();
+        window.tradeChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: ['Team 1', 'Team 2'],
+                datasets: [{
+                    label: 'Trade Value',
+                    data: [team1Value, team2Value],
+                    backgroundColor: ['#facc15', '#14b8a6']
+                }]
+            },
+            options: { plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true } } }
+        });
+
+        // AI Advice (edit advice logic here)
+        let advice = '';
+        if (fairness < 5) advice = "This trade is as even as it gets. Both teams win!";
+        else if (team1Value > team2Value) advice = `Team 1 is getting more value. Team 2, ask for a sweetener!`;
+        else advice = `Team 2 is getting the edge. Team 1, try to negotiate for more!`;
+        if (team1.some(p => p.bye === team2[0]?.bye)) advice += " Watch out for bye week overlap!";
+        document.getElementById('ai-advice').textContent = advice;
+
+        // Save to recent trades
+        const tradeSummary = `${team1.map(p=>p.name).join(', ') || 'None'} ⇄ ${team2.map(p=>p.name).join(', ') || 'None'} (${fairnessText})`;
+        let trades = JSON.parse(localStorage.getItem('recentTrades') || '[]');
+        trades.unshift(tradeSummary);
+        trades = trades.slice(0, 5);
+        localStorage.setItem('recentTrades', JSON.stringify(trades));
+        renderRecentTrades();
+    }
+
+    // 6. Recent Trades (change how many to show here)
+    function renderRecentTrades() {
+        const trades = JSON.parse(localStorage.getItem('recentTrades') || '[]');
+        const ul = document.getElementById('recentTrades');
+        ul.innerHTML = '';
+        trades.forEach(trade => {
+            const li = document.createElement('li');
+            li.textContent = trade;
+            ul.appendChild(li);
+        });
+    }
+
+    // 7. Clear All (reset logic here)
+    function clearAll() {
+        team1 = [];
+        team2 = [];
+        renderTeam('team1-players', team1, 'team1');
+        renderTeam('team2-players', team2, 'team2');
+        document.getElementById('trade-fairness').innerHTML = '';
+        document.getElementById('ai-advice').textContent = '';
+        if (window.tradeChart) window.tradeChart.destroy();
+    }
+
+    // 8. Export/Share (edit export logic here)
+    function exportTrade() {
+        const summary = `${team1.map(p=>p.name).join(', ') || 'None'} ⇄ ${team2.map(p=>p.name).join(', ') || 'None'}`;
+        navigator.clipboard.writeText(`Check out this trade on Front Row Fantasy: ${summary}`).then(() => {
+            alert('Trade copied to clipboard! Share it anywhere.');
+        });
+    }
+
+    // 9. Initialize everything (add/remove features here)
+    autocomplete('player1-search', 'player1-autocomplete', team1, team2, 'team1-players');
+    autocomplete('player2-search', 'player2-autocomplete', team2, team1, 'team2-players');
+    renderTeam('team1-players', team1, 'team1');
+    renderTeam('team2-players', team2, 'team2');
+    renderRecentTrades();
+
+    document.getElementById('analyzeTradeBtn').onclick = analyzeTrade;
+    document.getElementById('clearAllBtn').onclick = clearAll;
+    document.getElementById('exportTradeBtn').onclick = exportTrade;
+    document.getElementById('swapTeamsBtn').onclick = swapTeams;
 });
