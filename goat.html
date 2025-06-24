@@ -233,6 +233,16 @@
         .then(data => {
             allPlayers = data;
 
+            // --- Draft count element references ---
+            const draftQbCount = document.getElementById('draftQbCount');
+            const draftSfCount = document.getElementById('draftSfCount');
+            const draftRbCount = document.getElementById('draftRbCount');
+            const draftWrCount = document.getElementById('draftWrCount');
+            const draftTeCount = document.getElementById('draftTeCount');
+            const draftFlexCount = document.getElementById('draftFlexCount');
+            const draftDstCount = document.getElementById('draftDstCount');
+            const draftKCount = document.getElementById('draftKCount');
+
             // --- Ticker ---
             const tickerContent = document.getElementById('tickerContent');
             const pauseButton = document.getElementById('pauseButton');
@@ -338,14 +348,14 @@
                 const benchSize = parseInt(document.getElementById('benchSize').value, 10);
 
                 // Get lineup counts from form
-                const qb = parseInt(document.getElementById('draftQbCount').value, 10);
-                const sf = document.getElementById('draftSfCount') ? parseInt(document.getElementById('draftSfCount').value, 10) : 0;
-                const rb = parseInt(document.getElementById('draftRbCount').value, 10);
-                const wr = parseInt(document.getElementById('draftWrCount').value, 10);
-                const te = parseInt(document.getElementById('draftTeCount').value, 10);
-                const flex = parseInt(document.getElementById('draftFlexCount').value, 10);
-                const dst = parseInt(document.getElementById('draftDstCount').value, 10);
-                const k = parseInt(document.getElementById('draftKCount').value, 10);
+                const qb = parseInt(draftQbCount.value, 10);
+                const sf = draftSfCount ? parseInt(draftSfCount.value, 10) : 0;
+                const rb = parseInt(draftRbCount.value, 10);
+                const wr = parseInt(draftWrCount.value, 10);
+                const te = parseInt(draftTeCount.value, 10);
+                const flex = parseInt(draftFlexCount.value, 10);
+                const dst = parseInt(draftDstCount.value, 10);
+                const k = parseInt(draftKCount.value, 10);
 
                 const result = document.getElementById('build-result');
 
