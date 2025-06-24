@@ -359,37 +359,79 @@
 
                 const result = document.getElementById('build-result');
 
-                function getPos(pos, n) {
+                // --- Improved Draft Simulation Logic ---
+                // 1. Build a draft board by ADP (AVG), assign each player a draft slot
+                // 2. Simulate a snake draft, picking for the user at their slot each round
+                // 3. Fill starting lineup first, then bench
+
+                // Sort players by ADP ascending (lowest = earliest pick)
+                const draftBoard = [...allPlayers]
+                    .filter(p => p.AVG !== undefined)
+                    .sort((a, b) => a.AVG - b.AVG);
+
+                // Build a draft plan: array of positions to fill (starters first, then bench)
+                let draftPlan = [];
+                for (let i = 0; i < qb; i++) draftPlan.push('QB');
+                for (let i = 0; i < sf; i++) draftPlan.push('SF');
+                for (let i = 0; i < rb; i++) draftPlan.push('RB');
+                for (let i = 0; i < wr; i++) draftPlan.push('WR');
+                for (let i = 0; i < te; i++) draftPlan.push('TE');
+                for (let i = 0; i < flex; i++) draftPlan.push('FLEX');
+                for (let i = 0; i < dst; i++) draftPlan.push('DST');
+                for (let i = 0; i < k; i++) draftPlan.push('K');
+                for (let i = 0; i < benchSize; i++) draftPlan.push('BENCH');
+
+                // Helper to get best available for a position
+                function getBestAvailable(pos, taken) {
                     if (pos === 'SF') {
-                        // SuperFlex: allow QB, RB, WR, TE
-                        return allPlayers.filter(p => /^(QB|RB|WR|TE)/.test(p.POS)).slice(0, n);
+                        return draftBoard.find(p => !taken.has(p.Player) && /^(QB|RB|WR|TE)/.test(p.POS));
                     }
                     if (pos === 'FLEX') {
-                        return allPlayers.filter(p => /^(RB|WR|TE)/.test(p.POS)).slice(0, n);
+                        return draftBoard.find(p => !taken.has(p.Player) && /^(RB|WR|TE)/.test(p.POS));
                     }
                     if (pos === 'DST') {
-                        return allPlayers.filter(p => p.POS === 'DST').slice(0, n);
+                        return draftBoard.find(p => !taken.has(p.Player) && p.POS === 'DST');
                     }
                     if (pos === 'K') {
-                        return allPlayers.filter(p => p.POS === 'K').slice(0, n);
+                        return draftBoard.find(p => !taken.has(p.Player) && p.POS === 'K');
                     }
-                    return allPlayers.filter(p => p.POS.startsWith(pos)).slice(0, n);
+                    if (pos === 'BENCH') {
+                        // Any position except DST/K, prefer RB/WR/TE/QB
+                        return draftBoard.find(p => !taken.has(p.Player) && /^(RB|WR|TE|QB)/.test(p.POS));
+                    }
+                    return draftBoard.find(p => !taken.has(p.Player) && p.POS.startsWith(pos));
                 }
-                const starters = [
-                    ...getPos('QB', qb),
-                    ...getPos('SF', sf),
-                    ...getPos('RB', rb),
-                    ...getPos('WR', wr),
-                    ...getPos('TE', te),
-                    ...getPos('FLEX', flex),
-                    ...getPos('DST', dst),
-                    ...getPos('K', k)
-                ].filter(Boolean);
 
-                // Bench: next best available, not in starters
-                const taken = new Set(starters.map(p => p.Player));
-                const bench = allPlayers.filter(p => !taken.has(p.Player)).slice(0, benchSize);
+                // Simulate the draft
+                let picks = [];
+                let taken = new Set();
+                let totalRounds = draftPlan.length;
+                for (let round = 1; round <= totalRounds; round++) {
+                    // Snake draft: odd rounds left->right, even rounds right->left
+                    let pickNum = (round % 2 === 1)
+                        ? draftPick
+                        : leagueSize - draftPick + 1;
+                    let overallPick = (round - 1) * leagueSize + pickNum;
 
+                    // Find which position to fill next
+                    let pos = draftPlan[round - 1];
+                    let player = getBestAvailable(pos, taken);
+
+                    // If no player found for that slot, just take next best overall
+                    if (!player) player = draftBoard.find(p => !taken.has(p.Player));
+                    if (!player) continue;
+
+                    taken.add(player.Player);
+                    picks.push({
+                        ...player,
+                        slot: pos,
+                        round,
+                        pickNum,
+                        overallPick
+                    });
+                }
+
+                // Show results
                 result.innerHTML = `
                     <div class="bg-glass rounded-xl p-4 mt-2">
                         <h3 class="font-bold text-lg mb-2 text-yellow">Recommended Draft Build (${scoringType.toUpperCase()})</h3>
@@ -399,15 +441,34 @@
                             <li>Scoring: <span class="text-teal">${scoringType.toUpperCase()}</span></li>
                             <li>Bench Size: <span class="text-teal">${benchSize}</span></li>
                         </ul>
-                        <h4 class="font-semibold mt-4 mb-2 text-orange">Your Starters</h4>
-                        <ul class="ml-6">
-                            ${starters.map(p => `<li><span class="font-bold ${posColor(p.POS)}">${p.Player}</span> (${p.Team} ${p.POS}) - <span class="text-yellow">ADP ${p.AVG}</span></li>`).join('')}
-                        </ul>
-                        <h4 class="font-semibold mt-4 mb-2 text-blue">Bench</h4>
-                        <ul class="ml-6">
-                            ${bench.map(p => `<li><span class="font-bold ${posColor(p.POS)}">${p.Player}</span> (${p.Team} ${p.POS}) - <span class="text-yellow">ADP ${p.AVG}</span></li>`).join('')}
-                        </ul>
-                        <div class="mt-4 text-green font-semibold">Strategy: Go RB/WR heavy early, target value QBs and TEs in the middle rounds. Stack FLEX and bench with high-upside players.</div>
+                        <h4 class="font-semibold mt-4 mb-2 text-orange">Your Draft Picks</h4>
+                        <table class="w-full text-sm mb-4">
+                            <thead>
+                                <tr>
+                                    <th>Round</th>
+                                    <th>Pick</th>
+                                    <th>Player</th>
+                                    <th>Team</th>
+                                    <th>Pos</th>
+                                    <th>Slot</th>
+                                    <th>ADP</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${picks.map(p => `
+                                    <tr>
+                                        <td>${p.round}</td>
+                                        <td>${p.pickNum}</td>
+                                        <td><span class="font-bold ${posColor(p.POS)}">${p.Player}</span></td>
+                                        <td>${p.Team || ''}</td>
+                                        <td>${p.POS}</td>
+                                        <td>${p.slot}</td>
+                                        <td>${p.AVG}</td>
+                                    </tr>
+                                `).join('')}
+                            </tbody>
+                        </table>
+                        <div class="mt-4 text-green font-semibold">Strategy: Fill your starting lineup early, but don't ignore value picks and positional runs. Bench is for upside and depth.</div>
                     </div>
                 `;
             });
