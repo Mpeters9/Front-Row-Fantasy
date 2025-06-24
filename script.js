@@ -164,11 +164,51 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- Scoring adjustment for draft builds ---
     function adjustDraftPlayerPoints(player, scoringType) {
         let points = player.points || 0;
-        if (scoringType === 'ppr') points += player.receptions || 0;
-        else if (scoringType === 'halfppr') points += (player.receptions || 0) * 0.5;
-        else if (scoringType === 'tep' && player.pos === 'TE') points *= 1.5;
-        else if (scoringType === 'tefullppr' && player.pos === 'TE') points += (player.receptions || 0) * 2;
-        else if (scoringType === '6ptpass' && player.pos === 'QB') points += (player.passTds || 0) * 2;
+
+        // Standard scoring: 1 pt per 10 rush/rec yards, 6 per rush/rec TD, 1 per 25 pass yards, 4 per pass TD, -2 per INT, -2 per fumble lost
+        // (Assume player.points already reflects this base)
+
+        switch (scoringType) {
+            case 'standard':
+                // No PPR bonus
+                break;
+            case 'halfppr':
+                // 0.5 points per reception
+                points += (player.receptions || 0) * 0.5;
+                break;
+            case 'ppr':
+                // 1 point per reception
+                points += (player.receptions || 0) * 1;
+                break;
+            case 'tep':
+                // 1 point per reception, TE gets 1.5x PPR
+                if (player.pos === 'TE') {
+                    points += (player.receptions || 0) * 1.5;
+                } else {
+                    points += (player.receptions || 0) * 1;
+                }
+                break;
+            case 'tefullppr':
+                // TE gets 2 points per reception, others get 1
+                if (player.pos === 'TE') {
+                    points += (player.receptions || 0) * 2;
+                } else {
+                    points += (player.receptions || 0) * 1;
+                }
+                break;
+            case '6ptpass':
+                // 1 point per reception, 6 points per pass TD (standard is 4)
+                points += (player.receptions || 0) * 1;
+                if (player.pos === 'QB') {
+                    // If player.points already includes 4pt/passTD, add 2 more per passTD
+                    points += (player.passTds || 0) * 2;
+                }
+                break;
+            default:
+                // Default to PPR
+                points += (player.receptions || 0) * 1;
+                break;
+        }
         return points;
     }
 
