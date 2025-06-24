@@ -17,6 +17,153 @@
     <!-- Header -->
     <header>
         <div class="max-w-7xl mx-auto px-4 flex justify-between items-center py-3">
+            <a href="index.html" class="text-2xl font-bold text-yellow text-glow">Front Row Fantasy</a>
+            <nav>
+                <a href="index.html" class="nav-link">Home</a>
+                <a href="tools.html" class="nav-link">Expert Tools</a>
+                <a href="goat.html" class="nav-link">GOAT</a>
+                <a href="guides.html" class="nav-link">Guides</a>
+                <a href="community.html" class="nav-link">Community</a>
+                <a href="players.html" class="nav-link" aria-current="page">Players</a>
+                <a href="stats.html" class="nav-link">Stats</a>
+                <a href="#contact" class="nav-link">Contact</a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Fantasy Points Ticker -->
+    <section class="marquee mb-8" aria-label="Fantasy Points Ticker">
+        <div class="bg-teal-900 text-white p-2 rounded-t flex justify-between items-center shadow">
+            <span class="text-xl font-bold tracking-wide flex items-center gap-2">
+                <svg class="inline w-6 h-6 text-yellow-300" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12c0 4.97-4.03 9-9 9s-9-4.03-9-9 4.03-9 9-9 9 4.03 9 9z"/></svg>
+                Fantasy Points Ticker
+            </span>
+            <button id="pauseButton" class="cta-btn px-4 py-1" aria-pressed="false" aria-label="Pause ticker">Pause</button>
+        </div>
+        <div class="relative overflow-hidden bg-teal-800 rounded-b" style="height:2.5rem;">
+            <div id="tickerContent" class="absolute left-0 top-0 h-full flex items-center whitespace-nowrap transition-none" tabindex="0" aria-live="polite">
+                <span class="loading text-white">Loading fantasy points...</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- Hero / Splash -->
+    <main class="max-w-7xl mx-auto px-4 py-6">
+        <section class="splash-section text-center mb-8">
+            <h2 class="text-4xl font-bold mb-4 text-glow">Unleash Your Fantasy GOAT</h2>
+            <p class="text-lg mb-6">Master the art of fantasy football with elite strategies, in-depth research, and a thriving community to build the ultimate team.</p>
+            <a href="#best-draft-builds" class="cta-btn">Get Started</a>
+        </section>
+
+        <!-- Example Card Section -->
+        <section id="best-draft-builds" class="mb-12">
+            <h2 class="section-title text-center">Best Draft Builds</h2>
+            <div class="card">
+                <!-- ...your draft build form and content here... -->
+                <button class="cta-btn mt-4">Generate Draft</button>
+            </div>
+        </section>
+
+        <!-- Example Player Table with Popup -->
+        <section id="player-research" class="mb-12">
+            <h2 class="section-title text-center">Player Research</h2>
+            <div class="card">
+                <table class="w-full mb-6">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Pos</th>
+                            <th>Proj Pts</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="player-row" data-player="Patrick Mahomes">
+                            <td class="player-name player-pos-QB">Patrick Mahomes</td>
+                            <td>QB</td>
+                            <td>25.1</td>
+                        </tr>
+                        <tr class="player-row" data-player="Christian McCaffrey">
+                            <td class="player-name player-pos-RB">Christian McCaffrey</td>
+                            <td>RB</td>
+                            <td>22.3</td>
+                        </tr>
+                        <tr class="player-row" data-player="Justin Jefferson">
+                            <td class="player-name player-pos-WR">Justin Jefferson</td>
+                            <td>WR</td>
+                            <td>20.7</td>
+                        </tr>
+                        <tr class="player-row" data-player="Travis Kelce">
+                            <td class="player-name player-pos-TE">Travis Kelce</td>
+                            <td>TE</td>
+                            <td>19.8</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="mb-2">
+            <a href="index.html" class="hover:text-yellow mx-2">Home</a>
+            <a href="tools.html" class="hover:text-yellow mx-2">Expert Tools</a>
+            <a href="goat.html" class="hover:text-yellow mx-2">GOAT</a>
+            <a href="guides.html" class="hover:text-yellow mx-2">Guides</a>
+            <a href="community.html" class="hover:text-yellow mx-2">Community</a>
+            <a href="players.html" class="hover:text-yellow mx-2">Players</a>
+            <a href="stats.html" class="hover:text-yellow mx-2">Stats</a>
+        </div>
+        © 2025 Front Row Fantasy. All rights reserved.
+    </footer>
+
+    <!-- Player Popup Modal -->
+    <div id="player-popup" tabindex="0" aria-live="polite" class="hidden fixed z-50 bg-white border rounded shadow-lg p-4 max-w-xs" style="top:100px;left:100px;"></div>
+
+    <!-- Use your main JS file for ticker and logic -->
+    <script src="script.js"></script>
+    <script>
+    // Player Popup Modal logic (keep this if you want the popup feature)
+    document.addEventListener('DOMContentLoaded', function () {
+        document.querySelectorAll('.player-row').forEach(row => {
+            row.addEventListener('click', function (e) {
+                const player = row.dataset.player;
+                const popup = document.getElementById('player-popup');
+                popup.innerHTML = `
+                    <span class="close-btn" onclick="document.getElementById('player-popup').classList.add('hidden')">&times;</span>
+                    <h4 class="font-bold text-lg mb-1">${player}</h4>
+                    <div class="mb-2">Position: <span class="${row.querySelector('.player-name').classList[1]}">${row.children[1].textContent}</span></div>
+                    <div class="mb-2">Projected Points: <span class="text-yellow">${row.children[2].textContent}</span></div>
+                    <div class="mb-2">Team: <span class="text-teal">${row.children[0].textContent.split(' ')[1] || 'N/A'}</span></div>
+                    <div class="mb-2">Bio: <span class="text-gray-700">Elite fantasy performer. Click for more stats soon!</span></div>
+                `;
+                popup.classList.remove('hidden');
+                popup.style.top = (e.clientY + 10) + 'px';
+                popup.style.left = (e.clientX + 10) + 'px';
+            });
+        });
+    });
+    </script>
+</body>
+</html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Front Row Fantasy GOAT Page - Build the greatest fantasy football teams with expert tools and insights.">
+    <meta name="keywords" content="fantasy football, GOAT, team building, draft strategies, player research">
+    <meta name="author" content="Mpeters9">
+    <title>Front Row Fantasy - GOAT Page</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="icon" href="favicon.ico" type="image/x-icon">
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body aria-label="GOAT Page Content">
+
+    <!-- Header -->
+    <header>
+        <div class="max-w-7xl mx-auto px-4 flex justify-between items-center py-3">
             <h1 class="text-2xl font-bold text-yellow text-glow">GOAT - Greatest of All Time</h1>
             <nav>
                 <a href="index.html" class="nav-link">Home</a>
