@@ -176,8 +176,7 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
         let availablePlayers = [...adpPlayers].map(p => {
-            // Standard deviation is 25% of ADP, minimum 1
-            const stddev = Math.max(1, p.adp * 0.25);
+            const stddev = getDraftStdDev(p.adp);
             return {
                 ...p,
                 randomizedADP: randomNormal(p.adp, stddev),
@@ -325,6 +324,15 @@ document.addEventListener('DOMContentLoaded', () => {
         while (v === 0) v = Math.random();
         let num = Math.sqrt(-2.0 * Math.log(u)) * Math.cos(2.0 * Math.PI * v);
         return Math.max(1, mean + stddev * num); // ADP can't be less than 1
+    }
+
+    // --- Get Draft Standard Deviation ---
+    function getDraftStdDev(adp) {
+        if (adp <= 12) return 0.7;           // Top 12 picks: very little randomness
+        if (adp <= 24) return 1.5;           // Picks 13-24: a little more
+        if (adp <= 50) return adp * 0.10;    // Picks 25-50: 10% of ADP
+        if (adp <= 100) return adp * 0.20;   // Picks 51-100: 20% of ADP
+        return adp * 0.35;                   // Picks 101+: 35% of ADP
     }
 
     // --- Listen for scoring type changes and reload data ---
