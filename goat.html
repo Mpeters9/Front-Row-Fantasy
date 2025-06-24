@@ -52,12 +52,79 @@
             </div>
         </section>
 
-        <!-- Example Card Section -->
+        <!-- Best Draft Builds Tool -->
         <section id="best-draft-builds" class="mb-12">
             <h2 class="section-title text-center">Best Draft Builds</h2>
-            <div class="card">
-                <!-- ...your draft build form and content here... -->
-                <button class="cta-btn mt-4">Generate Draft</button>
+            <div class="card max-w-2xl mx-auto">
+                <form id="draft-build-form" class="flex flex-col gap-4">
+                    <div class="flex flex-wrap gap-4 justify-center">
+                        <label>
+                            League Size
+                            <select id="leagueSize" class="ml-2">
+                                <option>8</option>
+                                <option>10</option>
+                                <option selected>12</option>
+                                <option>14</option>
+                            </select>
+                        </label>
+                        <label>
+                            Draft Pick
+                            <input type="number" id="draftPick" min="1" max="12" value="1" class="ml-2 w-16 text-center" />
+                        </label>
+                        <label>
+                            Scoring
+                            <select id="scoringType" class="ml-2">
+                                <option value="standard">Standard</option>
+                                <option value="ppr" selected>PPR</option>
+                                <option value="half">Half-PPR</option>
+                            </select>
+                        </label>
+                        <label>
+                            Bench Size
+                            <select id="benchSize" class="ml-2">
+                                <option>4</option>
+                                <option>5</option>
+                                <option selected>6</option>
+                                <option>7</option>
+                            </select>
+                        </label>
+                    </div>
+                    <button type="button" id="generateLineup" class="cta-btn mt-2">Generate Draft Build</button>
+                </form>
+                <div id="build-result" class="mt-6"></div>
+            </div>
+        </section>
+
+        <!-- Best Lineup Builds Tool -->
+        <section id="best-lineup-builds" class="mb-12">
+            <h2 class="section-title text-center">Best Lineup Builds</h2>
+            <div class="card max-w-2xl mx-auto">
+                <form id="lineup-build-form" class="flex flex-col gap-4">
+                    <div class="flex flex-wrap gap-4 justify-center">
+                        <label>
+                            QB
+                            <input type="number" id="qbCount" min="1" max="2" value="1" class="ml-2 w-12 text-center" />
+                        </label>
+                        <label>
+                            RB
+                            <input type="number" id="rbCount" min="1" max="4" value="2" class="ml-2 w-12 text-center" />
+                        </label>
+                        <label>
+                            WR
+                            <input type="number" id="wrCount" min="1" max="4" value="2" class="ml-2 w-12 text-center" />
+                        </label>
+                        <label>
+                            TE
+                            <input type="number" id="teCount" min="1" max="2" value="1" class="ml-2 w-12 text-center" />
+                        </label>
+                        <label>
+                            FLEX
+                            <input type="number" id="flexCount" min="0" max="3" value="1" class="ml-2 w-12 text-center" />
+                        </label>
+                    </div>
+                    <button type="button" id="generateLineupBuild" class="cta-btn mt-2">Generate Lineup Build</button>
+                </form>
+                <div id="lineup-result" class="mt-6"></div>
             </div>
         </section>
 
@@ -107,7 +174,7 @@
     <!-- Player Popup Modal -->
     <div id="player-popup" tabindex="0" aria-live="polite" class="hidden fixed z-50 bg-white border rounded shadow-lg p-4 max-w-xs" style="top:100px;left:100px;"></div>
 
-    <!-- Fantasy Ticker Script -->
+    <!-- Fantasy Ticker Script and Tools Logic -->
     <script>
     // Fantasy Ticker
     document.addEventListener('DOMContentLoaded', function () {
@@ -161,6 +228,50 @@
         });
         buildTicker();
         animateTicker();
+    });
+
+    // Best Draft Builds Tool Logic
+    document.getElementById('generateLineup').addEventListener('click', function () {
+        const leagueSize = document.getElementById('leagueSize').value;
+        const draftPick = document.getElementById('draftPick').value;
+        const scoringType = document.getElementById('scoringType').value;
+        const benchSize = document.getElementById('benchSize').value;
+        const result = document.getElementById('build-result');
+        result.innerHTML = `
+            <div class="bg-glass rounded-xl p-4 mt-2">
+                <h3 class="font-bold text-lg mb-2 text-yellow">Recommended Draft Build</h3>
+                <ul class="list-disc ml-6 text-left">
+                    <li>League Size: <span class="text-teal">${leagueSize}</span></li>
+                    <li>Draft Pick: <span class="text-teal">${draftPick}</span></li>
+                    <li>Scoring: <span class="text-teal">${scoringType.toUpperCase()}</span></li>
+                    <li>Bench Size: <span class="text-teal">${benchSize}</span></li>
+                    <li class="mt-2 text-green">Strategy: <span class="font-semibold">Go RB/WR heavy early, target value QBs and TEs in the middle rounds. Stack FLEX and bench with high-upside players.</span></li>
+                </ul>
+            </div>
+        `;
+    });
+
+    // Best Lineup Builds Tool Logic
+    document.getElementById('generateLineupBuild').addEventListener('click', function () {
+        const qb = document.getElementById('qbCount').value;
+        const rb = document.getElementById('rbCount').value;
+        const wr = document.getElementById('wrCount').value;
+        const te = document.getElementById('teCount').value;
+        const flex = document.getElementById('flexCount').value;
+        const result = document.getElementById('lineup-result');
+        result.innerHTML = `
+            <div class="bg-glass rounded-xl p-4 mt-2">
+                <h3 class="font-bold text-lg mb-2 text-yellow">Optimal Lineup Build</h3>
+                <ul class="list-disc ml-6 text-left">
+                    <li>QB: <span class="text-teal">${qb}</span></li>
+                    <li>RB: <span class="text-teal">${rb}</span></li>
+                    <li>WR: <span class="text-teal">${wr}</span></li>
+                    <li>TE: <span class="text-teal">${te}</span></li>
+                    <li>FLEX: <span class="text-teal">${flex}</span></li>
+                    <li class="mt-2 text-green">Tip: <span class="font-semibold">Prioritize RB/WR depth, use FLEX for best available, and stream TE/QB if needed.</span></li>
+                </ul>
+            </div>
+        `;
     });
 
     // Player Popup Modal
