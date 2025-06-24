@@ -380,3 +380,30 @@ a:hover, .link:hover {
   font-size: 0.95rem;
 }
 .recent-trades-list li:last-child { border-bottom: none; }
+/* --- Make Trade Analyzer Autocomplete Dropdowns Easy to See --- */
+#player1-autocomplete, #player2-autocomplete {
+  position: absolute;
+  background: #fff;
+  border: 2px solid #facc15;
+  border-radius: 0.5rem;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+  z-index: 1000;
+  max-height: 250px;
+  overflow-y: auto;
+  min-width: 220px;
+  font-size: 1rem;
+  padding: 0.25rem 0;
+}
+
+#player1-autocomplete li, #player2-autocomplete li {
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+  transition: background 0.15s;
+  color: #222;
+}
+
+#player1-autocomplete li:hover, #player2-autocomplete li:hover {
+  background: #facc15;
+  color: #000;
+  font-weight: bold;
+}
