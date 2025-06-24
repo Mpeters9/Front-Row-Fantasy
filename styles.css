@@ -150,10 +150,10 @@ nav a:hover, nav a[aria-current="page"], .nav-link.active {
 .ticker-player .player-name { font-weight: 700; }
 .ticker-player .player-team { font-size: 0.95em; opacity: 0.8; }
 .ticker-player .player-pts { color: #fbbf24; font-weight: 700; margin-left: 0.5rem; }
-.ticker-player .player-pos-QB { color: #f59e42; }
-.ticker-player .player-pos-RB { color: #34d399; }
-.ticker-player .player-pos-WR { color: #60a5fa; }
-.ticker-player .player-pos-TE { color: #a78bfa; }
+.ticker-player.player-pos-QB { color: #f59e42; }
+.ticker-player.player-pos-RB { color: #34d399; }
+.ticker-player.player-pos-WR { color: #60a5fa; }
+.ticker-player.player-pos-TE { color: #a78bfa; }
 
 /* --- Section Titles --- */
 section h2, .section-title {
