@@ -506,9 +506,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- Trade Analyzer with Enhanced Sleeper API Logic ---
 
-    let playersData = [];
-    let team1 = [], team2 = [];
-
     // Helper: Get current NFL week (for bye/matchup logic)
     async function getCurrentNFLWeek() {
         try {
