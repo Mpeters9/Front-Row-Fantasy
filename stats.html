@@ -4,65 +4,40 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Player Stats - Front Row Fantasy</title>
-    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <meta name="description" content="Real-time fantasy football stats, advanced analytics, and player breakdowns.">
+    <meta name="keywords" content="fantasy football, stats, analytics, NFL, player stats">
+    <meta name="author" content="Mpeters9">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="icon" href="favicon.ico" type="image/x-icon">
     <link rel="stylesheet" href="styles.css">
-    <style>
-        .teal-banner {
-            background-color: #26A69A;
-            color: #FFFFFF;
-            padding: 2rem 1rem;
-            text-align: center;
-        }
-        .teal-button {
-            background-color: #FFFFFF;
-            color: #26A69A;
-            padding: 0.5rem 1rem;
-            border-radius: 0.375rem;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-            transition: background-color 0.3s;
-        }
-        .teal-button:hover {
-            background-color: #E0F2F1;
-        }
-        .navbar {
-            background-color: #26A69A;
-            padding: 1rem;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        }
-        .navbar a {
-            color: #FFFFFF;
-        }
-    </style>
+    <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="bg-navy-900 text-white min-h-screen flex flex-col" style="background-color: #1A2A44;">
-    <header class="navbar sticky top-0 z-10">
-        <nav class="container mx-auto flex justify-between items-center p-4">
-            <a href="index.html" class="text-xl font-bold">Front Row Fantasy</a>
-            <div class="flex items-center space-x-4">
-                <button id="themeToggle" class="button flex items-center" aria-label="Toggle theme">
-                    <svg id="themeIcon" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
-                    </svg>
-                </button>
-                <button id="mobileMenuToggle" class="sm:hidden button" aria-expanded="false" aria-label="Toggle mobile menu">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
-                    </svg>
-                </button>
-                <div id="mobileMenu" class="hidden sm:flex sm:space-x-4 flex-col sm:flex-row absolute sm:static top-16 left-0 w-full sm:w-auto bg-teal-800/70 sm:bg-teal-800 p-4 sm:p-0">
-                    <a href="index.html" class="link hover:text-teal-100">Home</a>
-                    <a href="stats.html" class="link hover:text-teal-100">Stats</a>
-                </div>
-            </div>
-        </nav>
+<body class="min-h-screen flex flex-col font-poppins">
+
+    <!-- Header -->
+    <header>
+        <div class="max-w-7xl mx-auto px-4 flex justify-between items-center py-3">
+            <a href="index.html" class="text-2xl font-bold text-yellow text-glow">Front Row Fantasy</a>
+            <nav>
+                <a href="index.html" class="nav-link">Home</a>
+                <a href="guides.html" class="nav-link">Guides</a>
+                <a href="community.html" class="nav-link">Community</a>
+                <a href="players.html" class="nav-link">Players</a>
+                <a href="stats.html" class="nav-link" aria-current="page">Stats</a>
+            </nav>
+        </div>
     </header>
-    <header class="teal-banner">
-        <h1 class="text-3xl font-bold">Your Ultimate Fantasy Football Command Center</h1>
-        <p class="mt-2 text-lg">Real-time stats, expert tools, and breaking news for every fantasy manager.</p>
-        <a href="stats.html" class="teal-button mt-4 inline-block">Explore Players</a>
-    </header>
-    <main class="container mx-auto p-4 flex-grow">
-        <div class="card mb-4" style="background-color: #26A69A; color: #1A2A44;">
+
+    <!-- Hero / Splash -->
+    <section class="splash-section text-center mb-8">
+        <h1 class="text-4xl md:text-5xl font-bold mb-4 text-glow">Your Ultimate Fantasy Football Command Center</h1>
+        <p class="text-lg md:text-xl mb-6">Real-time stats, expert tools, and breaking news for every fantasy manager.</p>
+        <a href="#statsTable" class="cta-btn">Explore Players</a>
+    </section>
+
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto px-4 flex-grow">
+        <div class="card mb-4">
             <div class="flex flex-col sm:flex-row gap-4">
                 <div class="flex-1">
                     <label for="yearSelect" class="block text-sm font-medium">Select Year:</label>
@@ -116,7 +91,16 @@
             </table>
         </div>
     </main>
-    <footer class="bg-teal-800 text-white p-4 text-center text-sm">
+
+    <!-- Footer -->
+    <footer>
+        <div class="mb-2">
+            <a href="index.html" class="hover:text-yellow mx-2">Home</a>
+            <a href="guides.html" class="hover:text-yellow mx-2">Guides</a>
+            <a href="community.html" class="hover:text-yellow mx-2">Community</a>
+            <a href="players.html" class="hover:text-yellow mx-2">Players</a>
+            <a href="stats.html" class="hover:text-yellow mx-2">Stats</a>
+        </div>
         © 2025 Front Row Fantasy. All rights reserved.
     </footer>
     <script src="script.js"></script>
