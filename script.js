@@ -1,16 +1,15 @@
+let playersData = []; // Make playersData global
+
 document.addEventListener('DOMContentLoaded', async () => {
     // --- Element references ---
     const $ = id => document.getElementById(id);
 
-    // --- Player data fallback ---
-    let playersData = [];
-
     // --- Fetch ESPN Players for Analyzer ---
     async function fetchESPNPlayers() {
         try {
-            const res = await fetch('https://site.api.espn.com/apis/site/v2/sports/football/nfl/players');
+            // Use a CORS proxy for local development
+            const res = await fetch('https://corsproxy.io/?https://site.api.espn.com/apis/site/v2/sports/football/nfl/players');
             const data = await res.json();
-            // ESPN returns an array of player objects in data.players
             playersData = (data.players || [])
                 .filter(p => p.team && p.position && ['QB','RB','WR','TE'].includes(p.position.abbreviation))
                 .map(p => ({
