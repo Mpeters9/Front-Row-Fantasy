@@ -352,14 +352,21 @@ document.addEventListener('DOMContentLoaded', function () {
                 const data = await res.json();
                 playersData = data;
             }
+            // Sort by points (descending) and take top 10 for ticker
+            const sorted = [...playersData].sort((a, b) => {
+                const aPts = a.fantasy_points_2023 ?? a.points ?? 0;
+                const bPts = b.fantasy_points_2023 ?? b.points ?? 0;
+                return bPts - aPts;
+            }).slice(0, 10);
+
             tickerContent.innerHTML = '';
-            playersData.slice(0, 6).forEach(item => {
+            sorted.forEach(item => {
                 const span = document.createElement('span');
-                span.className = `ticker-player ${posColor(item.pos)}`;
+                span.className = `ticker-player ${posColor(item.pos || item.position)} mr-8`;
                 span.innerHTML = `
-                    <span class="player-name">${item.name}</span>
-                    <span class="player-team">(${item.team} ${item.pos})</span>
-                    <span class="player-pts">${item.points} pts</span>
+                    <span class="player-name font-bold">${item.name}</span>
+                    <span class="player-team text-teal-300">(${item.team} ${item.pos || item.position})</span>
+                    <span class="player-pts text-yellow-300 font-bold">${(item.fantasy_points_2023 ?? item.points ?? 0).toFixed(1)} pts</span>
                 `;
                 tickerContent.appendChild(span);
             });
