@@ -1,69 +1,38 @@
-let playersData = []; // Make playersData global
-
-document.addEventListener('DOMContentLoaded', async () => {
+document.addEventListener('DOMContentLoaded', () => {
+    // --- Element references ---
     const $ = id => document.getElementById(id);
 
-    // --- Use all projections files for player pool ---
-    const projectionFiles = {
-        QB: 'QB Projections.json',
-        RB: 'RB Projections.json',
-        WR: 'WR Projections.json',
-        TE: 'TE Projections.json',
-        K:  'K Projections.json',
-        Flex: 'Flex Projections.json'
-    };
-
-    function getProjectionFile(pos, scoringType = 'standard') {
-        if (pos === 'K') return projectionFiles.K;
-        if (pos === 'Flex') {
-            if (scoringType === 'ppr') return 'Flex Projections PPR.json';
-            if (scoringType === 'half') return 'Flex Half PPR.json';
-            return 'Flex Projections.json';
-        }
-        let base = projectionFiles[pos];
-        if (!base) return null;
-        if (scoringType === 'ppr') return base.replace('.json', ' PPR.json');
-        if (scoringType === 'half') return base.replace('.json', ' Half PPR.json');
-        return base;
-    }
-
-    // Fetch and merge all projections (QB, RB, WR, TE, K, Flex)
-    async function fetchAllProjections(scoringType = 'standard') {
-        const positions = ['QB', 'RB', 'WR', 'TE', 'K', 'Flex'];
-        let allPlayers = [];
-        for (const pos of positions) {
-            const file = getProjectionFile(pos, scoringType);
-            if (!file) continue;
-            try {
-                const res = await fetch(file);
-                const data = await res.json();
-                data.forEach((p, i) => {
-                    // Defensive: skip header/empty rows, try to infer player info if present
-                    if (!p.FPTS || isNaN(Number(p.FPTS))) return;
-                    allPlayers.push({
-                        name: p.Player && typeof p.Player === "string" && p.Player.trim() !== "" ? p.Player : `Player ${pos} ${i + 1}`,
-                        pos: (p.POS && typeof p.POS === "string" && p.POS.trim() !== "") ? p.POS.replace(/[0-9]/g, '').toUpperCase() : pos,
-                        team: p.Team && typeof p.Team === "string" && p.Team.trim() !== "" ? p.Team : "-",
-                        points: Number(p.FPTS),
-                        fantasy_points_2023: Number(p.FPTS),
-                        pts: Number(p.FPTS),
-                        value: Number(p.FPTS),
-                        img: p.img || 'https://static.www.nfl.com/image/private/t_headshot_desktop/league/api/players/default.png',
-                        injury_status: p.injury_status || "Healthy",
-                        bye: p.Bye || "—",
-                        age: p.age || "—"
-                    });
-                });
-            } catch (e) {
-                console.warn(`Could not load ${file}:`, e);
-            }
-        }
-        allPlayers.sort((a, b) => b.value - a.value);
-        playersData = allPlayers;
-    }
-
-    // Use projections instead of csvjson.json
-    await fetchAllProjections('standard');
+    // --- Player data fallback ---
+    let playersData = [
+        { name: 'Christian McCaffrey', pos: 'RB', team: 'SF', adp: 1, points: 22.5, td: 1, fumble: 0, passTds: 0, receptions: 80 },
+        { name: 'CeeDee Lamb', pos: 'WR', team: 'DAL', adp: 6, points: 20.1, td: 1, fumble: 0, passTds: 0, receptions: 100 },
+        { name: 'Breece Hall', pos: 'RB', team: 'NYJ', adp: 3, points: 19.8, td: 1, fumble: 0, passTds: 0, receptions: 60 },
+        { name: 'Justin Jefferson', pos: 'WR', team: 'MIN', adp: 4, points: 20.3, td: 1, fumble: 0, passTds: 0, receptions: 90 },
+        { name: 'Ja\'Marr Chase', pos: 'WR', team: 'CIN', adp: 5, points: 20.0, td: 1, fumble: 0, passTds: 0, receptions: 85 },
+        { name: 'Amon-Ra St. Brown', pos: 'WR', team: 'DET', adp: 7, points: 19.7, td: 1, fumble: 0, passTds: 0, receptions: 95 },
+        { name: 'A.J. Brown', pos: 'WR', team: 'PHI', adp: 8, points: 19.5, td: 1, fumble: 0, passTds: 0, receptions: 80 },
+        { name: 'Garrett Wilson', pos: 'WR', team: 'NYJ', adp: 9, points: 19.2, td: 1, fumble: 0, passTds: 0, receptions: 75 },
+        { name: 'Patrick Mahomes', pos: 'QB', team: 'KC', adp: 10, points: 23.1, td: 1, fumble: 0, passTds: 35, receptions: 0 },
+        { name: 'Travis Etienne Jr.', pos: 'RB', team: 'JAX', adp: 11, points: 18.9, td: 1, fumble: 0, passTds: 0, receptions: 50 },
+        { name: 'Drake London', pos: 'WR', team: 'ATL', adp: 12, points: 18.7, td: 1, fumble: 0, passTds: 0, receptions: 70 },
+        { name: 'Travis Kelce', pos: 'TE', team: 'KC', adp: 13, points: 18.4, td: 1, fumble: 0, passTds: 0, receptions: 70 },
+        { name: 'Kyren Williams', pos: 'RB', team: 'LAR', adp: 15, points: 18.2, td: 1, fumble: 0, passTds: 0, receptions: 40 },
+        { name: 'Puka Nacua', pos: 'WR', team: 'LAR', adp: 16, points: 18.0, td: 1, fumble: 0, passTds: 0, receptions: 65 },
+        { name: 'Josh Allen', pos: 'QB', team: 'BUF', adp: 18, points: 22.8, td: 1, fumble: 0, passTds: 30, receptions: 0 },
+        { name: 'Sam LaPorta', pos: 'TE', team: 'DET', adp: 20, points: 17.5, td: 1, fumble: 0, passTds: 0, receptions: 60 },
+        { name: 'James Cook', pos: 'RB', team: 'BUF', adp: 25, points: 17.0, td: 1, fumble: 0, passTds: 0, receptions: 45 },
+        { name: 'Deebo Samuel', pos: 'WR', team: 'SF', adp: 30, points: 16.5, td: 1, fumble: 0, passTds: 0, receptions: 55 },
+        { name: 'Alvin Kamara', pos: 'RB', team: 'NO', adp: 35, points: 16.0, td: 1, fumble: 0, passTds: 0, receptions: 65 },
+        { name: 'Mike Evans', pos: 'WR', team: 'TB', adp: 40, points: 15.8, td: 1, fumble: 0, passTds: 0, receptions: 50 },
+        { name: 'David Montgomery', pos: 'RB', team: 'DET', adp: 50, points: 15.2, td: 1, fumble: 0, passTds: 0, receptions: 30 },
+        { name: 'George Kittle', pos: 'TE', team: 'SF', adp: 60, points: 14.5, td: 1, fumble: 0, passTds: 0, receptions: 55 },
+        { name: 'Tyreek Hill', pos: 'WR', team: 'MIA', adp: 2, points: 20.5, td: 1, fumble: 0, passTds: 0, receptions: 90 },
+        { name: 'Rachaad White', pos: 'RB', team: 'TB', adp: 70, points: 14.0, td: 1, fumble: 0, passTds: 0, receptions: 40 },
+        { name: 'Jaylen Warren', pos: 'RB', team: 'PIT', adp: 80, points: 13.5, td: 0, fumble: 0, passTds: 0, receptions: 35 },
+        { name: 'Gabe Davis', pos: 'WR', team: 'JAX', adp: 90, points: 13.0, td: 0, fumble: 0, passTds: 0, receptions: 40 },
+        { name: 'Seattle Seahawks', pos: 'DST', team: 'SEA', adp: 150, points: 8.0, td: 0, fumble: 0, passTds: 0, receptions: 0 },
+        { name: 'Harrison Butker', pos: 'K', team: 'KC', adp: 160, points: 7.5, td: 0, fumble: 0, passTds: 0, receptions: 0 },
+    ];
 
     let team1 = [];
     let team2 = [];
@@ -71,16 +40,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     $('clearAllBtn').disabled = true;
     $('exportTradeBtn').disabled = true;
     $('swapTeamsBtn').disabled = true;
-
-    autocomplete('player1-search', 'player1-autocomplete', team1, team2, 'team1-players');
-    autocomplete('player2-search', 'player2-autocomplete', team2, team1, 'team2-players');
-    renderTeam('team1-players', team1, 'team1');
-    renderTeam('team2-players', team2, 'team2');
-    renderRecentTrades();
-    document.getElementById('analyzeTradeBtn').onclick = analyzeTrade;
-    document.getElementById('clearAllBtn').onclick = clearAll;
-    document.getElementById('exportTradeBtn').onclick = exportTrade;
-    document.getElementById('swapTeamsBtn').onclick = swapTeams;
 
     const leagueSizeSelect = $('leagueSize'), startingLineupSelect = $('startingLineup'), benchSizeSelect = $('benchSize'),
         scoringTypeSelect = $('scoringType'), bonusTDCheckbox = $('bonusTD'), penaltyFumbleCheckbox = $('penaltyFumble'),
@@ -159,6 +118,28 @@ document.addEventListener('DOMContentLoaded', async () => {
         lineupBenchSizeSelect.addEventListener('change', syncBench);
     }
 
+    // --- Fetch Sleeper Players (stub, replace with real fetch if needed) ---
+    async function fetchSleeperPlayers() {
+        // You can replace this with a real fetch if you want live data
+        // For now, just use the fallback data
+        playersData = playersData.map(p => ({
+            ...p,
+            injury_status: "Healthy",
+            bye: 7,
+            age: 25,
+            fantasy_points_2023: p.points,
+            img: `https://static.www.nfl.com/image/private/t_headshot_desktop/league/api/players/${encodeURIComponent(p.name.replace(/\s/g, '_').toLowerCase())}.png`,
+            pts: p.points,
+            value: p.points // Used for trade value
+        }));
+        playersData.sort((a, b) => b.value - a.value);
+        autocomplete('player1-search', 'player1-autocomplete', team1, team2, 'team1-players');
+        autocomplete('player2-search', 'player2-autocomplete', team2, team1, 'team2-players');
+        renderTeam('team1-players', team1, 'team1');
+        renderTeam('team2-players', team2, 'team2');
+        renderRecentTrades();
+    }
+
     // 2. Trade Value Calculation (advanced)
     function calculateTradeValue(player, currentWeek = 1) {
         let base = player.fantasy_points_2023 || 0;
@@ -191,13 +172,6 @@ document.addEventListener('DOMContentLoaded', async () => {
                 !teamArr.some(tp => tp.name === p.name) &&
                 !otherTeamArr.some(tp => tp.name === p.name)
             );
-            if (matches.length === 0) {
-                const li = document.createElement('li');
-                li.textContent = "No matches found";
-                li.className = "text-gray-400 px-2 py-1";
-                list.appendChild(li);
-                return;
-            }
             matches.slice(0, 8).forEach(player => {
                 const li = document.createElement('li');
                 li.innerHTML = `<span>${player.name} (${player.team} ${player.pos})</span>
@@ -266,8 +240,8 @@ Age: ${player.age || "?"} | Injury: ${player.injury_status || "Healthy"} | Bye: 
     // 6. Analyze Trade (contextual advice and warnings)
     function analyzeTrade() {
         if (!team1.length && !team2.length) return;
-        const team1Value = team1.reduce((a, p) => a + (p.value || 0), 0);
-        const team2Value = team2.reduce((a, p) => a + (p.value || 0), 0);
+        const team1Value = team1.reduce((a, p) => a + p.value, 0);
+        const team2Value = team2.reduce((a, p) => a + p.value, 0);
         const fairness = Math.abs(team1Value - team2Value);
         let fairnessText = '';
         let color = '';
@@ -326,11 +300,10 @@ Age: ${player.age || "?"} | Injury: ${player.injury_status || "Healthy"} | Bye: 
         localStorage.setItem('recentTrades', JSON.stringify(trades));
         renderRecentTrades();
 
-        // Enable buttons only if there are players
-        document.getElementById('analyzeTradeBtn').disabled = false;
-        document.getElementById('clearAllBtn').disabled = false;
-        document.getElementById('exportTradeBtn').disabled = false;
-        document.getElementById('swapTeamsBtn').disabled = false;
+        $('analyzeTradeBtn').disabled = false;
+        $('clearAllBtn').disabled = false;
+        $('exportTradeBtn').disabled = false;
+        $('swapTeamsBtn').disabled = false;
     }
 
     // 7. Recent Trades
@@ -365,9 +338,15 @@ Age: ${player.age || "?"} | Injury: ${player.injury_status || "Healthy"} | Bye: 
     }
 
     // 10. Initialize everything after fetching players
+    fetchSleeperPlayers().then(() => {
+        document.getElementById('analyzeTradeBtn').onclick = analyzeTrade;
+        document.getElementById('clearAllBtn').onclick = clearAll;
+        document.getElementById('exportTradeBtn').onclick = exportTrade;
+        document.getElementById('swapTeamsBtn').onclick = swapTeams;
+    });
 });
 
-// Fantasy Ticker - pull from projections
+// Fantasy Ticker - API player names, dummy points
 document.addEventListener('DOMContentLoaded', function () {
     const tickerContent = document.getElementById('tickerContent');
     const pauseButton = document.getElementById('pauseButton');
@@ -384,38 +363,35 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 
-    async function buildTickerFromLocal() {
+    async function buildTickerFromAPI() {
         tickerContent.innerHTML = '<span class="loading text-white">Loading fantasy points...</span>';
         try {
-            if (!playersData.length) {
-                await fetchAllProjections('standard');
-            }
-            if (!playersData.length) {
-                tickerContent.innerHTML = '<span class="text-red-400">No player data available.</span>';
-                return;
-            }
-            const sorted = [...playersData].sort((a, b) => {
-                const aPts = a.fantasy_points_2023 ?? a.points ?? 0;
-                const bPts = b.fantasy_points_2023 ?? b.points ?? 0;
-                return bPts - aPts;
-            }).slice(0, 10);
-
+            const res = await fetch('https://api.sleeper.app/v1/players/nfl');
+            const data = await res.json();
+            // Get top 6 active players with a team and position
+            const players = Object.values(data)
+                .filter(p => p.active && p.team && ['QB','RB','WR','TE'].includes(p.position))
+                .slice(0, 6)
+                .map(p => ({
+                    player: p.full_name,
+                    team: p.team,
+                    pos: p.position,
+                    pts: (Math.random() * 10 + 15).toFixed(1) // Dummy points 15-25
+                }));
             tickerContent.innerHTML = '';
-            sorted.forEach(item => {
-                const span = document.createElement('span');
-                span.className = `ticker-player ${item.pos ? 'player-pos-' + item.pos : ''} mr-8`;
-                span.innerHTML = `
-                    <span class="player-name font-bold">${item.name}</span>
-                    <span class="player-team text-teal-300">(${item.team} ${item.pos})</span>
-                    <span class="player-pts text-yellow-300 font-bold">${(item.fantasy_points_2023 ?? item.points ?? 0).toFixed(1)} pts</span>
-                `;
-                tickerContent.appendChild(span);
-            });
-            if (tickerContent.innerHTML === '') {
-                tickerContent.innerHTML = '<span class="text-red-400">No ticker data found.</span>';
+            for (let loop = 0; loop < 2; loop++) {
+                players.forEach(item => {
+                    const span = document.createElement('span');
+                    span.className = `ticker-player ${posColor(item.pos)}`;
+                    span.innerHTML = `
+                        <span class="player-name">${item.player}</span>
+                        <span class="player-team">(${item.team} ${item.pos})</span>
+                        <span class="player-pts">${item.pts} pts</span>
+                    `;
+                    tickerContent.appendChild(span);
+                });
             }
         } catch (e) {
-            console.error('Ticker local JSON error:', e);
             tickerContent.innerHTML = '<span class="text-red-400">Failed to load ticker data.</span>';
         }
     }
@@ -435,8 +411,6 @@ document.addEventListener('DOMContentLoaded', function () {
         pauseButton.textContent = paused ? 'Resume' : 'Pause';
     });
 
-    buildTickerFromLocal();
+    buildTickerFromAPI();
     animateTicker();
-
-    setInterval(buildTickerFromLocal, 300000);
 });
