@@ -42,6 +42,17 @@ document.addEventListener('DOMContentLoaded', async () => {
     $('exportTradeBtn').disabled = true;
     $('swapTeamsBtn').disabled = true;
 
+    // Initialize UI with ESPN data
+    autocomplete('player1-search', 'player1-autocomplete', team1, team2, 'team1-players');
+    autocomplete('player2-search', 'player2-autocomplete', team2, team1, 'team2-players');
+    renderTeam('team1-players', team1, 'team1');
+    renderTeam('team2-players', team2, 'team2');
+    renderRecentTrades();
+    document.getElementById('analyzeTradeBtn').onclick = analyzeTrade;
+    document.getElementById('clearAllBtn').onclick = clearAll;
+    document.getElementById('exportTradeBtn').onclick = exportTrade;
+    document.getElementById('swapTeamsBtn').onclick = swapTeams;
+
     const leagueSizeSelect = $('leagueSize'), startingLineupSelect = $('startingLineup'), benchSizeSelect = $('benchSize'),
         scoringTypeSelect = $('scoringType'), bonusTDCheckbox = $('bonusTD'), penaltyFumbleCheckbox = $('penaltyFumble'),
         positionFocusSelect = $('positionFocus'), draftPickInput = $('draftPick'), draftPickValue = $('draftPickValue'),
@@ -117,28 +128,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         };
         benchSizeSelect.addEventListener('change', syncBench);
         lineupBenchSizeSelect.addEventListener('change', syncBench);
-    }
-
-    // --- Fetch Sleeper Players (stub, replace with real fetch if needed) ---
-    async function fetchSleeperPlayers() {
-        // You can replace this with a real fetch if you want live data
-        // For now, just use the fallback data
-        playersData = playersData.map(p => ({
-            ...p,
-            injury_status: "Healthy",
-            bye: 7,
-            age: 25,
-            fantasy_points_2023: p.points,
-            img: `https://static.www.nfl.com/image/private/t_headshot_desktop/league/api/players/${encodeURIComponent(p.name.replace(/\s/g, '_').toLowerCase())}.png`,
-            pts: p.points,
-            value: p.points // Used for trade value
-        }));
-        playersData.sort((a, b) => b.value - a.value);
-        autocomplete('player1-search', 'player1-autocomplete', team1, team2, 'team1-players');
-        autocomplete('player2-search', 'player2-autocomplete', team2, team1, 'team2-players');
-        renderTeam('team1-players', team1, 'team1');
-        renderTeam('team2-players', team2, 'team2');
-        renderRecentTrades();
     }
 
     // 2. Trade Value Calculation (advanced)
@@ -339,12 +328,6 @@ Age: ${player.age || "?"} | Injury: ${player.injury_status || "Healthy"} | Bye: 
     }
 
     // 10. Initialize everything after fetching players
-    fetchSleeperPlayers().then(() => {
-        document.getElementById('analyzeTradeBtn').onclick = analyzeTrade;
-        document.getElementById('clearAllBtn').onclick = clearAll;
-        document.getElementById('exportTradeBtn').onclick = exportTrade;
-        document.getElementById('swapTeamsBtn').onclick = swapTeams;
-    });
 });
 
 // Fantasy Ticker - API player names, dummy points
