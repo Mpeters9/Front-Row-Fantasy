@@ -207,7 +207,9 @@ document.addEventListener('DOMContentLoaded', () => {
             <h3 class="text-xl font-bold">Your Drafted Team</h3>
             <ul class="list-disc pl-5">
                 ${userTeam.map(entry =>
-                    `<li>Round ${entry.round}, Pick ${entry.pick} (Overall ${entry.overall}): ${entry.player.name} (${entry.player.pos}) - ${entry.player.adjustedPoints?.toFixed(1) ?? ''} pts</li>`
+                    `<li class="player-list-item" data-player="${encodeURIComponent(entry.player.name)}">
+                        Round ${entry.round}, Pick ${entry.pick} (Overall ${entry.overall}): ${entry.player.name} (${entry.player.pos})
+                    </li>`
                 ).join('')}
             </ul>
         `;
@@ -447,4 +449,38 @@ document.addEventListener('DOMContentLoaded', () => {
         // Compare logic for weekly lineups (stub)
         alert('Compare lineups feature is not yet implemented.');
     });
+
+    let playerDetailsMap = {};
+
+    function loadPlayerDetailsFromSleeper(callback) {
+        fetch('https://api.sleeper.app/v1/players/nfl')
+            .then(res => res.json())
+            .then(data => {
+                // Filter and map only active, relevant players
+                playerDetailsMap = {};
+                Object.values(data).forEach(p => {
+                    if (p.active && p.team && p.position && p.full_name) {
+                        playerDetailsMap[p.full_name] = {
+                            name: p.full_name,
+                            team: p.team,
+                            pos: p.position,
+                            age: p.age,
+                            bye: p.bye_week,
+                            years_exp: p.years_exp,
+                            college: p.college,
+                            height: p.height,
+                            weight: p.weight,
+                            injury_status: p.injury_status,
+                            search_rank: p.search_rank,
+                            player_id: p.player_id
+                        };
+                    }
+                });
+                if (callback) callback();
+            })
+            .catch(() => { playerDetailsMap = {}; if (callback) callback(); });
+    }
+
+    // Load player details from Sleeper API on page load
+    loadPlayerDetailsFromSleeper();
 });
