@@ -30,13 +30,18 @@
         </div>
     </header>
 
-    <section class="marquee mb-6" aria-label="Fantasy Points Ticker">
-        <div class="bg-teal-800 text-white p-2 rounded flex justify-between items-center">
-            <span class="text-xl font-bold">Fantasy Points Ticker</span>
-            <button id="pauseButton" class="text-teal-300 hover:text-white px-3 py-1 rounded focus:outline-none focus:ring-2 focus:ring-white" aria-pressed="false" aria-label="Pause ticker">Pause</button>
+    <section class="mb-6" aria-label="Fantasy Points Ticker">
+        <div class="bg-teal-900 text-white p-2 rounded-t flex justify-between items-center shadow">
+            <span class="text-xl font-bold tracking-wide flex items-center gap-2">
+                <svg class="inline w-6 h-6 text-yellow-300" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12c0 4.97-4.03 9-9 9s-9-4.03-9-9 4.03-9 9-9 9 4.03 9 9z"/></svg>
+                Fantasy Points Ticker
+            </span>
+            <button id="pauseButton" class="text-teal-300 hover:text-white px-3 py-1 rounded focus:outline-none focus:ring-2 focus:ring-white transition" aria-pressed="false" aria-label="Pause ticker">Pause</button>
         </div>
-        <div class="marquee-content bg-teal-800 text-white p-3" id="tickerContent" tabindex="0" aria-live="polite">
-            <span class="loading">Loading fantasy points...</span>
+        <div class="relative overflow-hidden bg-teal-800 rounded-b" style="height:2.5rem;">
+            <div id="tickerContent" class="absolute left-0 top-0 h-full flex items-center whitespace-nowrap transition-none" tabindex="0" aria-live="polite">
+                <span class="loading text-white">Loading fantasy points...</span>
+            </div>
         </div>
     </section>
 
@@ -118,5 +123,79 @@
     </footer>
 
     <script src="script.js"></script>
+    <script>
+document.addEventListener('DOMContentLoaded', function () {
+    const tickerContent = document.getElementById('tickerContent');
+    const pauseButton = document.getElementById('pauseButton');
+    let paused = false;
+    let animationFrame;
+    let pos = 0;
+
+    // Demo fantasy points data (real players)
+    const tickerData = [
+        { player: "Josh Allen", team: "BUF", pos: "QB", pts: 25.4 },
+        { player: "Patrick Mahomes", team: "KC", pos: "QB", pts: 24.8 },
+        { player: "Christian McCaffrey", team: "SF", pos: "RB", pts: 20.5 },
+        { player: "Tyreek Hill", team: "MIA", pos: "WR", pts: 19.8 },
+        { player: "Justin Jefferson", team: "MIN", pos: "WR", pts: 19.2 },
+        { player: "Travis Kelce", team: "KC", pos: "TE", pts: 18.9 },
+        { player: "George Kittle", team: "SF", pos: "TE", pts: 18.2 },
+        { player: "Derrick Henry", team: "TEN", pos: "RB", pts: 19.6 },
+        { player: "CeeDee Lamb", team: "DAL", pos: "WR", pts: 18.7 },
+        { player: "Amon-Ra St. Brown", team: "DET", pos: "WR", pts: 18.5 }
+    ];
+
+    // Color by position
+    function posColor(pos) {
+        switch (pos) {
+            case "QB": return "text-orange-300";
+            case "RB": return "text-green-300";
+            case "WR": return "text-blue-200";
+            case "TE": return "text-purple-200";
+            default: return "text-gray-200";
+        }
+    }
+
+    // Build ticker HTML
+    function buildTicker() {
+        tickerContent.innerHTML = '';
+        // Duplicate data for seamless loop
+        for (let loop = 0; loop < 2; loop++) {
+            tickerData.forEach(item => {
+                const span = document.createElement('span');
+                span.className = `mx-8 font-semibold flex items-center gap-1`;
+                span.innerHTML = `
+                    <span class="${posColor(item.pos)}">${item.player}</span>
+                    <span class="text-xs text-gray-300">(${item.team} ${item.pos})</span>
+                    <span class="ml-2 text-yellow-300 font-bold">${item.pts} pts</span>
+                    <svg class="inline w-4 h-4 text-teal-400 mx-2" fill="currentColor" viewBox="0 0 20 20"><circle cx="10" cy="10" r="2"/><circle cx="16" cy="10" r="2"/><circle cx="4" cy="10" r="2"/></svg>
+                `;
+                tickerContent.appendChild(span);
+            });
+        }
+    }
+
+    // Animate ticker
+    function animateTicker() {
+        if (!paused) {
+            pos -= 1.1; // speed
+            if (Math.abs(pos) >= tickerContent.scrollWidth / 2) pos = 0;
+            tickerContent.style.transform = `translateX(${pos}px)`;
+        }
+        animationFrame = requestAnimationFrame(animateTicker);
+    }
+
+    // Pause/Resume
+    pauseButton.addEventListener('click', function () {
+        paused = !paused;
+        pauseButton.setAttribute('aria-pressed', paused ? 'true' : 'false');
+        pauseButton.textContent = paused ? 'Resume' : 'Pause';
+    });
+
+    // Initialize
+    buildTicker();
+    animateTicker();
+});
+</script>
 </body>
 </html>
