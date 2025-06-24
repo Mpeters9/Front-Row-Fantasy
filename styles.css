@@ -215,3 +215,16 @@ html {
         @apply text-base;
     }
 }
+
+#player-popup {
+  min-width: 250px;
+  max-width: 350px;
+  pointer-events: auto;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.18);
+  transition: opacity 0.2s;
+}
+#player-popup .close-btn {
+  float: right;
+  cursor: pointer;
+  font-weight: bold;
+}
