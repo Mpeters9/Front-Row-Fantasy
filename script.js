@@ -3,24 +3,24 @@ let playersData = []; // Make playersData global
 document.addEventListener('DOMContentLoaded', async () => {
     const $ = id => document.getElementById(id);
 
-    // --- Fetch Players from csv.json.json for Analyzer ---
+    // --- Fetch Players from csvjson.json for Analyzer ---
     async function fetchLocalPlayers() {
         try {
-            const res = await fetch('csv.json.json');
+            const res = await fetch('csvjson.json'); // <-- updated filename
             const data = await res.json();
             // Adjust this mapping to match your JSON structure!
             playersData = data.map(p => ({
-                name: p.name,
-                pos: p.pos,
-                team: p.team,
-                points: p.points,
+                name: p.Player,
+                pos: p.POS,
+                team: p.Team,
+                points: p.AVG,
                 injury_status: p.injury_status || "Healthy",
-                bye: p.bye || "?",
+                bye: p.Bye || "?",
                 age: p.age || "?",
-                fantasy_points_2023: p.fantasy_points_2023 || p.points,
+                fantasy_points_2023: p.AVG,
                 img: p.img || `https://static.www.nfl.com/image/private/t_headshot_desktop/league/api/players/default.png`,
-                pts: p.pts || p.points,
-                value: p.value || p.points
+                pts: p.AVG,
+                value: p.AVG
             }));
             playersData.sort((a, b) => b.value - a.value);
         } catch (e) {
@@ -348,9 +348,15 @@ document.addEventListener('DOMContentLoaded', function () {
         try {
             // Use the already-loaded playersData if available
             if (!playersData.length) {
-                const res = await fetch('csv.json.json');
+                const res = await fetch('csvjson.json'); // <-- updated filename
                 const data = await res.json();
-                playersData = data;
+                playersData = data.map(p => ({
+                    name: p.Player,
+                    pos: p.POS,
+                    team: p.Team,
+                    points: p.AVG,
+                    fantasy_points_2023: p.AVG
+                }));
             }
             // Sort by points (descending) and take top 10 for ticker
             const sorted = [...playersData].sort((a, b) => {
@@ -362,10 +368,10 @@ document.addEventListener('DOMContentLoaded', function () {
             tickerContent.innerHTML = '';
             sorted.forEach(item => {
                 const span = document.createElement('span');
-                span.className = `ticker-player ${posColor(item.pos || item.position)} mr-8`;
+                span.className = `ticker-player ${item.pos ? 'player-pos-' + item.pos : ''} mr-8`;
                 span.innerHTML = `
                     <span class="player-name font-bold">${item.name}</span>
-                    <span class="player-team text-teal-300">(${item.team} ${item.pos || item.position})</span>
+                    <span class="player-team text-teal-300">(${item.team} ${item.pos})</span>
                     <span class="player-pts text-yellow-300 font-bold">${(item.fantasy_points_2023 ?? item.points ?? 0).toFixed(1)} pts</span>
                 `;
                 tickerContent.appendChild(span);
