@@ -368,6 +368,7 @@ document.addEventListener('DOMContentLoaded', function () {
         try {
             const res = await fetch('https://api.sleeper.app/v1/players/nfl');
             const data = await res.json();
+            console.log('Sleeper API data:', data); // <-- Add this line
             // Get top 6 active players with a team and position
             const players = Object.values(data)
                 .filter(p => p.active && p.team && ['QB','RB','WR','TE'].includes(p.position))
@@ -378,6 +379,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     pos: p.position,
                     pts: (Math.random() * 10 + 15).toFixed(1) // Dummy points 15-25
                 }));
+            if (players.length === 0) throw new Error('No players found from API');
             tickerContent.innerHTML = '';
             for (let loop = 0; loop < 2; loop++) {
                 players.forEach(item => {
@@ -392,7 +394,22 @@ document.addEventListener('DOMContentLoaded', function () {
                 });
             }
         } catch (e) {
-            tickerContent.innerHTML = '<span class="text-red-400">Failed to load ticker data.</span>';
+            console.error('Ticker API error:', e); // <-- Add this line
+            // Fallback to local data
+            tickerContent.innerHTML = '';
+            playersData.slice(0, 6).forEach(item => {
+                const span = document.createElement('span');
+                span.className = `ticker-player ${posColor(item.pos)}`;
+                span.innerHTML = `
+                    <span class="player-name">${item.name}</span>
+                    <span class="player-team">(${item.team} ${item.pos})</span>
+                    <span class="player-pts">${item.points} pts</span>
+                `;
+                tickerContent.appendChild(span);
+            });
+            if (tickerContent.innerHTML === '') {
+                tickerContent.innerHTML = '<span class="text-red-400">Failed to load ticker data.</span>';
+            }
         }
     }
 
