@@ -3,33 +3,67 @@ let playersData = []; // Make playersData global
 document.addEventListener('DOMContentLoaded', async () => {
     const $ = id => document.getElementById(id);
 
-    // --- Fetch Players from csvjson.json for Analyzer ---
-    async function fetchLocalPlayers() {
-        try {
-            const res = await fetch('csvjson.json'); // <-- updated filename
-            const data = await res.json();
-            // Adjust this mapping to match your JSON structure!
-            playersData = data.map(p => ({
-                name: p.Player,
-                pos: p.POS,
-                team: p.Team,
-                points: p.AVG,
-                injury_status: p.injury_status || "Healthy",
-                bye: p.Bye || "?",
-                age: p.age || "?",
-                fantasy_points_2023: p.AVG,
-                img: p.img || `https://static.www.nfl.com/image/private/t_headshot_desktop/league/api/players/default.png`,
-                pts: p.AVG,
-                value: p.AVG
-            }));
-            playersData.sort((a, b) => b.value - a.value);
-        } catch (e) {
-            console.error('Local JSON error for analyzer:', e);
-            playersData = [];
+    // --- Use all projections files for player pool ---
+    const projectionFiles = {
+        QB: 'QB Projections.json',
+        RB: 'RB Projections.json',
+        WR: 'WR Projections.json',
+        TE: 'TE Projections.json',
+        K:  'K Projections.json',
+        Flex: 'Flex Projections.json'
+    };
+
+    function getProjectionFile(pos, scoringType = 'standard') {
+        if (pos === 'K') return projectionFiles.K;
+        if (pos === 'Flex') {
+            if (scoringType === 'ppr') return 'Flex Projections PPR.json';
+            if (scoringType === 'half') return 'Flex Half PPR.json';
+            return 'Flex Projections.json';
         }
+        let base = projectionFiles[pos];
+        if (!base) return null;
+        if (scoringType === 'ppr') return base.replace('.json', ' PPR.json');
+        if (scoringType === 'half') return base.replace('.json', ' Half PPR.json');
+        return base;
     }
 
-    await fetchLocalPlayers();
+    // Fetch and merge all projections (QB, RB, WR, TE, K, Flex)
+    async function fetchAllProjections(scoringType = 'standard') {
+        const positions = ['QB', 'RB', 'WR', 'TE', 'K', 'Flex'];
+        let allPlayers = [];
+        for (const pos of positions) {
+            const file = getProjectionFile(pos, scoringType);
+            if (!file) continue;
+            try {
+                const res = await fetch(file);
+                const data = await res.json();
+                data.forEach((p, i) => {
+                    // Defensive: skip header/empty rows, try to infer player info if present
+                    if (!p.FPTS || isNaN(Number(p.FPTS))) return;
+                    allPlayers.push({
+                        name: p.Player && typeof p.Player === "string" && p.Player.trim() !== "" ? p.Player : `Player ${pos} ${i + 1}`,
+                        pos: (p.POS && typeof p.POS === "string" && p.POS.trim() !== "") ? p.POS.replace(/[0-9]/g, '').toUpperCase() : pos,
+                        team: p.Team && typeof p.Team === "string" && p.Team.trim() !== "" ? p.Team : "-",
+                        points: Number(p.FPTS),
+                        fantasy_points_2023: Number(p.FPTS),
+                        pts: Number(p.FPTS),
+                        value: Number(p.FPTS),
+                        img: p.img || 'https://static.www.nfl.com/image/private/t_headshot_desktop/league/api/players/default.png',
+                        injury_status: p.injury_status || "Healthy",
+                        bye: p.Bye || "—",
+                        age: p.age || "—"
+                    });
+                });
+            } catch (e) {
+                console.warn(`Could not load ${file}:`, e);
+            }
+        }
+        allPlayers.sort((a, b) => b.value - a.value);
+        playersData = allPlayers;
+    }
+
+    // Use projections instead of csvjson.json
+    await fetchAllProjections('standard');
 
     let team1 = [];
     let team2 = [];
@@ -38,7 +72,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     $('exportTradeBtn').disabled = true;
     $('swapTeamsBtn').disabled = true;
 
-    // Initialize UI with ESPN data
     autocomplete('player1-search', 'player1-autocomplete', team1, team2, 'team1-players');
     autocomplete('player2-search', 'player2-autocomplete', team2, team1, 'team2-players');
     renderTeam('team1-players', team1, 'team1');
@@ -158,6 +191,13 @@ document.addEventListener('DOMContentLoaded', async () => {
                 !teamArr.some(tp => tp.name === p.name) &&
                 !otherTeamArr.some(tp => tp.name === p.name)
             );
+            if (matches.length === 0) {
+                const li = document.createElement('li');
+                li.textContent = "No matches found";
+                li.className = "text-gray-400 px-2 py-1";
+                list.appendChild(li);
+                return;
+            }
             matches.slice(0, 8).forEach(player => {
                 const li = document.createElement('li');
                 li.innerHTML = `<span>${player.name} (${player.team} ${player.pos})</span>
@@ -226,8 +266,8 @@ Age: ${player.age || "?"} | Injury: ${player.injury_status || "Healthy"} | Bye: 
     // 6. Analyze Trade (contextual advice and warnings)
     function analyzeTrade() {
         if (!team1.length && !team2.length) return;
-        const team1Value = team1.reduce((a, p) => a + p.value, 0);
-        const team2Value = team2.reduce((a, p) => a + p.value, 0);
+        const team1Value = team1.reduce((a, p) => a + (p.value || 0), 0);
+        const team2Value = team2.reduce((a, p) => a + (p.value || 0), 0);
         const fairness = Math.abs(team1Value - team2Value);
         let fairnessText = '';
         let color = '';
@@ -286,10 +326,11 @@ Age: ${player.age || "?"} | Injury: ${player.injury_status || "Healthy"} | Bye: 
         localStorage.setItem('recentTrades', JSON.stringify(trades));
         renderRecentTrades();
 
-        $('analyzeTradeBtn').disabled = false;
-        $('clearAllBtn').disabled = false;
-        $('exportTradeBtn').disabled = false;
-        $('swapTeamsBtn').disabled = false;
+        // Enable buttons only if there are players
+        document.getElementById('analyzeTradeBtn').disabled = false;
+        document.getElementById('clearAllBtn').disabled = false;
+        document.getElementById('exportTradeBtn').disabled = false;
+        document.getElementById('swapTeamsBtn').disabled = false;
     }
 
     // 7. Recent Trades
@@ -326,7 +367,7 @@ Age: ${player.age || "?"} | Injury: ${player.injury_status || "Healthy"} | Bye: 
     // 10. Initialize everything after fetching players
 });
 
-// Fantasy Ticker - pull from local JSON
+// Fantasy Ticker - pull from projections
 document.addEventListener('DOMContentLoaded', function () {
     const tickerContent = document.getElementById('tickerContent');
     const pauseButton = document.getElementById('pauseButton');
@@ -346,19 +387,13 @@ document.addEventListener('DOMContentLoaded', function () {
     async function buildTickerFromLocal() {
         tickerContent.innerHTML = '<span class="loading text-white">Loading fantasy points...</span>';
         try {
-            // Use the already-loaded playersData if available
             if (!playersData.length) {
-                const res = await fetch('csvjson.json'); // <-- updated filename
-                const data = await res.json();
-                playersData = data.map(p => ({
-                    name: p.Player,
-                    pos: p.POS,
-                    team: p.Team,
-                    points: p.AVG,
-                    fantasy_points_2023: p.AVG
-                }));
+                await fetchAllProjections('standard');
             }
-            // Sort by points (descending) and take top 10 for ticker
+            if (!playersData.length) {
+                tickerContent.innerHTML = '<span class="text-red-400">No player data available.</span>';
+                return;
+            }
             const sorted = [...playersData].sort((a, b) => {
                 const aPts = a.fantasy_points_2023 ?? a.points ?? 0;
                 const bPts = b.fantasy_points_2023 ?? b.points ?? 0;
