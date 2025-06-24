@@ -2,7 +2,150 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- Element references ---
     const $ = id => document.getElementById(id);
 
-let playersData = [];
+let playersData = [
+    { name: 'Christian McCaffrey', pos: 'RB', team: 'SF', adp: 1, points: 22.5, td: 1, fumble: 0, passTds: 0, receptions: 80 },
+    { name: 'CeeDee Lamb', pos: 'WR', team: 'DAL', adp: 6, points: 20.1, td: 1, fumble: 0, passTds: 0, receptions: 100 },
+    { name: 'Breece Hall', pos: 'RB', team: 'NYJ', adp: 3, points: 19.8, td: 1, fumble: 0, passTds: 0, receptions: 60 },
+    { name: 'Justin Jefferson', pos: 'WR', team: 'MIN', adp: 4, points: 20.3, td: 1, fumble: 0, passTds: 0, receptions: 90 },
+    { name: 'Ja\'Marr Chase', pos: 'WR', team: 'CIN', adp: 5, points: 20.0, td: 1, fumble: 0, passTds: 0, receptions: 85 },
+    { name: 'Amon-Ra St. Brown', pos: 'WR', team: 'DET', adp: 7, points: 19.7, td: 1, fumble: 0, passTds: 0, receptions: 95 },
+    { name: 'A.J. Brown', pos: 'WR', team: 'PHI', adp: 8, points: 19.5, td: 1, fumble: 0, passTds: 0, receptions: 80 },
+    { name: 'Garrett Wilson', pos: 'WR', team: 'NYJ', adp: 9, points: 19.2, td: 1, fumble: 0, passTds: 0, receptions: 75 },
+    { name: 'Patrick Mahomes', pos: 'QB', team: 'KC', adp: 10, points: 23.1, td: 1, fumble: 0, passTds: 35, receptions: 0 },
+    { name: 'Travis Etienne Jr.', pos: 'RB', team: 'JAX', adp: 11, points: 18.9, td: 1, fumble: 0, passTds: 0, receptions: 50 },
+    { name: 'Drake London', pos: 'WR', team: 'ATL', adp: 12, points: 18.7, td: 1, fumble: 0, passTds: 0, receptions: 70 },
+    { name: 'Travis Kelce', pos: 'TE', team: 'KC', adp: 13, points: 18.4, td: 1, fumble: 0, passTds: 0, receptions: 70 },
+    { name: 'Kyren Williams', pos: 'RB', team: 'LAR', adp: 15, points: 18.2, td: 1, fumble: 0, passTds: 0, receptions: 40 },
+    { name: 'Puka Nacua', pos: 'WR', team: 'LAR', adp: 16, points: 18.0, td: 1, fumble: 0, passTds: 0, receptions: 65 },
+    { name: 'Josh Allen', pos: 'QB', team: 'BUF', adp: 18, points: 22.8, td: 1, fumble: 0, passTds: 30, receptions: 0 },
+    { name: 'Sam LaPorta', pos: 'TE', team: 'DET', adp: 20, points: 17.5, td: 1, fumble: 0, passTds: 0, receptions: 60 },
+    { name: 'James Cook', pos: 'RB', team: 'BUF', adp: 25, points: 17.0, td: 1, fumble: 0, passTds: 0, receptions: 45 },
+    { name: 'Deebo Samuel', pos: 'WR', team: 'SF', adp: 30, points: 16.5, td: 1, fumble: 0, passTds: 0, receptions: 55 },
+    { name: 'Alvin Kamara', pos: 'RB', team: 'NO', adp: 35, points: 16.0, td: 1, fumble: 0, passTds: 0, receptions: 65 },
+    { name: 'Mike Evans', pos: 'WR', team: 'TB', adp: 40, points: 15.8, td: 1, fumble: 0, passTds: 0, receptions: 50 },
+    { name: 'David Montgomery', pos: 'RB', team: 'DET', adp: 50, points: 15.2, td: 1, fumble: 0, passTds: 0, receptions: 30 },
+    { name: 'George Kittle', pos: 'TE', team: 'SF', adp: 60, points: 14.5, td: 1, fumble: 0, passTds: 0, receptions: 55 },
+    { name: 'Tyreek Hill', pos: 'WR', team: 'MIA', adp: 2, points: 20.5, td: 1, fumble: 0, passTds: 0, receptions: 90 },
+    { name: 'Rachaad White', pos: 'RB', team: 'TB', adp: 70, points: 14.0, td: 1, fumble: 0, passTds: 0, receptions: 40 },
+    { name: 'Jaylen Warren', pos: 'RB', team: 'PIT', adp: 80, points: 13.5, td: 0, fumble: 0, passTds: 0, receptions: 35 },
+    { name: 'Gabe Davis', pos: 'WR', team: 'JAX', adp: 90, points: 13.0, td: 0, fumble: 0, passTds: 0, receptions: 40 },
+    { name: 'Seattle Seahawks', pos: 'DST', team: 'SEA', adp: 150, points: 8.0, td: 0, fumble: 0, passTds: 0, receptions: 0 },
+    { name: 'Harrison Butker', pos: 'K', team: 'KC', adp: 160, points: 7.5, td: 0, fumble: 0, passTds: 0, receptions: 0 },
+];
+let team1 = [];
+let team2 = [];
+$('analyzeTradeBtn').disabled = true;
+$('clearAllBtn').disabled = true;
+$('exportTradeBtn').disabled = true;
+$('swapTeamsBtn').disabled = true;
+    const leagueSizeSelect = $('leagueSize'), startingLineupSelect = $('startingLineup'), benchSizeSelect = $('benchSize'),
+        scoringTypeSelect = $('scoringType'), bonusTDCheckbox = $('bonusTD'), penaltyFumbleCheckbox = $('penaltyFumble'),
+        positionFocusSelect = $('positionFocus'), draftPickInput = $('draftPick'), draftPickValue = $('draftPickValue'),
+        generateDraftButton = $('generateLineup'), saveDraftButton = $('saveLineup'), compareDraftButton = $('compareLineups'),
+        progressBarDraft = $('progressBar'), progressDraft = $('progress'), buildResultDraft = $('build-result'),
+        lineupSizeInput = $('lineupSize'), lineupStartingSelect = $('lineupStarting'), lineupBenchSizeSelect = $('lineupBenchSize'),
+        lineupIrSpotsSelect = $('lineupIrSpots'), lineupScoringSelect = $('lineupScoring'), lineupBonusTDCheckbox = $('lineupBonusTD'),
+        lineupPenaltyFumbleCheckbox = $('lineupPenaltyFumble'), currentRosterInput = $('currentRoster'), swapPlayersButton = $('swapPlayers'),
+        generateLineupWeeklyButton = $('generateLineupWeekly'), saveLineupWeeklyButton = $('saveLineupWeekly'),
+        compareLineupsWeeklyButton = $('compareLineupsWeekly'), progressBarWeekly = $('progressBarWeekly'),
+        progressWeekly = $('progressWeekly'), lineupResult = $('lineup-result');
+
+    // --- Utility functions ---
+    const clamp = (val, min, max) => Math.max(min, Math.min(val, max));
+    const parseLineupConfig = str => str.split(',').map(s => s.trim().toUpperCase());
+    const parseRoster = str => str.split(';').map(p => p.trim()).filter(Boolean);
+    const showProgress = (bar, prog, cb) => {
+        bar.classList.remove('hidden');
+        let width = 0, interval = setInterval(() => {
+            if (width >= 100) {
+                clearInterval(interval);
+                cb();
+                bar.classList.add('hidden');
+            } else {
+                width += 10;
+                prog.style.width = `${width}%`;
+            }
+        }, 200);
+    };
+    const saveExport = (el, key, filename, alertMsg) => {
+        const result = el.innerHTML;
+        if (result) {
+            const text = el.textContent;
+            localStorage.setItem(key, text);
+            const blob = new Blob([text], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url; a.download = filename; a.click();
+            URL.revokeObjectURL(url);
+            alert(alertMsg);
+        } else {
+            alert('Generate a result first!');
+        }
+    };
+    function showLoadingSpinner(show) {
+        const spinner = document.getElementById('loading-spinner');
+        if (spinner) spinner.classList.toggle('hidden', !show);
+    }
+
+    // --- Set defaults ---
+    if (leagueSizeSelect) leagueSizeSelect.value = 12;
+    if (draftPickInput) draftPickInput.value = 1;
+    if (draftPickValue) draftPickValue.textContent = 1;
+    if (scoringTypeSelect) scoringTypeSelect.value = 'standard';
+
+    // --- Clamp draft pick input on league size change/input ---
+    if (leagueSizeSelect && draftPickInput && draftPickValue) {
+        const clampDraftPick = () => {
+            draftPickInput.max = leagueSizeSelect.value;
+            draftPickInput.min = 1;
+            draftPickInput.value = clamp(parseInt(draftPickInput.value) || 1, 1, parseInt(leagueSizeSelect.value));
+            draftPickValue.textContent = draftPickInput.value;
+        };
+        leagueSizeSelect.addEventListener('change', clampDraftPick);
+        draftPickInput.addEventListener('input', clampDraftPick);
+        clampDraftPick();
+    }
+
+    // --- Sync bench size between sections ---
+    if (benchSizeSelect && lineupBenchSizeSelect) {
+        const syncBench = e => {
+            benchSizeSelect.value = lineupBenchSizeSelect.value = e.target.value;
+        };
+        benchSizeSelect.addEventListener('change', syncBench);
+        lineupBenchSizeSelect.addEventListener('change', syncBench);
+    }
+
+    // --- Player data fallback ---
+    const players = [
+        { name: 'Christian McCaffrey', pos: 'RB', team: 'SF', adp: 1, points: 22.5, td: 1, fumble: 0, passTds: 0, receptions: 80 },
+        { name: 'CeeDee Lamb', pos: 'WR', team: 'DAL', adp: 6, points: 20.1, td: 1, fumble: 0, passTds: 0, receptions: 100 },
+        { name: 'Breece Hall', pos: 'RB', team: 'NYJ', adp: 3, points: 19.8, td: 1, fumble: 0, passTds: 0, receptions: 60 },
+        { name: 'Justin Jefferson', pos: 'WR', team: 'MIN', adp: 4, points: 20.3, td: 1, fumble: 0, passTds: 0, receptions: 90 },
+        { name: 'Ja\'Marr Chase', pos: 'WR', team: 'CIN', adp: 5, points: 20.0, td: 1, fumble: 0, passTds: 0, receptions: 85 },
+        { name: 'Amon-Ra St. Brown', pos: 'WR', team: 'DET', adp: 7, points: 19.7, td: 1, fumble: 0, passTds: 0, receptions: 95 },
+        { name: 'A.J. Brown', pos: 'WR', team: 'PHI', adp: 8, points: 19.5, td: 1, fumble: 0, passTds: 0, receptions: 80 },
+        { name: 'Garrett Wilson', pos: 'WR', team: 'NYJ', adp: 9, points: 19.2, td: 1, fumble: 0, passTds: 0, receptions: 75 },
+        { name: 'Patrick Mahomes', pos: 'QB', team: 'KC', adp: 10, points: 23.1, td: 1, fumble: 0, passTds: 35, receptions: 0 },
+        { name: 'Travis Etienne Jr.', pos: 'RB', team: 'JAX', adp: 11, points: 18.9, td: 1, fumble: 0, passTds: 0, receptions: 50 },
+        { name: 'Drake London', pos: 'WR', team: 'ATL', adp: 12, points: 18.7, td: 1, fumble: 0, passTds: 0, receptions: 70 },
+        { name: 'Travis Kelce', pos: 'TE', team: 'KC', adp: 13, points: 18.4, td: 1, fumble: 0, passTds: 0, receptions: 70 },
+        { name: 'Kyren Williams', pos: 'RB', team: 'LAR', adp: 15, points: 18.2, td: 1, fumble: 0, passTds: 0, receptions: 40 },
+        { name: 'Puka Nacua', pos: 'WR', team: 'LAR', adp: 16, points: 18.0, td: 1, fumble: 0, passTds: 0, receptions: 65 },
+        { name: 'Josh Allen', pos: 'QB', team: 'BUF', adp: 18, points: 22.8, td: 1, fumble: 0, passTds: 30, receptions: 0 },
+        { name: 'Sam LaPorta', pos: 'TE', team: 'DET', adp: 20, points: 17.5, td: 1, fumble: 0, passTds: 0, receptions: 60 },
+        { name: 'James Cook', pos: 'RB', team: 'BUF', adp: 25, points: 17.0, td: 1, fumble: 0, passTds: 0, receptions: 45 },
+        { name: 'Deebo Samuel', pos: 'WR', team: 'SF', adp: 30, points: 16.5, td: 1, fumble: 0, passTds: 0, receptions: 55 },
+        { name: 'Alvin Kamara', pos: 'RB', team: 'NO', adp: 35, points: 16.0, td: 1, fumble: 0, passTds: 0, receptions: 65 },
+        { name: 'Mike Evans', pos: 'WR', team: 'TB', adp: 40, points: 15.8, td: 1, fumble: 0, passTds: 0, receptions: 50 },
+        { name: 'David Montgomery', pos: 'RB', team: 'DET', adp: 50, points: 15.2, td: 1, fumble: 0, passTds: 0, receptions: 30 },
+        { name: 'George Kittle', pos: 'TE', team: 'SF', adp: 60, points: 14.5, td: 1, fumble: 0, passTds: 0, receptions: 55 },
+        { name: 'Tyreek Hill', pos: 'WR', team: 'MIA', adp: 2, points: 20.5, td: 1, fumble: 0, passTds: 0, receptions: 90 },
+        { name: 'Rachaad White', pos: 'RB', team: 'TB', adp: 70, points: 14.0, td: 1, fumble: 0, passTds: 0, receptions: 40 },
+        { name: 'Jaylen Warren', pos: 'RB', team: 'PIT', adp: 80, points: 13.5, td: 0, fumble: 0, passTds: 0, receptions: 35 },
+        { name: 'Gabe Davis', pos: 'WR', team: 'JAX', adp: 90, points: 13.0, td: 0, fumble: 0, passTds: 0, receptions: 40 },
+        { name: 'Seattle Seahawks', pos: 'DST', team: 'SEA', adp: 150, points: 8.0, td: 0, fumble: 0, passTds: 0, receptions: 0 },
+        { name: 'Harrison Butker', pos: 'K', team: 'KC', adp: 160, points: 7.5, td: 0, fumble: 0, passTds: 0, receptions: 0 },
+    ];
 let team1 = [];
 let team2 = [];
 $('analyzeTradeBtn').disabled = true;
@@ -773,4 +916,59 @@ Age: ${player.age || "?"} | Injury: ${player.injury_status || "Healthy"} | Bye: 
         document.getElementById('exportTradeBtn').onclick = exportTrade;
         document.getElementById('swapTeamsBtn').onclick = swapTeams;
     });
+});
+
+// Fantasy Ticker (optional, remove if not needed)
+document.addEventListener('DOMContentLoaded', function () {
+    const tickerContent = document.getElementById('tickerContent');
+    const pauseButton = document.getElementById('pauseButton');
+    if (!tickerContent || !pauseButton) return;
+    let paused = false, animationFrame, pos = 0;
+    const tickerData = [
+        { player: "Josh Allen", team: "BUF", pos: "QB", pts: 25.4 },
+        { player: "Patrick Mahomes", team: "KC", pos: "QB", pts: 24.8 },
+        { player: "Christian McCaffrey", team: "SF", pos: "RB", pts: 20.5 },
+        { player: "Tyreek Hill", team: "MIA", pos: "WR", pts: 19.8 },
+        { player: "Justin Jefferson", team: "MIN", pos: "WR", pts: 19.2 },
+        { player: "Travis Kelce", team: "KC", pos: "TE", pts: 18.9 }
+    ];
+    function posColor(pos) {
+        switch (pos) {
+            case "QB": return "player-pos-QB";
+            case "RB": return "player-pos-RB";
+            case "WR": return "player-pos-WR";
+            case "TE": return "player-pos-TE";
+            default: return "";
+        }
+    }
+    function buildTicker() {
+        tickerContent.innerHTML = '';
+        for (let loop = 0; loop < 2; loop++) {
+            tickerData.forEach(item => {
+                const span = document.createElement('span');
+                span.className = `ticker-player ${posColor(item.pos)}`;
+                span.innerHTML = `
+                    <span class="player-name">${item.player}</span>
+                    <span class="player-team">(${item.team} ${item.pos})</span>
+                    <span class="player-pts">${item.pts} pts</span>
+                `;
+                tickerContent.appendChild(span);
+            });
+        }
+    }
+    function animateTicker() {
+        if (!paused) {
+            pos -= 1.1;
+            if (Math.abs(pos) >= tickerContent.scrollWidth / 2) pos = 0;
+            tickerContent.style.transform = `translateX(${pos}px)`;
+        }
+        animationFrame = requestAnimationFrame(animateTicker);
+    }
+    pauseButton.addEventListener('click', function () {
+        paused = !paused;
+        pauseButton.setAttribute('aria-pressed', paused ? 'true' : 'false');
+        pauseButton.textContent = paused ? 'Resume' : 'Pause';
+    });
+    buildTicker();
+    animateTicker();
 });
