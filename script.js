@@ -150,7 +150,14 @@ document.addEventListener('DOMContentLoaded', () => {
             buildResultDraft.innerHTML = `<p>Loading player data...</p>`;
             return;
         }
-        let availablePlayers = [...adpPlayers].sort((a, b) => a.adp - b.adp);
+        let availablePlayers = [...adpPlayers].map(p => {
+            // Standard deviation is 25% of ADP, minimum 1
+            const stddev = Math.max(1, p.adp * 0.25);
+            return {
+                ...p,
+                randomizedADP: randomNormal(p.adp, stddev)
+            };
+        }).sort((a, b) => a.randomizedADP - b.randomizedADP);
         const totalRosterSize = lineupConfig.length + benchSize;
         const userTeam = [];
         let userPickIdx = userDraftPick - 1; // 0-based index
@@ -285,6 +292,15 @@ document.addEventListener('DOMContentLoaded', () => {
             </ul>
         `;
         return draftPicks;
+    }
+
+    // --- Random Normal Distribution ---
+    function randomNormal(mean, stddev) {
+        let u = 0, v = 0;
+        while (u === 0) u = Math.random();
+        while (v === 0) v = Math.random();
+        let num = Math.sqrt(-2.0 * Math.log(u)) * Math.cos(2.0 * Math.PI * v);
+        return Math.max(1, mean + stddev * num); // ADP can't be less than 1
     }
 
     // --- Event listeners ---
