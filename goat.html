@@ -1,316 +1,295 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Front Row Fantasy GOAT Page - Build the greatest fantasy football teams with expert tools and insights.">
-    <meta name="keywords" content="fantasy football, GOAT, team building, draft strategies, player research">
-    <meta name="author" content="Mpeters9">
-    <title>Front Row Fantasy - GOAT Page</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
-    <link rel="icon" href="favicon.ico" type="image/x-icon">
-    <link rel="stylesheet" href="styles.css">
-    <script src="https://cdn.tailwindcss.com"></script>
-</head>
-<body class="min-h-screen flex flex-col font-poppins bg-gradient-to-br from-[#0f2027] to-[#2c5364]" aria-label="GOAT Page Content">
-    <!-- Header -->
-    <header class="sticky top-0 z-50 bg-opacity-98 bg-gray-900 shadow-lg border-b-2 border-teal-500">
-        <div class="max-w-7xl mx-auto px-4 flex justify-between items-center py-3">
-            <a href="index.html" class="text-2xl font-bold text-yellow text-glow">Front Row Fantasy</a>
-            <nav class="hidden md:flex gap-6">
-                <a href="index.html" class="nav-link">Home</a>
-                <a href="tools.html" class="nav-link">Expert Tools</a>
-                <a href="goat.html" class="nav-link" aria-current="page">GOAT</a>
-                <a href="guides.html" class="nav-link">Guides</a>
-                <a href="community.html" class="nav-link">Community</a>
-                <a href="players.html" class="nav-link">Players</a>
-                <a href="stats.html" class="nav-link">Stats</a>
-                <a href="#contact" class="nav-link">Contact</a>
-            </nav>
-            <button id="menu-toggle" class="md:hidden text-yellow focus:outline-none" aria-label="Toggle navigation menu">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
-                </svg>
-            </button>
-        </div>
-        <div id="mobile-menu" class="hidden md:hidden bg-gray-900 border-t-2 border-teal-500">
-            <nav class="flex flex-col px-4 py-2 gap-2">
-                <a href="index.html" class="nav-link">Home</a>
-                <a href="tools.html" class="nav-link">Expert Tools</a>
-                <a href="goat.html" class="nav-link" aria-current="page">GOAT</a>
-                <a href="guides.html" class="nav-link">Guides</a>
-                <a href="community.html" class="nav-link">Community</a>
-                <a href="players.html" class="nav-link">Players</a>
-                <a href="stats.html" class="nav-link">Stats</a>
-                <a href="#contact" class="nav-link">Contact</a>
-            </nav>
-        </div>
-    </header>
+const scoringFiles = {
+    standard: 'Standard ADP.json',
+    ppr: 'PPR.json',
+    half: 'Half PPR.json'
+};
 
-    <!-- Fantasy Points Ticker -->
-    <section class="marquee mb-8" aria-label="Fantasy Points Ticker">
-        <div class="bg-teal-900 text-white p-2 rounded-t flex justify-between items-center shadow">
-            <span class="text-xl font-bold tracking-wide flex items-center gap-2">
-                <svg class="inline w-6 h-6 text-yellow-300" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12c0 4.97-4.03 9-9 9s-9-4.03-9-9 4.03-9 9-9 9 4.03 9 9z"/></svg>
-                Fantasy Points Ticker
-            </span>
-            <button id="pauseButton" class="cta-btn px-4 py-1" aria-pressed="false" aria-label="Pause ticker">Pause</button>
-        </div>
-        <div class="relative overflow-hidden bg-teal-800 rounded-b" style="height:2.5rem;">
-            <div id="tickerContent" class="absolute left-0 top-0 h-full flex items-center whitespace-nowrap transition-none" tabindex="0" aria-live="polite">
-                <span class="loading text-white">Loading fantasy points...</span>
-            </div>
-        </div>
-    </section>
+const fallbackPlayers = [
+    { name: "Josh Allen", position: "QB", team: "BUF", projectedPoints: 25.4, adp: 1 },
+    { name: "Patrick Mahomes", position: "QB", team: "KC", projectedPoints: 24.8, adp: 2 },
+    { name: "Christian McCaffrey", position: "RB", team: "SF", projectedPoints: 20.5, adp: 3 },
+    { name: "Tyreek Hill", position: "WR", team: "MIA", projectedPoints: 19.8, adp: 4 },
+    { name: "Justin Jefferson", position: "WR", team: "MIN", projectedPoints: 19.2, adp: 5 },
+    { name: "Travis Kelce", position: "TE", team: "KC", projectedPoints: 18.9, adp: 6 },
+    { name: "Bijan Robinson", position: "RB", team: "ATL", projectedPoints: 18.5, adp: 7 },
+    { name: "CeeDee Lamb", position: "WR", team: "DAL", projectedPoints: 18.3, adp: 8 },
+    { name: "Jalen Hurts", position: "QB", team: "PHI", projectedPoints: 23.5, adp: 9 },
+    { name: "Saquon Barkley", position: "RB", team: "NYG", projectedPoints: 17.8, adp: 10 },
+    { name: "Davante Adams", position: "WR", team: "LV", projectedPoints: 17.5, adp: 11 },
+    { name: "Mark Andrews", position: "TE", team: "BAL", projectedPoints: 15.2, adp: 12 },
+    { name: "Buffalo Bills", position: "DST", team: "BUF", projectedPoints: 10.5, adp: 50 },
+    { name: "Justin Tucker", position: "K", team: "BAL", projectedPoints: 9.8, adp: 60 }
+];
 
-    <!-- Hero / Splash -->
-    <main class="max-w-7xl mx-auto px-4 flex-grow">
-        <section class="splash-section text-center mb-10">
-            <h1 class="text-5xl md:text-6xl font-bold mb-4 text-glow">Unleash Your Fantasy GOAT</h1>
-            <p class="text-xl md:text-2xl mb-6">Master fantasy football with elite draft strategies, in-depth player research, and cutting-edge tools to build the ultimate team.</p>
-            <a href="#best-draft-builds" class="cta-btn text-lg">Get Started</a>
-        </section>
+let playersData = [];
+let isPaused = false;
 
-        <!-- Loading Spinner -->
-        <div id="loading-spinner" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-            <div class="spinner"></div>
-        </div>
+async function loadPlayers(scoringType) {
+    const cacheKey = `players_${scoringType}`;
+    const cachedData = localStorage.getItem(cacheKey);
+    if (cachedData) {
+        playersData = JSON.parse(cachedData);
+        return;
+    }
 
-        <!-- Best Draft Builds Tool -->
-        <section id="best-draft-builds" class="mb-12">
-            <h2 class="section-title text-center mb-4">Best Draft Builds</h2>
-            <div class="card max-w-2xl mx-auto">
-                <form id="draft-build-form" class="flex flex-col gap-4">
-                    <div class="flex flex-wrap gap-4 justify-center">
-                        <label class="flex items-center">
-                            <span class="mr-2 text-sm font-medium text-gray-200">League Size:</span>
-                            <select id="leagueSize" class="border-teal-500 bg-gray-900 bg-opacity-85 text-white rounded-xl p-1">
-                                <option>8</option>
-                                <option>10</option>
-                                <option selected>12</option>
-                                <option>14</option>
-                            </select>
-                        </label>
-                        <label class="flex items-center">
-                            <span class="mr-2 text-sm font-medium text-gray-200">Draft Pick:</span>
-                            <input type="number" id="draftPick" min="1" max="12" value="1" class="w-16 text-center border-teal-500 bg-gray-900 bg-opacity-85 text-white rounded-xl p-1" />
-                        </label>
-                        <label class="flex items-center">
-                            <span class="mr-2 text-sm font-medium text-gray-200">Scoring:</span>
-                            <select id="scoringType" class="border-teal-500 bg-gray-900 bg-opacity-85 text-white rounded-xl p-1">
-                                <option value="standard">Standard</option>
-                                <option value="ppr" selected>PPR</option>
-                                <option value="half">Half-PPR</option>
-                            </select>
-                        </label>
-                        <label class="flex items-center">
-                            <span class="mr-2 text-sm font-medium text-gray-200">Bench Size:</span>
-                            <select id="benchSize" class="border-teal-500 bg-gray-900 bg-opacity-85 text-white rounded-xl p-1">
-                                <option>4</option>
-                                <option>5</option>
-                                <option selected>6</option>
-                                <option>7</option>
-                            </select>
-                        </label>
-                        <label class="flex items-center">
-                            <span class="mr-2 text-sm font-medium text-gray-200">Draft Lineup Preset:</span>
-                            <select id="draftLineupPreset" class="border-teal-500 bg-gray-900 bg-opacity-85 text-white rounded-xl p-1">
-                                <option value="std">Standard: 1QB, 2RB, 2WR, 1TE, 1FLX, 1DST, 1K</option>
-                                <option value="ppr" selected>PPR: 1QB, 2RB, 2WR, 1TE, 1FLX, 1DST, 1K</option>
-                                <option value="superflex_redraft">SuperFlex Redraft: 1QB, 1SF, 2RB, 2WR, 1TE, 1FLX, 1DST, 1K</option>
-                                <option value="superflex_dynasty">SuperFlex Dynasty: 1QB, 1SF, 2RB, 2WR, 1TE, 2FLX, 1DST, 1K</option>
-                                <option value="half">Half-PPR: 1QB, 2RB, 2WR, 1TE, 2FLX, 1DST, 1K</option>
-                                <option value="2qb">2QB: 2QB, 2RB, 3WR, 1TE, 1FLX, 1DST, 1K</option>
-                                <option value="3wr">3WR: 1QB, 2RB, 3WR, 1TE, 1FLX, 1DST, 1K</option>
-                                <option value="2te">2TE: 1QB, 2RB, 2WR, 2TE, 1FLX, 1DST, 1K</option>
-                                <option value="deepflex">Deep FLEX: 1QB, 2RB, 2WR, 1TE, 3FLX, 1DST, 1K</option>
-                                <option value="custom">Custom</option>
-                            </select>
-                        </label>
-                        <label class="flex items-center">
-                            <span class="mr-2 text-sm font-medium text-gray-200">QB:</span>
-                            <input type="number" id="draftQbCount" min="0" max="3" value="1" class="w-12 text-center border-teal-500 bg-gray-900 bg-opacity-85 text-white rounded-xl p-1" />
-                        </label>
-                        <label class="flex items-center">
-                            <span class="mr-2 text-sm font-medium text-gray-200">SF:</span>
-                            <input type="number" id="draftSfCount" min="0" max="2" value="0" class="w-12 text-center border-teal-500 bg-gray-900 bg-opacity-85 text-white rounded-xl p-1" />
-                        </label>
-                        <label class="flex items-center">
-                            <span class="mr-2 text-sm font-medium text-gray-200">RB:</span>
-                            <input type="number" id="draftRbCount" min="0" max="5" value="2" class="w-12 text-center border-teal-500 bg-gray-900 bg-opacity-85 text-white rounded-xl p-1" />
-                        </label>
-                        <label class="flex items-center">
-                            <span class="mr-2 text-sm font-medium text-gray-200">WR:</span>
-                            <input type="number" id="draftWrCount" min="0" max="5" value="2" class="w-12 text-center border-teal-500 bg-gray-900 bg-opacity-85 text-white rounded-xl p-1" />
-                        </label>
-                        <label class="flex items-center">
-                            <span class="mr-2 text-sm font-medium text-gray-200">TE:</span>
-                            <input type="number" id="draftTeCount" min="0" max="3" value="1" class="w-12 text-center border-teal-500 bg-gray-900 bg-opacity-85 text-white rounded-xl p-1" />
-                        </label>
-                        <label class="flex items-center">
-                            <span class="mr-2 text-sm font-medium text-gray-200">FLEX:</span>
-                            <input type="number" id="draftFlexCount" min="0" max="3" value="1" class="w-12 text-center border-teal-500 bg-gray-900 bg-opacity-85 text-white rounded-xl p-1" />
-                        </label>
-                        <label class="flex items-center">
-                            <span class="mr-2 text-sm font-medium text-gray-200">DST:</span>
-                            <input type="number" id="draftDstCount" min="0" max="2" value="1" class="w-12 text-center border-teal-500 bg-gray-900 bg-opacity-85 text-white rounded-xl p-1" />
-                        </label>
-                        <label class="flex items-center">
-                            <span class="mr-2 text-sm font-medium text-gray-200">K:</span>
-                            <input type="number" id="draftKCount" min="0" max="2" value="1" class="w-12 text-center border-teal-500 bg-gray-900 bg-opacity-85 text-white rounded-xl p-1" />
-                        </label>
-                    </div>
-                    <button type="button" id="generateLineup" class="cta-btn mt-4">Generate Draft Build</button>
-                </form>
-                <div id="build-result" class="mt-6 text-gray-200"></div>
-            </div>
-        </section>
+    try {
+        const response = await fetch(scoringFiles[scoringType]);
+        if (!response.ok) throw new Error('Failed to load player data');
+        playersData = await response.json();
+        localStorage.setItem(cacheKey, JSON.stringify(playersData));
+    } catch (error) {
+        console.error('Error loading players:', error);
+        playersData = fallbackPlayers;
+        localStorage.setItem(cacheKey, JSON.stringify(playersData));
+        alert('Failed to load player data. Using fallback data.');
+    }
+}
 
-        <!-- Best Lineup Builds Tool -->
-        <section id="best-lineup-builds" class="mb-12">
-            <h2 class="section-title text-center mb-4">Best Lineup Builds</h2>
-            <div class="card max-w-2xl mx-auto">
-                <form id="lineup-build-form" class="flex flex-col gap-4">
-                    <div class="flex flex-wrap gap-4 justify-center">
-                        <label class="flex items-center">
-                            <span class="mr-2 text-sm font-medium text-gray-200">Lineup Preset:</span>
-                            <select id="lineupPreset" class="border-teal-500 bg-gray-900 bg-opacity-85 text-white rounded-xl p-1">
-                                <option value="std">Standard: 1QB, 2RB, 2WR, 1TE, 1FLX, 1DST, 1K</option>
-                                <option value="ppr" selected>PPR: 1QB, 2RB, 2WR, 1TE, 1FLX, 1DST, 1K</option>
-                                <option value="superflex_redraft">SuperFlex Redraft: 1QB, 1SF, 2RB, 2WR, 1TE, 1FLX, 1DST, 1K</option>
-                                <option value="superflex_dynasty">SuperFlex Dynasty: 1QB, 1SF, 2RB, 2WR, 1TE, 2FLX, 1DST, 1K</option>
-                                <option value="half">Half-PPR: 1QB, 2RB, 2WR, 1TE, 2FLX, 1DST, 1K</option>
-                                <option value="2qb">2QB: 2QB, 2RB, 3WR, 1TE, 1FLX, 1DST, 1K</option>
-                                <option value="3wr">3WR: 1QB, 2RB, 3WR, 1TE, 1FLX, 1DST, 1K</option>
-                                <option value="2te">2TE: 1QB, 2RB, 2WR, 2TE, 1FLX, 1DST, 1K</option>
-                                <option value="deepflex">Deep FLEX: 1QB, 2RB, 2WR, 1TE, 3FLX, 1DST, 1K</option>
-                                <option value="custom">Custom</option>
-                            </select>
-                        </label>
-                        <label class="flex items-center">
-                            <span class="mr-2 text-sm font-medium text-gray-200">QB:</span>
-                            <input type="number" id="qbCount" min="0" max="3" value="1" class="w-12 text-center border-teal-500 bg-gray-900 bg-opacity-85 text-white rounded-xl p-1" />
-                        </label>
-                        <label class="flex items-center">
-                            <span class="mr-2 text-sm font-medium text-gray-200">SF:</span>
-                            <input type="number" id="sfCount" min="0" max="2" value="0" class="w-12 text-center border-teal-500 bg-gray-900 bg-opacity-85 text-white rounded-xl p-1" />
-                        </label>
-                        <label class="flex items-center">
-                            <span class="mr-2 text-sm font-medium text-gray-200">RB:</span>
-                            <input type="number" id="rbCount" min="0" max="5" value="2" class="w-12 text-center border-teal-500 bg-gray-900 bg-opacity-85 text-white rounded-xl p-1" />
-                        </label>
-                        <label class="flex items-center">
-                            <span class="mr-2 text-sm font-medium text-gray-200">WR:</span>
-                            <input type="number" id="wrCount" min="0" max="5" value="2" class="w-12 text-center border-teal-500 bg-gray-900 bg-opacity-85 text-white rounded-xl p-1" />
-                        </label>
-                        <label class="flex items-center">
-                            <span class="mr-2 text-sm font-medium text-gray-200">TE:</span>
-                            <input type="number" id="teCount" min="0" max="3" value="1" class="w-12 text-center border-teal-500 bg-gray-900 bg-opacity-85 text-white rounded-xl p-1" />
-                        </label>
-                        <label class="flex items-center">
-                            <span class="mr-2 text-sm font-medium text-gray-200">FLEX:</span>
-                            <input type="number" id="flexCount" min="0" max="3" value="1" class="w-12 text-center border-teal-500 bg-gray-900 bg-opacity-85 text-white rounded-xl p-1" />
-                        </label>
-                        <label class="flex items-center">
-                            <span class="mr-2 text-sm font-medium text-gray-200">DST:</span>
-                            <input type="number" id="dstCount" min="0" max="2" value="1" class="w-12 text-center border-teal-500 bg-gray-900 bg-opacity-85 text-white rounded-xl p-1" />
-                        </label>
-                        <label class="flex items-center">
-                            <span class="mr-2 text-sm font-medium text-gray-200">K:</span>
-                            <input type="number" id="kCount" min="0" max="2" value="1" class="w-12 text-center border-teal-500 bg-gray-900 bg-opacity-85 text-white rounded-xl p-1" />
-                        </label>
-                    </div>
-                    <button type="button" id="generateLineupBuild" class="cta-btn mt-4">Generate Lineup Build</button>
-                </form>
-                <div id="lineup-result" class="mt-6 text-gray-200"></div>
-            </div>
-        </section>
+function calculateVORP(players, leagueSize) {
+    const positions = ['QB', 'RB', 'WR', 'TE', 'DST', 'K'];
+    const replacementRanks = {
+        QB: leagueSize + 1, // 13th QB for 12-team league
+        RB: leagueSize * 2 + 1, // 25th RB
+        WR: leagueSize * 2 + 1, // 25th WR
+        TE: leagueSize + 1, // 13th TE
+        DST: leagueSize + 1, // 13th DST
+        K: leagueSize + 1 // 13th K
+    };
 
-        <!-- Player Research Section -->
-        <section id="player-research" class="mb-12">
-            <h2 class="section-title text-center mb-4">Player Research</h2>
-            <div class="card">
-                <table class="w-full text-sm mb-6">
-                    <thead>
-                        <tr>
-                            <th class="p-2 text-left">Name</th>
-                            <th class="p-2 text-left">Position</th>
-                            <th class="p-2 text-left">Projected Points</th>
-                        </tr>
-                    </thead>
-                    <tbody id="player-table-body">
-                        <!-- Filled by script.js -->
-                    </tbody>
-                </table>
-            </div>
-        </section>
+    const replacementPoints = {};
+    positions.forEach(pos => {
+        const posPlayers = players.filter(p => p.position === pos).sort((a, b) => b.projectedPoints - a.projectedPoints);
+        const replacementPlayer = posPlayers[replacementRanks[pos] - 1] || posPlayers[posPlayers.length - 1];
+        replacementPoints[pos] = replacementPlayer ? replacementPlayer.projectedPoints : 0;
+    });
 
-        <!-- About & Tools -->
-        <section class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-10">
-            <div class="card">
-                <h2 class="section-title mb-2">About Us</h2>
-                <p>Front Row Fantasy is built by passionate fans for passionate fans. Our mission: give you the edge with real-time stats, expert tools, and a thriving community.</p>
-            </div>
-            <div class="card">
-                <h2 class="section-title mb-2">Games & Tools</h2>
-                <ul class="list-disc pl-6 mb-2 text-left">
-                    <li><a href="tools.html" class="text-teal hover:text-yellow">Trade Analyzer</a></li>
-                    <li><a href="tools.html" class="text-teal hover:text-yellow">Matchup Predictor</a></li>
-                    <li><a href="goat.html" class="text-teal hover:text-yellow">GOAT Builder</a></li>
-                </ul>
-                <a href="tools.html" class="cta-btn mt-2">Try Tools</a>
-            </div>
-        </section>
+    return players.map(player => ({
+        ...player,
+        vorp: player.projectedPoints - (replacementPoints[player.position] || 0)
+    }));
+}
 
-        <!-- Contact -->
-        <section id="contact" class="card text-center mb-10">
-            <h2 class="section-title mb-2">Contact</h2>
-            <p class="mb-2">Questions? Feedback? Reach out to us!</p>
-            <a href="mailto:info@frontrowfantasy.com" class="cta-btn">Email Us</a>
-            <div class="mt-2">
-                <a href="https://discord.com/invite/fantasyfootball" target="_blank" rel="noopener" class="text-teal hover:text-yellow">Join Discord</a>
-            </div>
-        </section>
+function weightedRandomChoice(players, topN = 5) {
+    const topPlayers = players.slice(0, Math.min(topN, players.length));
+    const weights = topPlayers.map((_, i) => 1 / (i + 1)); // Higher weight for higher-ranked players
+    const totalWeight = weights.reduce((sum, w) => sum + w, 0);
+    const normalizedWeights = weights.map(w => w / totalWeight);
+    
+    let r = Math.random();
+    for (let i = 0; i < topPlayers.length; i++) {
+        r -= normalizedWeights[i];
+        if (r <= 0) return topPlayers[i];
+    }
+    return topPlayers[topPlayers.length - 1];
+}
 
-        <!-- Scoring Type Selector -->
-        <section class="card text-center mb-10">
-            <h2 class="section-title mb-2">Select Scoring Type</h2>
-            <select id="scoringType" class="border-teal-500 bg-gray-900 bg-opacity-85 text-white rounded-xl p-1">
-                <option value="standard">Standard</option>
-                <option value="ppr" selected>PPR</option>
-                <option value="half">Half-PPR</option>
-            </select>
-        </section>
-    </main>
+function simulateSnakeDraft(players, leagueSize, draftPick, positionsNeeded, totalPicks) {
+    const draftOrder = [];
+    const availablePlayers = [...players];
+    const rounds = totalPicks;
 
-    <!-- Footer -->
-    <footer class="bg-gray-900 text-teal-400 py-6 border-t-2 border-teal-500">
-        <div class="mb-2 flex flex-wrap justify-center gap-4">
-            <a href="index.html" class="hover:text-yellow">Home</a>
-            <a href="tools.html" class="hover:text-yellow">Expert Tools</a>
-            <a href="goat.html" class="hover:text-yellow">GOAT</a>
-            <a href="guides.html" class="hover:text-yellow">Guides</a>
-            <a href="community.html" class="hover:text-yellow">Community</a>
-            <a href="players.html" class="hover:text-yellow">Players</a>
-            <a href="stats.html" class="hover:text-yellow">Stats</a>
-            <a href="#contact" class="hover:text-yellow">Contact</a>
-        </div>
-        <div class="text-center text-sm">© 2025 Front Row Fantasy. All rights reserved.</div>
-    </footer>
+    for (let round = 1; round <= rounds; round++) {
+        const pickNumber = round % 2 === 1
+            ? draftPick
+            : leagueSize + 1 - draftPick;
+        const overallPick = (round - 1) * leagueSize + pickNumber;
 
-    <!-- Player Popup Modal -->
-    <div id="player-popup" tabindex="0" aria-live="polite" class="hidden fixed z-50 bg-gray-900 bg-opacity-98 rounded-xl shadow-lg p-4 max-w-xs text-gray-200">
-        <span class="close-btn">×</span>
-    </div>
+        const playersWithVORP = calculateVORP(availablePlayers, leagueSize);
+        const eligiblePlayers = playersWithVORP.filter(p => {
+            if (positionsNeeded[p.position] && positionsNeeded[p.position] > 0) return true;
+            if (p.position === 'QB' && positionsNeeded['SF'] && positionsNeeded['SF'] > 0) return true;
+            if (['RB', 'WR', 'TE'].includes(p.position) && positionsNeeded['FLEX'] && positionsNeeded['FLEX'] > 0) return true;
+            return false;
+        }).sort((a, b) => b.vorp - a.vorp);
 
-    <!-- Scripts -->
-    <script src="script.js" defer></script>
-    <script>
-        // Mobile menu toggle
-        document.getElementById('menu-toggle').addEventListener('click', () => {
-            const mobileMenu = document.getElementById('mobile-menu');
-            mobileMenu.classList.toggle('hidden');
+        if (eligiblePlayers.length === 0) break;
+
+        const selectedPlayer = weightedRandomChoice(eligiblePlayers);
+        draftOrder.push({
+            round,
+            pick: overallPick,
+            name: selectedPlayer.name,
+            position: selectedPlayer.position,
+            team: selectedPlayer.team,
+            projectedPoints: selectedPlayer.projectedPoints,
+            vorp: selectedPlayer.vorp
         });
-    </script>
-</body>
-</html>
+
+        if (positionsNeeded[selectedPlayer.position] && positionsNeeded[selectedPlayer.position] > 0) {
+            positionsNeeded[selectedPlayer.position]--;
+        } else if (selectedPlayer.position === 'QB' && positionsNeeded['SF'] && positionsNeeded['SF'] > 0) {
+            positionsNeeded['SF']--;
+        } else if (['RB', 'WR', 'TE'].includes(selectedPlayer.position) && positionsNeeded['FLEX'] && positionsNeeded['FLEX'] > 0) {
+            positionsNeeded['FLEX']--;
+        }
+
+        availablePlayers.splice(availablePlayers.findIndex(p => p.name === selectedPlayer.name), 1);
+    }
+
+    return draftOrder;
+}
+
+async function generateDraftBuild() {
+    const leagueSize = parseInt(document.getElementById('leagueSize').value);
+    const draftPick = parseInt(document.getElementById('draftPick').value);
+    const scoringType = document.getElementById('scoringType').value;
+    const benchSize = parseInt(document.getElementById('benchSize').value);
+    const preset = document.getElementById('draftLineupPreset').value;
+
+    const positionsNeeded = preset === 'custom' ? {
+        QB: parseInt(document.getElementById('draftQbCount').value),
+        SF: parseInt(document.getElementById('draftSfCount').value),
+        RB: parseInt(document.getElementById('draftRbCount').value),
+        WR: parseInt(document.getElementById('draftWrCount').value),
+        TE: parseInt(document.getElementById('draftTeCount').value),
+        FLEX: parseInt(document.getElementById('draftFlexCount').value),
+        DST: parseInt(document.getElementById('draftDstCount').value),
+        K: parseInt(document.getElementById('draftKCount').value)
+    } : {
+        std: { QB: 1, SF: 0, RB: 2, WR: 2, TE: 1, FLEX: 1, DST: 1, K: 1 },
+        ppr: { QB: 1, SF: 0, RB: 2, WR: 2, TE: 1, FLEX: 1, DST: 1, K: 1 },
+        superflex_redraft: { QB: 1, SF: 1, RB: 2, WR: 2, TE: 1, FLEX: 1, DST: 1, K: 1 },
+        superflex_dynasty: { QB: 1, SF: 1, RB: 2, WR: 2, TE: 1, FLEX: 2, DST: 1, K: 1 },
+        half: { QB: 1, SF: 0, RB: 2, WR: 2, TE: 1, FLEX: 2, DST: 1, K: 1 },
+        '2qb': { QB: 2, SF: 0, RB: 2, WR: 3, TE: 1, FLEX: 1, DST: 1, K: 1 },
+        '3wr': { QB: 1, SF: 0, RB: 2, WR: 3, TE: 1, FLEX: 1, DST: 1, K: 1 },
+        '2te': { QB: 1, SF: 0, RB: 2, WR: 2, TE: 2, FLEX: 1, DST: 1, K: 1 },
+        deepflex: { QB: 1, SF: 0, RB: 2, WR: 2, TE: 1, FLEX: 3, DST: 1, K: 1 }
+    }[preset];
+
+    const totalPicks = Object.values(positionsNeeded).reduce((sum, count) => sum + count, 0) + benchSize;
+
+    document.getElementById('loading-spinner').classList.remove('hidden');
+    await loadPlayers(scoringType);
+    const draftOrder = simulateSnakeDraft(playersData, leagueSize, draftPick, positionsNeeded, totalPicks);
+    document.getElementById('loading-spinner').classList.add('hidden');
+
+    const resultDiv = document.getElementById('build-result');
+    resultDiv.innerHTML = '<h3 class="text-lg font-semibold text-yellow">Your Draft Build</h3><ul class="list-disc pl-6 mt-2"></ul>';
+    const ul = resultDiv.querySelector('ul');
+    draftOrder.forEach(player => {
+        ul.innerHTML += `<li class="player-pos-${player.position}">${player.round}. ${player.name} (${player.position}, ${player.team}) - ${player.projectedPoints.toFixed(1)} pts (VORP: ${player.vorp.toFixed(1)})</li>`;
+    });
+}
+
+function updatePlayerTable(players) {
+    const tbody = document.getElementById('player-table-body');
+    tbody.innerHTML = '';
+    players.slice(0, 10).forEach(player => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+            <td class="p-2">${player.name}</td>
+            <td class="p-2 player-pos-${player.position}">${player.position}</td>
+            <td class="p-2">${player.projectedPoints.toFixed(1)}</td>
+        `;
+        tr.addEventListener('click', () => showPlayerPopup(player));
+        tbody.appendChild(tr);
+    });
+}
+
+function showPlayerPopup(player) {
+    const popup = document.getElementById('player-popup');
+    popup.innerHTML = `
+        <span class="close-btn">×</span>
+        <h3 class="text-lg font-bold">${player.name}</h3>
+        <p>Position: <span class="player-pos-${player.position}">${player.position}</span></p>
+        <p>Team: ${player.team}</p>
+        <p>Projected Points: ${player.projectedPoints.toFixed(1)}</p>
+    `;
+    popup.classList.remove('hidden');
+    popup.style.top = '50%';
+    popup.style.left = '50%';
+    popup.style.transform = 'translate(-50%, -50%)';
+    popup.querySelector('.close-btn').addEventListener('click', () => popup.classList.add('hidden'));
+}
+
+function updateTicker(players) {
+    const tickerContent = document.getElementById('tickerContent');
+    tickerContent.innerHTML = '';
+    players.forEach(player => {
+        const span = document.createElement('span');
+        span.className = `ticker-player player-pos-${player.position}`;
+        span.innerHTML = `
+            <span class="player-name">${player.name}</span>
+            <span class="player-team">(${player.team})</span>
+            <span class="player-pts">${player.projectedPoints.toFixed(1)} pts</span>
+        `;
+        tickerContent.appendChild(span);
+    });
+    tickerContent.style.animation = isPaused ? 'none' : 'marquee 20s linear infinite';
+}
+
+document.getElementById('pauseButton').addEventListener('click', () => {
+    isPaused = !isPaused;
+    document.getElementById('pauseButton').textContent = isPaused ? 'Resume' : 'Pause';
+    document.getElementById('tickerContent').style.animation = isPaused ? 'none' : 'marquee 20s linear infinite';
+});
+
+document.getElementById('scoringType').addEventListener('change', async () => {
+    const scoringType = document.getElementById('scoringType').value;
+    document.getElementById('loading-spinner').classList.remove('hidden');
+    await loadPlayers(scoringType);
+    updatePlayerTable(playersData);
+    updateTicker(playersData.slice(0, 10));
+    document.getElementById('loading-spinner').classList.add('hidden');
+});
+
+document.getElementById('generateLineup').addEventListener('click', generateDraftBuild);
+
+document.getElementById('generateLineupBuild').addEventListener('click', () => {
+    const preset = document.getElementById('lineupPreset').value;
+    const positions = preset === 'custom' ? {
+        QB: parseInt(document.getElementById('qbCount').value),
+        SF: parseInt(document.getElementById('sfCount').value),
+        RB: parseInt(document.getElementById('rbCount').value),
+        WR: parseInt(document.getElementById('wrCount').value),
+        TE: parseInt(document.getElementById('teCount').value),
+        FLEX: parseInt(document.getElementById('flexCount').value),
+        DST: parseInt(document.getElementById('dstCount').value),
+        K: parseInt(document.getElementById('kCount').value)
+    } : {
+        std: { QB: 1, SF: 0, RB: 2, WR: 2, TE: 1, FLEX: 1, DST: 1, K: 1 },
+        ppr: { QB: 1, SF: 0, RB: 2, WR: 2, TE: 1, FLEX: 1, DST: 1, K: 1 },
+        superflex_redraft: { QB: 1, SF: 1, RB: 2, WR: 2, TE: 1, FLEX: 1, DST: 1, K: 1 },
+        superflex_dynasty: { QB: 1, SF: 1, RB: 2, WR: 2, TE: 1, FLEX: 2, DST: 1, K: 1 },
+        half: { QB: 1, SF: 0, RB: 2, WR: 2, TE: 1, FLEX: 2, DST: 1, K: 1 },
+        '2qb': { QB: 2, SF: 0, RB: 2, WR: 3, TE: 1, FLEX: 1, DST: 1, K: 1 },
+        '3wr': { QB: 1, SF: 0, RB: 2, WR: 3, TE: 1, FLEX: 1, DST: 1, K: 1 },
+        '2te': { QB: 1, SF: 0, RB: 2, WR: 2, TE: 2, FLEX: 1, DST: 1, K: 1 },
+        deepflex: { QB: 1, SF: 0, RB: 2, WR: 2, TE: 1, FLEX: 3, DST: 1, K: 1 }
+    }[preset];
+
+    const resultDiv = document.getElementById('lineup-result');
+    const playersCopy = [...playersData];
+    const lineup = [];
+    
+    Object.entries(positions).forEach(([pos, count]) => {
+        if (count === 0) return;
+        let eligiblePlayers = pos === 'FLEX' 
+            ? playersCopy.filter(p => ['RB', 'WR', 'TE'].includes(p.position))
+            : pos === 'SF' 
+            ? playersCopy.filter(p => p.position === 'QB')
+            : playersCopy.filter(p => p.position === pos);
+        
+        eligiblePlayers = eligiblePlayers.sort((a, b) => b.projectedPoints - a.projectedPoints);
+        
+        for (let i = 0; i < count && eligiblePlayers.length > 0; i++) {
+            const player = eligiblePlayers[0];
+            lineup.push(player);
+            playersCopy.splice(playersCopy.findIndex(p => p.name === player.name), 1);
+            eligiblePlayers = eligiblePlayers.slice(1);
+        }
+    });
+
+    resultDiv.innerHTML = '<h3 class="text-lg font-semibold text-yellow">Your Lineup Build</h3><ul class="list-disc pl-6 mt-2"></ul>';
+    const ul = resultDiv.querySelector('ul');
+    lineup.forEach(player => {
+        ul.innerHTML += `<li class="player-pos-${player.position}">${player.name} (${player.position}, ${player.team}) - ${player.projectedPoints.toFixed(1)} pts</li>`;
+    });
+});
+
+document.addEventListener('DOMContentLoaded', async () => {
+    await loadPlayers('ppr');
+    updatePlayerTable(playersData);
+    updateTicker(playersData.slice(0, 10));
+});
