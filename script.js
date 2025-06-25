@@ -140,11 +140,15 @@ document.addEventListener('DOMContentLoaded', () => {
             playersData.sort((a, b) => b.value - a.value);
 
             // Only initialize autocomplete if the elements exist
+            const player1Search = document.getElementById('player1-search');
+            const player1Autocomplete = document.getElementById('player1-autocomplete');
+            const player2Search = document.getElementById('player2-search');
+            const player2Autocomplete = document.getElementById('player2-autocomplete');
             if (
-                document.getElementById('player1-search') &&
-                document.getElementById('player1-autocomplete') &&
-                document.getElementById('player2-search') &&
-                document.getElementById('player2-autocomplete')
+                player1Search &&
+                player1Autocomplete &&
+                player2Search &&
+                player2Autocomplete
             ) {
                 autocomplete('player1-search', 'player1-autocomplete', team1, team2, 'team1-players');
                 autocomplete('player2-search', 'player2-autocomplete', team2, team1, 'team2-players');
