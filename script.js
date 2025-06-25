@@ -346,43 +346,32 @@ Age: ${player.age || "?"} | Injury: ${player.injury_status || "Healthy"} | Bye: 
     });
 });
 
-// Fantasy Ticker - API player names, dummy points
+// --- Universal Fantasy Ticker (for all pages) ---
 document.addEventListener('DOMContentLoaded', function () {
     const tickerContent = document.getElementById('tickerContent');
     const pauseButton = document.getElementById('pauseButton');
     if (!tickerContent || !pauseButton) return;
     let paused = false, animationFrame, pos = 0;
 
-    function posColor(pos) {
-        switch (pos) {
-            case "QB": return "player-pos-QB";
-            case "RB": return "player-pos-RB";
-            case "WR": return "player-pos-WR";
-            case "TE": return "player-pos-TE";
-            default: return "";
-        }
-    }
-
-    async function buildTickerFromAPI() {
-        tickerContent.innerHTML = '<span class="loading text-white">Loading fantasy points...</span>';
+    // Try to use API, fallback to static
+    async function buildTicker() {
         try {
             const res = await fetch('https://api.sleeper.app/v1/players/nfl');
             const data = await res.json();
-            // Get top 6 active players with a team and position
             const players = Object.values(data)
                 .filter(p => p.active && p.team && ['QB','RB','WR','TE'].includes(p.position))
-                .slice(0, 6)
+                .slice(0, 8)
                 .map(p => ({
                     player: p.full_name,
                     team: p.team,
                     pos: p.position,
-                    pts: (Math.random() * 10 + 15).toFixed(1) // Dummy points 15-25
+                    pts: (Math.random() * 10 + 15).toFixed(1)
                 }));
             tickerContent.innerHTML = '';
             for (let loop = 0; loop < 2; loop++) {
                 players.forEach(item => {
                     const span = document.createElement('span');
-                    span.className = `ticker-player ${posColor(item.pos)}`;
+                    span.className = `ticker-player player-pos-${item.pos}`;
                     span.innerHTML = `
                         <span class="player-name">${item.player}</span>
                         <span class="player-team">(${item.team} ${item.pos})</span>
@@ -391,11 +380,31 @@ document.addEventListener('DOMContentLoaded', function () {
                     tickerContent.appendChild(span);
                 });
             }
-        } catch (e) {
-            tickerContent.innerHTML = '<span class="text-red-400">Failed to load ticker data.</span>';
+        } catch {
+            // fallback static
+            const tickerData = [
+                { player: "Josh Allen", team: "BUF", pos: "QB", pts: 25.4 },
+                { player: "Patrick Mahomes", team: "KC", pos: "QB", pts: 24.8 },
+                { player: "Christian McCaffrey", team: "SF", pos: "RB", pts: 20.5 },
+                { player: "Tyreek Hill", team: "MIA", pos: "WR", pts: 19.8 },
+                { player: "Justin Jefferson", team: "MIN", pos: "WR", pts: 19.2 },
+                { player: "Travis Kelce", team: "KC", pos: "TE", pts: 18.9 }
+            ];
+            tickerContent.innerHTML = '';
+            for (let loop = 0; loop < 2; loop++) {
+                tickerData.forEach(item => {
+                    const span = document.createElement('span');
+                    span.className = `ticker-player player-pos-${item.pos}`;
+                    span.innerHTML = `
+                        <span class="player-name">${item.player}</span>
+                        <span class="player-team">(${item.team} ${item.pos})</span>
+                        <span class="player-pts">${item.pts} pts</span>
+                    `;
+                    tickerContent.appendChild(span);
+                });
+            }
         }
     }
-
     function animateTicker() {
         if (!paused) {
             pos -= 1.1;
@@ -404,13 +413,278 @@ document.addEventListener('DOMContentLoaded', function () {
         }
         animationFrame = requestAnimationFrame(animateTicker);
     }
-
     pauseButton.addEventListener('click', function () {
         paused = !paused;
         pauseButton.setAttribute('aria-pressed', paused ? 'true' : 'false');
         pauseButton.textContent = paused ? 'Resume' : 'Pause';
     });
-
-    buildTickerFromAPI();
+    buildTicker();
     animateTicker();
+});
+
+// --- GOAT Draft Tool Logic (only runs if elements exist) ---
+document.addEventListener('DOMContentLoaded', function () {
+    // Only run if draft build exists
+    if (!document.getElementById('generateLineup')) return;
+
+    let allPlayers = [];
+    let currentScoring = 'ppr';
+
+    const scoringFiles = {
+        'ppr': 'PPR.json',
+        'half': 'Half PPR.json',
+        'standard': 'Standard ADP.json'
+    };
+
+    function getScoringType() {
+        const sel = document.getElementById('scoringType');
+        return sel ? sel.value : 'ppr';
+    }
+
+    function posColor(pos) {
+        if (!pos) return "";
+        if (pos.startsWith('QB')) return "player-pos-QB";
+        if (pos.startsWith('RB')) return "player-pos-RB";
+        if (pos.startsWith('WR')) return "player-pos-WR";
+        if (pos.startsWith('TE')) return "player-pos-TE";
+        return "";
+    }
+
+    function loadPlayersAndInitTools(scoringType) {
+        const jsonFile = scoringFiles[scoringType] || scoringFiles['ppr'];
+        fetch(jsonFile)
+            .then(res => res.json())
+            .then(data => {
+                allPlayers = data;
+                buildPlayerTable();
+            });
+    }
+
+    function buildPlayerTable() {
+        const tableBody = document.getElementById('player-table-body');
+        if (!tableBody) return;
+        tableBody.innerHTML = allPlayers.slice(0, 20).map(p => `
+            <tr class="player-row" data-player="${p.Player}">
+                <td class="player-name ${posColor(p.POS)}">${p.Player}</td>
+                <td>${p.POS}</td>
+                <td>${p.AVG}</td>
+            </tr>
+        `).join('');
+        document.querySelectorAll('.player-row').forEach(row => {
+            row.addEventListener('click', function (e) {
+                const player = row.dataset.player;
+                const p = allPlayers.find(x => x.Player === player);
+                const popup = document.getElementById('player-popup');
+                popup.innerHTML = `
+                    <span class="close-btn" onclick="document.getElementById('player-popup').classList.add('hidden')">&times;</span>
+                    <h4 class="font-bold text-lg mb-1">${p.Player}</h4>
+                    <div class="mb-2">Position: <span class="${posColor(p.POS)}">${p.POS}</span></div>
+                    <div class="mb-2">Team: <span class="text-teal">${p.Team}</span></div>
+                    <div class="mb-2">Bye: <span class="text-yellow">${p.Bye}</span></div>
+                    <div class="mb-2">ADP: <span class="text-yellow">${p.AVG}</span></div>
+                    <div class="mb-2">Bio: <span class="text-gray-700">Elite fantasy performer. Click for more stats soon!</span></div>
+                `;
+                popup.classList.remove('hidden');
+                popup.style.top = (e.clientY + 10) + 'px';
+                popup.style.left = (e.clientX + 10) + 'px';
+            });
+        });
+    }
+
+    // Draft Lineup Preset logic
+    const draftLineupPreset = document.getElementById('draftLineupPreset');
+    if (draftLineupPreset) {
+        draftLineupPreset.value = 'ppr';
+        draftLineupPreset.dispatchEvent(new Event('change'));
+        draftLineupPreset.addEventListener('change', function () {
+            const draftQbCount = document.getElementById('draftQbCount');
+            const draftSfCount = document.getElementById('draftSfCount');
+            const draftRbCount = document.getElementById('draftRbCount');
+            const draftWrCount = document.getElementById('draftWrCount');
+            const draftTeCount = document.getElementById('draftTeCount');
+            const draftFlexCount = document.getElementById('draftFlexCount');
+            const draftDstCount = document.getElementById('draftDstCount');
+            const draftKCount = document.getElementById('draftKCount');
+            const preset = this.value;
+            if (preset === 'std' || preset === 'ppr') {
+                draftQbCount.value = 1; draftSfCount && (draftSfCount.value = 0); draftRbCount.value = 2; draftWrCount.value = 2; draftTeCount.value = 1; draftFlexCount.value = 1; draftDstCount.value = 1; draftKCount.value = 1;
+            } else if (preset === 'superflex_redraft') {
+                draftQbCount.value = 1; draftSfCount && (draftSfCount.value = 1); draftRbCount.value = 2; draftWrCount.value = 2; draftTeCount.value = 1; draftFlexCount.value = 1; draftDstCount.value = 1; draftKCount.value = 1;
+            } else if (preset === 'superflex_dynasty') {
+                draftQbCount.value = 1; draftSfCount && (draftSfCount.value = 1); draftRbCount.value = 2; draftWrCount.value = 2; draftTeCount.value = 1; draftFlexCount.value = 2; draftDstCount.value = 1; draftKCount.value = 1;
+            } else if (preset === 'half') {
+                draftQbCount.value = 1; draftSfCount && (draftSfCount.value = 0); draftRbCount.value = 2; draftWrCount.value = 2; draftTeCount.value = 1; draftFlexCount.value = 2; draftDstCount.value = 1; draftKCount.value = 1;
+            } else if (preset === '2qb') {
+                draftQbCount.value = 2; draftSfCount && (draftSfCount.value = 0); draftRbCount.value = 2; draftWrCount.value = 3; draftTeCount.value = 1; draftFlexCount.value = 1; draftDstCount.value = 1; draftKCount.value = 1;
+            } else if (preset === '3wr') {
+                draftQbCount.value = 1; draftSfCount && (draftSfCount.value = 0); draftRbCount.value = 2; draftWrCount.value = 3; draftTeCount.value = 1; draftFlexCount.value = 1; draftDstCount.value = 1; draftKCount.value = 1;
+            } else if (preset === '2te') {
+                draftQbCount.value = 1; draftSfCount && (draftSfCount.value = 0); draftRbCount.value = 2; draftWrCount.value = 2; draftTeCount.value = 2; draftFlexCount.value = 1; draftDstCount.value = 1; draftKCount.value = 1;
+            } else if (preset === 'deepflex') {
+                draftQbCount.value = 1; draftSfCount && (draftSfCount.value = 0); draftRbCount.value = 2; draftWrCount.value = 2; draftTeCount.value = 1; draftFlexCount.value = 3; draftDstCount.value = 1; draftKCount.value = 1;
+            }
+        });
+    }
+
+    // Best Draft Builds Tool
+    const generateLineupBtn = document.getElementById('generateLineup');
+    if (generateLineupBtn) {
+        generateLineupBtn.addEventListener('click', function () {
+            const leagueSize = parseInt(document.getElementById('leagueSize').value, 10);
+            const draftPick = parseInt(document.getElementById('draftPick').value, 10);
+            const scoringType = getScoringType();
+            const benchSize = parseInt(document.getElementById('benchSize').value, 10);
+
+            // Get lineup counts from form
+            const draftQbCount = document.getElementById('draftQbCount');
+            const draftSfCount = document.getElementById('draftSfCount');
+            const draftRbCount = document.getElementById('draftRbCount');
+            const draftWrCount = document.getElementById('draftWrCount');
+            const draftTeCount = document.getElementById('draftTeCount');
+            const draftFlexCount = document.getElementById('draftFlexCount');
+            const draftDstCount = document.getElementById('draftDstCount');
+            const draftKCount = document.getElementById('draftKCount');
+            const qb = parseInt(draftQbCount.value, 10);
+            const sf = draftSfCount ? parseInt(draftSfCount.value, 10) : 0;
+            const rb = parseInt(draftRbCount.value, 10);
+            const wr = parseInt(draftWrCount.value, 10);
+            const te = parseInt(draftTeCount.value, 10);
+            const flex = parseInt(draftFlexCount.value, 10);
+            const dst = parseInt(draftDstCount.value, 10);
+            const k = parseInt(draftKCount.value, 10);
+
+            const result = document.getElementById('build-result');
+
+            // Build positional needs for all teams
+            function buildTeamNeeds() {
+                let needs = [];
+                for (let i = 0; i < leagueSize; i++) {
+                    needs.push([
+                        ...Array(qb).fill('QB'),
+                        ...Array(sf).fill('SF'),
+                        ...Array(rb).fill('RB'),
+                        ...Array(wr).fill('WR'),
+                        ...Array(te).fill('TE'),
+                        ...Array(flex).fill('FLEX'),
+                        ...Array(dst).fill('DST'),
+                        ...Array(k).fill('K'),
+                        ...Array(benchSize).fill('BENCH')
+                    ]);
+                }
+                return needs;
+            }
+
+            // Helper: Get best available for a need, with ADP randomness
+            function getBestAvailableWithRandomness(pos, taken, round, totalRounds) {
+                let filterFn;
+                if (pos === 'SF') {
+                    filterFn = p => !taken.has(p.Player) && /^(QB|RB|WR|TE)/.test(p.POS);
+                } else if (pos === 'FLEX') {
+                    filterFn = p => !taken.has(p.Player) && /^(RB|WR|TE)/.test(p.POS);
+                } else if (pos === 'DST') {
+                    filterFn = p => !taken.has(p.Player) && p.POS === 'DST';
+                } else if (pos === 'K') {
+                    filterFn = p => !taken.has(p.Player) && p.POS === 'K';
+                } else if (pos === 'BENCH') {
+                    filterFn = p => !taken.has(p.Player) && /^(RB|WR|TE|QB)/.test(p.POS);
+                } else {
+                    filterFn = p => !taken.has(p.Player) && p.POS.startsWith(pos);
+                }
+                let candidates = draftBoard.filter(filterFn);
+                if (candidates.length === 0) candidates = draftBoard.filter(p => !taken.has(p.Player));
+                if (candidates.length === 0) return null;
+                let randomness = Math.floor((round / totalRounds) * Math.min(10, candidates.length));
+                let pickIdx = Math.floor(Math.random() * (randomness + 1));
+                return candidates[pickIdx] || candidates[0];
+            }
+
+            // --- Simulate a full snake draft with ADP randomness ---
+            const draftBoard = [...allPlayers]
+                .filter(p => p.AVG !== undefined)
+                .sort((a, b) => a.AVG - b.AVG);
+
+            let teamNeeds = buildTeamNeeds();
+            let taken = new Set();
+            let picks = [];
+            let totalRounds = teamNeeds[0].length;
+
+            for (let round = 1; round <= totalRounds; round++) {
+                let order = [];
+                if (round % 2 === 1) {
+                    for (let i = 0; i < leagueSize; i++) order.push(i);
+                } else {
+                    for (let i = leagueSize - 1; i >= 0; i--) order.push(i);
+                }
+                for (let i = 0; i < leagueSize; i++) {
+                    let teamIdx = order[i];
+                    let need = teamNeeds[teamIdx].shift();
+                    let player = getBestAvailableWithRandomness(need, taken, round, totalRounds);
+                    if (!player) continue;
+                    taken.add(player.Player);
+                    if (teamIdx + 1 === draftPick) {
+                        picks.push({
+                            ...player,
+                            slot: need,
+                            round,
+                            pickNum: i + 1,
+                            overallPick: (round - 1) * leagueSize + (i + 1)
+                        });
+                    }
+                }
+            }
+
+            result.innerHTML = `
+                <div class="bg-glass rounded-xl p-4 mt-2">
+                    <h3 class="font-bold text-lg mb-2 text-yellow">Recommended Draft Build (${scoringType.toUpperCase()})</h3>
+                    <ul class="list-disc ml-6 text-left">
+                        <li>League Size: <span class="text-teal">${leagueSize}</span></li>
+                        <li>Draft Pick: <span class="text-teal">${draftPick}</span></li>
+                        <li>Scoring: <span class="text-teal">${scoringType.toUpperCase()}</span></li>
+                        <li>Bench Size: <span class="text-teal">${benchSize}</span></li>
+                    </ul>
+                    <h4 class="font-semibold mt-4 mb-2 text-orange">Your Draft Picks</h4>
+                    <table class="w-full text-sm mb-4">
+                        <thead>
+                            <tr>
+                                <th>Round</th>
+                                <th>Pick</th>
+                                <th>Player</th>
+                                <th>Team</th>
+                                <th>Pos</th>
+                                <th>Slot</th>
+                                <th>ADP</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${picks.map(p => `
+                                <tr>
+                                    <td>${p.round}</td>
+                                    <td>${p.pickNum}</td>
+                                    <td><span class="font-bold ${posColor(p.POS)}">${p.Player}</span></td>
+                                    <td>${p.Team || ''}</td>
+                                    <td>${p.POS}</td>
+                                    <td>${p.slot}</td>
+                                    <td>${p.AVG}</td>
+                                </tr>
+                            `).join('')}
+                        </tbody>
+                    </table>
+                    <div class="mt-4 text-green font-semibold">Strategy: Draft sim uses ADP as a base, but randomness increases each round to reflect real draft chaos. Early rounds are chalk, late rounds are wild.</div>
+                </div>
+            `;
+        });
+    }
+
+    // Scoring type change: reload players and update tools
+    const scoringTypeSelect = document.getElementById('scoringType');
+    if (scoringTypeSelect) {
+        scoringTypeSelect.addEventListener('change', function () {
+            currentScoring = this.value;
+            loadPlayersAndInitTools(currentScoring);
+        });
+    }
+
+    // Initial load
+    if (scoringTypeSelect) scoringTypeSelect.value = currentScoring;
+    loadPlayersAndInitTools(currentScoring);
 });
