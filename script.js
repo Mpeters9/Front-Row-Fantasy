@@ -1,9 +1,8 @@
 document.addEventListener('DOMContentLoaded', () => {
     const $ = id => document.getElementById(id);
 
-    // Only run trade analyzer code if the main button exists
+    // --- Trade Analyzer Logic ---
     if ($('analyzeTradeBtn')) {
-        // --- Player data fallback ---
         let playersData = [
             { name: 'Christian McCaffrey', pos: 'RB', team: 'SF', adp: 1, points: 22.5, td: 1, fumble: 0, passTds: 0, receptions: 80 },
             { name: 'CeeDee Lamb', pos: 'WR', team: 'DAL', adp: 6, points: 20.1, td: 1, fumble: 0, passTds: 0, receptions: 100 },
@@ -123,10 +122,8 @@ document.addEventListener('DOMContentLoaded', () => {
             lineupBenchSizeSelect.addEventListener('change', syncBench);
         }
 
-        // --- Fetch Sleeper Players (stub, replace with real fetch if needed) ---
+        // --- Fetch Sleeper Players ---
         async function fetchSleeperPlayers() {
-            // You can replace this with a real fetch if you want live data
-            // For now, just use the fallback data
             playersData = playersData.map(p => ({
                 ...p,
                 injury_status: "Healthy",
@@ -135,21 +132,15 @@ document.addEventListener('DOMContentLoaded', () => {
                 fantasy_points_2023: p.points,
                 img: `https://static.www.nfl.com/image/private/t_headshot_desktop/league/api/players/${encodeURIComponent(p.name.replace(/\s/g, '_').toLowerCase())}.png`,
                 pts: p.points,
-                value: p.points // Used for trade value
+                value: p.points
             }));
             playersData.sort((a, b) => b.value - a.value);
 
-            // Only initialize autocomplete if the elements exist
             const player1Search = document.getElementById('player1-search');
             const player1Autocomplete = document.getElementById('player1-autocomplete');
             const player2Search = document.getElementById('player2-search');
             const player2Autocomplete = document.getElementById('player2-autocomplete');
-            if (
-                player1Search &&
-                player1Autocomplete &&
-                player2Search &&
-                player2Autocomplete
-            ) {
+            if (player1Search && player1Autocomplete && player2Search && player2Autocomplete) {
                 autocomplete('player1-search', 'player1-autocomplete', team1, team2, 'team1-players');
                 autocomplete('player2-search', 'player2-autocomplete', team2, team1, 'team2-players');
             }
@@ -158,7 +149,7 @@ document.addEventListener('DOMContentLoaded', () => {
             renderRecentTrades();
         }
 
-        // 2. Trade Value Calculation (advanced)
+        // --- Trade Value Calculation ---
         function calculateTradeValue(player, currentWeek = 1) {
             let base = player.fantasy_points_2023 || 0;
             if (player.position === 'RB') base *= 1.18;
@@ -177,7 +168,7 @@ document.addEventListener('DOMContentLoaded', () => {
             return Math.round(base);
         }
 
-        // 3. Autocomplete (shows injury/team)
+        // --- Autocomplete ---
         function autocomplete(inputId, listId, teamArr, otherTeamArr, teamDivId) {
             const input = document.getElementById(inputId);
             const list = document.getElementById(listId);
@@ -206,7 +197,7 @@ document.addEventListener('DOMContentLoaded', () => {
             input.addEventListener('blur', () => setTimeout(() => list.innerHTML = '', 150));
         }
 
-        // 4. Render Team (shows tooltip with age/injury)
+        // --- Render Team ---
         function renderTeam(divId, teamArr, teamKey) {
             const div = document.getElementById(divId);
             div.innerHTML = '';
@@ -223,7 +214,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         <div class="text-yellow font-semibold">${player.pts} pts</div>
                         <div class="text-xs text-gray-400">Bye: ${player.bye} | <span class="${player.injury_status !== "Healthy" ? "text-red-600" : "text-green-600"}">${player.injury_status}</span></div>
                     </div>
-                    <button class="remove-btn" title="Remove Player">&times;</button>
+                    <button class="remove-btn" title="Remove Player">×</button>
                 `;
                 card.querySelector('.remove-btn').onclick = () => {
                     teamArr.splice(idx, 1);
@@ -248,14 +239,14 @@ document.addEventListener('DOMContentLoaded', () => {
             };
         }
 
-        // 5. Swap Teams
+        // --- Swap Teams ---
         function swapTeams() {
             [team1, team2] = [team2, team1];
             renderTeam('team1-players', team1, 'team1');
             renderTeam('team2-players', team2, 'team2');
         }
 
-        // 6. Analyze Trade (contextual advice and warnings)
+        // --- Analyze Trade ---
         function analyzeTrade() {
             if (!team1.length && !team2.length) return;
             const team1Value = team1.reduce((a, p) => a + p.value, 0);
@@ -269,7 +260,6 @@ document.addEventListener('DOMContentLoaded', () => {
             else { fairnessText = "Lopsided!"; color = "bg-red-600"; emoji = "🔴"; }
             document.getElementById('trade-fairness').innerHTML = `<span class="px-3 py-1 rounded ${color} text-white">${emoji} ${fairnessText}</span>`;
 
-            // Chart
             const ctx = document.getElementById('tradeValueChart').getContext('2d');
             if (window.tradeChart) window.tradeChart.destroy();
             window.tradeChart = new Chart(ctx, {
@@ -285,7 +275,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 options: { plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true } } }
             });
 
-            // Contextual AI Advice
             let advice = '';
             const t1Injured = team1.filter(p => p.injury_status && p.injury_status !== "Healthy");
             const t2Injured = team2.filter(p => p.injury_status && p.injury_status !== "Healthy");
@@ -300,17 +289,13 @@ document.addEventListener('DOMContentLoaded', () => {
             else if (team1Value > team2Value) advice = `Team 1 is getting more value. Team 2, ask for a sweetener!`;
             else advice = `Team 2 is getting the edge. Team 1, try to negotiate for more!`;
 
-            // Bye week overlap warning
             if (t1Byes.some(bye => t2Byes.includes(bye))) advice += " ⚠️ Watch out for bye week overlap!";
-            // Injured player warning
             if (t1Injured.length || t2Injured.length) advice += ` ⚠️ Injured player(s) in trade: ${[...t1Injured, ...t2Injured].map(p => p.name).join(', ')}`;
-            // Roster depth warning
             if (team1.length > 0 && t1RBs.length === 0 && t1WRs.length === 0) advice += " ⚠️ Team 1 is trading away all RBs/WRs!";
             if (team2.length > 0 && t2RBs.length === 0 && t2WRs.length === 0) advice += " ⚠️ Team 2 is trading away all RBs/WRs!";
 
             document.getElementById('ai-advice').textContent = advice;
 
-            // Save to recent trades
             const tradeSummary = `${team1.map(p=>p.name).join(', ') || 'None'} ⇄ ${team2.map(p=>p.name).join(', ') || 'None'} (${fairnessText})`;
             let trades = JSON.parse(localStorage.getItem('recentTrades') || '[]');
             trades.unshift(tradeSummary);
@@ -324,7 +309,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (swapTeamsBtn) swapTeamsBtn.disabled = false;
         }
 
-        // 7. Recent Trades
+        // --- Recent Trades ---
         function renderRecentTrades() {
             const trades = JSON.parse(localStorage.getItem('recentTrades') || '[]');
             const ul = document.getElementById('recentTrades');
@@ -336,7 +321,7 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         }
 
-        // 8. Clear All
+        // --- Clear All ---
         function clearAll() {
             team1 = [];
             team2 = [];
@@ -347,7 +332,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (window.tradeChart) window.tradeChart.destroy();
         }
 
-        // 9. Export/Share
+        // --- Export/Share ---
         function exportTrade() {
             const summary = `${team1.map(p=>p.name).join(', ') || 'None'} ⇄ ${team2.map(p=>p.name).join(', ') || 'None'}`;
             navigator.clipboard.writeText(`Check out this trade on Front Row Fantasy: ${summary}`).then(() => {
@@ -355,7 +340,7 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         }
 
-        // 10. Initialize everything after fetching players
+        // --- Initialize Trade Analyzer ---
         fetchSleeperPlayers().then(() => {
             $('analyzeTradeBtn').onclick = analyzeTrade;
             $('clearAllBtn').onclick = clearAll;
@@ -363,86 +348,81 @@ document.addEventListener('DOMContentLoaded', () => {
             $('swapTeamsBtn').onclick = swapTeams;
         });
     }
-});
 
-// --- Universal Fantasy Ticker (for all pages) ---
-document.addEventListener('DOMContentLoaded', function () {
+    // --- Universal Fantasy Ticker ---
     const tickerContent = document.getElementById('tickerContent');
     const pauseButton = document.getElementById('pauseButton');
-    if (!tickerContent || !pauseButton) return;
-    let paused = false, animationFrame, pos = 0;
+    if (tickerContent && pauseButton) {
+        let paused = false, animationFrame, pos = 0;
 
-    // Try to use API, fallback to static
-    async function buildTicker() {
-        try {
-            const res = await fetch('https://api.sleeper.app/v1/players/nfl');
-            const data = await res.json();
-            const players = Object.values(data)
-                .filter(p => p.active && p.team && ['QB','RB','WR','TE'].includes(p.position))
-                .slice(0, 8)
-                .map(p => ({
-                    player: p.full_name,
-                    team: p.team,
-                    pos: p.position,
-                    pts: (Math.random() * 10 + 15).toFixed(1)
-                }));
-            tickerContent.innerHTML = '';
-            for (let loop = 0; loop < 2; loop++) {
-                players.forEach(item => {
-                    const span = document.createElement('span');
-                    span.className = `ticker-player player-pos-${item.pos}`;
-                    span.innerHTML = `
-                        <span class="player-name">${item.player}</span>
-                        <span class="player-team">(${item.team} ${item.pos})</span>
-                        <span class="player-pts">${item.pts} pts</span>
-                    `;
-                    tickerContent.appendChild(span);
-                });
-            }
-        } catch {
-            // fallback static
-            const tickerData = [
-                { player: "Josh Allen", team: "BUF", pos: "QB", pts: 25.4 },
-                { player: "Patrick Mahomes", team: "KC", pos: "QB", pts: 24.8 },
-                { player: "Christian McCaffrey", team: "SF", pos: "RB", pts: 20.5 },
-                { player: "Tyreek Hill", team: "MIA", pos: "WR", pts: 19.8 },
-                { player: "Justin Jefferson", team: "MIN", pos: "WR", pts: 19.2 },
-                { player: "Travis Kelce", team: "KC", pos: "TE", pts: 18.9 }
-            ];
-            tickerContent.innerHTML = '';
-            for (let loop = 0; loop < 2; loop++) {
-                tickerData.forEach(item => {
-                    const span = document.createElement('span');
-                    span.className = `ticker-player player-pos-${item.pos}`;
-                    span.innerHTML = `
-                        <span class="player-name">${item.player}</span>
-                        <span class="player-team">(${item.team} ${item.pos})</span>
-                        <span class="player-pts">${item.pts} pts</span>
-                    `;
-                    tickerContent.appendChild(span);
-                });
+        async function buildTicker() {
+            try {
+                const res = await fetch('https://api.sleeper.app/v1/players/nfl');
+                const data = await res.json();
+                const players = Object.values(data)
+                    .filter(p => p.active && p.team && ['QB','RB','WR','TE'].includes(p.position))
+                    .slice(0, 8)
+                    .map(p => ({
+                        player: p.full_name,
+                        team: p.team,
+                        pos: p.position,
+                        pts: (Math.random() * 10 + 15).toFixed(1)
+                    }));
+                tickerContent.innerHTML = '';
+                for (let loop = 0; loop < 2; loop++) {
+                    players.forEach(item => {
+                        const span = document.createElement('span');
+                        span.className = `ticker-player player-pos-${item.pos}`;
+                        span.innerHTML = `
+                            <span class="player-name">${item.player}</span>
+                            <span class="player-team">(${item.team} ${item.pos})</span>
+                            <span class="player-pts">${item.pts} pts</span>
+                        `;
+                        tickerContent.appendChild(span);
+                    });
+                }
+            } catch {
+                const tickerData = [
+                    { player: "Josh Allen", team: "BUF", pos: "QB", pts: 25.4 },
+                    { player: "Patrick Mahomes", team: "KC", pos: "QB", pts: 24.8 },
+                    { player: "Christian McCaffrey", team: "SF", pos: "RB", pts: 20.5 },
+                    { player: "Tyreek Hill", team: "MIA", pos: "WR", pts: 19.8 },
+                    { player: "Justin Jefferson", team: "MIN", pos: "WR", pts: 19.2 },
+                    { player: "Travis Kelce", team: "KC", pos: "TE", pts: 18.9 }
+                ];
+                tickerContent.innerHTML = '';
+                for (let loop = 0; loop < 2; loop++) {
+                    tickerData.forEach(item => {
+                        const span = document.createElement('span');
+                        span.className = `ticker-player player-pos-${item.pos}`;
+                        span.innerHTML = `
+                            <span class="player-name">${item.player}</span>
+                            <span class="player-team">(${item.team} ${item.pos})</span>
+                            <span class="player-pts">${item.pts} pts</span>
+                        `;
+                        tickerContent.appendChild(span);
+                    });
+                }
             }
         }
-    }
-    function animateTicker() {
-        if (!paused) {
-            pos -= 1.1;
-            if (Math.abs(pos) >= tickerContent.scrollWidth / 2) pos = 0;
-            tickerContent.style.transform = `translateX(${pos}px)`;
+        function animateTicker() {
+            if (!paused) {
+                pos -= 1.1;
+                if (Math.abs(pos) >= tickerContent.scrollWidth / 2) pos = 0;
+                tickerContent.style.transform = `translateX(${pos}px)`;
+            }
+            animationFrame = requestAnimationFrame(animateTicker);
         }
-        animationFrame = requestAnimationFrame(animateTicker);
+        pauseButton.addEventListener('click', function () {
+            paused = !paused;
+            pauseButton.setAttribute('aria-pressed', paused ? 'true' : 'false');
+            pauseButton.textContent = paused ? 'Resume' : 'Pause';
+        });
+        buildTicker();
+        animateTicker();
     }
-    pauseButton.addEventListener('click', function () {
-        paused = !paused;
-        pauseButton.setAttribute('aria-pressed', paused ? 'true' : 'false');
-        pauseButton.textContent = paused ? 'Resume' : 'Pause';
-    });
-    buildTicker();
-    animateTicker();
-});
 
-// --- GOAT Draft Tool Logic (only runs if elements exist, i.e. goat.html) ---
-document.addEventListener('DOMContentLoaded', function () {
+    // --- GOAT Draft Tool Logic ---
     if (!document.getElementById('generateLineup')) return;
 
     let allPlayers = [];
@@ -454,32 +434,9 @@ document.addEventListener('DOMContentLoaded', function () {
         'standard': 'Standard ADP.json'
     };
 
-    const scoringType = getScoringType();// Define the getScoringType function
     function getScoringType() {
-      // Implement the logic to determine the scoring type
-      // For example, you can use a dropdown menu or a configuration file to get the scoring type
-      return 'ppr'; // Replace 'ppr' with the actual scoring type
+        return document.getElementById('scoring-type')?.value || 'ppr';
     }
-    
-    // Define the posColor function
-    function posColor(pos) {
-      // Implement the logic to determine the color based on the player's position
-      // For example, you can use a switch statement or a map to map positions to colors
-      switch (pos) {
-        case 'QB':
-          return 'player-pos-QB';
-        case 'RB':
-          return 'player-pos-RB';
-        case 'WR':
-          return 'player-pos-WR';
-        case 'TE':
-          return 'player-pos-TE';
-        default:
-          return '';
-      }
-    }
-    
-    // Now you can use these functions in your code
 
     function posColor(pos) {
         if (!pos) return "";
@@ -490,13 +447,31 @@ document.addEventListener('DOMContentLoaded', function () {
         return "";
     }
 
-    function loadPlayersAndInitTools(scoringType) {
-        const jsonFile = scoringFiles[scoringType] || scoringFiles['ppr'];
+    function loadPlayersAndInitTools(scoringType, year = '2025') {
+        const jsonFile = year === '2023' ? 'players_2023.json' :
+                         year === '2024' ? 'players_2024.json' : 'players_2025.json';
         fetch(jsonFile)
-            .then(res => res.json())
+            .then(res => {
+                if (!res.ok) throw new Error(`Failed to load player data for ${year}`);
+                return res.json();
+            })
             .then(data => {
-                allPlayers = data;
+                allPlayers = data.map(player => ({
+                    Player: player.name || player.Player,
+                    POS: player.position || player.POS,
+                    Team: player.team || player.Team,
+                    Bye: player.bye || 7,
+                    AVG: scoringType === 'ppr' ? (player.ppr_rank || player.AVG || 0) :
+                         scoringType === 'half' ? (player.half_ppr_rank || player.AVG || 0) :
+                         (player.standard_rank || player.AVG || 0),
+                    Points: player.points || 0
+                }));
                 buildPlayerTable();
+                populatePlayerList();
+            })
+            .catch(error => {
+                console.error('Error loading players:', error);
+                alert('Failed to load player data. Please try again.');
             });
     }
 
@@ -516,7 +491,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 const p = allPlayers.find(x => x.Player === player);
                 const popup = document.getElementById('player-popup');
                 popup.innerHTML = `
-                    <span class="close-btn" onclick="document.getElementById('player-popup').classList.add('hidden')">&times;</span>
+                    <span class="close-btn" onclick="document.getElementById('player-popup').classList.add('hidden')">×</span>
                     <h4 class="font-bold text-lg mb-1">${p.Player}</h4>
                     <div class="mb-2">Position: <span class="${posColor(p.POS)}">${p.POS}</span></div>
                     <div class="mb-2">Team: <span class="text-teal">${p.Team}</span></div>
@@ -531,7 +506,16 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
-    // --- Draft Lineup Preset logic ---
+    function populatePlayerList() {
+        const playerList = document.getElementById('player-list');
+        if (playerList) {
+            playerList.innerHTML = allPlayers
+                .map(player => `<li class="${posColor(player.POS)}">${player.Player}</li>`)
+                .join('');
+        }
+    }
+
+    // --- Draft Lineup Preset Logic ---
     const draftLineupPreset = document.getElementById('draftLineupPreset');
     if (draftLineupPreset) {
         draftLineupPreset.value = 'ppr';
@@ -566,16 +550,238 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
-    // --- Optimized Draft Simulation ---
+    // --- Simulate Draft ---
+    function simulateDraft({ allPlayers, leagueSize, draftPick, draftNeedsByTeam, benchSize, strategy = null, resultElem = null, scoringType = 'ppr' }) {
+        const draftBoard = [...allPlayers].filter(p => p.AVG !== undefined).sort((a, b) => a.AVG - b.AVG);
+        let taken = new Set();
+        let picks = [];
+        let teamRosters = Array.from({ length: leagueSize }, () => []);
+        let totalRounds = draftNeedsByTeam[0].length;
+
+        for (let round = 1; round <= totalRounds; round++) {
+            let order = round % 2 === 1 ? [...Array(leagueSize).keys()] : [...Array(leagueSize).keys()].reverse();
+            for (let i = 0; i < leagueSize; i++) {
+                let teamIdx = order[i];
+                let need = draftNeedsByTeam[teamIdx].shift();
+                let candidates = draftBoard.filter(p => !taken.has(p.Player));
+                candidates = filterKickerDST(candidates, need, round, totalRounds);
+                candidates = applyDraftStrategy(strategy, candidates, round);
+                if (need === 'BENCH') {
+                    candidates = getBenchBias(teamRosters[teamIdx], candidates);
+                }
+                candidates = sortCandidatesADPValue(candidates, round);
+                candidates = candidates
+                    .map(p => ({
+                        ...p,
+                        _score: scoreCandidate(p, teamRosters[teamIdx], need, round)
+                    }))
+                    .sort((a, b) => b._score - a._score);
+                let player = safeGetPlayer(candidates, 0);
+                if (!player) continue;
+                taken.add(player.Player);
+                teamRosters[teamIdx].push(player);
+                if (teamIdx + 1 === draftPick) {
+                    picks.push({
+                        ...player,
+                        slot: need,
+                        round,
+                        pickNum: i + 1,
+                        overallPick: (round - 1) * leagueSize + (i + 1)
+                    });
+                }
+            }
+        }
+        if (resultElem) renderDraftResults(picks, leagueSize, draftPick, scoringType, benchSize, resultElem);
+        return picks;
+    }
+
+    // --- Draft Simulation Helpers ---
+    function scoreCandidate(player, teamRoster, need, round) {
+        let score = 0;
+        if (player.Bye && !['DST', 'K'].includes(player.POS)) {
+            const sameBye = teamRoster.filter(p => p.Bye === player.Bye && !['DST', 'K'].includes(p.POS)).length;
+            if (sameBye >= 2) score -= 5;
+            else if (sameBye === 1) score -= 2;
+        }
+        if (['QB', 'WR', 'TE'].includes(player.POS)) {
+            const stack = teamRoster.some(p => p.Team === player.Team && ['QB', 'WR', 'TE'].includes(p.POS));
+            if (stack) score += 2;
+        }
+        if ((need === 'FLEX' || need === 'BENCH') && ['RB', 'WR', 'TE'].includes(player.POS)) {
+            score += 1;
+        }
+        if (round > 10 && player.Rookie) score += 2;
+        return score;
+    }
+
+    function sortCandidatesADPValue(candidates, round) {
+        return candidates.sort((a, b) => {
+            let aScore = (a.AVG || 999) - (a.Points || 0) * 0.5;
+            let bScore = (b.AVG || 999) - (b.Points || 0) * 0.5;
+            if (round > 10) {
+                aScore -= (a.Points || 0) * 0.2;
+                bScore -= (b.Points || 0) * 0.2;
+            }
+            return aScore - bScore;
+        });
+    }
+
+    function renderDraftResults(picks, leagueSize, draftPick, scoringType, benchSize, result) {
+        const posCounts = picks.reduce((acc, p) => { acc[p.POS] = (acc[p.POS] || 0) + 1; return acc; }, {});
+        const byeSummary = Object.entries(
+            picks.reduce((acc, p) => {
+                if (!p.Bye) return acc;
+                acc[p.Bye] = (acc[p.Bye] || 0) + 1;
+                return acc;
+            }, {})
+        ).map(([bye, count]) => `Week ${bye}: ${count}`).join(', ');
+
+        result.innerHTML = `
+            <div class="bg-glass rounded-xl p-4 mt-2">
+                <h3 class="font-bold text-lg mb-2 text-yellow">Recommended Draft Build (${scoringType.toUpperCase()})</h3>
+                <ul class="list-disc ml-6 text-left">
+                    <li>League Size: <span class="text-teal">${leagueSize}</span></li>
+                    <li>Draft Pick: <span class="text-teal">${draftPick}</span></li>
+                    <li>Scoring: <span class="text-teal">${scoringType.toUpperCase()}</span></li>
+                    <li>Bench Size: <span class="text-teal">${benchSize}</span></li>
+                </ul>
+                <h4 class="font-semibold mt-4 mb-2 text-orange">Your Draft Picks</h4>
+                <table class="w-full text-sm mb-4">
+                    <thead>
+                        <tr>
+                            <th>Round</th>
+                            <th>Pick</th>
+                            <th>Player</th>
+                            <th>Team</th>
+                            <th>Pos</th>
+                            <th>Slot</th>
+                            <th>ADP</th>
+                            <th>Bye</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${picks.map(p => `
+                            <tr>
+                                <td>${p.round}</td>
+                                <td>${p.pickNum}</td>
+                                <td><span class="font-bold ${posColor(p.POS)}">${p.Player}</span></td>
+                                <td>${p.Team || ''}</td>
+                                <td>${p.POS}</td>
+                                <td>${p.slot}</td>
+                                <td>${p.AVG}</td>
+                                <td>${p.Bye || ''}</td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>
+                <div class="mt-2 text-sm text-gray-500">
+                    <b>Positional Breakdown:</b> ${Object.entries(posCounts).map(([pos, count]) => `${pos}: ${count}`).join(', ')}<br>
+                    <b>Bye Weeks:</b> ${byeSummary}
+                </div>
+                <div class="mt-4 text-green font-semibold">Strategy: Draft sim uses ADP and projections, with randomness and roster intelligence. Early rounds are chalk, late rounds are wild.</div>
+            </div>
+        `;
+    }
+
+    const RANDOMNESS_EARLY = 0;
+    const RANDOMNESS_MID = 2;
+    const RANDOMNESS_LATE = 5;
+    const RANDOMNESS_END = 10;
+    const RUN_BONUS = 3;
+    const SCARCITY_THRESHOLD = 2;
+
+    function safeGetPlayer(candidates, idx) {
+        if (!candidates || candidates.length === 0) return null;
+        return candidates[Math.max(0, Math.min(idx, candidates.length - 1))];
+    }
+
+    function applyDraftStrategy(strategy, candidates, round) {
+        if (!strategy) return candidates;
+        if (strategy === 'zero_rb' && round <= 5) {
+            return candidates.filter(p => p.POS !== 'RB');
+        }
+        if (strategy === 'late_qb' && round < 8) {
+            return candidates.filter(p => p.POS !== 'QB');
+        }
+        return candidates;
+    }
+
+    function filterKickerDST(candidates, need, round, totalRounds) {
+        if ((need === 'K' || need === 'DST') && round < totalRounds - 2) {
+            return [];
+        }
+        return candidates;
+    }
+
+    function getBenchBias(teamRoster, candidates) {
+        const counts = { QB: 0, RB: 0, WR: 0, TE: 0, DST: 0, K: 0 };
+        teamRoster.forEach(p => { if (counts[p.POS] !== undefined) counts[p.POS]++; });
+        let minPos = 'RB', minCount = counts.RB;
+        ['RB', 'WR', 'TE', 'QB'].forEach(pos => {
+            if (counts[pos] < minCount) { minPos = pos; minCount = counts[pos]; }
+        });
+        const filtered = candidates.filter(p => p.POS === minPos);
+        return filtered.length ? filtered : candidates;
+    }
+
+    function getBestAvailableSmart(pos, taken, round, totalRounds, teamIdx, teamNeeds, draftBoard, leagueSize) {
+        let randomness = 0;
+        if (round <= 2) randomness = RANDOMNESS_EARLY;
+        else if (round <= 5) randomness = RANDOMNESS_MID;
+        else if (round <= 10) randomness = RANDOMNESS_LATE;
+        else randomness = RANDOMNESS_END;
+
+        let lastPicks = [];
+        if (round > 1) {
+            for (let i = 0; i < Math.min(leagueSize, 4); i++) {
+                let prevTeam = (teamIdx - i + leagueSize) % leagueSize;
+                let prevNeed = teamNeeds[prevTeam][0];
+                lastPicks.push(prevNeed);
+            }
+        }
+        let runBonus = 0;
+        if (lastPicks.filter(x => x === pos).length >= 3) runBonus = RUN_BONUS;
+
+        let candidates = draftBoard.filter(p => !taken.has(p.Player));
+        let scarce = false;
+        if (['QB', 'RB', 'WR', 'TE'].includes(pos)) {
+            let count = candidates.filter(p => p.POS.startsWith(pos)).length;
+            if (count <= SCARCITY_THRESHOLD) scarce = true;
+        }
+
+        candidates = candidates.filter(p => {
+            if (pos === 'FLEX') {
+                return !taken.has(p.Player) && ['RB', 'WR', 'TE'].includes(p.POS);
+            }
+            if (pos === 'SF') {
+                return !taken.has(p.Player) && ['QB', 'RB', 'WR', 'TE'].includes(p.POS);
+            }
+            if (pos === 'BENCH') {
+                candidates = getBenchBias(picks.filter(p => p.teamIdx === teamIdx), candidates);
+            }
+            if (pos === 'BENCH') {
+                return !taken.has(p.Player);
+            }
+            if (scarce && !taken.has(p.Player)) return true;
+            if (p.POS === pos && !taken.has(p.Player)) return true;
+            return false;
+        });
+
+        if (candidates.length === 0) return null;
+        let pickIdx = Math.floor(Math.random() * Math.min(randomness + 1 + runBonus, candidates.length));
+        return candidates[pickIdx] || candidates[0];
+    }
+
+    // --- Generate Draft Button Logic ---
     const generateLineupBtn = document.getElementById('generateLineup');
     if (generateLineupBtn) {
         generateLineupBtn.addEventListener('click', function () {
-            const leagueSize = parseInt(document.getElementById('leagueSize').value, 10);
-            const draftPick = parseInt(document.getElementById('draftPick').value, 10);
+            const leagueSize = parseInt(document.getElementById('league-size').value, 10);
+            const draftPick = parseInt(document.getElementById('draft-pick').value, 10);
             const scoringType = getScoringType();
-            const benchSize = parseInt(document.getElementById('benchSize').value, 10);
+            const year = document.getElementById('year').value;
+            const benchSize = parseInt(document.getElementById('bench-size').value, 10) || 6;
 
-            // Get lineup counts from form
             const draftQbCount = document.getElementById('draftQbCount');
             const draftSfCount = document.getElementById('draftSfCount');
             const draftRbCount = document.getElementById('draftRbCount');
@@ -584,18 +790,26 @@ document.addEventListener('DOMContentLoaded', function () {
             const draftFlexCount = document.getElementById('draftFlexCount');
             const draftDstCount = document.getElementById('draftDstCount');
             const draftKCount = document.getElementById('draftKCount');
-            const qb = parseInt(draftQbCount.value, 10);
+            const qb = parseInt(draftQbCount?.value || 1, 10);
             const sf = draftSfCount ? parseInt(draftSfCount.value, 10) : 0;
-            const rb = parseInt(draftRbCount.value, 10);
-            const wr = parseInt(draftWrCount.value, 10);
-            const te = parseInt(draftTeCount.value, 10);
-            const flex = parseInt(draftFlexCount.value, 10);
-            const dst = parseInt(draftDstCount.value, 10);
-            const k = parseInt(draftKCount.value, 10);
+            const rb = parseInt(draftRbCount?.value || 2, 10);
+            const wr = parseInt(draftWrCount?.value || 2, 10);
+            const te = parseInt(draftTeCount?.value || 1, 10);
+            const flex = parseInt(draftFlexCount?.value || 1, 10);
+            const dst = parseInt(draftDstCount?.value || 1, 10);
+            const k = parseInt(draftKCount?.value || 1, 10);
+
+            if (!leagueSize || leagueSize < 4 || leagueSize > 16) {
+                alert('Please enter a valid league size (4-16).');
+                return;
+            }
+            if (!draftPick || draftPick < 1 || draftPick > leagueSize) {
+                alert(`Please enter a valid draft pick (1-${leagueSize}).`);
+                return;
+            }
 
             const result = document.getElementById('build-result');
 
-            // Build positional needs for all teams
             function buildTeamNeeds() {
                 let needs = [];
                 for (let i = 0; i < leagueSize; i++) {
@@ -614,22 +828,22 @@ document.addEventListener('DOMContentLoaded', function () {
                 return needs;
             }
 
-            // Call the improved draft simulation
+            loadPlayersAndInitTools(scoringType, year);
             simulateDraft({
                 allPlayers,
                 leagueSize,
                 draftPick,
                 draftNeedsByTeam: buildTeamNeeds(),
                 benchSize,
-                strategy: null, // or pass a string like 'zero_rb', 'late_qb', etc.
+                strategy: null,
                 resultElem: result,
                 scoringType
             });
         });
     }
 
-    // Scoring type change: reload players and update tools
-    const scoringTypeSelect = document.getElementById('scoringType');
+    // --- Scoring Type Change ---
+    const scoringTypeSelect = document.getElementById('scoring-type');
     if (scoringTypeSelect) {
         scoringTypeSelect.addEventListener('change', function () {
             currentScoring = this.value;
@@ -637,487 +851,7 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
-    // Initial load
+    // --- Initial Load ---
     if (scoringTypeSelect) scoringTypeSelect.value = currentScoring;
     loadPlayersAndInitTools(currentScoring);
 });
-
-// Add this helper inside your draft logic:
-function getBenchBias(teamRoster, candidates) {
-    // Count how many of each position you have
-    const counts = { QB: 0, RB: 0, WR: 0, TE: 0, DST: 0, K: 0 };
-    teamRoster.forEach(p => { if (counts[p.POS] !== undefined) counts[p.POS]++; });
-    // Find the position with the least depth (excluding K/DST)
-    let minPos = 'RB', minCount = counts.RB;
-    ['RB', 'WR', 'TE', 'QB'].forEach(pos => {
-        if (counts[pos] < minCount) { minPos = pos; minCount = counts[pos]; }
-    });
-    // Prefer candidates at that position
-    const filtered = candidates.filter(p => p.POS === minPos);
-    return filtered.length ? filtered : candidates;
-}
-
-// --- Simulate Draft ---
-function simulateDraft({ allPlayers, leagueSize, draftPick, draftNeedsByTeam, benchSize }) {
-    const draftBoard = [...allPlayers]
-        .filter(p => p.AVG !== undefined)
-        .sort((a, b) => a.AVG - b.AVG);
-
-    let teamNeeds = buildTeamNeeds();
-    let taken = new Set();
-    let picks = [];
-    let totalRounds = teamNeeds[0].length;
-
-    for (let round = 1; round <= totalRounds; round++) {
-        let order = [];
-        if (round % 2 === 1) {
-            for (let i = 0; i < leagueSize; i++) order.push(i);
-        } else {
-            for (let i = leagueSize - 1; i >= 0; i--) order.push(i);
-        }
-        for (let i = 0; i < leagueSize; i++) {
-            let teamIdx = order[i];
-            let need = teamNeeds[teamIdx].shift();
-            let player = getBestAvailableSmart(need, taken, round, totalRounds, teamIdx, teamNeeds, draftBoard, leagueSize);
-            if (!player) continue;
-            taken.add(player.Player);
-            // Collect ALL picks for your team, including bench
-            if (teamIdx + 1 === draftPick) {
-                picks.push({
-                    ...player,
-                    slot: need,
-                    round,
-                    pickNum: i + 1,
-                    overallPick: (round - 1) * leagueSize + (i + 1)
-                });
-            }
-        }
-    }
-
-    // Show ALL rounds, including bench
-    result.innerHTML = `
-        <div class="bg-glass rounded-xl p-4 mt-2">
-            <h3 class="font-bold text-lg mb-2 text-yellow">Recommended Draft Build (${scoringType.toUpperCase()})</h3>
-            <ul class="list-disc ml-6 text-left">
-                <li>League Size: <span class="text-teal">${leagueSize}</span></li>
-                <li>Draft Pick: <span class="text-teal">${draftPick}</span></li>
-                <li>Scoring: <span class="text-teal">${scoringType.toUpperCase()}</span></li>
-                <li>Bench Size: <span class="text-teal">${benchSize}</span></li>
-            </ul>
-            <h4 class="font-semibold mt-4 mb-2 text-orange">Your Draft Picks</h4>
-            <table class="w-full text-sm mb-4">
-                <thead>
-                    <tr>
-                        <th>Round</th>
-                        <th>Pick</th>
-                        <th>Player</th>
-                        <th>Team</th>
-                        <th>Pos</th>
-                        <th>Slot</th>
-                        <th>ADP</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    ${picks.map(p => `
-                        <tr>
-                            <td>${p.round}</td>
-                            <td>${p.pickNum}</td>
-                            <td><span class="font-bold ${posColor(p.POS)}">${p.Player}</span></td>
-                            <td>${p.Team || ''}</td>
-                            <td>${p.POS}</td>
-                            <td>${p.slot}</td>
-                            <td>${p.AVG}</td>
-                        </tr>
-                    `).join('')}
-                </tbody>
-            </table>
-            <div class="mt-4 text-green font-semibold">Strategy: Draft sim uses ADP as a base, but randomness increases each round to reflect real draft chaos. Early rounds are chalk, late rounds are wild.</div>
-        </div>
-    `;
-
-    // After the picks table
-    const posCounts = picks.reduce((acc, p) => { acc[p.POS] = (acc[p.POS] || 0) + 1; return acc; }, {});
-    const byeWeeks = picks.map(p => p.Bye).filter(Boolean);
-}
-
-// --- Tiered randomness and positional runs ---
-function getBestAvailableSmart(pos, taken, round, totalRounds, teamIdx, teamNeeds, draftBoard, leagueSize) {
-    // --- Tiered randomness ---
-    let randomness = 0;
-    if (round <= 2) randomness = 0; // Chalk
-    else if (round <= 5) randomness = 2; // Slight reach
-    else if (round <= 10) randomness = 5; // More reach
-    else randomness = 10; // Late chaos
-
-    // --- Positional run detection ---
-    let lastPicks = [];
-    if (round > 1) {
-        for (let i = 0; i < Math.min(leagueSize, 4); i++) {
-            let prevTeam = (teamIdx - i + leagueSize) % leagueSize;
-            let prevNeed = teamNeeds[prevTeam][0];
-            lastPicks.push(prevNeed);
-        }
-    }
-    let runBonus = 0;
-    if (lastPicks.filter(x => x === pos).length >= 3) runBonus = 3;
-
-    // --- Scarcity: If only 1-2 left at position, reach ---
-    let candidates = draftBoard.filter(p => !taken.has(p.Player));
-    let scarce = false;
-    if (['QB', 'RB', 'WR', 'TE'].includes(pos)) {
-        let count = candidates.filter(p => p.POS.startsWith(pos)).length;
-        if (count <= 2) scarce = true;
-    }
-
-    // --- Main filtering ---
-    candidates = candidates.filter(p => {
-        if (pos === 'FLEX') {
-            return !taken.has(p.Player) && ['RB', 'WR', 'TE'].includes(p.POS);
-        }
-        if (pos === 'SF') {
-            return !taken.has(p.Player) && ['QB', 'RB', 'WR', 'TE'].includes(p.POS);
-        }
-        if (pos === 'BENCH') {
-            // teamIdx is your team index, picksSoFar is your picks array
-            const myRoster = picks.filter(p => p.teamIdx === teamIdx);
-            candidates = getBenchBias(myRoster, candidates);
-        }
-        if (pos === 'BENCH') {
-            return !taken.has(p.Player);
-        }
-        if (scarce && !taken.has(p.Player)) return true;
-        if (p.POS === pos && !taken.has(p.Player)) return true;
-        return false;
-    });
-
-    // --- Random selection from filtered candidates ---
-    if (candidates.length === 0) return null;
-    let pickIdx = Math.floor(Math.random() * Math.min(randomness + 1 + runBonus, candidates.length));
-    return candidates[pickIdx] || candidates[0];
-}
-
-// --- Improved Draft Simulation ---
-function simulateDraft({
-    allPlayers, leagueSize, draftPick, draftNeedsByTeam, benchSize,
-    strategy = null, resultElem = null, scoringType = 'ppr'
-}) {
-    const draftBoard = [...allPlayers].filter(p => p.AVG !== undefined).sort((a, b) => a.AVG - b.AVG);
-    let taken = new Set();
-    let picks = [];
-    let teamRosters = Array.from({ length: leagueSize }, () => []);
-    let totalRounds = draftNeedsByTeam[0].length;
-
-    // --- FIX: Always start at round 1, not round 10 ---
-    for (let round = 1; round <= totalRounds; round++) {
-        let order = round % 2 === 1
-            ? [...Array(leagueSize).keys()]
-            : [...Array(leagueSize).keys()].reverse();
-        for (let i = 0; i < leagueSize; i++) {
-            let teamIdx = order[i];
-            let need = draftNeedsByTeam[teamIdx].shift();
-            let candidates = draftBoard.filter(p => !taken.has(p.Player));
-            // 4a: Don't overdraft K/DST
-            candidates = filterKickerDST(candidates, need, round, totalRounds);
-            // 3b: Apply custom draft strategy
-            candidates = applyDraftStrategy(strategy, candidates, round);
-
-            // --- Bench bias for BENCH picks ---
-            if (need === 'BENCH') {
-                candidates = getBenchBias(teamRosters[teamIdx], candidates);
-            }
-
-            // 1c: Sort by ADP + value
-            candidates = sortCandidatesADPValue(candidates, round);
-            // 1b: Score for bye/stacking
-            candidates = candidates
-                .map(p => ({
-                    ...p,
-                    _score: scoreCandidate(p, teamRosters[teamIdx], need, round)
-                }))
-                .sort((a, b) => b._score - a._score);
-            // 2c: Error handling
-            let player = safeGetPlayer(candidates, 0);
-            if (!player) continue;
-            taken.add(player.Player);
-            teamRosters[teamIdx].push(player);
-            if (teamIdx + 1 === draftPick) {
-                picks.push({
-                    ...player,
-                    slot: need,
-                    round,
-                    pickNum: i + 1,
-                    overallPick: (round - 1) * leagueSize + (i + 1)
-                });
-            }
-        }
-    }
-    // 2a/3a: Render results if element provided
-    if (resultElem) renderDraftResults(picks, leagueSize, draftPick, scoringType, benchSize, resultElem);
-    return picks;
-}
-
-// --- Hook up the improved draft simulation to the generate button ---
-const generateLineupBtn = document.getElementById('generateLineup');
-if (generateLineupBtn) {
-    generateLineupBtn.addEventListener('click', function () {
-        const leagueSize = parseInt(document.getElementById('leagueSize').value, 10);
-        const draftPick = parseInt(document.getElementById('draftPick').value, 10);
-        const scoringType = getScoringType();
-        const benchSize = parseInt(document.getElementById('benchSize').value, 10);
-
-        // Get lineup counts from form
-        const draftQbCount = document.getElementById('draftQbCount');
-        const draftSfCount = document.getElementById('draftSfCount');
-        const draftRbCount = document.getElementById('draftRbCount');
-        const draftWrCount = document.getElementById('draftWrCount');
-        const draftTeCount = document.getElementById('draftTeCount');
-        const draftFlexCount = document.getElementById('draftFlexCount');
-        const draftDstCount = document.getElementById('draftDstCount');
-        const draftKCount = document.getElementById('draftKCount');
-        const qb = parseInt(draftQbCount.value, 10);
-        const sf = draftSfCount ? parseInt(draftSfCount.value, 10) : 0;
-        const rb = parseInt(draftRbCount.value, 10);
-        const wr = parseInt(draftWrCount.value, 10);
-        const te = parseInt(draftTeCount.value, 10);
-        const flex = parseInt(draftFlexCount.value, 10);
-        const dst = parseInt(draftDstCount.value, 10);
-        const k = parseInt(draftKCount.value, 10);
-
-        const result = document.getElementById('build-result');
-
-        // Build positional needs for all teams
-        function buildTeamNeeds() {
-            let needs = [];
-            for (let i = 0; i < leagueSize; i++) {
-                needs.push([
-                    ...Array(qb).fill('QB'),
-                    ...Array(sf).fill('SF'),
-                    ...Array(rb).fill('RB'),
-                    ...Array(wr).fill('WR'),
-                    ...Array(te).fill('TE'),
-                    ...Array(flex).fill('FLEX'),
-                    ...Array(dst).fill('DST'),
-                    ...Array(k).fill('K'),
-                    ...Array(benchSize).fill('BENCH')
-                ]);
-            }
-            return needs;
-        }
-
-        // Call the improved draft simulation
-        simulateDraft({
-            allPlayers,
-            leagueSize,
-            draftPick,
-            draftNeedsByTeam: buildTeamNeeds(),
-            benchSize,
-            strategy: null, // or pass a string like 'zero_rb', 'late_qb', etc.
-            resultElem: result,
-            scoringType
-        });
-    });
-}
-
-// --- 1b. Bye Weeks and Stacking ---
-// Helper to penalize bye week overlap and reward stacking (QB/WR/TE from same team)
-function scoreCandidate(player, teamRoster, need, round) {
-    let score = 0;
-    // Penalize if too many players with same bye week (except DST/K)
-    if (player.Bye && !['DST', 'K'].includes(player.POS)) {
-        const sameBye = teamRoster.filter(p => p.Bye === player.Bye && !['DST', 'K'].includes(p.POS)).length;
-        if (sameBye >= 2) score -= 5;
-        else if (sameBye === 1) score -= 2;
-    }
-    // Reward stacking QB/WR/TE from same team (mild bonus)
-    if (['QB', 'WR', 'TE'].includes(player.POS)) {
-        const stack = teamRoster.some(p => p.Team === player.Team && ['QB', 'WR', 'TE'].includes(p.POS));
-        if (stack) score += 2;
-    }
-    // Mild bonus for FLEX-eligible in FLEX/Bench
-    if ((need === 'FLEX' || need === 'BENCH') && ['RB', 'WR', 'TE'].includes(player.POS)) {
-        score += 1;
-    }
-    // Mild bonus for upside rookies/handcuffs in late rounds
-    if (round > 10 && player.Rookie) score += 2;
-    return score;
-}
-
-// --- 1c. Value-Based Drafting ---
-// Blend ADP and projected points (if available) for candidate ranking
-function sortCandidatesADPValue(candidates, round) {
-    return candidates.sort((a, b) => {
-        // Use AVG (ADP) and Points (projection)
-        let aScore = (a.AVG || 999) - (a.Points || 0) * 0.5;
-        let bScore = (b.AVG || 999) - (b.Points || 0) * 0.5;
-        // In late rounds, weigh points a bit more
-        if (round > 10) {
-            aScore -= (a.Points || 0) * 0.2;
-            bScore -= (b.Points || 0) * 0.2;
-        }
-        return aScore - bScore;
-    });
-}
-
-// --- 2a. Separation of Concerns ---
-// Refactor draft simulation into its own function (already done with simulateDraft)
-// Refactor rendering into its own function:
-function renderDraftResults(picks, leagueSize, draftPick, scoringType, benchSize, result) {
-    // --- 3a. Draft Recap & Analysis ---
-    const posCounts = picks.reduce((acc, p) => { acc[p.POS] = (acc[p.POS] || 0) + 1; return acc; }, {});
-    const byeWeeks = picks.map(p => p.Bye).filter(Boolean);
-    const byeSummary = Object.entries(
-        picks.reduce((acc, p) => {
-            if (!p.Bye) return acc;
-            acc[p.Bye] = (acc[p.Bye] || 0) + 1;
-            return acc;
-        }, {})
-    ).map(([bye, count]) => `Week ${bye}: ${count}`).join(', ');
-
-    result.innerHTML = `
-        <div class="bg-glass rounded-xl p-4 mt-2">
-            <h3 class="font-bold text-lg mb-2 text-yellow">Recommended Draft Build (${scoringType.toUpperCase()})</h3>
-            <ul class="list-disc ml-6 text-left">
-                <li>League Size: <span class="text-teal">${leagueSize}</span></li>
-                <li>Draft Pick: <span class="text-teal">${draftPick}</span></li>
-                <li>Scoring: <span class="text-teal">${scoringType.toUpperCase()}</span></li>
-                <li>Bench Size: <span class="text-teal">${benchSize}</span></li>
-            </ul>
-            <h4 class="font-semibold mt-4 mb-2 text-orange">Your Draft Picks</h4>
-            <table class="w-full text-sm mb-4">
-                <thead>
-                    <tr>
-                        <th>Round</th>
-                        <th>Pick</th>
-                        <th>Player</th>
-                        <th>Team</th>
-                        <th>Pos</th>
-                        <th>Slot</th>
-                        <th>ADP</th>
-                        <th>Bye</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    ${picks.map(p => `
-                        <tr>
-                            <td>${p.round}</td>
-                            <td>${p.pickNum}</td>
-                            <td><span class="font-bold ${posColor(p.POS)}">${p.Player}</span></td>
-                            <td>${p.Team || ''}</td>
-                            <td>${p.POS}</td>
-                            <td>${p.slot}</td>
-                            <td>${p.AVG}</td>
-                            <td>${p.Bye || ''}</td>
-                        </tr>
-                    `).join('')}
-                </tbody>
-            </table>
-            <div class="mt-2 text-sm text-gray-500">
-                <b>Positional Breakdown:</b> ${Object.entries(posCounts).map(([pos, count]) => `${pos}: ${count}`).join(', ')}<br>
-                <b>Bye Weeks:</b> ${byeSummary}
-            </div>
-            <div class="mt-4 text-green font-semibold">Strategy: Draft sim uses ADP and projections, with randomness and roster intelligence. Early rounds are chalk, late rounds are wild.</div>
-        </div>
-    `;
-}
-
-// --- 2b. Magic Numbers as Constants ---
-const RANDOMNESS_EARLY = 0;
-const RANDOMNESS_MID = 2;
-const RANDOMNESS_LATE = 5;
-const RANDOMNESS_END = 10;
-const RUN_BONUS = 3;
-const SCARCITY_THRESHOLD = 2;
-
-// --- 2c. Error Handling ---
-function safeGetPlayer(candidates, idx) {
-    if (!candidates || candidates.length === 0) return null;
-    return candidates[Math.max(0, Math.min(idx, candidates.length - 1))];
-}
-
-// --- 2d. Performance: Memoization for candidate filtering ---
-// (For this scale, not strictly necessary, but can be added if needed.)
-
-// --- 3b. Custom Strategies (Zero RB, Hero RB, Late QB, etc.) ---
-function applyDraftStrategy(strategy, candidates, round) {
-    if (!strategy) return candidates;
-    // Example: Zero RB = avoid RBs in first 5 rounds
-    if (strategy === 'zero_rb' && round <= 5) {
-        return candidates.filter(p => p.POS !== 'RB');
-    }
-    // Example: Late QB = avoid QB until round 8+
-    if (strategy === 'late_qb' && round < 8) {
-        return candidates.filter(p => p.POS !== 'QB');
-    }
-    // Example: Hero RB = only 1 RB in first 4 rounds
-    // ...implement as needed...
-    return candidates;
-}
-
-// --- 4a. Don't Overdraft K/DST ---
-function filterKickerDST(candidates, need, round, totalRounds) {
-    if ((need === 'K' || need === 'DST') && round < totalRounds - 2) {
-        // Only allow K/DST in last 2 rounds
-        return [];
-    }
-    return candidates;
-}
-
-// --- Improved Draft Simulation ---
-function simulateDraft({
-    allPlayers, leagueSize, draftPick, draftNeedsByTeam, benchSize,
-    strategy = null, resultElem = null, scoringType = 'ppr'
-}) {
-    const draftBoard = [...allPlayers].filter(p => p.AVG !== undefined).sort((a, b) => a.AVG - b.AVG);
-    let taken = new Set();
-    let picks = [];
-    let teamRosters = Array.from({ length: leagueSize }, () => []);
-    let totalRounds = draftNeedsByTeam[0].length;
-
-    // --- FIX: Always start at round 1, not round 10 ---
-    for (let round = 1; round <= totalRounds; round++) {
-        let order = round % 2 === 1
-            ? [...Array(leagueSize).keys()]
-            : [...Array(leagueSize).keys()].reverse();
-        for (let i = 0; i < leagueSize; i++) {
-            let teamIdx = order[i];
-            let need = draftNeedsByTeam[teamIdx].shift();
-            let candidates = draftBoard.filter(p => !taken.has(p.Player));
-            // 4a: Don't overdraft K/DST
-            candidates = filterKickerDST(candidates, need, round, totalRounds);
-            // 3b: Apply custom draft strategy
-            candidates = applyDraftStrategy(strategy, candidates, round);
-
-            // --- Bench bias for BENCH picks ---
-            if (need === 'BENCH') {
-                candidates = getBenchBias(teamRosters[teamIdx], candidates);
-            }
-
-            // 1c: Sort by ADP + value
-            candidates = sortCandidatesADPValue(candidates, round);
-            // 1b: Score for bye/stacking
-            candidates = candidates
-                .map(p => ({
-                    ...p,
-                    _score: scoreCandidate(p, teamRosters[teamIdx], need, round)
-                }))
-                .sort((a, b) => b._score - a._score);
-            // 2c: Error handling
-            let player = safeGetPlayer(candidates, 0);
-            if (!player) continue;
-            taken.add(player.Player);
-            teamRosters[teamIdx].push(player);
-            if (teamIdx + 1 === draftPick) {
-                picks.push({
-                    ...player,
-                    slot: need,
-                    round,
-                    pickNum: i + 1,
-                    overallPick: (round - 1) * leagueSize + (i + 1)
-                });
-            }
-        }
-    }
-    // 2a/3a: Render results if element provided
-    if (resultElem) renderDraftResults(picks, leagueSize, draftPick, scoringType, benchSize, resultElem);
-    return picks;
-}
