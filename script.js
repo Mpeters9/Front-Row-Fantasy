@@ -36,10 +36,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
     let team1 = [];
     let team2 = [];
-    $('analyzeTradeBtn').disabled = true;
-    $('clearAllBtn').disabled = true;
-    $('exportTradeBtn').disabled = true;
-    $('swapTeamsBtn').disabled = true;
+    const analyzeTradeBtn = $('analyzeTradeBtn');
+    if (analyzeTradeBtn) analyzeTradeBtn.disabled = true;
+    const clearAllBtn = $('clearAllBtn');
+    if (clearAllBtn) clearAllBtn.disabled = true;
+    const exportTradeBtn = $('exportTradeBtn');
+    if (exportTradeBtn) exportTradeBtn.disabled = true;
+    const swapTeamsBtn = $('swapTeamsBtn');
+    if (swapTeamsBtn) swapTeamsBtn.disabled = true;
 
     const leagueSizeSelect = $('leagueSize'), startingLineupSelect = $('startingLineup'), benchSizeSelect = $('benchSize'),
         scoringTypeSelect = $('scoringType'), bonusTDCheckbox = $('bonusTD'), penaltyFumbleCheckbox = $('penaltyFumble'),
@@ -300,10 +304,10 @@ Age: ${player.age || "?"} | Injury: ${player.injury_status || "Healthy"} | Bye: 
         localStorage.setItem('recentTrades', JSON.stringify(trades));
         renderRecentTrades();
 
-        $('analyzeTradeBtn').disabled = false;
-        $('clearAllBtn').disabled = false;
-        $('exportTradeBtn').disabled = false;
-        $('swapTeamsBtn').disabled = false;
+        if (analyzeTradeBtn) analyzeTradeBtn.disabled = false;
+        if (clearAllBtn) clearAllBtn.disabled = false;
+        if (exportTradeBtn) exportTradeBtn.disabled = false;
+        if (swapTeamsBtn) swapTeamsBtn.disabled = false;
     }
 
     // 7. Recent Trades
