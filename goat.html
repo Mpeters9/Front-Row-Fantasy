@@ -10,19 +10,32 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="icon" href="favicon.ico" type="image/x-icon">
     <link rel="stylesheet" href="styles.css">
-    <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-gray-100 font-poppins" aria-label="GOAT Page Content">
     <!-- Header -->
     <header class="bg-blue-600 text-white shadow-lg">
         <div class="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center">
             <h1 class="text-2xl font-bold text-yellow-300 text-glow">GOAT - Greatest of All Time</h1>
-            <nav class="space-x-4">
-                <a href="index.html" class="nav-link hover:text-yellow-300">Home</a>
-                <a href="tools.html" class="nav-link hover:text-yellow-300">Expert Tools</a>
-                <a href="players.html" class="nav-link hover:text-yellow-300">Players</a>
-                <a href="guides.html" class="nav-link hover:text-yellow-300">Guides</a>
-                <a href="stats.html" class="nav-link hover:text-yellow-300">Stats</a>
+            <nav class="hidden md:flex space-x-4">
+                <a href="index.html" class="nav-link text-white hover:text-yellow-300 transition">Home</a>
+                <a href="tools.html" class="nav-link text-white hover:text-yellow-300 transition">Expert Tools</a>
+                <a href="players.html" class="nav-link text-white hover:text-yellow-300 transition">Players</a>
+                <a href="guides.html" class="nav-link text-white hover:text-yellow-300 transition">Guides</a>
+                <a href="stats.html" class="nav-link text-white hover:text-yellow-300 transition">Stats</a>
+            </nav>
+            <button id="menu-toggle" class="md:hidden text-yellow-300 focus:outline-none" aria-label="Toggle navigation menu">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                </svg>
+            </button>
+        </div>
+        <div id="mobile-menu" class="hidden md:hidden bg-blue-600">
+            <nav class="flex flex-col px-4 py-2 space-y-2">
+                <a href="index.html" class="nav-link text-white hover:text-yellow-300 transition">Home</a>
+                <a href="tools.html" class="nav-link text-white hover:text-yellow-300 transition">Expert Tools</a>
+                <a href="players.html" class="nav-link text-white hover:text-yellow-300 transition">Players</a>
+                <a href="guides.html" class="nav-link text-white hover:text-yellow-300 transition">Guides</a>
+                <a href="stats.html" class="nav-link text-white hover:text-yellow-300 transition">Stats</a>
             </nav>
         </div>
     </header>
@@ -81,14 +94,6 @@
                                 <option value="standard">Standard</option>
                                 <option value="ppr" selected>PPR</option>
                                 <option value="half">Half-PPR</option>
-                            </select>
-                        </label>
-                        <label class="flex items-center">
-                            <span class="mr-2 text-sm font-medium text-gray-700">Year:</span>
-                            <select id="year" class="border-gray-300 rounded-md shadow-sm p-1">
-                                <option value="2023">2023</option>
-                                <option value="2024">2024</option>
-                                <option value="2025" selected>2025</option>
                             </select>
                         </label>
                         <label class="flex items-center">
@@ -244,5 +249,12 @@
 
     <!-- Scripts -->
     <script src="script.js" defer></script>
+    <script>
+        // Mobile menu toggle
+        document.getElementById('menu-toggle').addEventListener('click', () => {
+            const mobileMenu = document.getElementById('mobile-menu');
+            mobileMenu.classList.toggle('hidden');
+        });
+    </script>
 </body>
 </html>
