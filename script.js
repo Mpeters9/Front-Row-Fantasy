@@ -635,145 +635,6 @@ function getBenchBias(teamRoster, candidates) {
     return filtered.length ? filtered : candidates;
 }
 
-// --- Simulate Draft ---
-function simulateDraft({ allPlayers, leagueSize, draftPick, draftNeedsByTeam, benchSize }) {
-    const draftBoard = [...allPlayers]
-        .filter(p => p.AVG !== undefined)
-        .sort((a, b) => a.AVG - b.AVG);
-
-    let teamNeeds = buildTeamNeeds();
-    let taken = new Set();
-    let picks = [];
-    let totalRounds = teamNeeds[0].length;
-
-    for (let round = 1; round <= totalRounds; round++) {
-        let order = [];
-        if (round % 2 === 1) {
-            for (let i = 0; i < leagueSize; i++) order.push(i);
-        } else {
-            for (let i = leagueSize - 1; i >= 0; i--) order.push(i);
-        }
-        for (let i = 0; i < leagueSize; i++) {
-            let teamIdx = order[i];
-            let need = teamNeeds[teamIdx].shift();
-            let player = getBestAvailableSmart(need, taken, round, totalRounds, teamIdx, teamNeeds, draftBoard, leagueSize);
-            if (!player) continue;
-            taken.add(player.Player);
-            // Collect ALL picks for your team, including bench
-            if (teamIdx + 1 === draftPick) {
-                picks.push({
-                    ...player,
-                    slot: need,
-                    round,
-                    pickNum: i + 1,
-                    overallPick: (round - 1) * leagueSize + (i + 1)
-                });
-            }
-        }
-    }
-
-    // Show ALL rounds, including bench
-    result.innerHTML = `
-        <div class="bg-glass rounded-xl p-4 mt-2">
-            <h3 class="font-bold text-lg mb-2 text-yellow">Recommended Draft Build (${scoringType.toUpperCase()})</h3>
-            <ul class="list-disc ml-6 text-left">
-                <li>League Size: <span class="text-teal">${leagueSize}</span></li>
-                <li>Draft Pick: <span class="text-teal">${draftPick}</span></li>
-                <li>Scoring: <span class="text-teal">${scoringType.toUpperCase()}</span></li>
-                <li>Bench Size: <span class="text-teal">${benchSize}</span></li>
-            </ul>
-            <h4 class="font-semibold mt-4 mb-2 text-orange">Your Draft Picks</h4>
-            <table class="w-full text-sm mb-4">
-                <thead>
-                    <tr>
-                        <th>Round</th>
-                        <th>Pick</th>
-                        <th>Player</th>
-                        <th>Team</th>
-                        <th>Pos</th>
-                        <th>Slot</th>
-                        <th>ADP</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    ${picks.map(p => `
-                        <tr>
-                            <td>${p.round}</td>
-                            <td>${p.pickNum}</td>
-                            <td><span class="font-bold ${posColor(p.POS)}">${p.Player}</span></td>
-                            <td>${p.Team || ''}</td>
-                            <td>${p.POS}</td>
-                            <td>${p.slot}</td>
-                            <td>${p.AVG}</td>
-                        </tr>
-                    `).join('')}
-                </tbody>
-            </table>
-            <div class="mt-4 text-green font-semibold">Strategy: Draft sim uses ADP as a base, but randomness increases each round to reflect real draft chaos. Early rounds are chalk, late rounds are wild.</div>
-        </div>
-    `;
-
-    // After the picks table
-    const posCounts = picks.reduce((acc, p) => { acc[p.POS] = (acc[p.POS] || 0) + 1; return acc; }, {});
-    const byeWeeks = picks.map(p => p.Bye).filter(Boolean);
-}
-
-// --- Tiered randomness and positional runs ---
-function getBestAvailableSmart(pos, taken, round, totalRounds, teamIdx, teamNeeds, draftBoard, leagueSize) {
-    // --- Tiered randomness ---
-    let randomness = 0;
-    if (round <= 2) randomness = 0; // Chalk
-    else if (round <= 5) randomness = 2; // Slight reach
-    else if (round <= 10) randomness = 5; // More reach
-    else randomness = 10; // Late chaos
-
-    // --- Positional run detection ---
-    let lastPicks = [];
-    if (round > 1) {
-        for (let i = 0; i < Math.min(leagueSize, 4); i++) {
-            let prevTeam = (teamIdx - i + leagueSize) % leagueSize;
-            let prevNeed = teamNeeds[prevTeam][0];
-            lastPicks.push(prevNeed);
-        }
-    }
-    let runBonus = 0;
-    if (lastPicks.filter(x => x === pos).length >= 3) runBonus = 3;
-
-    // --- Scarcity: If only 1-2 left at position, reach ---
-    let candidates = draftBoard.filter(p => !taken.has(p.Player));
-    let scarce = false;
-    if (['QB', 'RB', 'WR', 'TE'].includes(pos)) {
-        let count = candidates.filter(p => p.POS.startsWith(pos)).length;
-        if (count <= 2) scarce = true;
-    }
-
-    // --- Main filtering ---
-    candidates = candidates.filter(p => {
-        if (pos === 'FLEX') {
-            return !taken.has(p.Player) && ['RB', 'WR', 'TE'].includes(p.POS);
-        }
-        if (pos === 'SF') {
-            return !taken.has(p.Player) && ['QB', 'RB', 'WR', 'TE'].includes(p.POS);
-        }
-        if (pos === 'BENCH') {
-            // teamIdx is your team index, picksSoFar is your picks array
-            const myRoster = picks.filter(p => p.teamIdx === teamIdx);
-            candidates = getBenchBias(myRoster, candidates);
-        }
-        if (pos === 'BENCH') {
-            return !taken.has(p.Player);
-        }
-        if (scarce && !taken.has(p.Player)) return true;
-        if (p.POS === pos && !taken.has(p.Player)) return true;
-        return false;
-    });
-
-    // --- Random selection from filtered candidates ---
-    if (candidates.length === 0) return null;
-    let pickIdx = Math.floor(Math.random() * Math.min(randomness + 1 + runBonus, candidates.length));
-    return candidates[pickIdx] || candidates[0];
-}
-
 // --- Improved Draft Simulation ---
 function simulateDraft({
     allPlayers, leagueSize, draftPick, draftNeedsByTeam, benchSize,
@@ -785,7 +646,6 @@ function simulateDraft({
     let teamRosters = Array.from({ length: leagueSize }, () => []);
     let totalRounds = draftNeedsByTeam[0].length;
 
-    // --- FIX: Always start at round 1, not round 10 ---
     for (let round = 1; round <= totalRounds; round++) {
         let order = round % 2 === 1
             ? [...Array(leagueSize).keys()]
@@ -794,26 +654,18 @@ function simulateDraft({
             let teamIdx = order[i];
             let need = draftNeedsByTeam[teamIdx].shift();
             let candidates = draftBoard.filter(p => !taken.has(p.Player));
-            // 4a: Don't overdraft K/DST
             candidates = filterKickerDST(candidates, need, round, totalRounds);
-            // 3b: Apply custom draft strategy
             candidates = applyDraftStrategy(strategy, candidates, round);
-
-            // --- Bench bias for BENCH picks ---
             if (need === 'BENCH') {
                 candidates = getBenchBias(teamRosters[teamIdx], candidates);
             }
-
-            // 1c: Sort by ADP + value
             candidates = sortCandidatesADPValue(candidates, round);
-            // 1b: Score for bye/stacking
             candidates = candidates
                 .map(p => ({
                     ...p,
                     _score: scoreCandidate(p, teamRosters[teamIdx], need, round)
                 }))
                 .sort((a, b) => b._score - a._score);
-            // 2c: Error handling
             let player = safeGetPlayer(candidates, 0);
             if (!player) continue;
             taken.add(player.Player);
@@ -829,71 +681,8 @@ function simulateDraft({
             }
         }
     }
-    // 2a/3a: Render results if element provided
     if (resultElem) renderDraftResults(picks, leagueSize, draftPick, scoringType, benchSize, resultElem);
     return picks;
-}
-
-// --- Hook up the improved draft simulation to the generate button ---
-const generateLineupBtn = document.getElementById('generateLineup');
-if (generateLineupBtn) {
-    generateLineupBtn.addEventListener('click', function () {
-        const leagueSize = parseInt(document.getElementById('leagueSize').value, 10);
-        const draftPick = parseInt(document.getElementById('draftPick').value, 10);
-        const scoringType = getScoringType();
-        const benchSize = parseInt(document.getElementById('benchSize').value, 10);
-
-        // Get lineup counts from form
-        const draftQbCount = document.getElementById('draftQbCount');
-        const draftSfCount = document.getElementById('draftSfCount');
-        const draftRbCount = document.getElementById('draftRbCount');
-        const draftWrCount = document.getElementById('draftWrCount');
-        const draftTeCount = document.getElementById('draftTeCount');
-        const draftFlexCount = document.getElementById('draftFlexCount');
-        const draftDstCount = document.getElementById('draftDstCount');
-        const draftKCount = document.getElementById('draftKCount');
-        const qb = parseInt(draftQbCount.value, 10);
-        const sf = draftSfCount ? parseInt(draftSfCount.value, 10) : 0;
-        const rb = parseInt(draftRbCount.value, 10);
-        const wr = parseInt(draftWrCount.value, 10);
-        const te = parseInt(draftTeCount.value, 10);
-        const flex = parseInt(draftFlexCount.value, 10);
-        const dst = parseInt(draftDstCount.value, 10);
-        const k = parseInt(draftKCount.value, 10);
-
-        const result = document.getElementById('build-result');
-
-        // Build positional needs for all teams
-        function buildTeamNeeds() {
-            let needs = [];
-            for (let i = 0; i < leagueSize; i++) {
-                needs.push([
-                    ...Array(qb).fill('QB'),
-                    ...Array(sf).fill('SF'),
-                    ...Array(rb).fill('RB'),
-                    ...Array(wr).fill('WR'),
-                    ...Array(te).fill('TE'),
-                    ...Array(flex).fill('FLEX'),
-                    ...Array(dst).fill('DST'),
-                    ...Array(k).fill('K'),
-                    ...Array(benchSize).fill('BENCH')
-                ]);
-            }
-            return needs;
-        }
-
-        // Call the improved draft simulation
-        simulateDraft({
-            allPlayers,
-            leagueSize,
-            draftPick,
-            draftNeedsByTeam: buildTeamNeeds(),
-            benchSize,
-            strategy: null, // or pass a string like 'zero_rb', 'late_qb', etc.
-            resultElem: result,
-            scoringType
-        });
-    });
 }
 
 // --- 1b. Bye Weeks and Stacking ---
@@ -998,6 +787,174 @@ function renderDraftResults(picks, leagueSize, draftPick, scoringType, benchSize
     `;
 }
 
+// --- Tiered randomness and positional runs ---
+function getBestAvailableSmart(pos, taken, round, totalRounds, teamIdx, teamNeeds, draftBoard, leagueSize) {
+    // --- Tiered randomness ---
+    let randomness = 0;
+    if (round <= 2) randomness = 0; // Chalk
+    else if (round <= 5) randomness = 2; // Slight reach
+    else if (round <= 10) randomness = 5; // More reach
+    else randomness = 10; // Late chaos
+
+    // --- Positional run detection ---
+    let lastPicks = [];
+    if (round > 1) {
+        for (let i = 0; i < Math.min(leagueSize, 4); i++) {
+            let prevTeam = (teamIdx - i + leagueSize) % leagueSize;
+            let prevNeed = teamNeeds[prevTeam][0];
+            lastPicks.push(prevNeed);
+        }
+    }
+    let runBonus = 0;
+    if (lastPicks.filter(x => x === pos).length >= 3) runBonus = 3;
+
+    // --- Scarcity: If only 1-2 left at position, reach ---
+    let candidates = draftBoard.filter(p => !taken.has(p.Player));
+    let scarce = false;
+    if (['QB', 'RB', 'WR', 'TE'].includes(pos)) {
+        let count = candidates.filter(p => p.POS.startsWith(pos)).length;
+        if (count <= 2) scarce = true;
+    }
+
+    // --- Main filtering ---
+    candidates = candidates.filter(p => {
+        if (pos === 'FLEX') {
+            return !taken.has(p.Player) && ['RB', 'WR', 'TE'].includes(p.POS);
+        }
+        if (pos === 'SF') {
+            return !taken.has(p.Player) && ['QB', 'RB', 'WR', 'TE'].includes(p.POS);
+        }
+        if (pos === 'BENCH') {
+            // teamIdx is your team index, picksSoFar is your picks array
+            const myRoster = picks.filter(p => p.teamIdx === teamIdx);
+            candidates = getBenchBias(myRoster, candidates);
+        }
+        if (pos === 'BENCH') {
+            return !taken.has(p.Player);
+        }
+        if (scarce && !taken.has(p.Player)) return true;
+        if (p.POS === pos && !taken.has(p.Player)) return true;
+        return false;
+    });
+
+    // --- Random selection from filtered candidates ---
+    if (candidates.length === 0) return null;
+    let pickIdx = Math.floor(Math.random() * Math.min(randomness + 1 + runBonus, candidates.length));
+    return candidates[pickIdx] || candidates[0];
+}
+
+// --- Improved Draft Simulation ---
+function simulateDraft({
+    allPlayers, leagueSize, draftPick, draftNeedsByTeam, benchSize,
+    strategy = null, resultElem = null, scoringType = 'ppr'
+}) {
+    const draftBoard = [...allPlayers].filter(p => p.AVG !== undefined).sort((a, b) => a.AVG - b.AVG);
+    let taken = new Set();
+    let picks = [];
+    let teamRosters = Array.from({ length: leagueSize }, () => []);
+    let totalRounds = draftNeedsByTeam[0].length;
+
+    for (let round = 1; round <= totalRounds; round++) {
+        let order = round % 2 === 1
+            ? [...Array(leagueSize).keys()]
+            : [...Array(leagueSize).keys()].reverse();
+        for (let i = 0; i < leagueSize; i++) {
+            let teamIdx = order[i];
+            let need = draftNeedsByTeam[teamIdx].shift();
+            let candidates = draftBoard.filter(p => !taken.has(p.Player));
+            candidates = filterKickerDST(candidates, need, round, totalRounds);
+            candidates = applyDraftStrategy(strategy, candidates, round);
+            if (need === 'BENCH') {
+                candidates = getBenchBias(teamRosters[teamIdx], candidates);
+            }
+            candidates = sortCandidatesADPValue(candidates, round);
+            candidates = candidates
+                .map(p => ({
+                    ...p,
+                    _score: scoreCandidate(p, teamRosters[teamIdx], need, round)
+                }))
+                .sort((a, b) => b._score - a._score);
+            let player = safeGetPlayer(candidates, 0);
+            if (!player) continue;
+            taken.add(player.Player);
+            teamRosters[teamIdx].push(player);
+            if (teamIdx + 1 === draftPick) {
+                picks.push({
+                    ...player,
+                    slot: need,
+                    round,
+                    pickNum: i + 1,
+                    overallPick: (round - 1) * leagueSize + (i + 1)
+                });
+            }
+        }
+    }
+    if (resultElem) renderDraftResults(picks, leagueSize, draftPick, scoringType, benchSize, resultElem);
+    return picks;
+}
+
+// --- Hook up the improved draft simulation to the generate button ---
+const generateLineupBtn = document.getElementById('generateLineup');
+if (generateLineupBtn) {
+    generateLineupBtn.addEventListener('click', function () {
+        const leagueSize = parseInt(document.getElementById('leagueSize').value, 10);
+        const draftPick = parseInt(document.getElementById('draftPick').value, 10);
+        const scoringType = getScoringType();
+        const benchSize = parseInt(document.getElementById('benchSize').value, 10);
+
+        // Get lineup counts from form
+        const draftQbCount = document.getElementById('draftQbCount');
+        const draftSfCount = document.getElementById('draftSfCount');
+        const draftRbCount = document.getElementById('draftRbCount');
+        const draftWrCount = document.getElementById('draftWrCount');
+        const draftTeCount = document.getElementById('draftTeCount');
+        const draftFlexCount = document.getElementById('draftFlexCount');
+        const draftDstCount = document.getElementById('draftDstCount');
+        const draftKCount = document.getElementById('draftKCount');
+        const qb = parseInt(draftQbCount.value, 10);
+        const sf = draftSfCount ? parseInt(draftSfCount.value, 10) : 0;
+        const rb = parseInt(draftRbCount.value, 10);
+        const wr = parseInt(draftWrCount.value, 10);
+        const te = parseInt(draftTeCount.value, 10);
+        const flex = parseInt(draftFlexCount.value, 10);
+        const dst = parseInt(draftDstCount.value, 10);
+        const k = parseInt(draftKCount.value, 10);
+
+        const result = document.getElementById('build-result');
+
+        // Build positional needs for all teams
+        function buildTeamNeeds() {
+            let needs = [];
+            for (let i = 0; i < leagueSize; i++) {
+                needs.push([
+                    ...Array(qb).fill('QB'),
+                    ...Array(sf).fill('SF'),
+                    ...Array(rb).fill('RB'),
+                    ...Array(wr).fill('WR'),
+                    ...Array(te).fill('TE'),
+                    ...Array(flex).fill('FLEX'),
+                    ...Array(dst).fill('DST'),
+                    ...Array(k).fill('K'),
+                    ...Array(benchSize).fill('BENCH')
+                ]);
+            }
+            return needs;
+        }
+
+        // Call the improved draft simulation
+        simulateDraft({
+            allPlayers,
+            leagueSize,
+            draftPick,
+            draftNeedsByTeam: buildTeamNeeds(),
+            benchSize,
+            strategy: null, // or pass a string like 'zero_rb', 'late_qb', etc.
+            resultElem: result,
+            scoringType
+        });
+    });
+}
+
 // --- 2b. Magic Numbers as Constants ---
 const RANDOMNESS_EARLY = 0;
 const RANDOMNESS_MID = 2;
@@ -1038,64 +995,4 @@ function filterKickerDST(candidates, need, round, totalRounds) {
         return [];
     }
     return candidates;
-}
-
-// --- Improved Draft Simulation ---
-function simulateDraft({
-    allPlayers, leagueSize, draftPick, draftNeedsByTeam, benchSize,
-    strategy = null, resultElem = null, scoringType = 'ppr'
-}) {
-    const draftBoard = [...allPlayers].filter(p => p.AVG !== undefined).sort((a, b) => a.AVG - b.AVG);
-    let taken = new Set();
-    let picks = [];
-    let teamRosters = Array.from({ length: leagueSize }, () => []);
-    let totalRounds = draftNeedsByTeam[0].length;
-
-    // --- FIX: Always start at round 1, not round 10 ---
-    for (let round = 1; round <= totalRounds; round++) {
-        let order = round % 2 === 1
-            ? [...Array(leagueSize).keys()]
-            : [...Array(leagueSize).keys()].reverse();
-        for (let i = 0; i < leagueSize; i++) {
-            let teamIdx = order[i];
-            let need = draftNeedsByTeam[teamIdx].shift();
-            let candidates = draftBoard.filter(p => !taken.has(p.Player));
-            // 4a: Don't overdraft K/DST
-            candidates = filterKickerDST(candidates, need, round, totalRounds);
-            // 3b: Apply custom draft strategy
-            candidates = applyDraftStrategy(strategy, candidates, round);
-
-            // --- Bench bias for BENCH picks ---
-            if (need === 'BENCH') {
-                candidates = getBenchBias(teamRosters[teamIdx], candidates);
-            }
-
-            // 1c: Sort by ADP + value
-            candidates = sortCandidatesADPValue(candidates, round);
-            // 1b: Score for bye/stacking
-            candidates = candidates
-                .map(p => ({
-                    ...p,
-                    _score: scoreCandidate(p, teamRosters[teamIdx], need, round)
-                }))
-                .sort((a, b) => b._score - a._score);
-            // 2c: Error handling
-            let player = safeGetPlayer(candidates, 0);
-            if (!player) continue;
-            taken.add(player.Player);
-            teamRosters[teamIdx].push(player);
-            if (teamIdx + 1 === draftPick) {
-                picks.push({
-                    ...player,
-                    slot: need,
-                    round,
-                    pickNum: i + 1,
-                    overallPick: (round - 1) * leagueSize + (i + 1)
-                });
-            }
-        }
-    }
-    // 2a/3a: Render results if element provided
-    if (resultElem) renderDraftResults(picks, leagueSize, draftPick, scoringType, benchSize, resultElem);
-    return picks;
 }
