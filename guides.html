@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Front Row Fantasy - [Page Name]</title>
-    <meta name="description" content="Your one-stop fantasy football trade analyzer, projections, and more.">
+    <title>Guides - Front Row Fantasy</title>
+    <meta name="description" content="Expert fantasy football guides, tips, and strategies to help you dominate your league.">
     <meta name="keywords" content="fantasy football, guides, tips, strategies, draft, waiver, trade">
     <meta name="author" content="Mpeters9">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
@@ -20,32 +20,13 @@
             <a href="index.html" class="text-2xl font-bold text-yellow text-glow">Front Row Fantasy</a>
             <nav>
                 <a href="index.html" class="nav-link">Home</a>
-                <a href="tools.html" class="nav-link" aria-current="page">Expert Tools</a>
-                <a href="goat.html" class="nav-link">GOAT</a>
-                <a href="guides.html" class="nav-link">Guides</a>
+                <a href="guides.html" class="nav-link" aria-current="page">Guides</a>
                 <a href="community.html" class="nav-link">Community</a>
                 <a href="players.html" class="nav-link">Players</a>
                 <a href="stats.html" class="nav-link">Stats</a>
-                <a href="#contact" class="nav-link">Contact</a>
             </nav>
         </div>
     </header>
-
-    <!-- Fantasy Points Ticker -->
-    <section class="marquee mb-6">
-        <div class="bg-teal-900 text-white p-2 rounded-t flex justify-between items-center shadow">
-            <span class="text-xl font-bold tracking-wide flex items-center gap-2">
-                <svg class="inline w-6 h-6 text-yellow-300" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12c0 4.97-4.03 9-9 9s-9-4.03-9-9 4.03-9 9-9 9 4.03 9 9z"/></svg>
-                Fantasy Points Ticker
-            </span>
-            <button id="pauseButton" class="cta-btn px-4 py-1" aria-pressed="false" aria-label="Pause ticker">Pause</button>
-        </div>
-        <div class="relative overflow-hidden bg-teal-800 rounded-b" style="height:2.5rem;">
-            <div id="tickerContent" class="absolute left-0 top-0 h-full flex items-center whitespace-nowrap transition-none" tabindex="0" aria-live="polite">
-                <span class="loading text-white">Loading fantasy points...</span>
-            </div>
-        </div>
-    </section>
 
     <!-- Hero / Splash -->
     <section class="splash-section text-center mb-8">
@@ -86,14 +67,23 @@
             </ul>
             <a href="#" class="cta-btn mt-2">Plan Your Season</a>
         </section>
+        <section class="card mb-8">
+            <h2 class="section-title">Scoring Settings</h2>
+            <p class="text-lg mb-2">Customize your scoring settings to match your league's rules.</p>
+            <label for="scoringType" class="block text-base mb-2">Scoring Type:</label>
+            <select id="scoringType" class="ml-2">
+                <option value="standard">Standard</option>
+                <option value="ppr" selected>PPR</option>
+                <option value="half">Half-PPR</option>
+            </select>
+            <a href="#" class="cta-btn mt-2">Update Scoring Settings</a>
+        </section>
     </main>
 
     <!-- Footer -->
     <footer>
         <div class="mb-2">
             <a href="index.html" class="hover:text-yellow mx-2">Home</a>
-            <a href="tools.html" class="hover:text-yellow mx-2">Expert Tools</a>
-            <a href="goat.html" class="hover:text-yellow mx-2">GOAT</a>
             <a href="guides.html" class="hover:text-yellow mx-2">Guides</a>
             <a href="community.html" class="hover:text-yellow mx-2">Community</a>
             <a href="players.html" class="hover:text-yellow mx-2">Players</a>
@@ -101,6 +91,5 @@
         </div>
         © 2025 Front Row Fantasy. All rights reserved.
     </footer>
-    <script src="script.js"></script>
 </body>
 </html>
