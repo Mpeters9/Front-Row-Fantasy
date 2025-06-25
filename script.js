@@ -138,8 +138,17 @@ document.addEventListener('DOMContentLoaded', () => {
                 value: p.points // Used for trade value
             }));
             playersData.sort((a, b) => b.value - a.value);
-            autocomplete('player1-search', 'player1-autocomplete', team1, team2, 'team1-players');
-            autocomplete('player2-search', 'player2-autocomplete', team2, team1, 'team2-players');
+
+            // Only initialize autocomplete if the elements exist
+            if (
+                document.getElementById('player1-search') &&
+                document.getElementById('player1-autocomplete') &&
+                document.getElementById('player2-search') &&
+                document.getElementById('player2-autocomplete')
+            ) {
+                autocomplete('player1-search', 'player1-autocomplete', team1, team2, 'team1-players');
+                autocomplete('player2-search', 'player2-autocomplete', team2, team1, 'team2-players');
+            }
             renderTeam('team1-players', team1, 'team1');
             renderTeam('team2-players', team2, 'team2');
             renderRecentTrades();
