@@ -14,7 +14,7 @@
 </head>
 <body class="min-h-screen flex flex-col font-poppins bg-gradient-to-br from-[#0f2027] to-[#2c5364]" aria-label="GOAT Page Content">
     <!-- Header -->
-    <header class="sticky top-0 z-50 bg-opacity-95 bg-gray-900 shadow-lg border-b-2 border-teal-500">
+    <header class="sticky top-0 z-50 bg-opacity-98 bg-gray-900 shadow-lg border-b-2 border-teal-500">
         <div class="max-w-7xl mx-auto px-4 flex justify-between items-center py-3">
             <a href="index.html" class="text-2xl font-bold text-yellow text-glow">Front Row Fantasy</a>
             <nav class="hidden md:flex gap-6">
@@ -54,7 +54,7 @@
                 <svg class="inline w-6 h-6 text-yellow-300" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12c0 4.97-4.03 9-9 9s-9-4.03-9-9 4.03-9 9-9 9 4.03 9 9z"/></svg>
                 Fantasy Points Ticker
             </span>
-            <button id="pauseButton" class="px-4 py-1 bg-yellow-300 text-teal-900 rounded hover:bg-yellow-400 transition" aria-pressed="false" aria-label="Pause ticker">Pause</button>
+            <button id="pauseButton" class="cta-btn px-4 py-1" aria-pressed="false" aria-label="Pause ticker">Pause</button>
         </div>
         <div class="relative overflow-hidden bg-teal-800 rounded-b" style="height:2.5rem;">
             <div id="tickerContent" class="absolute left-0 top-0 h-full flex items-center whitespace-nowrap transition-none" tabindex="0" aria-live="polite">
@@ -65,26 +65,53 @@
 
     <!-- Hero / Splash -->
     <main class="max-w-7xl mx-auto px-4 flex-grow">
-        <section class="text-center mb-8">
-            <h2 class="text-4xl font-bold mb-4 text-yellow-300 text-glow">Unleash Your Fantasy GOAT</h2>
-            <p class="text-lg mb-6 text-gray-200">Master fantasy football with elite draft strategies, in-depth player research, and cutting-edge tools to build the ultimate team.</p>
-            <a href="#best-draft-builds" class="inline-block bg-blue-600 text-white px-6 py-2 rounded-md hover:bg-blue-700 transition">Get Started</a>
+        <section class="splash-section text-center mb-10">
+            <h1 class="text-5xl md:text-6xl font-bold mb-4 text-glow">Unleash Your Fantasy GOAT</h1>
+            <p class="text-xl md:text-2xl mb-6">Master fantasy football with elite draft strategies, in-depth player research, and cutting-edge tools to build the ultimate team.</p>
+            <a href="#best-draft-builds" class="cta-btn text-lg">Get Started</a>
+        </section>
+
+        <!-- Feature Cards -->
+        <section class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-10">
+            <div class="card text-center">
+                <h2 class="section-title mb-2">Top Players</h2>
+                <ul class="text-lg mb-2">
+                    <li><span class="player-pos-QB font-bold">Josh Allen</span> <span class="text-teal">(BUF QB)</span> <span class="text-yellow font-bold">25.4 pts</span></li>
+                    <li><span class="player-pos-QB font-bold">Patrick Mahomes</span> <span class="text-teal">(KC QB)</span> <span class="text-yellow font-bold">24.8 pts</span></li>
+                    <li><span class="player-pos-RB font-bold">Christian McCaffrey</span> <span class="text-teal">(SF RB)</span> <span class="text-yellow font-bold">20.5 pts</span></li>
+                    <li><span class="player-pos-WR font-bold">Tyreek Hill</span> <span class="text-teal">(MIA WR)</span> <span class="text-yellow font-bold">19.8 pts</span></li>
+                    <li><span class="player-pos-WR font-bold">Justin Jefferson</span> <span class="text-teal">(MIN WR)</span> <span class="text-yellow font-bold">19.2 pts</span></li>
+                    <li><span class="player-pos-TE font-bold">Travis Kelce</span> <span class="text-teal">(KC TE)</span> <span class="text-yellow font-bold">18.9 pts</span></li>
+                </ul>
+                <a href="players.html" class="cta-btn mt-2">See All Players</a>
+            </div>
+            <div class="card text-center">
+                <h2 class="section-title mb-2">Active Leagues</h2>
+                <p class="text-3xl font-bold text-yellow mb-2">1,234</p>
+                <p class="mb-4">Leagues competing right now</p>
+                <a href="community.html" class="cta-btn">Join the Community</a>
+            </div>
+            <div class="card text-center">
+                <h2 class="section-title mb-2">Get Started</h2>
+                <p class="mb-4">Sign up to unlock all features and start your journey to the championship.</p>
+                <a href="guides.html" class="cta-btn">Fantasy Guides</a>
+            </div>
         </section>
 
         <!-- Loading Spinner -->
         <div id="loading-spinner" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-            <div class="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-yellow-300"></div>
+            <div class="spinner"></div>
         </div>
 
         <!-- Best Draft Builds Tool -->
         <section id="best-draft-builds" class="mb-12">
-            <h2 class="text-center text-2xl font-semibold text-gray-200 mb-4">Best Draft Builds</h2>
-            <div class="max-w-2xl mx-auto bg-gray-800 rounded-lg shadow-md p-6">
+            <h2 class="section-title text-center mb-4">Best Draft Builds</h2>
+            <div class="card max-w-2xl mx-auto">
                 <form id="draft-build-form" class="flex flex-col gap-4">
                     <div class="flex flex-wrap gap-4 justify-center">
                         <label class="flex items-center">
                             <span class="mr-2 text-sm font-medium text-gray-200">League Size:</span>
-                            <select id="leagueSize" class="border-gray-600 bg-gray-700 text-white rounded-md shadow-sm p-1">
+                            <select id="leagueSize" class="border-teal-500 bg-gray-900 bg-opacity-85 text-white rounded-xl p-1">
                                 <option>8</option>
                                 <option>10</option>
                                 <option selected>12</option>
@@ -93,11 +120,11 @@
                         </label>
                         <label class="flex items-center">
                             <span class="mr-2 text-sm font-medium text-gray-200">Draft Pick:</span>
-                            <input type="number" id="draftPick" min="1" max="12" value="1" class="w-16 text-center border-gray-600 bg-gray-700 text-white rounded-md shadow-sm p-1" />
+                            <input type="number" id="draftPick" min="1" max="12" value="1" class="w-16 text-center border-teal-500 bg-gray-900 bg-opacity-85 text-white rounded-xl p-1" />
                         </label>
                         <label class="flex items-center">
                             <span class="mr-2 text-sm font-medium text-gray-200">Scoring:</span>
-                            <select id="scoringType" class="border-gray-600 bg-gray-700 text-white rounded-md shadow-sm p-1">
+                            <select id="scoringType" class="border-teal-500 bg-gray-900 bg-opacity-85 text-white rounded-xl p-1">
                                 <option value="standard">Standard</option>
                                 <option value="ppr" selected>PPR</option>
                                 <option value="half">Half-PPR</option>
@@ -105,7 +132,7 @@
                         </label>
                         <label class="flex items-center">
                             <span class="mr-2 text-sm font-medium text-gray-200">Bench Size:</span>
-                            <select id="benchSize" class="border-gray-600 bg-gray-700 text-white rounded-md shadow-sm p-1">
+                            <select id="benchSize" class="border-teal-500 bg-gray-900 bg-opacity-85 text-white rounded-xl p-1">
                                 <option>4</option>
                                 <option>5</option>
                                 <option selected>6</option>
@@ -114,7 +141,7 @@
                         </label>
                         <label class="flex items-center">
                             <span class="mr-2 text-sm font-medium text-gray-200">Draft Lineup Preset:</span>
-                            <select id="draftLineupPreset" class="border-gray-600 bg-gray-700 text-white rounded-md shadow-sm p-1">
+                            <select id="draftLineupPreset" class="border-teal-500 bg-gray-900 bg-opacity-85 text-white rounded-xl p-1">
                                 <option value="std">Standard: 1QB, 2RB, 2WR, 1TE, 1FLX, 1DST, 1K</option>
                                 <option value="ppr" selected>PPR: 1QB, 2RB, 2WR, 1TE, 1FLX, 1DST, 1K</option>
                                 <option value="superflex_redraft">SuperFlex Redraft: 1QB, 1SF, 2RB, 2WR, 1TE, 1FLX, 1DST, 1K</option>
@@ -129,38 +156,38 @@
                         </label>
                         <label class="flex items-center">
                             <span class="mr-2 text-sm font-medium text-gray-200">QB:</span>
-                            <input type="number" id="draftQbCount" min="0" max="3" value="1" class="w-12 text-center border-gray-600 bg-gray-700 text-white rounded-md shadow-sm p-1" />
+                            <input type="number" id="draftQbCount" min="0" max="3" value="1" class="w-12 text-center border-teal-500 bg-gray-900 bg-opacity-85 text-white rounded-xl p-1" />
                         </label>
                         <label class="flex items-center">
                             <span class="mr-2 text-sm font-medium text-gray-200">SF:</span>
-                            <input type="number" id="draftSfCount" min="0" max="2" value="0" class="w-12 text-center border-gray-600 bg-gray-700 text-white rounded-md shadow-sm p-1" />
+                            <input type="number" id="draftSfCount" min="0" max="2" value="0" class="w-12 text-center border-teal-500 bg-gray-900 bg-opacity-85 text-white rounded-xl p-1" />
                         </label>
                         <label class="flex items-center">
                             <span class="mr-2 text-sm font-medium text-gray-200">RB:</span>
-                            <input type="number" id="draftRbCount" min="0" max="5" value="2" class="w-12 text-center border-gray-600 bg-gray-700 text-white rounded-md shadow-sm p-1" />
+                            <input type="number" id="draftRbCount" min="0" max="5" value="2" class="w-12 text-center border-teal-500 bg-gray-900 bg-opacity-85 text-white rounded-xl p-1" />
                         </label>
                         <label class="flex items-center">
                             <span class="mr-2 text-sm font-medium text-gray-200">WR:</span>
-                            <input type="number" id="draftWrCount" min="0" max="5" value="2" class="w-12 text-center border-gray-600 bg-gray-700 text-white rounded-md shadow-sm p-1" />
+                            <input type="number" id="draftWrCount" min="0" max="5" value="2" class="w-12 text-center border-teal-500 bg-gray-900 bg-opacity-85 text-white rounded-xl p-1" />
                         </label>
                         <label class="flex items-center">
                             <span class="mr-2 text-sm font-medium text-gray-200">TE:</span>
-                            <input type="number" id="draftTeCount" min="0" max="3" value="1" class="w-12 text-center border-gray-600 bg-gray-700 text-white rounded-md shadow-sm p-1" />
+                            <input type="number" id="draftTeCount" min="0" max="3" value="1" class="w-12 text-center border-teal-500 bg-gray-900 bg-opacity-85 text-white rounded-xl p-1" />
                         </label>
                         <label class="flex items-center">
                             <span class="mr-2 text-sm font-medium text-gray-200">FLEX:</span>
-                            <input type="number" id="draftFlexCount" min="0" max="3" value="1" class="w-12 text-center border-gray-600 bg-gray-700 text-white rounded-md shadow-sm p-1" />
+                            <input type="number" id="draftFlexCount" min="0" max="3" value="1" class="w-12 text-center border-teal-500 bg-gray-900 bg-opacity-85 text-white rounded-xl p-1" />
                         </label>
                         <label class="flex items-center">
                             <span class="mr-2 text-sm font-medium text-gray-200">DST:</span>
-                            <input type="number" id="draftDstCount" min="0" max="2" value="1" class="w-12 text-center border-gray-600 bg-gray-700 text-white rounded-md shadow-sm p-1" />
+                            <input type="number" id="draftDstCount" min="0" max="2" value="1" class="w-12 text-center border-teal-500 bg-gray-900 bg-opacity-85 text-white rounded-xl p-1" />
                         </label>
                         <label class="flex items-center">
                             <span class="mr-2 text-sm font-medium text-gray-200">K:</span>
-                            <input type="number" id="draftKCount" min="0" max="2" value="1" class="w-12 text-center border-gray-600 bg-gray-700 text-white rounded-md shadow-sm p-1" />
+                            <input type="number" id="draftKCount" min="0" max="2" value="1" class="w-12 text-center border-teal-500 bg-gray-900 bg-opacity-85 text-white rounded-xl p-1" />
                         </label>
                     </div>
-                    <button type="button" id="generateLineup" class="bg-blue-600 text-white px-6 py-2 rounded-md hover:bg-blue-700 transition mt-4">Generate Draft Build</button>
+                    <button type="button" id="generateLineup" class="cta-btn mt-4">Generate Draft Build</button>
                 </form>
                 <div id="build-result" class="mt-6 text-gray-200"></div>
             </div>
@@ -168,13 +195,13 @@
 
         <!-- Best Lineup Builds Tool -->
         <section id="best-lineup-builds" class="mb-12">
-            <h2 class="text-center text-2xl font-semibold text-gray-200 mb-4">Best Lineup Builds</h2>
-            <div class="max-w-2xl mx-auto bg-gray-800 rounded-lg shadow-md p-6">
+            <h2 class="section-title text-center mb-4">Best Lineup Builds</h2>
+            <div class="card max-w-2xl mx-auto">
                 <form id="lineup-build-form" class="flex flex-col gap-4">
                     <div class="flex flex-wrap gap-4 justify-center">
                         <label class="flex items-center">
                             <span class="mr-2 text-sm font-medium text-gray-200">Lineup Preset:</span>
-                            <select id="lineupPreset" class="border-gray-600 bg-gray-700 text-white rounded-md shadow-sm p-1">
+                            <select id="lineupPreset" class="border-teal-500 bg-gray-900 bg-opacity-85 text-white rounded-xl p-1">
                                 <option value="std">Standard: 1QB, 2RB, 2WR, 1TE, 1FLX, 1DST, 1K</option>
                                 <option value="ppr" selected>PPR: 1QB, 2RB, 2WR, 1TE, 1FLX, 1DST, 1K</option>
                                 <option value="superflex_redraft">SuperFlex Redraft: 1QB, 1SF, 2RB, 2WR, 1TE, 1FLX, 1DST, 1K</option>
@@ -189,38 +216,38 @@
                         </label>
                         <label class="flex items-center">
                             <span class="mr-2 text-sm font-medium text-gray-200">QB:</span>
-                            <input type="number" id="qbCount" min="0" max="3" value="1" class="w-12 text-center border-gray-600 bg-gray-700 text-white rounded-md shadow-sm p-1" />
+                            <input type="number" id="qbCount" min="0" max="3" value="1" class="w-12 text-center border-teal-500 bg-gray-900 bg-opacity-85 text-white rounded-xl p-1" />
                         </label>
                         <label class="flex items-center">
                             <span class="mr-2 text-sm font-medium text-gray-200">SF:</span>
-                            <input type="number" id="sfCount" min="0" max="2" value="0" class="w-12 text-center border-gray-600 bg-gray-700 text-white rounded-md shadow-sm p-1" />
+                            <input type="number" id="sfCount" min="0" max="2" value="0" class="w-12 text-center border-teal-500 bg-gray-900 bg-opacity-85 text-white rounded-xl p-1" />
                         </label>
                         <label class="flex items-center">
                             <span class="mr-2 text-sm font-medium text-gray-200">RB:</span>
-                            <input type="number" id="rbCount" min="0" max="5" value="2" class="w-12 text-center border-gray-600 bg-gray-700 text-white rounded-md shadow-sm p-1" />
+                            <input type="number" id="rbCount" min="0" max="5" value="2" class="w-12 text-center border-teal-500 bg-gray-900 bg-opacity-85 text-white rounded-xl p-1" />
                         </label>
                         <label class="flex items-center">
                             <span class="mr-2 text-sm font-medium text-gray-200">WR:</span>
-                            <input type="number" id="wrCount" min="0" max="5" value="2" class="w-12 text-center border-gray-600 bg-gray-700 text-white rounded-md shadow-sm p-1" />
+                            <input type="number" id="wrCount" min="0" max="5" value="2" class="w-12 text-center border-teal-500 bg-gray-900 bg-opacity-85 text-white rounded-xl p-1" />
                         </label>
                         <label class="flex items-center">
                             <span class="mr-2 text-sm font-medium text-gray-200">TE:</span>
-                            <input type="number" id="teCount" min="0" max="3" value="1" class="w-12 text-center border-gray-600 bg-gray-700 text-white rounded-md shadow-sm p-1" />
+                            <input type="number" id="teCount" min="0" max="3" value="1" class="w-12 text-center border-teal-500 bg-gray-900 bg-opacity-85 text-white rounded-xl p-1" />
                         </label>
                         <label class="flex items-center">
                             <span class="mr-2 text-sm font-medium text-gray-200">FLEX:</span>
-                            <input type="number" id="flexCount" min="0" max="3" value="1" class="w-12 text-center border-gray-600 bg-gray-700 text-white rounded-md shadow-sm p-1" />
+                            <input type="number" id="flexCount" min="0" max="3" value="1" class="w-12 text-center border-teal-500 bg-gray-900 bg-opacity-85 text-white rounded-xl p-1" />
                         </label>
                         <label class="flex items-center">
                             <span class="mr-2 text-sm font-medium text-gray-200">DST:</span>
-                            <input type="number" id="dstCount" min="0" max="2" value="1" class="w-12 text-center border-gray-600 bg-gray-700 text-white rounded-md shadow-sm p-1" />
+                            <input type="number" id="dstCount" min="0" max="2" value="1" class="w-12 text-center border-teal-500 bg-gray-900 bg-opacity-85 text-white rounded-xl p-1" />
                         </label>
                         <label class="flex items-center">
                             <span class="mr-2 text-sm font-medium text-gray-200">K:</span>
-                            <input type="number" id="kCount" min="0" max="2" value="1" class="w-12 text-center border-gray-600 bg-gray-700 text-white rounded-md shadow-sm p-1" />
+                            <input type="number" id="kCount" min="0" max="2" value="1" class="w-12 text-center border-teal-500 bg-gray-900 bg-opacity-85 text-white rounded-xl p-1" />
                         </label>
                     </div>
-                    <button type="button" id="generateLineupBuild" class="bg-blue-600 text-white px-6 py-2 rounded-md hover:bg-blue-700 transition mt-4">Generate Lineup Build</button>
+                    <button type="button" id="generateLineupBuild" class="cta-btn mt-4">Generate Lineup Build</button>
                 </form>
                 <div id="lineup-result" class="mt-6 text-gray-200"></div>
             </div>
@@ -228,11 +255,11 @@
 
         <!-- Player Research Section -->
         <section id="player-research" class="mb-12">
-            <h2 class="text-center text-2xl font-semibold text-gray-200 mb-4">Player Research</h2>
-            <div class="bg-gray-800 rounded-lg shadow-md p-6">
-                <table class="w-full text-sm mb-6 text-gray-200">
+            <h2 class="section-title text-center mb-4">Player Research</h2>
+            <div class="card">
+                <table class="w-full text-sm mb-6">
                     <thead>
-                        <tr class="bg-gray-700">
+                        <tr>
                             <th class="p-2 text-left">Name</th>
                             <th class="p-2 text-left">Position</th>
                             <th class="p-2 text-left">Projected Points</th>
@@ -245,14 +272,41 @@
             </div>
         </section>
 
-        <!-- Contact -->
-        <section id="contact" class="bg-gray-800 rounded-lg shadow-md p-6 text-center mb-10">
-            <h2 class="text-2xl font-semibold text-gray-200 mb-2">Contact</h2>
-            <p class="mb-2 text-gray-200">Questions? Feedback? Reach out to us!</p>
-            <a href="mailto:info@frontrowfantasy.com" class="inline-block bg-blue-600 text-white px-6 py-2 rounded-md hover:bg-blue-700 transition">Email Us</a>
-            <div class="mt-2">
-                <a href="https://discord.com/invite/fantasyfootball" target="_blank" rel="noopener" class="text-teal-400 hover:text-yellow underline">Join Discord</a>
+        <!-- About & Tools -->
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-10">
+            <div class="card">
+                <h2 class="section-title mb-2">About Us</h2>
+                <p>Front Row Fantasy is built by passionate fans for passionate fans. Our mission: give you the edge with real-time stats, expert tools, and a thriving community.</p>
             </div>
+            <div class="card">
+                <h2 class="section-title mb-2">Games & Tools</h2>
+                <ul class="list-disc pl-6 mb-2 text-left">
+                    <li><a href="tools.html" class="text-teal hover:text-yellow">Trade Analyzer</a></li>
+                    <li><a href="tools.html" class="text-teal hover:text-yellow">Matchup Predictor</a></li>
+                    <li><a href="goat.html" class="text-teal hover:text-yellow">GOAT Builder</a></li>
+                </ul>
+                <a href="tools.html" class="cta-btn mt-2">Try Tools</a>
+            </div>
+        </section>
+
+        <!-- Contact -->
+        <section id="contact" class="card text-center mb-10">
+            <h2 class="section-title mb-2">Contact</h2>
+            <p class="mb-2">Questions? Feedback? Reach out to us!</p>
+            <a href="mailto:info@frontrowfantasy.com" class="cta-btn">Email Us</a>
+            <div class="mt-2">
+                <a href="https://discord.com/invite/fantasyfootball" target="_blank" rel="noopener" class="text-teal hover:text-yellow">Join Discord</a>
+            </div>
+        </section>
+
+        <!-- Scoring Type Selector -->
+        <section class="card text-center mb-10">
+            <h2 class="section-title mb-2">Select Scoring Type</h2>
+            <select id="scoringType" class="border-teal-500 bg-gray-900 bg-opacity-85 text-white rounded-xl p-1">
+                <option value="standard">Standard</option>
+                <option value="ppr" selected>PPR</option>
+                <option value="half">Half-PPR</option>
+            </select>
         </section>
     </main>
 
@@ -272,7 +326,9 @@
     </footer>
 
     <!-- Player Popup Modal -->
-    <div id="player-popup" tabindex="0" aria-live="polite" class="hidden fixed z-50 bg-gray-800 border border-gray-600 rounded shadow-lg p-4 max-w-xs text-gray-200"></div>
+    <div id="player-popup" tabindex="0" aria-live="polite" class="hidden fixed z-50 bg-gray-900 bg-opacity-98 rounded-xl shadow-lg p-4 max-w-xs text-gray-200">
+        <span class="close-btn">×</span>
+    </div>
 
     <!-- Scripts -->
     <script src="script.js" defer></script>
