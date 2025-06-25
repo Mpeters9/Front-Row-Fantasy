@@ -630,6 +630,11 @@ document.addEventListener('DOMContentLoaded', function () {
                         return !taken.has(p.Player) && ['QB', 'RB', 'WR', 'TE'].includes(p.POS);
                     }
                     if (pos === 'BENCH') {
+                        // teamIdx is your team index, picksSoFar is your picks array
+                        const myRoster = picks.filter(p => p.teamIdx === teamIdx);
+                        candidates = getBenchBias(myRoster, candidates);
+                    }
+                    if (pos === 'BENCH') {
                         return !taken.has(p.Player);
                     }
                     if (scarce && !taken.has(p.Player)) return true;
@@ -719,6 +724,10 @@ document.addEventListener('DOMContentLoaded', function () {
                     <div class="mt-4 text-green font-semibold">Strategy: Draft sim uses ADP as a base, but randomness increases each round to reflect real draft chaos. Early rounds are chalk, late rounds are wild.</div>
                 </div>
             `;
+
+            // After the picks table
+            const posCounts = picks.reduce((acc, p) => { acc[p.POS] = (acc[p.POS] || 0) + 1; return acc; }, {});
+            const byeWeeks = picks.map(p => p.Bye).filter(Boolean);
         });
     }
 
@@ -735,3 +744,57 @@ document.addEventListener('DOMContentLoaded', function () {
     if (scoringTypeSelect) scoringTypeSelect.value = currentScoring;
     loadPlayersAndInitTools(currentScoring);
 });
+
+// Add this helper inside your draft logic:
+function getBenchBias(teamRoster, candidates) {
+    // Count how many of each position you have
+    const counts = { QB: 0, RB: 0, WR: 0, TE: 0, DST: 0, K: 0 };
+    teamRoster.forEach(p => { if (counts[p.POS] !== undefined) counts[p.POS]++; });
+    // Find the position with the least depth (excluding K/DST)
+    let minPos = 'RB', minCount = counts.RB;
+    ['RB', 'WR', 'TE', 'QB'].forEach(pos => {
+        if (counts[pos] < minCount) { minPos = pos; minCount = counts[pos]; }
+    });
+    // Prefer candidates at that position
+    const filtered = candidates.filter(p => p.POS === minPos);
+    return filtered.length ? filtered : candidates;
+}
+
+// --- Simulate Draft ---
+function simulateDraft({ allPlayers, leagueSize, draftPick, draftNeedsByTeam, benchSize }) {
+    const draftBoard = [...allPlayers].filter(p => p.AVG !== undefined).sort((a, b) => a.AVG - b.AVG);
+    let taken = new Set();
+    let picks = [];
+    let teamRosters = Array.from({ length: leagueSize }, () => []);
+    let totalRounds = draftNeedsByTeam[0].length;
+
+    for (let round = 1; round <= totalRounds; round++) {
+        let order = round % 2 === 1
+            ? [...Array(leagueSize).keys()]
+            : [...Array(leagueSize).keys()].reverse();
+        for (let i = 0; i < leagueSize; i++) {
+            let teamIdx = order[i];
+            let need = draftNeedsByTeam[teamIdx].shift();
+            let candidates = draftBoard.filter(p => !taken.has(p.Player));
+            // Add smarter bench logic here
+            if (need === 'BENCH') {
+                candidates = getBenchBias(teamRosters[teamIdx], candidates);
+            }
+            // ...existing getBestAvailableSmart logic...
+            let player = candidates[0];
+            if (!player) continue;
+            taken.add(player.Player);
+            teamRosters[teamIdx].push(player);
+            if (teamIdx + 1 === draftPick) {
+                picks.push({
+                    ...player,
+                    slot: need,
+                    round,
+                    pickNum: i + 1,
+                    overallPick: (round - 1) * leagueSize + (i + 1)
+                });
+            }
+        }
+    }
+    return picks;
+}
