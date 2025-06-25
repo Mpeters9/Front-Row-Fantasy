@@ -623,6 +623,15 @@ document.addEventListener('DOMContentLoaded', function () {
 
                 // --- Main filtering ---
                 candidates = candidates.filter(p => {
+                    if (pos === 'FLEX') {
+                        return !taken.has(p.Player) && ['RB', 'WR', 'TE'].includes(p.POS);
+                    }
+                    if (pos === 'SF') {
+                        return !taken.has(p.Player) && ['QB', 'RB', 'WR', 'TE'].includes(p.POS);
+                    }
+                    if (pos === 'BENCH') {
+                        return !taken.has(p.Player);
+                    }
                     if (scarce && !taken.has(p.Player)) return true;
                     if (p.POS === pos && !taken.has(p.Player)) return true;
                     return false;
@@ -630,7 +639,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
                 // --- Random selection from filtered candidates ---
                 if (candidates.length === 0) return null;
-                let pickIdx = Math.floor(Math.random() * Math.min(randomness + 1, candidates.length));
+                let pickIdx = Math.floor(Math.random() * Math.min(randomness + 1 + runBonus, candidates.length));
                 return candidates[pickIdx] || candidates[0];
             }
 
