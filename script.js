@@ -422,9 +422,8 @@ document.addEventListener('DOMContentLoaded', function () {
     animateTicker();
 });
 
-// --- GOAT Draft Tool Logic (only runs if elements exist) ---
+// --- GOAT Draft Tool Logic (optimized draft sim) ---
 document.addEventListener('DOMContentLoaded', function () {
-    // Only run if draft build exists
     if (!document.getElementById('generateLineup')) return;
 
     let allPlayers = [];
@@ -491,7 +490,7 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
-    // Draft Lineup Preset logic
+    // --- Draft Lineup Preset logic ---
     const draftLineupPreset = document.getElementById('draftLineupPreset');
     if (draftLineupPreset) {
         draftLineupPreset.value = 'ppr';
@@ -526,7 +525,7 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
-    // Best Draft Builds Tool
+    // --- Optimized Draft Simulation ---
     const generateLineupBtn = document.getElementById('generateLineup');
     if (generateLineupBtn) {
         generateLineupBtn.addEventListener('click', function () {
@@ -574,27 +573,45 @@ document.addEventListener('DOMContentLoaded', function () {
                 return needs;
             }
 
-            // Helper: Get best available for a need, with ADP randomness
-            function getBestAvailableWithRandomness(pos, taken, round, totalRounds) {
-                let filterFn;
-                if (pos === 'SF') {
-                    filterFn = p => !taken.has(p.Player) && /^(QB|RB|WR|TE)/.test(p.POS);
-                } else if (pos === 'FLEX') {
-                    filterFn = p => !taken.has(p.Player) && /^(RB|WR|TE)/.test(p.POS);
-                } else if (pos === 'DST') {
-                    filterFn = p => !taken.has(p.Player) && p.POS === 'DST';
-                } else if (pos === 'K') {
-                    filterFn = p => !taken.has(p.Player) && p.POS === 'K';
-                } else if (pos === 'BENCH') {
-                    filterFn = p => !taken.has(p.Player) && /^(RB|WR|TE|QB)/.test(p.POS);
-                } else {
-                    filterFn = p => !taken.has(p.Player) && p.POS.startsWith(pos);
+            // --- Tiered randomness and positional runs ---
+            function getBestAvailableSmart(pos, taken, round, totalRounds, teamIdx, teamNeeds, draftBoard, leagueSize) {
+                // --- Tiered randomness ---
+                let randomness = 0;
+                if (round <= 2) randomness = 0; // Chalk
+                else if (round <= 5) randomness = 2; // Slight reach
+                else if (round <= 10) randomness = 5; // More reach
+                else randomness = 10; // Late chaos
+
+                // --- Positional run detection ---
+                let lastPicks = [];
+                if (round > 1) {
+                    for (let i = 0; i < Math.min(leagueSize, 4); i++) {
+                        let prevTeam = (teamIdx - i + leagueSize) % leagueSize;
+                        let prevNeed = teamNeeds[prevTeam][0];
+                        lastPicks.push(prevNeed);
+                    }
                 }
-                let candidates = draftBoard.filter(filterFn);
-                if (candidates.length === 0) candidates = draftBoard.filter(p => !taken.has(p.Player));
+                let runBonus = 0;
+                if (lastPicks.filter(x => x === pos).length >= 3) runBonus = 3;
+
+                // --- Scarcity: If only 1-2 left at position, reach ---
+                let candidates = draftBoard.filter(p => !taken.has(p.Player));
+                let scarce = false;
+                if (['QB', 'RB', 'WR', 'TE'].includes(pos)) {
+                    let count = candidates.filter(p => p.POS.startsWith(pos)).length;
+                    if (count <= 2) scarce = true;
+                }
+
+                // --- Main filtering ---
+                candidates = candidates.filter(p => {
+                    if (scarce && !taken.has(p.Player)) return true;
+                    if (p.POS === pos && !taken.has(p.Player)) return true;
+                    return false;
+                });
+
+                // --- Random selection from filtered candidates ---
                 if (candidates.length === 0) return null;
-                let randomness = Math.floor((round / totalRounds) * Math.min(10, candidates.length));
-                let pickIdx = Math.floor(Math.random() * (randomness + 1));
+                let pickIdx = Math.floor(Math.random() * Math.min(randomness + 1, candidates.length));
                 return candidates[pickIdx] || candidates[0];
             }
 
@@ -618,7 +635,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 for (let i = 0; i < leagueSize; i++) {
                     let teamIdx = order[i];
                     let need = teamNeeds[teamIdx].shift();
-                    let player = getBestAvailableWithRandomness(need, taken, round, totalRounds);
+                    let player = getBestAvailableSmart(need, taken, round, totalRounds, teamIdx, teamNeeds, draftBoard, leagueSize);
                     if (!player) continue;
                     taken.add(player.Player);
                     if (teamIdx + 1 === draftPick) {
