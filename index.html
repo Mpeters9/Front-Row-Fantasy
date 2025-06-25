@@ -15,15 +15,15 @@
     <link rel="stylesheet" href="styles.css">
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="min-h-screen flex flex-col font-poppins">
+<body class="min-h-screen flex flex-col font-poppins bg-gradient-to-br from-[#0f2027] to-[#2c5364]">
 
     <!-- Header -->
-    <header>
+    <header class="sticky top-0 z-50 bg-opacity-95 bg-gray-900 shadow-lg border-b-2 border-teal-500">
         <div class="max-w-7xl mx-auto px-4 flex justify-between items-center py-3">
             <a href="index.html" class="text-2xl font-bold text-yellow text-glow">Front Row Fantasy</a>
-            <nav>
-                <a href="index.html" class="nav-link">Home</a>
-                <a href="tools.html" class="nav-link" aria-current="page">Expert Tools</a>
+            <nav class="flex gap-6">
+                <a href="index.html" class="nav-link" aria-current="page">Home</a>
+                <a href="tools.html" class="nav-link">Expert Tools</a>
                 <a href="goat.html" class="nav-link">GOAT</a>
                 <a href="guides.html" class="nav-link">Guides</a>
                 <a href="community.html" class="nav-link">Community</a>
@@ -93,7 +93,7 @@
             </div>
             <div class="card">
                 <h2 class="section-title mb-2">Games &amp; Tools</h2>
-                <ul class="list-disc pl-6 mb-2">
+                <ul class="list-disc pl-6 mb-2 text-left">
                     <li><a href="tools.html" class="text-teal hover:text-yellow">Trade Analyzer</a></li>
                     <li><a href="tools.html" class="text-teal hover:text-yellow">Matchup Predictor</a></li>
                     <li><a href="goat.html" class="text-teal hover:text-yellow">GOAT Builder</a></li>
@@ -114,18 +114,73 @@
     </main>
 
     <!-- Footer -->
-    <footer>
-        <div class="mb-2">
-            <a href="index.html" class="hover:text-yellow mx-2">Home</a>
-            <a href="tools.html" class="hover:text-yellow mx-2">Expert Tools</a>
-            <a href="goat.html" class="hover:text-yellow mx-2">GOAT</a>
-            <a href="guides.html" class="hover:text-yellow mx-2">Guides</a>
-            <a href="community.html" class="hover:text-yellow mx-2">Community</a>
-            <a href="players.html" class="hover:text-yellow mx-2">Players</a>
-            <a href="stats.html" class="hover:text-yellow mx-2">Stats</a>
+    <footer class="bg-gray-900 text-teal-400 py-6 border-t-2 border-teal-500 mt-10">
+        <div class="mb-2 flex flex-wrap justify-center gap-4">
+            <a href="index.html" class="hover:text-yellow">Home</a>
+            <a href="tools.html" class="hover:text-yellow">Expert Tools</a>
+            <a href="goat.html" class="hover:text-yellow">GOAT</a>
+            <a href="guides.html" class="hover:text-yellow">Guides</a>
+            <a href="community.html" class="hover:text-yellow">Community</a>
+            <a href="players.html" class="hover:text-yellow">Players</a>
+            <a href="stats.html" class="hover:text-yellow">Stats</a>
         </div>
-        © 2025 Front Row Fantasy. All rights reserved.
+        <div class="text-center text-sm mt-2">© 2025 Front Row Fantasy. All rights reserved.</div>
     </footer>
-    <script src="script.js"></script>
+
+    <script>
+    // Fantasy Ticker
+    document.addEventListener('DOMContentLoaded', function () {
+        const tickerContent = document.getElementById('tickerContent');
+        const pauseButton = document.getElementById('pauseButton');
+        let paused = false, animationFrame, pos = 0;
+        const tickerData = [
+            { player: "Josh Allen", team: "BUF", pos: "QB", pts: 25.4 },
+            { player: "Patrick Mahomes", team: "KC", pos: "QB", pts: 24.8 },
+            { player: "Christian McCaffrey", team: "SF", pos: "RB", pts: 20.5 },
+            { player: "Tyreek Hill", team: "MIA", pos: "WR", pts: 19.8 },
+            { player: "Justin Jefferson", team: "MIN", pos: "WR", pts: 19.2 },
+            { player: "Travis Kelce", team: "KC", pos: "TE", pts: 18.9 }
+        ];
+        function posColor(pos) {
+            switch (pos) {
+                case "QB": return "player-pos-QB";
+                case "RB": return "player-pos-RB";
+                case "WR": return "player-pos-WR";
+                case "TE": return "player-pos-TE";
+                default: return "";
+            }
+        }
+        function buildTicker() {
+            tickerContent.innerHTML = '';
+            for (let loop = 0; loop < 2; loop++) {
+                tickerData.forEach(item => {
+                    const span = document.createElement('span');
+                    span.className = `ticker-player ${posColor(item.pos)}`;
+                    span.innerHTML = `
+                        <span class="player-name">${item.player}</span>
+                        <span class="player-team">(${item.team} ${item.pos})</span>
+                        <span class="player-pts">${item.pts} pts</span>
+                    `;
+                    tickerContent.appendChild(span);
+                });
+            }
+        }
+        function animateTicker() {
+            if (!paused) {
+                pos -= 1.1;
+                if (Math.abs(pos) >= tickerContent.scrollWidth / 2) pos = 0;
+                tickerContent.style.transform = `translateX(${pos}px)`;
+            }
+            animationFrame = requestAnimationFrame(animateTicker);
+        }
+        pauseButton.addEventListener('click', function () {
+            paused = !paused;
+            pauseButton.setAttribute('aria-pressed', paused ? 'true' : 'false');
+            pauseButton.textContent = paused ? 'Resume' : 'Pause';
+        });
+        buildTicker();
+        animateTicker();
+    });
+    </script>
 </body>
 </html>
