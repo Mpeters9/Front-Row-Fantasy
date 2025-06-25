@@ -666,6 +666,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     let player = getBestAvailableSmart(need, taken, round, totalRounds, teamIdx, teamNeeds, draftBoard, leagueSize);
                     if (!player) continue;
                     taken.add(player.Player);
+                    // Collect ALL picks for your team, including bench
                     if (teamIdx + 1 === draftPick) {
                         picks.push({
                             ...player,
@@ -678,6 +679,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 }
             }
 
+            // Show ALL rounds, including bench
             result.innerHTML = `
                 <div class="bg-glass rounded-xl p-4 mt-2">
                     <h3 class="font-bold text-lg mb-2 text-yellow">Recommended Draft Build (${scoringType.toUpperCase()})</h3>
