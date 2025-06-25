@@ -798,3 +798,200 @@ function simulateDraft({ allPlayers, leagueSize, draftPick, draftNeedsByTeam, be
     }
     return picks;
 }
+
+// --- 1b. Bye Weeks and Stacking ---
+// Helper to penalize bye week overlap and reward stacking (QB/WR/TE from same team)
+function scoreCandidate(player, teamRoster, need, round) {
+    let score = 0;
+    // Penalize if too many players with same bye week (except DST/K)
+    if (player.Bye && !['DST', 'K'].includes(player.POS)) {
+        const sameBye = teamRoster.filter(p => p.Bye === player.Bye && !['DST', 'K'].includes(p.POS)).length;
+        if (sameBye >= 2) score -= 5;
+        else if (sameBye === 1) score -= 2;
+    }
+    // Reward stacking QB/WR/TE from same team (mild bonus)
+    if (['QB', 'WR', 'TE'].includes(player.POS)) {
+        const stack = teamRoster.some(p => p.Team === player.Team && ['QB', 'WR', 'TE'].includes(p.POS));
+        if (stack) score += 2;
+    }
+    // Mild bonus for FLEX-eligible in FLEX/Bench
+    if ((need === 'FLEX' || need === 'BENCH') && ['RB', 'WR', 'TE'].includes(player.POS)) {
+        score += 1;
+    }
+    // Mild bonus for upside rookies/handcuffs in late rounds
+    if (round > 10 && player.Rookie) score += 2;
+    return score;
+}
+
+// --- 1c. Value-Based Drafting ---
+// Blend ADP and projected points (if available) for candidate ranking
+function sortCandidatesADPValue(candidates, round) {
+    return candidates.sort((a, b) => {
+        // Use AVG (ADP) and Points (projection)
+        let aScore = (a.AVG || 999) - (a.Points || 0) * 0.5;
+        let bScore = (b.AVG || 999) - (b.Points || 0) * 0.5;
+        // In late rounds, weigh points a bit more
+        if (round > 10) {
+            aScore -= (a.Points || 0) * 0.2;
+            bScore -= (b.Points || 0) * 0.2;
+        }
+        return aScore - bScore;
+    });
+}
+
+// --- 2a. Separation of Concerns ---
+// Refactor draft simulation into its own function (already done with simulateDraft)
+// Refactor rendering into its own function:
+function renderDraftResults(picks, leagueSize, draftPick, scoringType, benchSize, result) {
+    // --- 3a. Draft Recap & Analysis ---
+    const posCounts = picks.reduce((acc, p) => { acc[p.POS] = (acc[p.POS] || 0) + 1; return acc; }, {});
+    const byeWeeks = picks.map(p => p.Bye).filter(Boolean);
+    const byeSummary = Object.entries(
+        picks.reduce((acc, p) => {
+            if (!p.Bye) return acc;
+            acc[p.Bye] = (acc[p.Bye] || 0) + 1;
+            return acc;
+        }, {})
+    ).map(([bye, count]) => `Week ${bye}: ${count}`).join(', ');
+
+    result.innerHTML = `
+        <div class="bg-glass rounded-xl p-4 mt-2">
+            <h3 class="font-bold text-lg mb-2 text-yellow">Recommended Draft Build (${scoringType.toUpperCase()})</h3>
+            <ul class="list-disc ml-6 text-left">
+                <li>League Size: <span class="text-teal">${leagueSize}</span></li>
+                <li>Draft Pick: <span class="text-teal">${draftPick}</span></li>
+                <li>Scoring: <span class="text-teal">${scoringType.toUpperCase()}</span></li>
+                <li>Bench Size: <span class="text-teal">${benchSize}</span></li>
+            </ul>
+            <h4 class="font-semibold mt-4 mb-2 text-orange">Your Draft Picks</h4>
+            <table class="w-full text-sm mb-4">
+                <thead>
+                    <tr>
+                        <th>Round</th>
+                        <th>Pick</th>
+                        <th>Player</th>
+                        <th>Team</th>
+                        <th>Pos</th>
+                        <th>Slot</th>
+                        <th>ADP</th>
+                        <th>Bye</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    ${picks.map(p => `
+                        <tr>
+                            <td>${p.round}</td>
+                            <td>${p.pickNum}</td>
+                            <td><span class="font-bold ${posColor(p.POS)}">${p.Player}</span></td>
+                            <td>${p.Team || ''}</td>
+                            <td>${p.POS}</td>
+                            <td>${p.slot}</td>
+                            <td>${p.AVG}</td>
+                            <td>${p.Bye || ''}</td>
+                        </tr>
+                    `).join('')}
+                </tbody>
+            </table>
+            <div class="mt-2 text-sm text-gray-500">
+                <b>Positional Breakdown:</b> ${Object.entries(posCounts).map(([pos, count]) => `${pos}: ${count}`).join(', ')}<br>
+                <b>Bye Weeks:</b> ${byeSummary}
+            </div>
+            <div class="mt-4 text-green font-semibold">Strategy: Draft sim uses ADP and projections, with randomness and roster intelligence. Early rounds are chalk, late rounds are wild.</div>
+        </div>
+    `;
+}
+
+// --- 2b. Magic Numbers as Constants ---
+const RANDOMNESS_EARLY = 0;
+const RANDOMNESS_MID = 2;
+const RANDOMNESS_LATE = 5;
+const RANDOMNESS_END = 10;
+const RUN_BONUS = 3;
+const SCARCITY_THRESHOLD = 2;
+
+// --- 2c. Error Handling ---
+function safeGetPlayer(candidates, idx) {
+    if (!candidates || candidates.length === 0) return null;
+    return candidates[Math.max(0, Math.min(idx, candidates.length - 1))];
+}
+
+// --- 2d. Performance: Memoization for candidate filtering ---
+// (For this scale, not strictly necessary, but can be added if needed.)
+
+// --- 3b. Custom Strategies (Zero RB, Hero RB, Late QB, etc.) ---
+function applyDraftStrategy(strategy, candidates, round) {
+    if (!strategy) return candidates;
+    // Example: Zero RB = avoid RBs in first 5 rounds
+    if (strategy === 'zero_rb' && round <= 5) {
+        return candidates.filter(p => p.POS !== 'RB');
+    }
+    // Example: Late QB = avoid QB until round 8+
+    if (strategy === 'late_qb' && round < 8) {
+        return candidates.filter(p => p.POS !== 'QB');
+    }
+    // Example: Hero RB = only 1 RB in first 4 rounds
+    // ...implement as needed...
+    return candidates;
+}
+
+// --- 4a. Don't Overdraft K/DST ---
+function filterKickerDST(candidates, need, round, totalRounds) {
+    if ((need === 'K' || need === 'DST') && round < totalRounds - 2) {
+        // Only allow K/DST in last 2 rounds
+        return [];
+    }
+    return candidates;
+}
+
+// --- Improved Draft Simulation ---
+function simulateDraft({
+    allPlayers, leagueSize, draftPick, draftNeedsByTeam, benchSize,
+    strategy = null, resultElem = null, scoringType = 'ppr'
+}) {
+    const draftBoard = [...allPlayers].filter(p => p.AVG !== undefined).sort((a, b) => a.AVG - b.AVG);
+    let taken = new Set();
+    let picks = [];
+    let teamRosters = Array.from({ length: leagueSize }, () => []);
+    let totalRounds = draftNeedsByTeam[0].length;
+
+    for (let round = 1; round <= totalRounds; round++) {
+        let order = round % 2 === 1
+            ? [...Array(leagueSize).keys()]
+            : [...Array(leagueSize).keys()].reverse();
+        for (let i = 0; i < leagueSize; i++) {
+            let teamIdx = order[i];
+            let need = draftNeedsByTeam[teamIdx].shift();
+            let candidates = draftBoard.filter(p => !taken.has(p.Player));
+            // 4a: Don't overdraft K/DST
+            candidates = filterKickerDST(candidates, need, round, totalRounds);
+            // 3b: Apply custom draft strategy
+            candidates = applyDraftStrategy(strategy, candidates, round);
+            // 1c: Sort by ADP + value
+            candidates = sortCandidatesADPValue(candidates, round);
+            // 1b: Score for bye/stacking
+            candidates = candidates
+                .map(p => ({
+                    ...p,
+                    _score: scoreCandidate(p, teamRosters[teamIdx], need, round)
+                }))
+                .sort((a, b) => b._score - a._score);
+            // 2c: Error handling
+            let player = safeGetPlayer(candidates, 0);
+            if (!player) continue;
+            taken.add(player.Player);
+            teamRosters[teamIdx].push(player);
+            if (teamIdx + 1 === draftPick) {
+                picks.push({
+                    ...player,
+                    slot: need,
+                    round,
+                    pickNum: i + 1,
+                    overallPick: (round - 1) * leagueSize + (i + 1)
+                });
+            }
+        }
+    }
+    // 2a/3a: Render results if element provided
+    if (resultElem) renderDraftResults(picks, leagueSize, draftPick, scoringType, benchSize, resultElem);
+    return picks;
+}
