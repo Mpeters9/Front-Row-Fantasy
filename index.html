@@ -13,7 +13,6 @@
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="min-h-screen flex flex-col font-poppins bg-gradient-to-br from-[#0f2027] to-[#2c5364]" aria-label="Main Content">
-    <!-- Header -->
     <header class="sticky top-0 z-50 bg-opacity-98 bg-gray-900 shadow-lg border-b-2 border-teal-500">
         <div class="max-w-7xl mx-auto px-4 flex justify-between items-center py-3">
             <a href="index.html" class="text-2xl font-bold text-yellow text-glow">Front Row Fantasy</a>
@@ -43,11 +42,10 @@
         </nav>
     </header>
 
-    <!-- Universal Fantasy Points Ticker -->
     <section class="bg-gray-800 bg-opacity-80 p-3 rounded-lg shadow-lg my-4 mx-auto w-full max-w-7xl border border-teal-600">
         <div class="flex items-center justify-center space-x-4 mb-3">
             <h2 class="text-gray-300 text-lg font-semibold">Live Fantasy Points Leaders</h2>
-            <button id="pauseButton" class="bg-yellow-500 hover:bg-yellow-600 text-gray-900 font-semibold py-2 px-4 rounded-md shadow-md transition duration-300 ease-in-out">Pause</button>
+            <button id="pauseButton" class="cta-btn px-4 py-1">Pause</button>
         </div>
         <div class="overflow-hidden relative h-10 bg-gray-900 rounded-lg">
             <div id="tickerContent" class="whitespace-nowrap absolute top-0 left-0 h-full flex items-center ticker-animation">
@@ -56,7 +54,6 @@
         </div>
     </section>
 
-    <!-- Main Content -->
     <main class="flex-grow max-w-7xl mx-auto py-8 px-4 w-full">
         <section class="text-center mb-12">
             <h1 class="text-5xl font-bold text-yellow-300 mb-4 text-shadow-lg">Dominate Your League</h1>
@@ -76,7 +73,7 @@
             <div class="feature-card">
                 <h3 class="text-2xl font-bold text-yellow-300 mb-2">Trade Analyzer</h3>
                 <p class="text-gray-300">Get instant, AI-powered feedback on any trade proposal. Understand fairness, roster impact, and contextual advice.</p>
-                <a href="tools.html#trade-analyzer" class="text-teal-400 hover:text-yellow-300 font-semibold mt-3 inline-block">Analyze Trades &rarr;</a>
+                <a href="tools.html" class="text-teal-400 hover:text-yellow-300 font-semibold mt-3 inline-block">Analyze Trades &rarr;</a>
             </div>
             <div class="feature-card">
                 <h3 class="text-2xl font-bold text-yellow-300 mb-2">Lineup Optimizer</h3>
@@ -84,29 +81,8 @@
                 <a href="goat.html#lineup-builder" class="text-teal-400 hover:text-yellow-300 font-semibold mt-3 inline-block">Optimize Lineup &rarr;</a>
             </div>
         </section>
-
-        <section class="bg-gray-800 bg-opacity-80 p-8 rounded-xl shadow-lg border border-teal-600">
-            <h2 class="text-4xl font-bold text-teal-400 mb-6 text-center">Why Choose Front Row Fantasy?</h2>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                <div class="flex items-start">
-                    <svg class="w-8 h-8 text-yellow-400 mr-4 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path></svg>
-                    <div>
-                        <h3 class="text-xl font-semibold text-white mb-1">Data-Driven Insights</h3>
-                        <p class="text-gray-300">Leverage real-time data, advanced metrics, and expert analysis to make informed decisions.</p>
-                    </div>
-                </div>
-                <div class="flex items-start">
-                    <svg class="w-8 h-8 text-yellow-400 mr-4 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path></svg>
-                    <div>
-                        <h3 class="text-xl font-semibold text-white mb-1">User-Friendly Interface</h3>
-                        <p class="text-gray-300">Navigate complex fantasy football concepts with an intuitive and easy-to-use platform.</p>
-                    </div>
-                </div>
-            </div>
-        </section>
     </main>
 
-    <!-- Footer -->
     <footer class="bg-gray-900 text-teal-400 py-6 border-t-2 border-teal-500 mt-8">
         <div class="mb-2 flex flex-wrap justify-center gap-4">
             <a href="index.html" class="hover:text-yellow">Home</a>
