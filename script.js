@@ -64,7 +64,7 @@ async function initTicker() {
 
     const pauseButton = document.getElementById('pauseButton');
     
-    // Fetch base player data from the PPR file
+    // Fetch base player data from the PPR file to generate fake points from
     try {
         const response = await fetch('PPR.json');
         if (!response.ok) throw new Error('Could not load ticker data.');
@@ -265,7 +265,7 @@ function displayTeamBuild(team, container) {
             <div>
                 <div class="text-lg font-semibold text-white">${player.name}</div>
                 <div class="text-sm flex items-center gap-2 mt-1">
-                    <span class="player-pos-${player.simplePosition.toLowerCase()} font-semibold px-2 py-0.5 rounded text-xs">${player.draftedAs} (${player.simplePosition})</span>
+                    <span class="player-pos-${player.simplePosition.toLowerCase()} font-semibold px-2 py-0.5 rounded text-xs">${player.draftedAs} (${player.simplePosition.toUpperCase()})</span>
                     <span class="text-teal-300">${player.team}</span>
                 </div>
                 <div class="text-yellow-400 font-bold text-base mt-2">ADP: ${player.adp.toFixed(1)}</div>
