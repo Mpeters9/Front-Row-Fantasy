@@ -42,6 +42,18 @@
         </nav>
     </header>
 
+    <section class="bg-gray-800 bg-opacity-80 p-3 rounded-lg shadow-lg my-4 mx-auto w-full max-w-7xl border border-teal-600">
+        <div class="flex items-center justify-center space-x-4 mb-3">
+            <h2 class="text-gray-300 text-lg font-semibold">Live Fantasy Points Leaders</h2>
+            <button id="pauseButton" class="bg-yellow-500 hover:bg-yellow-600 text-gray-900 font-semibold py-2 px-4 rounded-md shadow-md transition duration-300 ease-in-out">Pause</button>
+        </div>
+        <div class="overflow-hidden relative h-10 bg-gray-900 rounded-lg">
+            <div id="tickerContent" class="whitespace-nowrap absolute top-0 left-0 h-full flex items-center ticker-animation">
+                <span class="text-gray-400 px-4">Loading fantasy points...</span>
+            </div>
+        </div>
+    </section>
+
     <main class="flex-grow max-w-7xl mx-auto py-8 px-4 w-full">
         <section class="text-center mb-12">
             <h1 class="text-5xl font-bold text-yellow-300 mb-4 text-shadow-lg">Dominate Your League</h1>
@@ -49,28 +61,6 @@
             <div class="flex flex-wrap justify-center gap-4">
                 <a href="tools.html" class="cta-btn">Explore Expert Tools</a>
                 <a href="guides.html" class="cta-btn-secondary">Read Our Guides</a>
-            </div>
-        </section>
-
-        <section class="bg-gray-800 bg-opacity-80 p-6 rounded-xl shadow-lg mb-12 border border-teal-600">
-            <h2 class="text-3xl font-bold text-teal-400 mb-4 text-center">Live ADP Ticker</h2>
-            <div class="flex items-center justify-center space-x-4 mb-4">
-                <label for="scoringType" class="text-gray-300 text-lg">Scoring Type:</label>
-                <select id="scoringType" class="bg-gray-700 text-white p-2 rounded-md border border-teal-500 focus:ring focus:ring-teal-300">
-                    <option value="standard">Standard</option>
-                    <option value="ppr" selected>PPR</option>
-                    <option value="half">Half-PPR</option>
-                </select>
-                <button id="pauseButton" class="bg-yellow-500 hover:bg-yellow-600 text-gray-900 font-semibold py-2 px-4 rounded-md shadow-md transition duration-300 ease-in-out">Pause</button>
-            </div>
-            <div class="overflow-hidden relative h-10 bg-gray-900 rounded-lg">
-                <div id="tickerContent" class="whitespace-nowrap absolute top-0 left-0 h-full flex items-center ticker-animation">
-                    <span class="text-gray-400 px-4">Loading ADP data...</span>
-                </div>
-            </div>
-            <div id="loading-spinner" class="mt-4 text-center hidden">
-                <div class="loader ease-linear rounded-full border-4 border-t-4 border-teal-400 h-8 w-8 mx-auto"></div>
-                <p class="text-teal-300 mt-2">Loading player data...</p>
             </div>
         </section>
 
@@ -88,7 +78,7 @@
             <div class="feature-card">
                 <h3 class="text-2xl font-bold text-yellow-300 mb-2">Lineup Optimizer</h3>
                 <p class="text-gray-300">Build the best possible starting lineup for your league’s scoring and roster settings with our intelligent optimizer.</p>
-                <a href="tools.html#lineup-optimizer" class="text-teal-400 hover:text-yellow-300 font-semibold mt-3 inline-block">Optimize Lineup &rarr;</a>
+                <a href="goat.html#lineup-builder" class="text-teal-400 hover:text-yellow-300 font-semibold mt-3 inline-block">Optimize Lineup &rarr;</a>
             </div>
         </section>
 
@@ -109,25 +99,11 @@
                         <p class="text-gray-300">Navigate complex fantasy football concepts with an intuitive and easy-to-use platform.</p>
                     </div>
                 </div>
-                <div class="flex items-start">
-                    <svg class="w-8 h-8 text-yellow-400 mr-4 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path></svg>
-                    <div>
-                        <h3 class="text-xl font-semibold text-white mb-1">Community Driven</h3>
-                        <p class="text-gray-300">Join a vibrant community of fantasy managers to share strategies and get advice.</p>
-                    </div>
-                </div>
-                <div class="flex items-start">
-                    <svg class="w-8 h-8 text-yellow-400 mr-4 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path></svg>
-                    <div>
-                        <h3 class="text-xl font-semibold text-white mb-1">Always Up-to-Date</h3>
-                        <p class="text-gray-300">Our tools and data are constantly updated to reflect the latest NFL news and trends.</p>
-                    </div>
-                </div>
             </div>
         </section>
     </main>
 
-    <footer class="bg-gray-900 text-teal-400 py-6 border-t-2 border-teal-500">
+    <footer class="bg-gray-900 text-teal-400 py-6 border-t-2 border-teal-500 mt-8">
         <div class="mb-2 flex flex-wrap justify-center gap-4">
             <a href="index.html" class="hover:text-yellow">Home</a>
             <a href="tools.html" class="hover:text-yellow">Expert Tools</a>
@@ -136,14 +112,9 @@
             <a href="community.html" class="hover:text-yellow">Community</a>
             <a href="players.html" class="hover:text-yellow">Players</a>
             <a href="stats.html" class="hover:text-yellow">Stats</a>
-            <a href="#contact" class="hover:text-yellow">Contact</a>
         </div>
         <div class="text-center text-sm">© 2025 Front Row Fantasy. All rights reserved.</div>
     </footer>
-
-    <div id="player-popup" tabindex="0" aria-live="polite" class="hidden fixed z-50 bg-gray-900 bg-opacity-98 rounded-xl shadow-lg p-4 max-w-xs text-gray-200">
-        <span class="close-btn">×</span>
-    </div>
 
     <script src="script.js"></script>
 </body>
