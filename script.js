@@ -1,92 +1,178 @@
-// --- Global Variables & Data Cache ---
-const a = {
+// --- Global Variables & Constants ---
+const scoringFiles = {
     standard: 'Standard ADP.json',
     ppr: 'PPR.json',
     half: 'Half PPR.json'
 };
-let adpDataCache = {};
-let statsDataCache = null;
+
+let adpDataCache = {}; // Cache for ADP data (ppr, half, standard)
+let statsPlayersData = []; // Cache for stats data
 let isTickerPaused = false;
 
-// --- Data Loading ---
-async function loadAdpData(scoring) {
-    if (adpDataCache[scoring]) return adpDataCache[scoring];
+// --- Data Loading Functions ---
+
+/**
+ * Loads and caches ADP data from JSON files. Defaults to 'ppr'.
+ * @param {string} scoring - 'ppr', 'half', or 'standard'.
+ */
+async function loadAdpData(scoring = 'ppr') {
+    if (adpDataCache[scoring]) return adpDataCache[scoring]; // Use cache if available
     try {
-        const res = await fetch(a[scoring]);
-        const data = await res.json();
-        adpDataCache[scoring] = data.map(p => ({
-            ...p,
-            simplePosition: p.POS.replace(/\d+/, '')
-        }));
-        return adpDataCache[scoring];
-    } catch (e) {
-        console.error(`Failed to load ADP data for ${scoring}:`, e);
+        const response = await fetch(scoringFiles[scoring]);
+        if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+        const data = await response.json();
+        const formattedData = data.map(player => ({
+            ...player,
+            simplePosition: player.POS ? player.POS.replace(/\d+/, '') : ''
+        })).sort((a, b) => a.AVG - b.AVG);
+        
+        adpDataCache[scoring] = formattedData; // Cache the data
+        return formattedData;
+    } catch (error) {
+        console.error(`Error loading ADP data for ${scoring}:`, error);
+        return []; // Return empty array on error
+    }
+}
+
+/**
+ * Loads and caches player statistics data.
+ */
+async function loadStatsPlayers() {
+    if (statsPlayersData.length > 0) return statsPlayersData;
+    try {
+        const response = await fetch('players_2025 Stats.json');
+        if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+        statsPlayersData = await response.json();
+        return statsPlayersData;
+    } catch (error) {
+        console.error('Error loading stats player data:', error);
         return [];
     }
 }
 
-async function loadStatsData() {
-    if (statsDataCache) return statsDataCache;
-    try {
-        const res = await fetch('players_2025 Stats.json');
-        statsDataCache = await res.json();
-        return statsDataCache;
-    } catch (e) {
-        console.error('Failed to load stats data:', e);
-        return [];
-    }
-}
 
 // --- Universal Ticker ---
+
 async function initTicker() {
-    const tickerEl = document.getElementById('tickerContent');
-    if (!tickerEl) return;
-    const data = await loadStatsData();
-    if (!data.length) {
-        tickerEl.innerHTML = '<span class="text-red-400 px-4">Could not load player stats for ticker.</span>';
-        return;
+    const tickerContent = document.getElementById('tickerContent');
+    if (!tickerContent) return;
+    const pauseButton = document.getElementById('pauseButton');
+
+    try {
+        const pprData = await loadAdpData('ppr');
+        const tickerData = generateTickerData(pprData);
+        updateTickerUI(tickerData, tickerContent);
+        
+        pauseButton.addEventListener('click', () => {
+            isTickerPaused = !isTickerPaused;
+            pauseButton.textContent = isTickerPaused ? 'Resume' : 'Pause';
+            tickerContent.style.animationPlayState = isTickerPaused ? 'paused' : 'running';
+        });
+    } catch (error) {
+        tickerContent.innerHTML = `<span class="text-red-400 px-4">Could not load ticker data.</span>`;
     }
-    const topPlayers = data.sort((x, y) => y.FantasyPoints - x.FantasyPoints).slice(0, 25);
-    const pauseBtn = document.getElementById('pauseButton');
-    pauseBtn.addEventListener('click', () => {
-        isTickerPaused = !isTickerPaused;
-        tickerEl.style.animationPlayState = isTickerPaused ? 'paused' : 'running';
-        pauseBtn.textContent = isTickerPaused ? 'Resume' : 'Pause';
+}
+
+function generateTickerData(players) {
+    const playersWithPoints = players.map(p => {
+        let maxPoints = 10;
+        const pos = p.POS.replace(/\d+/, '');
+        if (pos === 'QB') maxPoints = 35;
+        else if (pos === 'RB' || pos === 'WR') maxPoints = 28;
+        else if (pos === 'TE') maxPoints = 20;
+        return { ...p, fantasyPoints: Math.random() * maxPoints };
     });
-    updateTickerUI(topPlayers, tickerEl);
+
+    let topPlayers = [];
+    ['QB', 'RB', 'WR', 'TE'].forEach(pos => {
+        const playersInPos = playersWithPoints
+            .filter(p => p.POS.replace(/\d+/, '') === pos)
+            .sort((a, b) => b.fantasyPoints - a.fantasyPoints)
+            .slice(0, 10);
+        topPlayers.push(...playersInPos);
+    });
+    return topPlayers.sort(() => Math.random() - 0.5);
 }
 
 function updateTickerUI(players, el) {
-    const tickerItems = [...players, ...players]; // Duplicate for seamless loop
-    el.innerHTML = tickerItems.map(p => `
+    if (!players || players.length === 0) {
+        el.innerHTML = '<span class="text-red-400 px-4">No player data to display.</span>';
+        return;
+    }
+    const tickerItems = [...players, ...players];
+    el.innerHTML = tickerItems.map(player => `
         <div class="flex items-center mx-4 flex-shrink-0">
-            <span class="font-bold text-lg text-white mr-2">${p.Player}</span>
-            <span class="player-pos-${p.Pos.toLowerCase()} font-semibold px-2 py-1 rounded-full text-xs">${p.Pos}</span>
-            <span class="text-yellow-400 ml-2">FP: ${p.FantasyPoints.toFixed(1)}</span>
+            <span class="font-bold text-lg text-white mr-2">${player.Player}</span>
+            <span class="player-pos-${player.POS.replace(/\d+/,'').toLowerCase()} font-semibold px-2 py-1 rounded-full text-xs">${player.POS.replace(/\d+/,'')}</span>
+            <span class="text-yellow-400 ml-2">FP: ${player.fantasyPoints.toFixed(1)}</span>
         </div>
     `).join('');
     if (!isTickerPaused) {
         el.style.animation = 'none';
-        void el.offsetWidth; // Trigger reflow
+        void el.offsetWidth;
         el.style.animation = 'marquee 40s linear infinite';
     }
 }
 
-// --- GOAT Page ---
-function initGoatPage() {
-    const posOptions = {
-        qbCount: { def: 1, max: 4 }, rbCount: { def: 2, max: 8 },
-        wrCount: { def: 3, max: 8 }, teCount: { def: 1, max: 4 },
-        flexCount: { def: 1, max: 4 }, kCount: { def: 1, max: 2 },
-        dstCount: { def: 1, max: 2 }
-    };
-    for (const [id, vals] of Object.entries(posOptions)) {
-        const select = document.getElementById(id);
-        for (let i = 0; i <= vals.max; i++) select.add(new Option(i, i));
-        select.value = vals.def;
+
+// --- Home Page Specific ---
+
+async function initHomePage() {
+    const topPlayersSection = document.getElementById('top-players-section');
+    if (!topPlayersSection) return;
+
+    const pprData = await loadAdpData('ppr'); // Default to PPR
+    if (!pprData.length) return;
+
+    const topQB = pprData.find(p => p.simplePosition === 'QB');
+    const topRB = pprData.find(p => p.simplePosition === 'RB');
+    const topWR = pprData.find(p => p.simplePosition === 'WR');
+
+    populatePlayerCard('top-qb-card', topQB);
+    populatePlayerCard('top-rb-card', topRB);
+    populatePlayerCard('top-wr-card', topWR);
+}
+
+function populatePlayerCard(cardId, player) {
+    const card = document.getElementById(cardId);
+    const contentDiv = card.querySelector('.player-card-content');
+    if (!player) {
+        contentDiv.innerHTML = 'Player data not found.';
+        return;
     }
-    document.getElementById('generateBuildButton').addEventListener('click', generateGoatBuild);
-    document.getElementById('findLineupButton').addEventListener('click', findBestLineup);
+    contentDiv.innerHTML = `
+        <p class="text-xl font-semibold text-white">${player.Player}</p>
+        <p class="text-md text-teal-400">${player.Team} - ${player.POS}</p>
+        <p class="text-md text-gray-300 mt-2">ADP: <span class="font-bold text-yellow-400">${player.AVG.toFixed(1)}</span></p>
+    `;
+}
+
+
+// --- GOAT Page Specific ---
+
+function initGoatPage() {
+    const draftBuilder = document.getElementById('goat-draft-builder');
+    if (draftBuilder) {
+        const posOptions = {
+            qbCount: { def: 1, max: 4 }, rbCount: { def: 2, max: 8 },
+            wrCount: { def: 3, max: 8 }, teCount: { def: 1, max: 4 },
+            flexCount: { def: 1, max: 4 }, kCount: { def: 1, max: 2 },
+            dstCount: { def: 1, max: 2 }
+        };
+        for (const [id, vals] of Object.entries(posOptions)) {
+            const select = document.getElementById(id);
+            if (select) {
+                for (let i = 0; i <= vals.max; i++) select.add(new Option(i, i));
+                select.value = vals.def;
+            }
+        }
+        document.getElementById('generateBuildButton').addEventListener('click', generateGoatBuild);
+    }
+
+    const lineupBuilder = document.getElementById('lineup-builder');
+    if (lineupBuilder) {
+        document.getElementById('findLineupButton').addEventListener('click', findBestLineup);
+    }
 }
 
 async function generateGoatBuild() {
@@ -123,18 +209,20 @@ function createTeamBuild(roster, adp) {
     let picked = new Set();
     let team = [];
     let pool = [...adp];
+    
     const pick = (pos, count, draftedAs) => {
         let pickedCount = 0;
+        const positions = Array.isArray(pos) ? pos : [pos];
         for (let i = 0; i < pool.length && pickedCount < count; i++) {
             const p = pool[i];
-            const pPos = Array.isArray(pos) ? pos : [pos];
-            if (pPos.includes(p.simplePosition.toUpperCase()) && !picked.has(p.Player)) {
+            if (positions.includes(p.simplePosition.toUpperCase()) && !picked.has(p.Player)) {
                 team.push({ ...p, draftedAs });
                 picked.add(p.Player);
                 pickedCount++;
             }
         }
     };
+    
     pick('QB', roster.QB, 'QB');
     pick('RB', roster.RB, 'RB');
     pick('WR', roster.WR, 'WR');
@@ -142,7 +230,9 @@ function createTeamBuild(roster, adp) {
     pick(['RB', 'WR', 'TE'], roster.FLEX, 'FLEX');
     pick('K', roster.K, 'K');
     pick('DST', roster.DST, 'DST');
-    return team.sort((x, y) => x.adp - y.adp);
+    
+    // Sort final team by ADP
+    return team.sort((x, y) => x.AVG - y.AVG);
 }
 
 function displayTeamBuild(team, el) {
@@ -173,7 +263,7 @@ async function findBestLineup() {
     spinner.classList.remove('hidden');
     lineupDiv.innerHTML = '';
     
-    const stats = await loadStatsData();
+    const stats = await loadStatsPlayers();
     if (!stats.length) {
         lineupDiv.innerHTML = `<p class="text-red-500">Error: Could not load player stats.</p>`;
     } else {
@@ -186,6 +276,7 @@ async function findBestLineup() {
             lineup[pos] = playersForPos;
             userPlayers = userPlayers.filter(p => !playersForPos.some(s => s.Player === p.Player));
         };
+        
         fillPos('QB', 1);
         fillPos('RB', 2);
         fillPos('WR', 2);
@@ -209,160 +300,6 @@ async function findBestLineup() {
     spinner.classList.add('hidden');
 }
 
-// --- Tools Page ---
-function initToolsPage() {
-    let team1 = [], team2 = [];
-    const search1 = document.getElementById('player1-search');
-    const search2 = document.getElementById('player2-search');
-
-    const setupAutocomplete = (inputEl, listEl, teamArr) => {
-        inputEl.addEventListener('input', async () => {
-            const stats = await loadStatsData();
-            const query = inputEl.value.toLowerCase();
-            if (query.length < 2) {
-                listEl.innerHTML = '';
-                return;
-            }
-            const results = stats.filter(p => p.Player.toLowerCase().includes(query)).slice(0, 5);
-            listEl.innerHTML = results.map(p => `<li data-player='${JSON.stringify(p)}'>${p.Player} (${p.Pos}, ${p.Tm})</li>`).join('');
-        });
-        listEl.addEventListener('click', (e) => {
-            if (e.target.tagName === 'LI') {
-                const playerData = JSON.parse(e.target.dataset.player);
-                teamArr.push(playerData);
-                inputEl.value = '';
-                listEl.innerHTML = '';
-                renderTradeTeams();
-            }
-        });
-    };
-    
-    const renderTradeTeams = () => {
-        const team1Div = document.getElementById('team1-players');
-        const team2Div = document.getElementById('team2-players');
-        team1Div.innerHTML = team1.map((p, i) => `<div class="trade-player" data-team="1" data-index="${i}">${p.Player} <button class="remove-btn">x</button></div>`).join('');
-        team2Div.innerHTML = team2.map((p, i) => `<div class="trade-player" data-team="2" data-index="${i}">${p.Player} <button class="remove-btn">x</button></div>`).join('');
-    };
-
-    document.addEventListener('click', (e) => {
-        if (e.target.classList.contains('remove-btn')) {
-            const card = e.target.parentElement;
-            const teamNum = card.dataset.team;
-            const index = parseInt(card.dataset.index);
-            if (teamNum === '1') team1.splice(index, 1);
-            else team2.splice(index, 1);
-            renderTradeTeams();
-        }
-    });
-
-    setupAutocomplete(search1, document.getElementById('player1-autocomplete'), team1);
-    setupAutocomplete(search2, document.getElementById('player2-autocomplete'), team2);
-    
-    document.getElementById('analyzeTradeBtn').addEventListener('click', () => {
-        const val1 = team1.reduce((sum, p) => sum + p.FantasyPoints, 0);
-        const val2 = team2.reduce((sum, p) => sum + p.FantasyPoints, 0);
-        const resultsDiv = document.getElementById('trade-results');
-        const verdictEl = document.getElementById('trade-verdict');
-        resultsDiv.classList.remove('hidden');
-        if (Math.abs(val1 - val2) < 5) {
-            verdictEl.textContent = 'This trade is fair.';
-            verdictEl.className = 'text-xl font-semibold mt-2 text-green-400';
-        } else if (val1 > val2) {
-            verdictEl.textContent = `Side 1 (Your Assets) wins this trade. (Value: ${val1.toFixed(1)} vs ${val2.toFixed(1)})`;
-            verdictEl.className = 'text-xl font-semibold mt-2 text-yellow-400';
-        } else {
-            verdictEl.textContent = `Side 2 (Their Assets) wins this trade. (Value: ${val2.toFixed(1)} vs ${val1.toFixed(1)})`;
-            verdictEl.className = 'text-xl font-semibold mt-2 text-red-400';
-        }
-    });
-
-    const matchupTeam1 = document.getElementById('matchupTeam1Select');
-    const matchupTeam2 = document.getElementById('matchupTeam2Select');
-    loadStatsData().then(stats => {
-        const teams = [...new Set(stats.map(p => p.Tm))].sort();
-        teams.forEach(t => {
-            matchupTeam1.add(new Option(t, t));
-            matchupTeam2.add(new Option(t, t));
-        });
-    });
-
-    document.getElementById('predictMatchupBtn').addEventListener('click', async () => {
-        const t1 = matchupTeam1.value;
-        const t2 = matchupTeam2.value;
-        const resultEl = document.getElementById('predictionResult');
-        if (!t1 || !t2 || t1 === t2) {
-            resultEl.textContent = 'Please select two different teams.';
-            resultEl.classList.remove('hidden');
-            return;
-        }
-        const stats = await loadStatsData();
-        const score1 = stats.filter(p => p.Tm === t1).reduce((sum, p) => sum + (p['FantasyPoints/GM'] || 0), 0);
-        const score2 = stats.filter(p => p.Tm === t2).reduce((sum, p) => sum + (p['FantasyPoints/GM'] || 0), 0);
-        resultEl.innerHTML = `<span class="font-bold text-white">${t1}:</span> <span class="text-yellow-300">${score1.toFixed(1)} pts</span><br><span class="font-bold text-white">${t2}:</span> <span class="text-yellow-300">${score2.toFixed(1)} pts</span>`;
-        resultEl.classList.remove('hidden');
-    });
-}
-
-// --- Stats Page ---
-function initStatsPage() {
-    const filters = ['positionFilter', 'statSort', 'playerSearch', 'advancedStatsCheckbox'];
-    filters.forEach(id => document.getElementById(id).addEventListener('change', renderStatsTable));
-    document.getElementById('playerSearch').addEventListener('input', renderStatsTable);
-    renderStatsTable();
-}
-
-async function renderStatsTable() {
-    const spinner = document.getElementById('statsLoader');
-    spinner.classList.remove('hidden');
-
-    const data = await loadStatsData();
-    
-    const pos = document.getElementById('positionFilter').value;
-    const sort = document.getElementById('statSort').value;
-    const search = document.getElementById('playerSearch').value.toLowerCase();
-    const advanced = document.getElementById('advancedStatsCheckbox').checked;
-
-    let filtered = data;
-    if (pos !== 'ALL') {
-        if (pos === 'FLEX') filtered = data.filter(p => ['RB', 'WR', 'TE'].includes(p.Pos));
-        else filtered = data.filter(p => p.Pos === pos);
-    }
-    if (search) {
-        filtered = filtered.filter(p => p.Player.toLowerCase().includes(search));
-    }
-    filtered.sort((x, y) => (y[sort] || 0) - (x[sort] || 0));
-
-    const table = document.getElementById('statsTable');
-    const thead = table.querySelector('thead');
-    const tbody = table.querySelector('tbody');
-    
-    let headers = ['Player', 'Pos', 'Team', 'Games', 'FP/GM', 'FantasyPoints'];
-    if (advanced) headers.push('Pass Yds', 'Pass TD', 'Rush Yds', 'Rush TD', 'Rec', 'Rec Yds', 'Rec TD');
-    thead.innerHTML = `<tr>${headers.map(h => `<th class="p-3">${h}</th>`).join('')}</tr>`;
-
-    tbody.innerHTML = filtered.map(p => `
-        <tr class="hover:bg-gray-800">
-            <td class="p-3 font-semibold text-white">${p.Player}</td>
-            <td class="p-3">${p.Pos}</td>
-            <td class="p-3">${p.Tm}</td>
-            <td class="p-3">${p.G}</td>
-            <td class="p-3">${p['FantasyPoints/GM'].toFixed(1)}</td>
-            <td class="p-3 text-yellow-400 font-bold">${p.FantasyPoints.toFixed(1)}</td>
-            ${advanced ? `
-            <td class="p-3">${p['Pass Yds']}</td>
-            <td class="p-3">${p['Pass TD']}</td>
-            <td class="p-3">${p['Rush Yds']}</td>
-            <td class="p-3">${p['Rush TD']}</td>
-            <td class="p-3">${p.Rec}</td>
-            <td class="p-3">${p['Rec Yds']}</td>
-            <td class="p-3">${p['Rec TD']}</td>
-            ` : ''}
-        </tr>
-    `).join('');
-    
-    spinner.classList.add('hidden');
-}
-
 
 // --- Main Initializer ---
 document.addEventListener('DOMContentLoaded', () => {
@@ -375,10 +312,13 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     initTicker();
 
-    // Page Specific
-    if (document.getElementById('goat-draft-builder')) initGoatPage();
-    if (document.getElementById('trade-analyzer')) initToolsPage();
-    if (document.getElementById('stats-page')) initStatsPage();
+    // Page Specific Initializers
+    if (document.getElementById('top-players-section')) {
+        initHomePage();
+    }
+    if (document.getElementById('goat-draft-builder')) {
+        initGoatPage();
+    }
 });
 
 // --- Dynamic Styles ---
@@ -387,8 +327,9 @@ styleSheet.type = "text/css";
 styleSheet.innerText = `
     .ticker-animation { animation: marquee 40s linear infinite; }
     @keyframes marquee { 0% { transform: translateX(0%); } 100% { transform: translateX(-50%); } }
-    .form-select, .form-input, .cta-btn { transition: all 0.2s ease-in-out; }
+    .form-select, .form-input, .cta-btn, .cta-btn-secondary { transition: all 0.2s ease-in-out; }
     .cta-btn:disabled { background: #4b5563; cursor: not-allowed; }
+    .feature-card { background: rgba(17,24,39,0.85); border-radius: 1.25rem; box-shadow: 0 2px 16px rgba(20,184,166,0.10), 0 1.5px 8px #0004; padding: 2rem 1.5rem; border: 1.5px solid rgba(20,184,166,0.08); }
     .form-select, .form-input { width: 100%; padding: 0.5rem; background-color: #1f2937; color: white; border: 1px solid #0d9488; border-radius: 0.375rem; }
     .form-select {
         appearance: none;
@@ -402,10 +343,5 @@ styleSheet.innerText = `
     .player-pos-wr { background-color: rgba(239, 68, 68, 0.2); color: #ef4444; border: 1px solid #ef4444;}
     .player-pos-te { background-color: rgba(249, 115, 22, 0.2); color: #f97316; border: 1px solid #f97316;}
     .player-pos-k, .player-pos-dst { background-color: rgba(107, 114, 128, 0.2); color: #9ca3af; border: 1px solid #9ca3af;}
-    .autocomplete-list { position: absolute; background: #1f2937; border: 1px solid #0d9488; border-top: none; z-index: 10; width: calc(50% - 2rem); max-height: 200px; overflow-y: auto;}
-    .autocomplete-list li { padding: 0.5rem; cursor: pointer; }
-    .autocomplete-list li:hover { background: #374151; }
-    .trade-player { background-color: #374151; padding: 0.5rem; border-radius: 0.25rem; display: flex; justify-content: space-between; align-items: center; }
-    .remove-btn { background-color: #ef4444; color: white; border: none; border-radius: 50%; width: 1.25rem; height: 1.25rem; cursor: pointer; line-height: 1.25rem; text-align: center;}
 `;
 document.head.appendChild(styleSheet);
