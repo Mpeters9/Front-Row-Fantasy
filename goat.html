@@ -3,17 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Front Row Fantasy GOAT Page - Build the greatest fantasy football teams with expert tools and insights.">
-    <meta name="keywords" content="fantasy football, GOAT, team building, draft strategies, player research">
-    <meta name="author" content="Mpeters9">
-    <title>Front Row Fantasy - GOAT Page</title>
+    <title>Front Row Fantasy - GOAT Tools</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="icon" href="favicon.ico" type="image/x-icon">
     <link rel="stylesheet" href="styles.css">
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="min-h-screen flex flex-col font-poppins bg-gradient-to-br from-[#0f2027] to-[#2c5364]" aria-label="GOAT Page Content">
-    <!-- Header -->
+<body class="min-h-screen flex flex-col font-poppins bg-gradient-to-br from-[#0f2027] to-[#2c5364]">
     <header class="sticky top-0 z-50 bg-opacity-98 bg-gray-900 shadow-lg border-b-2 border-teal-500">
         <div class="max-w-7xl mx-auto px-4 flex justify-between items-center py-3">
             <a href="index.html" class="text-2xl font-bold text-yellow text-glow">Front Row Fantasy</a>
@@ -43,11 +39,10 @@
         </nav>
     </header>
 
-    <!-- Universal Fantasy Points Ticker -->
     <section class="bg-gray-800 bg-opacity-80 p-3 rounded-lg shadow-lg my-4 mx-auto w-full max-w-7xl border border-teal-600">
         <div class="flex items-center justify-center space-x-4 mb-3">
             <h2 class="text-gray-300 text-lg font-semibold">Live Fantasy Points Leaders</h2>
-            <button id="pauseButton" class="bg-yellow-500 hover:bg-yellow-600 text-gray-900 font-semibold py-2 px-4 rounded-md shadow-md transition duration-300 ease-in-out">Pause</button>
+            <button id="pauseButton" class="cta-btn px-4 py-1">Pause</button>
         </div>
         <div class="overflow-hidden relative h-10 bg-gray-900 rounded-lg">
             <div id="tickerContent" class="whitespace-nowrap absolute top-0 left-0 h-full flex items-center ticker-animation">
@@ -56,7 +51,6 @@
         </div>
     </section>
 
-    <!-- Main Content -->
     <main class="flex-grow max-w-7xl mx-auto py-8 px-4 w-full">
         <section class="text-center mb-12">
             <h1 class="text-5xl font-bold text-yellow-300 mb-4 text-shadow-lg">GOAT-Tier Tools</h1>
@@ -65,7 +59,6 @@
             </p>
         </section>
 
-        <!-- GOAT Draft Build Tool -->
         <section id="goat-draft-builder" class="bg-gray-800 bg-opacity-80 p-6 rounded-xl shadow-lg mb-12 border border-teal-600">
             <h2 class="text-3xl font-bold text-teal-400 mb-6 text-center">GOAT Draft Builds</h2>
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
@@ -101,7 +94,6 @@
             </div>
         </section>
 
-        <!-- Best Lineup Builder Tool -->
         <section id="lineup-builder" class="bg-gray-800 bg-opacity-80 p-6 rounded-xl shadow-lg border border-teal-600">
             <h2 class="text-3xl font-bold text-teal-400 mb-6 text-center">Best Lineup Builder</h2>
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -124,7 +116,6 @@
         </section>
     </main>
 
-    <!-- Footer -->
     <footer class="bg-gray-900 text-teal-400 py-6 border-t-2 border-teal-500 mt-12">
         <div class="mb-2 flex flex-wrap justify-center gap-4">
             <a href="index.html" class="hover:text-yellow">Home</a>
