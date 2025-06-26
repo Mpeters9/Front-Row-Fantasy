@@ -11,125 +11,96 @@
     <link rel="icon" href="favicon.ico" type="image/x-icon">
     <link rel="stylesheet" href="styles.css">
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
-<body class="min-h-screen flex flex-col font-poppins">
-
-    <!-- Header -->
-    <header>
+<body class="min-h-screen flex flex-col font-poppins bg-gradient-to-br from-[#0f2027] to-[#2c5364]">
+    <header class="sticky top-0 z-50 bg-opacity-98 bg-gray-900 shadow-lg border-b-2 border-teal-500">
         <div class="max-w-7xl mx-auto px-4 flex justify-between items-center py-3">
             <a href="index.html" class="text-2xl font-bold text-yellow text-glow">Front Row Fantasy</a>
-            <nav>
+            <nav class="hidden md:flex space-x-6">
                 <a href="index.html" class="nav-link">Home</a>
-                <a href="tools.html" class="nav-link">Expert Tools</a>
+                <a href="tools.html" class="nav-link" aria-current="page">Expert Tools</a>
                 <a href="goat.html" class="nav-link">GOAT</a>
                 <a href="guides.html" class="nav-link">Guides</a>
                 <a href="community.html" class="nav-link">Community</a>
-                <a href="players.html" class="nav-link" aria-current="page">Players</a>
+                <a href="players.html" class="nav-link">Players</a>
                 <a href="stats.html" class="nav-link">Stats</a>
-                <a href="#contact" class="nav-link">Contact</a>
             </nav>
+            <div class="md:hidden">
+                <button id="mobile-menu-button" class="text-teal-400 hover:text-yellow focus:outline-none">
+                    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
+                </button>
+            </div>
         </div>
+        <nav id="mobile-menu" class="md:hidden hidden px-4 pb-3 space-y-2">
+            <a href="index.html" class="block nav-link-mobile">Home</a>
+            <a href="tools.html" class="block nav-link-mobile" aria-current="page">Expert Tools</a>
+            <a href="goat.html" class="block nav-link-mobile">GOAT</a>
+            <a href="guides.html" class="block nav-link-mobile">Guides</a>
+            <a href="community.html" class="block nav-link-mobile">Community</a>
+            <a href="players.html" class="block nav-link-mobile">Players</a>
+            <a href="stats.html" class="block nav-link-mobile">Stats</a>
+        </nav>
     </header>
 
-    <!-- Fantasy Points Ticker -->
-    <section class="marquee mb-6">
-        <div class="bg-teal-900 text-white p-2 rounded-t flex justify-between items-center shadow">
-            <span class="text-xl font-bold tracking-wide flex items-center gap-2">
-                <svg class="inline w-6 h-6 text-yellow-300" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12c0 4.97-4.03 9-9 9s-9-4.03-9-9 4.03-9 9-9 9 4.03 9 9z"/></svg>
-                Fantasy Points Ticker
-            </span>
-            <button id="pauseButton" class="cta-btn px-4 py-1" aria-pressed="false" aria-label="Pause ticker">Pause</button>
+    <section class="bg-gray-800 bg-opacity-80 p-3 rounded-lg shadow-lg my-4 mx-auto w-full max-w-7xl border border-teal-600">
+        <div class="flex items-center justify-center space-x-4 mb-3">
+            <h2 class="text-gray-300 text-lg font-semibold">Live Fantasy Points Leaders</h2>
+            <button id="pauseButton" class="cta-btn px-4 py-1">Pause</button>
         </div>
-        <div class="relative overflow-hidden bg-teal-800 rounded-b" style="height:2.5rem;">
-            <div id="tickerContent" class="absolute left-0 top-0 h-full flex items-center whitespace-nowrap transition-none" tabindex="0" aria-live="polite">
-                <span class="loading text-white">Loading fantasy points...</span>
+        <div class="overflow-hidden relative h-10 bg-gray-900 rounded-lg">
+            <div id="tickerContent" class="whitespace-nowrap absolute top-0 left-0 h-full flex items-center ticker-animation">
+                <span class="text-gray-400 px-4">Loading fantasy points...</span>
             </div>
         </div>
     </section>
 
-    <!-- Main Content -->
-    <main class="max-w-7xl mx-auto px-4 py-6 flex-grow">
-        <section id="tools" class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <!-- Trade Analyzer -->
-            <div class="card trade-analyzer">
-                <h2 class="section-title text-center">Trade Analyzer</h2>
-                <div class="mb-4 flex flex-col md:flex-row gap-4">
-                    <!-- Team 1 -->
-                    <div class="flex-1">
-                        <h4 class="font-semibold mb-2 text-center">Team 1</h4>
-                        <div class="relative mb-2">
-                            <input type="text" id="player1-search" class="w-full p-2 rounded bg-white text-teal-800 border border-teal-300 autocomplete-input" placeholder="Type to search players..." autocomplete="off">
-                            <ul id="player1-autocomplete" class="autocomplete-list"></ul>
-                        </div>
-                        <div id="team1-players" class="flex flex-col gap-2 min-h-[60px]"></div>
+    <main class="max-w-7xl mx-auto px-4 py-8 flex-grow">
+        <section id="tools" class="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div id="trade-analyzer" class="bg-gray-800 bg-opacity-80 p-6 rounded-xl shadow-lg border border-teal-600">
+                <h2 class="text-3xl font-bold text-teal-400 mb-6 text-center">Trade Analyzer</h2>
+                <div class="grid grid-cols-2 gap-4 items-start">
+                    <div>
+                        <h4 class="font-semibold mb-2 text-center text-lg text-white">Your Assets</h4>
+                        <input type="text" id="player1-search" class="form-input w-full" placeholder="Search player to add..." autocomplete="off">
+                        <div id="player1-autocomplete" class="autocomplete-list"></div>
+                        <div id="team1-players" class="flex flex-col gap-2 min-h-[100px] mt-2 p-2 bg-gray-900 rounded-lg"></div>
                     </div>
-                    <!-- VS -->
-                    <div class="flex flex-col justify-center items-center">
-                        <span class="text-3xl font-bold text-yellow mb-2">VS</span>
-                        <button id="swapTeamsBtn" class="cta-btn px-3 py-1 mb-2" title="Swap Teams">⇄</button>
-                    </div>
-                    <!-- Team 2 -->
-                    <div class="flex-1">
-                        <h4 class="font-semibold mb-2 text-center">Team 2</h4>
-                        <div class="relative mb-2">
-                            <input type="text" id="player2-search" class="w-full p-2 rounded bg-white text-teal-800 border border-teal-300 autocomplete-input" placeholder="Type to search players..." autocomplete="off">
-                            <ul id="player2-autocomplete" class="autocomplete-list"></ul>
-                        </div>
-                        <div id="team2-players" class="flex flex-col gap-2 min-h-[60px]"></div>
+                    <div>
+                        <h4 class="font-semibold mb-2 text-center text-lg text-white">Their Assets</h4>
+                        <input type="text" id="player2-search" class="form-input w-full" placeholder="Search player to add..." autocomplete="off">
+                        <div id="player2-autocomplete" class="autocomplete-list"></div>
+                        <div id="team2-players" class="flex flex-col gap-2 min-h-[100px] mt-2 p-2 bg-gray-900 rounded-lg"></div>
                     </div>
                 </div>
-                <!-- Trade Value Graph & Fairness -->
-                <div class="my-4">
-                    <canvas id="tradeValueChart" height="60"></canvas>
-                    <div id="trade-fairness" class="mt-2 p-2 rounded text-center text-lg font-bold"></div>
-                </div>
-                <!-- AI Advice -->
-                <div id="ai-advice" class="glass p-3 rounded mb-4 text-center text-base"></div>
-                <!-- Actions -->
-                <div class="flex flex-wrap gap-2 justify-center mb-2">
-                    <button id="analyzeTradeBtn" class="cta-btn">Analyze Trade</button>
-                    <button id="clearAllBtn" class="cta-btn bg-red-600 hover:bg-red-700">Clear All</button>
-                    <button id="exportTradeBtn" class="cta-btn bg-teal-700 hover:bg-teal-800">Export/Share</button>
-                </div>
-                <!-- Recent Trades -->
-                <div class="mt-4">
-                    <h4 class="font-semibold mb-2">Recent Trades</h4>
-                    <ul id="recentTrades" class="recent-trades-list"></ul>
+                <button id="analyzeTradeBtn" class="cta-btn w-full mt-6">Analyze Trade</button>
+                <div id="trade-results" class="mt-4 text-center hidden">
+                    <h3 class="text-2xl font-bold text-yellow-300">Trade Analysis</h3>
+                    <p id="trade-verdict" class="text-xl font-semibold mt-2"></p>
                 </div>
             </div>
-            <!-- Matchup Predictor -->
-            <div class="card matchup-predictor">
-                <h2 class="section-title text-center">Matchup Predictor</h2>
-                <select class="w-full mt-2 p-2 rounded bg-white text-teal-800 border border-teal-300" id="matchupTeam1Select">
-                    <option value="">Select Team 1</option>
-                </select>
-                <select class="w-full mt-2 p-2 rounded bg-white text-teal-800 border border-teal-300" id="matchupTeam2Select">
-                    <option value="">Select Team 2</option>
-                </select>
-                <button class="cta-btn w-full mt-4" id="predictMatchupBtn">Predict Matchup</button>
-                <p id="predictionResult" class="mt-2 text-center"></p>
+            <div id="matchup-predictor" class="bg-gray-800 bg-opacity-80 p-6 rounded-xl shadow-lg border border-teal-600">
+                <h2 class="text-3xl font-bold text-teal-400 mb-6 text-center">Matchup Predictor</h2>
+                <div class="grid grid-cols-2 gap-4 items-center">
+                    <select id="matchupTeam1Select" class="form-select"><option value="">Select Team 1</option></select>
+                    <select id="matchupTeam2Select" class="form-select"><option value="">Select Team 2</option></select>
+                </div>
+                <button id="predictMatchupBtn" class="cta-btn w-full mt-6">Predict Matchup</button>
+                <div id="predictionResult" class="mt-4 text-center text-xl hidden"></div>
             </div>
         </section>
     </main>
 
-    <!-- Loading Spinner -->
-    <div id="loading-spinner" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-30 z-50 hidden">
-      <div class="loader ease-linear rounded-full border-8 border-t-8 border-gray-200 h-16 w-16"></div>
-    </div>
-
-    <!-- Footer -->
-    <footer>
-        <div class="mb-2">
-            <a href="index.html" class="hover:text-yellow mx-2">Home</a>
-            <a href="tools.html" class="hover:text-yellow mx-2">Expert Tools</a>
-            <a href="goat.html" class="hover:text-yellow mx-2">GOAT</a>
-            <a href="guides.html" class="hover:text-yellow mx-2">Guides</a>
-            <a href="community.html" class="hover:text-yellow mx-2">Community</a>
-            <a href="players.html" class="hover:text-yellow mx-2">Players</a>
-            <a href="stats.html" class="hover:text-yellow mx-2">Stats</a>
+    <footer class="bg-gray-900 text-teal-400 py-6 border-t-2 border-teal-500 mt-12">
+        <div class="mb-2 flex flex-wrap justify-center gap-4">
+            <a href="index.html" class="hover:text-yellow">Home</a>
+            <a href="tools.html" class="hover:text-yellow">Expert Tools</a>
+            <a href="goat.html" class="hover:text-yellow">GOAT</a>
+            <a href="guides.html" class="hover:text-yellow">Guides</a>
+            <a href="community.html" class="hover:text-yellow">Community</a>
+            <a href="players.html" class="hover:text-yellow">Players</a>
+            <a href="stats.html" class="hover:text-yellow">Stats</a>
         </div>
-        © 2025 Front Row Fantasy. All rights reserved.
+        <div class="text-center text-sm">© 2025 Front Row Fantasy. All rights reserved.</div>
     </footer>
 
     <script src="script.js"></script>
