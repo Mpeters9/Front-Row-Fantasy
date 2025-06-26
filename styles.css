@@ -1,5 +1,5 @@
 /* --- Base & Fonts --- */
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&display=swap');
 
 body {
     background-color: #0f2027;
@@ -55,7 +55,7 @@ body {
 }
 
 /* --- Cards and Sections --- */
-.feature-card, .player-showcase-card {
+.feature-card, .player-showcase-card, .tool-card {
     background: rgba(30, 41, 59, 0.6);
     border-radius: 1rem;
     border: 1px solid rgba(56, 189, 248, 0.2);
@@ -64,7 +64,7 @@ body {
     backdrop-filter: blur(5px);
 }
 
-.feature-card:hover, .player-showcase-card:hover {
+.feature-card:hover, .player-showcase-card:hover, .tool-card:hover {
     transform: translateY(-5px);
     border-color: rgba(20, 184, 166, 0.5);
     box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
@@ -115,8 +115,48 @@ body {
     box-shadow: 0 0 0 3px rgba(250, 204, 21, 0.3);
 }
 
+/* --- Autocomplete for Trade Analyzer --- */
+.autocomplete-list {
+    position: absolute;
+    background: #1f2937;
+    border: 1px solid #0d9488;
+    border-top: none;
+    z-index: 10;
+    width: calc(50% - 2rem);
+    max-height: 200px;
+    overflow-y: auto;
+}
+.autocomplete-list li {
+    padding: 0.5rem;
+    cursor: pointer;
+}
+.autocomplete-list li:hover {
+    background: #374151;
+}
+
+/* --- Player Cards in Tools --- */
+.trade-player {
+    background-color: #374151;
+    padding: 0.5rem;
+    border-radius: 0.25rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.remove-btn {
+    background-color: #ef4444;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 1.25rem;
+    height: 1.25rem;
+    cursor: pointer;
+    line-height: 1.25rem;
+    text-align: center;
+}
+
 /* --- Dynamic Styles from JS (consolidated) --- */
-.ticker-animation { animation: marquee 40s linear infinite; }
+.ticker-animation { animation: marquee 60s linear infinite; }
 @keyframes marquee { 0% { transform: translateX(0%); } 100% { transform: translateX(-50%); } }
 
 .loader { 
