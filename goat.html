@@ -64,22 +64,28 @@
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
                 GOAT Draft Simulator (VORP-Based)
             </h2>
-            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
-                <div class="lg:col-span-1">
-                    <label for="draftScoringType" class="block text-gray-300 text-lg font-semibold mb-2">ADP Scoring Type:</label>
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-x-8 gap-y-6 mb-6">
+                <div>
+                    <label for="draftScoringType" class="block text-gray-300 text-lg font-semibold mb-2">Scoring Type:</label>
                     <select id="draftScoringType" class="form-select w-full">
                         <option value="ppr" selected>PPR</option>
                         <option value="half">Half-PPR</option>
                         <option value="standard">Standard</option>
                     </select>
                 </div>
+                 <div>
+                    <label for="draftPosition" class="block text-gray-300 text-lg font-semibold mb-2">Your Draft Position:</label>
+                    <select id="draftPosition" class="form-select w-full"></select>
+                </div>
                 <div class="lg:col-span-2">
-                    <label class="block text-gray-300 text-lg font-semibold mb-2">Roster Settings (1QB, 2RB, 2WR, 1TE, 1FLEX):</label>
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                        <div class="flex items-center space-x-2">
-                            <label for="benchCount" class="text-gray-400">Bench Spots:</label>
-                            <select id="benchCount" class="form-select w-20"></select>
-                        </div>
+                    <label class="block text-gray-300 text-lg font-semibold mb-2">Roster Settings:</label>
+                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+                        <div class="flex items-center space-x-2"><label for="qbCount" class="text-gray-400">QB:</label><select id="qbCount" class="form-select w-20"></select></div>
+                        <div class="flex items-center space-x-2"><label for="rbCount" class="text-gray-400">RB:</label><select id="rbCount" class="form-select w-20"></select></div>
+                        <div class="flex items-center space-x-2"><label for="wrCount" class="text-gray-400">WR:</label><select id="wrCount" class="form-select w-20"></select></div>
+                        <div class="flex items-center space-x-2"><label for="teCount" class="text-gray-400">TE:</label><select id="teCount" class="form-select w-20"></select></div>
+                        <div class="flex items-center space-x-2"><label for="flexCount" class="text-gray-400">FLEX:</label><select id="flexCount" class="form-select w-20"></select></div>
+                        <div class="flex items-center space-x-2"><label for="benchCount" class="text-gray-400">BENCH:</label><select id="benchCount" class="form-select w-20"></select></div>
                     </div>
                 </div>
             </div>
@@ -94,35 +100,6 @@
             </div>
         </section>
 
-        <section id="lineup-builder" class="tool-card">
-            <h2 class="text-3xl font-bold text-center mb-6 text-transparent bg-clip-text bg-gradient-to-r from-yellow-300 to-teal-300 flex items-center justify-center gap-3">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M12 6V3m0 18v-3M5.636 5.636l-1.414-1.414M18.364 18.364l-1.414-1.414M5.636 18.364l-1.414 1.414M18.364 5.636l-1.414 1.414" /></svg>
-                Best Lineup Builder
-            </h2>
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                <div>
-                    <h4 class="text-xl font-semibold mb-2 text-white">Your Roster</h4>
-                    <div class="flex gap-2 mb-2">
-                        <input type="text" id="roster-search" class="form-input flex-grow" placeholder="Search to add player...">
-                        <button id="addPlayerButton" class="cta-btn px-4 py-2">Add</button>
-                    </div>
-                    <div id="roster-autocomplete" class="autocomplete-list"></div>
-                     <div class="flex gap-2 my-2" id="roster-filters">
-                        </div>
-                    <div id="roster-list" class="space-y-2 p-3 bg-gray-900 rounded-lg min-h-[200px]">
-                        <p class="text-gray-500 text-center">Add players to your roster.</p>
-                    </div>
-                </div>
-                <div>
-                     <h4 class="text-xl font-semibold mb-2 text-white">Optimal Starting Lineup</h4>
-                     <button id="findLineupButton" class="cta-btn w-full mb-4" disabled>Optimize Lineup</button>
-                     <div id="lineup-loading-spinner" class="mt-4 text-center hidden"><div class="loader"></div></div>
-                     <div id="bestLineup" class="space-y-3"></div>
-                     <h4 class="text-xl font-semibold mt-6 mb-2 text-white">Bench</h4>
-                     <div id="bench" class="space-y-2"></div>
-                </div>
-            </div>
-        </section>
     </main>
 
     <footer class="bg-gray-900 text-teal-400 py-6 border-t-2 border-teal-500 mt-12">
