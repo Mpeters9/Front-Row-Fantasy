@@ -13,11 +13,10 @@
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="min-h-screen flex flex-col font-poppins bg-gradient-to-br from-[#0f2027] to-[#2c5364]" aria-label="Main Content">
-    <!-- Header -->
     <header class="sticky top-0 z-50 bg-opacity-98 bg-gray-900 shadow-lg border-b-2 border-teal-500">
         <div class="max-w-7xl mx-auto px-4 flex justify-between items-center py-3">
             <a href="index.html" class="text-2xl font-bold text-yellow text-glow">Front Row Fantasy</a>
-            <nav class="hidden md:flex gap-6">
+            <nav class="hidden md:flex space-x-6">
                 <a href="index.html" class="nav-link" aria-current="page">Home</a>
                 <a href="tools.html" class="nav-link">Expert Tools</a>
                 <a href="goat.html" class="nav-link">GOAT</a>
@@ -25,123 +24,109 @@
                 <a href="community.html" class="nav-link">Community</a>
                 <a href="players.html" class="nav-link">Players</a>
                 <a href="stats.html" class="nav-link">Stats</a>
-                <a href="#contact" class="nav-link">Contact</a>
             </nav>
-            <button id="menu-toggle" class="md:hidden text-yellow focus:outline-none" aria-label="Toggle navigation menu">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
-                </svg>
-            </button>
+            <div class="md:hidden">
+                <button id="mobile-menu-button" class="text-teal-400 hover:text-yellow focus:outline-none">
+                    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
+                </button>
+            </div>
         </div>
-        <div id="mobile-menu" class="hidden md:hidden bg-gray-900 border-t-2 border-teal-500">
-            <nav class="flex flex-col px-4 py-2 gap-2">
-                <a href="index.html" class="nav-link" aria-current="page">Home</a>
-                <a href="tools.html" class="nav-link">Expert Tools</a>
-                <a href="goat.html" class="nav-link">GOAT</a>
-                <a href="guides.html" class="nav-link">Guides</a>
-                <a href="community.html" class="nav-link">Community</a>
-                <a href="players.html" class="nav-link">Players</a>
-                <a href="stats.html" class="nav-link">Stats</a>
-                <a href="#contact" class="nav-link">Contact</a>
-            </nav>
-        </div>
+        <nav id="mobile-menu" class="md:hidden hidden px-4 pb-3 space-y-2">
+            <a href="index.html" class="block nav-link-mobile" aria-current="page">Home</a>
+            <a href="tools.html" class="block nav-link-mobile">Expert Tools</a>
+            <a href="goat.html" class="block nav-link-mobile">GOAT</a>
+            <a href="guides.html" class="block nav-link-mobile">Guides</a>
+            <a href="community.html" class="block nav-link-mobile">Community</a>
+            <a href="players.html" class="block nav-link-mobile">Players</a>
+            <a href="stats.html" class="block nav-link-mobile">Stats</a>
+        </nav>
     </header>
 
-    <!-- Loading Spinner -->
-    <div id="loading-spinner" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-        <div class="spinner"></div>
-    </div>
-
-    <!-- Fantasy Points Ticker -->
-    <section class="marquee mb-8" aria-label="Fantasy Points Ticker">
-        <div class="bg-teal-900 text-white p-2 rounded-t flex justify-between items-center shadow">
-            <span class="text-xl font-bold tracking-wide flex items-center gap-2">
-                <svg class="inline w-6 h-6 text-yellow-300" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12c0 4.97-4.03 9-9 9s-9-4.03-9-9 4.03-9 9-9 9 4.03 9 9z"/></svg>
-                Fantasy Points Ticker
-            </span>
-            <button id="pauseButton" class="cta-btn px-4 py-1" aria-pressed="false" aria-label="Pause ticker">Pause</button>
-        </div>
-        <div class="relative overflow-hidden bg-teal-800 rounded-b" style="height:2.5rem;">
-            <div id="tickerContent" class="absolute left-0 top-0 h-full flex items-center whitespace-nowrap transition-none" tabindex="0" aria-live="polite">
-                <span class="loading text-white">Loading fantasy points...</span>
-            </div>
-        </div>
-    </section>
-
-    <!-- Hero / Splash -->
-    <main class="max-w-7xl mx-auto px-4 flex-grow">
-        <section class="splash-section text-center mb-10">
-            <h1 class="text-5xl md:text-6xl font-bold mb-4 text-glow">Dominate Your Fantasy League</h1>
-            <p class="text-xl md:text-2xl mb-6">Unleash your inner champion with real-time stats, expert tools, and community insights.</p>
-            <a href="goat.html" class="cta-btn text-lg">Start Winning Now</a>
-        </section>
-
-        <!-- Feature Cards -->
-        <section class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-10">
-            <div class="card text-center">
-                <h2 class="section-title mb-2">Top Players</h2>
-                <ul class="text-lg mb-2">
-                    <li><span class="player-pos-QB font-bold">Josh Allen</span> <span class="text-teal">(BUF QB)</span> <span class="text-yellow font-bold">25.4 pts</span></li>
-                    <li><span class="player-pos-QB font-bold">Patrick Mahomes</span> <span class="text-teal">(KC QB)</span> <span class="text-yellow font-bold">24.8 pts</span></li>
-                    <li><span class="player-pos-RB font-bold">Christian McCaffrey</span> <span class="text-teal">(SF RB)</span> <span class="text-yellow font-bold">20.5 pts</span></li>
-                    <li><span class="player-pos-WR font-bold">Tyreek Hill</span> <span class="text-teal">(MIA WR)</span> <span class="text-yellow font-bold">19.8 pts</span></li>
-                    <li><span class="player-pos-WR font-bold">Justin Jefferson</span> <span class="text-teal">(MIN WR)</span> <span class="text-yellow font-bold">19.2 pts</span></li>
-                    <li><span class="player-pos-TE font-bold">Travis Kelce</span> <span class="text-teal">(KC TE)</span> <span class="text-yellow font-bold">18.9 pts</span></li>
-                </ul>
-                <a href="players.html" class="cta-btn mt-2">See All Players</a>
-            </div>
-            <div class="card text-center">
-                <h2 class="section-title mb-2">Active Leagues</h2>
-                <p class="text-3xl font-bold text-yellow mb-2">1,234</p>
-                <p class="mb-4">Leagues competing right now</p>
-                <a href="community.html" class="cta-btn">Join the Community</a>
-            </div>
-            <div class="card text-center">
-                <h2 class="section-title mb-2">Get Started</h2>
-                <p class="mb-4">Sign up to unlock all features and start your journey to the championship.</p>
-                <a href="guides.html" class="cta-btn">Fantasy Guides</a>
+    <main class="flex-grow max-w-7xl mx-auto py-8 px-4 w-full">
+        <section class="text-center mb-12">
+            <h1 class="text-5xl font-bold text-yellow-300 mb-4 text-shadow-lg">Dominate Your League</h1>
+            <p class="text-xl text-teal-200 mb-6 max-w-2xl mx-auto">Front Row Fantasy provides cutting-edge tools and insights for every fantasy football enthusiast. From draft prep to weekly management, we've got you covered.</p>
+            <div class="flex flex-wrap justify-center gap-4">
+                <a href="tools.html" class="cta-btn">Explore Expert Tools</a>
+                <a href="guides.html" class="cta-btn-secondary">Read Our Guides</a>
             </div>
         </section>
 
-        <!-- About & Tools -->
-        <section class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-10">
-            <div class="card">
-                <h2 class="section-title mb-2">About Us</h2>
-                <p>Front Row Fantasy is built by passionate fans for passionate fans. Our mission: give you the edge with real-time stats, expert tools, and a thriving community.</p>
+        <section class="bg-gray-800 bg-opacity-80 p-6 rounded-xl shadow-lg mb-12 border border-teal-600">
+            <h2 class="text-3xl font-bold text-teal-400 mb-4 text-center">Live ADP Ticker</h2>
+            <div class="flex items-center justify-center space-x-4 mb-4">
+                <label for="scoringType" class="text-gray-300 text-lg">Scoring Type:</label>
+                <select id="scoringType" class="bg-gray-700 text-white p-2 rounded-md border border-teal-500 focus:ring focus:ring-teal-300">
+                    <option value="standard">Standard</option>
+                    <option value="ppr" selected>PPR</option>
+                    <option value="half">Half-PPR</option>
+                </select>
+                <button id="pauseButton" class="bg-yellow-500 hover:bg-yellow-600 text-gray-900 font-semibold py-2 px-4 rounded-md shadow-md transition duration-300 ease-in-out">Pause</button>
             </div>
-            <div class="card">
-                <h2 class="section-title mb-2">Games & Tools</h2>
-                <ul class="list-disc pl-6 mb-2 text-left">
-                    <li><a href="tools.html" class="text-teal hover:text-yellow">Trade Analyzer</a></li>
-                    <li><a href="tools.html" class="text-teal hover:text-yellow">Matchup Predictor</a></li>
-                    <li><a href="goat.html" class="text-teal hover:text-yellow">GOAT Builder</a></li>
-                </ul>
-                <a href="tools.html" class="cta-btn mt-2">Try Tools</a>
+            <div class="overflow-hidden relative h-10 bg-gray-900 rounded-lg">
+                <div id="tickerContent" class="whitespace-nowrap absolute top-0 left-0 h-full flex items-center ticker-animation">
+                    <span class="text-gray-400 px-4">Loading ADP data...</span>
+                </div>
             </div>
-        </section>
-
-        <!-- Contact -->
-        <section id="contact" class="card text-center mb-10">
-            <h2 class="section-title mb-2">Contact</h2>
-            <p class="mb-2">Questions? Feedback? Reach out to us!</p>
-            <a href="mailto:info@frontrowfantasy.com" class="cta-btn">Email Us</a>
-            <div class="mt-2">
-                <a href="https://discord.com/invite/fantasyfootball" target="_blank" rel="noopener" class="text-teal hover:text-yellow">Join Discord</a>
+            <div id="loading-spinner" class="mt-4 text-center hidden">
+                <div class="loader ease-linear rounded-full border-4 border-t-4 border-teal-400 h-8 w-8 mx-auto"></div>
+                <p class="text-teal-300 mt-2">Loading player data...</p>
             </div>
         </section>
 
-        <!-- Scoring Type Selector -->
-        <section class="card text-center mb-10">
-            <h2 class="section-title mb-2">Select Scoring Type</h2>
-            <select id="scoringType" class="border-teal-500 bg-gray-900 bg-opacity-85 text-white rounded-xl p-1">
-                <option value="standard">Standard</option>
-                <option value="ppr" selected>PPR</option>
-                <option value="half">Half-PPR</option>
-            </select>
+        <section class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
+            <div class="feature-card">
+                <h3 class="text-2xl font-bold text-yellow-300 mb-2">GOAT Draft Builds</h3>
+                <p class="text-gray-300">Simulate realistic draft boards, get instant recommendations, and optimize your team for any league setup.</p>
+                <a href="goat.html" class="text-teal-400 hover:text-yellow-300 font-semibold mt-3 inline-block">Learn More &rarr;</a>
+            </div>
+            <div class="feature-card">
+                <h3 class="text-2xl font-bold text-yellow-300 mb-2">Trade Analyzer</h3>
+                <p class="text-gray-300">Get instant, AI-powered feedback on any trade proposal. Understand fairness, roster impact, and contextual advice.</p>
+                <a href="tools.html#trade-analyzer" class="text-teal-400 hover:text-yellow-300 font-semibold mt-3 inline-block">Analyze Trades &rarr;</a>
+            </div>
+            <div class="feature-card">
+                <h3 class="text-2xl font-bold text-yellow-300 mb-2">Lineup Optimizer</h3>
+                <p class="text-gray-300">Build the best possible starting lineup for your league’s scoring and roster settings with our intelligent optimizer.</p>
+                <a href="tools.html#lineup-optimizer" class="text-teal-400 hover:text-yellow-300 font-semibold mt-3 inline-block">Optimize Lineup &rarr;</a>
+            </div>
+        </section>
+
+        <section class="bg-gray-800 bg-opacity-80 p-8 rounded-xl shadow-lg border border-teal-600">
+            <h2 class="text-4xl font-bold text-teal-400 mb-6 text-center">Why Choose Front Row Fantasy?</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div class="flex items-start">
+                    <svg class="w-8 h-8 text-yellow-400 mr-4 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path></svg>
+                    <div>
+                        <h3 class="text-xl font-semibold text-white mb-1">Data-Driven Insights</h3>
+                        <p class="text-gray-300">Leverage real-time data, advanced metrics, and expert analysis to make informed decisions.</p>
+                    </div>
+                </div>
+                <div class="flex items-start">
+                    <svg class="w-8 h-8 text-yellow-400 mr-4 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path></svg>
+                    <div>
+                        <h3 class="text-xl font-semibold text-white mb-1">User-Friendly Interface</h3>
+                        <p class="text-gray-300">Navigate complex fantasy football concepts with an intuitive and easy-to-use platform.</p>
+                    </div>
+                </div>
+                <div class="flex items-start">
+                    <svg class="w-8 h-8 text-yellow-400 mr-4 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path></svg>
+                    <div>
+                        <h3 class="text-xl font-semibold text-white mb-1">Community Driven</h3>
+                        <p class="text-gray-300">Join a vibrant community of fantasy managers to share strategies and get advice.</p>
+                    </div>
+                </div>
+                <div class="flex items-start">
+                    <svg class="w-8 h-8 text-yellow-400 mr-4 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path></svg>
+                    <div>
+                        <h3 class="text-xl font-semibold text-white mb-1">Always Up-to-Date</h3>
+                        <p class="text-gray-300">Our tools and data are constantly updated to reflect the latest NFL news and trends.</p>
+                    </div>
+                </div>
+            </div>
         </section>
     </main>
 
-    <!-- Footer -->
     <footer class="bg-gray-900 text-teal-400 py-6 border-t-2 border-teal-500">
         <div class="mb-2 flex flex-wrap justify-center gap-4">
             <a href="index.html" class="hover:text-yellow">Home</a>
@@ -156,39 +141,10 @@
         <div class="text-center text-sm">© 2025 Front Row Fantasy. All rights reserved.</div>
     </footer>
 
-    <!-- Scripts -->
-    <script src="script.js" defer></script>
-    <script>
-        // Mobile menu toggle
-        document.getElementById('menu-toggle').addEventListener('click', () => {
-            const mobileMenu = document.getElementById('mobile-menu');
-            mobileMenu.classList.toggle('hidden');
-        });
+    <div id="player-popup" tabindex="0" aria-live="polite" class="hidden fixed z-50 bg-gray-900 bg-opacity-98 rounded-xl shadow-lg p-4 max-w-xs text-gray-200">
+        <span class="close-btn">×</span>
+    </div>
 
-        // Initialize ticker and scoring type selector
-        document.addEventListener('DOMContentLoaded', async () => {
-            const scoringType = document.getElementById('scoringType').value;
-            document.getElementById('loading-spinner').classList.remove('hidden');
-            await loadPlayers(scoringType);
-            updateTicker(playersData.slice(0, 10));
-            document.getElementById('loading-spinner').classList.add('hidden');
-        });
-
-        // Update ticker on scoring type change
-        document.getElementById('scoringType').addEventListener('change', async () => {
-            const scoringType = document.getElementById('scoringType').value;
-            document.getElementById('loading-spinner').classList.remove('hidden');
-            await loadPlayers(scoringType);
-            updateTicker(playersData.slice(0, 10));
-            document.getElementById('loading-spinner').classList.add('hidden');
-        });
-
-        // Pause/resume ticker
-        document.getElementById('pauseButton').addEventListener('click', () => {
-            isPaused = !isPaused;
-            document.getElementById('pauseButton').textContent = isPaused ? 'Resume' : 'Pause';
-            document.getElementById('tickerContent').style.animation = isPaused ? 'none' : 'marquee 20s linear infinite';
-        });
-    </script>
+    <script src="script.js"></script>
 </body>
 </html>
