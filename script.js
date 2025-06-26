@@ -4,334 +4,233 @@ const scoringFiles = {
     half: 'Half PPR.json'
 };
 
-const fallbackPlayers = [
-    { name: "Josh Allen", position: "QB", team: "BUF", projectedPoints: 25.4, adp: 1 },
-    { name: "Patrick Mahomes", position: "QB", team: "KC", projectedPoints: 24.8, adp: 2 },
-    { name: "Christian McCaffrey", position: "RB", team: "SF", projectedPoints: 20.5, adp: 3 },
-    { name: "Tyreek Hill", position: "WR", team: "MIA", projectedPoints: 19.8, adp: 4 },
-    { name: "Justin Jefferson", position: "WR", team: "MIN", projectedPoints: 19.2, adp: 5 },
-    { name: "Travis Kelce", position: "TE", team: "KC", projectedPoints: 18.9, adp: 6 },
-    { name: "Bijan Robinson", position: "RB", team: "ATL", projectedPoints: 18.5, adp: 7 },
-    { name: "CeeDee Lamb", position: "WR", team: "DAL", projectedPoints: 18.3, adp: 8 },
-    { name: "Jalen Hurts", position: "QB", team: "PHI", projectedPoints: 23.5, adp: 9 },
-    { name: "Saquon Barkley", position: "RB", team: "NYG", projectedPoints: 17.8, adp: 10 },
-    { name: "Davante Adams", position: "WR", team: "LV", projectedPoints: 17.5, adp: 11 },
-    { name: "Mark Andrews", position: "TE", team: "BAL", projectedPoints: 15.2, adp: 12 },
-    { name: "Buffalo Bills", position: "DST", team: "BUF", projectedPoints: 10.5, adp: 50 },
-    { name: "Justin Tucker", position: "K", team: "BAL", projectedPoints: 9.8, adp: 60 }
-];
-
+// Global variable to store player data, accessible across modules
 let playersData = [];
 let isPaused = false;
+let tickerInterval; // To store the interval ID for clearing
 
+// --- Utility Functions ---
+
+/**
+ * Fetches player data based on the specified scoring type.
+ * @param {string} scoringType - 'standard', 'ppr', or 'half'.
+ * @returns {Promise<void>}
+ */
 async function loadPlayers(scoringType) {
-    const cacheKey = `players_${scoringType}`;
-    const cachedData = localStorage.getItem(cacheKey);
-    if (cachedData) {
-        playersData = JSON.parse(cachedData);
-        return;
+    const loadingSpinner = document.getElementById('loading-spinner');
+    if (loadingSpinner) {
+        loadingSpinner.classList.remove('hidden');
     }
 
     try {
-        const response = await fetch(scoringFiles[scoringType]);
-        if (!response.ok) throw new Error('Failed to load player data');
-        playersData = await response.json();
-        // Validate and filter players
-        playersData = playersData.filter(player => 
-            player && 
-            typeof player.name === 'string' && 
-            typeof player.position === 'string' && 
-            typeof player.team === 'string' && 
-            typeof player.projectedPoints === 'number'
-        );
-        localStorage.setItem(cacheKey, JSON.stringify(playersData));
-    } catch (error) {
-        console.error('Error loading players:', error);
-        playersData = fallbackPlayers;
-        localStorage.setItem(cacheKey, JSON.stringify(playersData));
-        alert('Failed to load player data. Using fallback data.');
-    }
-}
-
-function calculateVORP(players, leagueSize) {
-    const positions = ['QB', 'RB', 'WR', 'TE', 'DST', 'K'];
-    const replacementRanks = {
-        QB: leagueSize + 1, // 13th QB for 12-team league
-        RB: leagueSize * 2 + 1, // 25th RB
-        WR: leagueSize * 2 + 1, // 25th WR
-        TE: leagueSize + 1, // 13th TE
-        DST: leagueSize + 1, // 13th DST
-        K: leagueSize + 1 // 13th K
-    };
-
-    const replacementPoints = {};
-    positions.forEach(pos => {
-        const posPlayers = players.filter(p => p.position === pos).sort((a, b) => b.projectedPoints - a.projectedPoints);
-        const replacementPlayer = posPlayers[replacementRanks[pos] - 1] || posPlayers[posPlayers.length - 1];
-        replacementPoints[pos] = replacementPlayer ? replacementPlayer.projectedPoints : 0;
-    });
-
-    return players.map(player => ({
-        ...player,
-        vorp: player.projectedPoints - (replacementPoints[player.position] || 0)
-    }));
-}
-
-function weightedRandomChoice(players, topN = 5) {
-    const topPlayers = players.slice(0, Math.min(topN, players.length));
-    const weights = topPlayers.map((_, i) => 1 / (i + 1)); // Higher weight for higher-ranked players
-    const totalWeight = weights.reduce((sum, w) => sum + w, 0);
-    const normalizedWeights = weights.map(w => w / totalWeight);
-    
-    let r = Math.random();
-    for (let i = 0; i < topPlayers.length; i++) {
-        r -= normalizedWeights[i];
-        if (r <= 0) return topPlayers[i];
-    }
-    return topPlayers[topPlayers.length - 1];
-}
-
-function simulateSnakeDraft(players, leagueSize, draftPick, positionsNeeded, totalPicks) {
-    const draftOrder = [];
-    const availablePlayers = [...players];
-    const rounds = totalPicks;
-
-    for (let round = 1; round <= rounds; round++) {
-        const pickNumber = round % 2 === 1
-            ? draftPick
-            : leagueSize + 1 - draftPick;
-        const overallPick = (round - 1) * leagueSize + pickNumber;
-
-        const playersWithVORP = calculateVORP(availablePlayers, leagueSize);
-        const eligiblePlayers = playersWithVORP.filter(p => {
-            if (positionsNeeded[p.position] && positionsNeeded[p.position] > 0) return true;
-            if (p.position === 'QB' && positionsNeeded['SF'] && positionsNeeded['SF'] > 0) return true;
-            if (['RB', 'WR', 'TE'].includes(p.position) && positionsNeeded['FLEX'] && positionsNeeded['FLEX'] > 0) return true;
-            return false;
-        }).sort((a, b) => b.vorp - a.vorp);
-
-        if (eligiblePlayers.length === 0) break;
-
-        const selectedPlayer = weightedRandomChoice(eligiblePlayers);
-        draftOrder.push({
-            round,
-            pick: overallPick,
-            name: selectedPlayer.name,
-            position: selectedPlayer.position,
-            team: selectedPlayer.team,
-            projectedPoints: selectedPlayer.projectedPoints,
-            vorp: selectedPlayer.vorp
-        });
-
-        if (positionsNeeded[selectedPlayer.position] && positionsNeeded[selectedPlayer.position] > 0) {
-            positionsNeeded[selectedPlayer.position]--;
-        } else if (selectedPlayer.position === 'QB' && positionsNeeded['SF'] && positionsNeeded['SF'] > 0) {
-            positionsNeeded['SF']--;
-        } else if (['RB', 'WR', 'TE'].includes(p.position) && positionsNeeded['FLEX'] && positionsNeeded['FLEX'] > 0) {
-            positionsNeeded['FLEX']--;
+        const filePath = scoringFiles[scoringType];
+        if (!filePath) {
+            console.error('Invalid scoring type:', scoringType);
+            playersData = [];
+            return;
         }
+        const response = await fetch(filePath);
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const data = await response.json();
+        playersData = data.map(player => ({
+            name: player.Player,
+            position: player.POS, // Assuming POS includes the position like 'QB1', 'WR2'
+            team: player.Team,
+            bye: player.Bye,
+            adp: player.AVG,
+            rank: player.Rank,
+            // Add a simplified position for styling if POS is too detailed (e.g., 'QB', 'RB', 'WR', 'TE', 'K', 'DST')
+            simplePosition: player.POS ? player.POS.replace(/\d+/, '') : ''
+        }));
+        // Sort by ADP for ticker display
+        playersData.sort((a, b) => a.adp - b.adp);
 
-        availablePlayers.splice(availablePlayers.findIndex(p => p.name === selectedPlayer.name), 1);
-    }
-
-    return draftOrder;
-}
-
-async function generateDraftBuild() {
-    const leagueSize = parseInt(document.getElementById('leagueSize')?.value || 12);
-    const draftPick = parseInt(document.getElementById('draftPick')?.value || 1);
-    const scoringType = document.getElementById('scoringType')?.value || 'ppr';
-    const benchSize = parseInt(document.getElementById('benchSize')?.value || 6);
-    const preset = document.getElementById('draftLineupPreset')?.value || 'ppr';
-
-    const positionsNeeded = preset === 'custom' ? {
-        QB: parseInt(document.getElementById('draftQbCount')?.value || 1),
-        SF: parseInt(document.getElementById('draftSfCount')?.value || 0),
-        RB: parseInt(document.getElementById('draftRbCount')?.value || 2),
-        WR: parseInt(document.getElementById('draftWrCount')?.value || 2),
-        TE: parseInt(document.getElementById('draftTeCount')?.value || 1),
-        FLEX: parseInt(document.getElementById('draftFlexCount')?.value || 1),
-        DST: parseInt(document.getElementById('draftDstCount')?.value || 1),
-        K: parseInt(document.getElementById('draftKCount')?.value || 1)
-    } : {
-        std: { QB: 1, SF: 0, RB: 2, WR: 2, TE: 1, FLEX: 1, DST: 1, K: 1 },
-        ppr: { QB: 1, SF: 0, RB: 2, WR: 2, TE: 1, FLEX: 1, DST: 1, K: 1 },
-        superflex_redraft: { QB: 1, SF: 1, RB: 2, WR: 2, TE: 1, FLEX: 1, DST: 1, K: 1 },
-        superflex_dynasty: { QB: 1, SF: 1, RB: 2, WR: 2, TE: 1, FLEX: 2, DST: 1, K: 1 },
-        half: { QB: 1, SF: 0, RB: 2, WR: 2, TE: 1, FLEX: 2, DST: 1, K: 1 },
-        '2qb': { QB: 2, SF: 0, RB: 2, WR: 3, TE: 1, FLEX: 1, DST: 1, K: 1 },
-        '3wr': { QB: 1, SF: 0, RB: 2, WR: 3, TE: 1, FLEX: 1, DST: 1, K: 1 },
-        '2te': { QB: 1, SF: 0, RB: 2, WR: 2, TE: 2, FLEX: 1, DST: 1, K: 1 },
-        deepflex: { QB: 1, SF: 0, RB: 2, WR: 2, TE: 1, FLEX: 3, DST: 1, K: 1 }
-    }[preset];
-
-    const totalPicks = Object.values(positionsNeeded).reduce((sum, count) => sum + count, 0) + benchSize;
-
-    document.getElementById('loading-spinner')?.classList.remove('hidden');
-    await loadPlayers(scoringType);
-    const draftOrder = simulateSnakeDraft(playersData, leagueSize, draftPick, positionsNeeded, totalPicks);
-    document.getElementById('loading-spinner')?.classList.add('hidden');
-
-    const resultDiv = document.getElementById('build-result');
-    if (resultDiv) {
-        resultDiv.innerHTML = '<h3 class="text-lg font-semibold text-yellow">Your Draft Build</h3><ul class="list-disc pl-6 mt-2"></ul>';
-        const ul = resultDiv.querySelector('ul');
-        draftOrder.forEach(player => {
-            ul.innerHTML += `<li class="player-pos-${player.position}">${player.round}. ${player.name} (${player.position}, ${player.team}) - ${player.projectedPoints.toFixed(1)} pts (VORP: ${player.vorp.toFixed(1)})</li>`;
-        });
+    } catch (error) {
+        console.error('Error loading player data:', error);
+        playersData = []; // Clear data on error
+    } finally {
+        if (loadingSpinner) {
+            loadingSpinner.classList.add('hidden');
+        }
     }
 }
 
-function updatePlayerTable(players) {
-    const tbody = document.getElementById('player-table-body');
-    if (!tbody) return; // Skip if table doesn't exist (e.g., on index.html)
-    tbody.innerHTML = '';
-    const validPlayers = players.filter(player => 
-        player && 
-        typeof player.name === 'string' && 
-        typeof player.position === 'string' && 
-        typeof player.team === 'string' && 
-        typeof player.projectedPoints === 'number'
-    ).slice(0, 10);
-    
-    validPlayers.forEach(player => {
-        const tr = document.createElement('tr');
-        tr.innerHTML = `
-            <td class="p-2">${player.name}</td>
-            <td class="p-2 player-pos-${player.position}">${player.position}</td>
-            <td class="p-2">${player.projectedPoints.toFixed(1)}</td>
-        `;
-        tr.addEventListener('click', () => showPlayerPopup(player));
-        tbody.appendChild(tr);
-    });
-}
 
-function showPlayerPopup(player) {
-    const popup = document.getElementById('player-popup');
-    if (!popup) return; // Skip if popup doesn't exist
-    popup.innerHTML = `
-        <span class="close-btn">×</span>
-        <h3 class="text-lg font-bold">${player.name}</h3>
-        <p>Position: <span class="player-pos-${player.position}">${player.position}</span></p>
-        <p>Team: ${player.team}</p>
-        <p>Projected Points: ${player.projectedPoints.toFixed(1)}</p>
-    `;
-    popup.classList.remove('hidden');
-    popup.style.top = '50%';
-    popup.style.left = '50%';
-    popup.style.transform = 'translate(-50%, -50%)';
-    popup.querySelector('.close-btn').addEventListener('click', () => popup.classList.add('hidden'));
-}
-
+/**
+ * Updates the live fantasy ticker with the top N players.
+ * @param {Array<Object>} players - Array of player objects to display in the ticker.
+ */
 function updateTicker(players) {
     const tickerContent = document.getElementById('tickerContent');
-    if (!tickerContent) return; // Skip if ticker doesn't exist
-    tickerContent.innerHTML = '';
-    const validPlayers = players.filter(player => 
-        player && 
-        typeof player.name === 'string' && 
-        typeof player.position === 'string' && 
-        typeof player.team === 'string' && 
-        typeof player.projectedPoints === 'number'
-    ).slice(0, 10);
-    
-    validPlayers.forEach(player => {
-        const span = document.createElement('span');
-        span.className = `ticker-player player-pos-${player.position}`;
-        span.innerHTML = `
-            <span class="player-name">${player.name}</span>
-            <span class="player-team">(${player.team})</span>
-            <span class="player-pts">${player.projectedPoints.toFixed(1)} pts</span>
-        `;
-        tickerContent.appendChild(span);
-    });
-    tickerContent.style.animation = isPaused ? 'none' : 'marquee 20s linear infinite';
+    if (!tickerContent) return;
+
+    if (!players || players.length === 0) {
+        tickerContent.innerHTML = '<span class="text-red-400 px-4">No player data available.</span>';
+        tickerContent.style.animation = 'none'; // Stop animation if no data
+        return;
+    }
+
+    let tickerHtml = '';
+    // Duplicate content to create a seamless loop
+    const displayPlayers = players.slice(0, 15); // Show top 15 for the ticker
+    const totalPlayersForTicker = 30; // To make the animation smooth, duplicate enough times
+    for (let i = 0; i < totalPlayersForTicker; i++) {
+        const player = displayPlayers[i % displayPlayers.length]; // Cycle through the top 15
+        if (player) {
+            // Use simplePosition for class names if available, fallback to full position
+            const posClass = player.simplePosition ? `player-pos-${player.simplePosition.toLowerCase()}` : '';
+            tickerHtml += `
+                <div class="flex items-center mx-4 flex-shrink-0">
+                    <span class="font-bold text-lg text-white mr-2">${player.name}</span>
+                    <span class="text-sm ${posClass} font-semibold px-2 py-1 rounded-full">${player.simplePosition || player.position}</span>
+                    <span class="text-teal-400 ml-2">ADP: ${player.adp ? player.adp.toFixed(1) : 'N/A'}</span>
+                    <span class="text-gray-400 ml-2">(${player.team})</span>
+                </div>
+            `;
+        }
+    }
+    tickerContent.innerHTML = tickerHtml;
+
+    // Restart animation if it was paused and content updated
+    if (!isPaused) {
+        tickerContent.style.animation = 'none'; // Reset animation
+        // Force reflow to restart animation
+        void tickerContent.offsetWidth;
+        tickerContent.style.animation = 'marquee 30s linear infinite';
+    }
 }
 
-document.getElementById('generateLineup')?.addEventListener('click', generateDraftBuild);
 
-document.getElementById('generateLineupBuild')?.addEventListener('click', () => {
-    const preset = document.getElementById('lineupPreset')?.value || 'ppr';
-    const positions = preset === 'custom' ? {
-        QB: parseInt(document.getElementById('qbCount')?.value || 1),
-        SF: parseInt(document.getElementById('sfCount')?.value || 0),
-        RB: parseInt(document.getElementById('rbCount')?.value || 2),
-        WR: parseInt(document.getElementById('wrCount')?.value || 2),
-        TE: parseInt(document.getElementById('teCount')?.value || 1),
-        FLEX: parseInt(document.getElementById('flexCount')?.value || 1),
-        DST: parseInt(document.getElementById('dstCount')?.value || 1),
-        K: parseInt(document.getElementById('kCount')?.value || 1)
-    } : {
-        std: { QB: 1, SF: 0, RB: 2, WR: 2, TE: 1, FLEX: 1, DST: 1, K: 1 },
-        ppr: { QB: 1, SF: 0, RB: 2, WR: 2, TE: 1, FLEX: 1, DST: 1, K: 1 },
-        superflex_redraft: { QB: 1, SF: 1, RB: 2, WR: 2, TE: 1, FLEX: 1, DST: 1, K: 1 },
-        superflex_dynasty: { QB: 1, SF: 1, RB: 2, WR: 2, TE: 1, FLEX: 2, DST: 1, K: 1 },
-        half: { QB: 1, SF: 0, RB: 2, WR: 2, TE: 1, FLEX: 2, DST: 1, K: 1 },
-        '2qb': { QB: 2, SF: 0, RB: 2, WR: 3, TE: 1, FLEX: 1, DST: 1, K: 1 },
-        '3wr': { QB: 1, SF: 0, RB: 2, WR: 3, TE: 1, FLEX: 1, DST: 1, K: 1 },
-        '2te': { QB: 1, SF: 0, RB: 2, WR: 2, TE: 2, FLEX: 1, DST: 1, K: 1 },
-        deepflex: { QB: 1, SF: 0, RB: 2, WR: 2, TE: 1, FLEX: 3, DST: 1, K: 1 }
-    }[preset];
+/**
+ * Populates the player table on the players.html page.
+ * @param {Array<Object>} players - The array of player data.
+ */
+function updatePlayerTable(players) {
+    const allPlayersDiv = document.getElementById('allPlayers');
+    if (!allPlayersDiv) return; // Only run if on players.html
 
-    const resultDiv = document.getElementById('lineup-result');
-    if (!resultDiv) return;
-    const playersCopy = [...playersData];
-    const lineup = [];
-    
-    Object.entries(positions).forEach(([pos, count]) => {
-        if (count === 0) return;
-        let eligiblePlayers = pos === 'FLEX' 
-            ? playersCopy.filter(p => ['RB', 'WR', 'TE'].includes(p.position))
-            : pos === 'SF' 
-            ? playersCopy.filter(p => p.position === 'QB')
-            : playersCopy.filter(p => p.position === pos);
-        
-        eligiblePlayers = eligiblePlayers.sort((a, b) => b.projectedPoints - a.projectedPoints);
-        
-        for (let i = 0; i < count && eligiblePlayers.length > 0; i++) {
-            const player = eligiblePlayers[0];
-            lineup.push(player);
-            playersCopy.splice(playersCopy.findIndex(p => p.name === player.name), 1);
-            eligiblePlayers = eligiblePlayers.slice(1);
-        }
+    allPlayersDiv.innerHTML = ''; // Clear existing players
+
+    if (!players || players.length === 0) {
+        allPlayersDiv.innerHTML = '<p class="text-red-400 text-center text-xs">No player data available.</p>';
+        return;
+    }
+
+    players.forEach(player => {
+        const div = document.createElement('div');
+        div.className = 'player-card p-3 bg-gray-800 rounded-lg shadow-md flex items-center space-x-3 transition duration-200 ease-in-out transform hover:scale-105';
+        const posClass = player.simplePosition ? `player-pos-${player.simplePosition.toLowerCase()}` : `player-pos-${player.position ? player.position.replace(/\d+/, '').toLowerCase() : 'unknown'}`;
+
+        div.innerHTML = `
+            <img src="https://via.placeholder.com/40" alt="${player.name}" class="w-10 h-10 rounded-full object-cover border-2 border-teal-500">
+            <div>
+                <div class="text-lg font-semibold text-white">${player.name}</div>
+                <div class="text-sm">
+                    <span class="${posClass} font-semibold px-2 py-0.5 rounded">${player.position}</span>
+                    <span class="text-teal-300 ml-1">${player.team}</span>
+                </div>
+                <div class="text-yellow-400 font-bold text-base">ADP: ${player.adp ? player.adp.toFixed(1) : 'N/A'}</div>
+            </div>
+            <button class="ml-auto text-gray-400 hover:text-white" aria-label="View player details">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd" />
+                </svg>
+            </button>
+        `;
+        allPlayersDiv.appendChild(div);
     });
+}
 
-    resultDiv.innerHTML = '<h3 class="text-lg font-semibold text-yellow">Your Lineup Build</h3><ul class="list-disc pl-6 mt-2"></ul>';
-    const ul = resultDiv.querySelector('ul');
-    lineup.forEach(player => {
-        ul.innerHTML += `<li class="player-pos-${player.position}">${player.name} (${player.position}, ${player.team}) - ${player.projectedPoints.toFixed(1)} pts</li>`;
-    });
-});
+
+// --- Event Listeners and Initial Load ---
 
 document.addEventListener('DOMContentLoaded', async () => {
-    await loadPlayers('ppr');
-    updatePlayerTable(playersData);
-    updateTicker(playersData.slice(0, 10));
+    // Mobile menu toggle
+    const mobileMenuButton = document.getElementById('mobile-menu-button');
+    const mobileMenu = document.getElementById('mobile-menu');
+    if (mobileMenuButton && mobileMenu) {
+        mobileMenuButton.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+        });
+    }
 
-    // Pause/resume ticker
+    // Initialize ticker and scoring type selector only if elements exist on the page
+    const scoringTypeSelect = document.getElementById('scoringType');
     const pauseButton = document.getElementById('pauseButton');
-    if (pauseButton) {
-        pauseButton.addEventListener('click', () => {
-            isPaused = !isPaused;
-            pauseButton.textContent = isPaused ? 'Resume' : 'Pause';
-            const tickerContent = document.getElementById('tickerContent');
-            if (tickerContent) {
-                tickerContent.style.animation = isPaused ? 'none' : 'marquee 20s linear infinite';
+    const tickerContent = document.getElementById('tickerContent');
+
+    if (scoringTypeSelect && tickerContent) {
+        // Load players based on default selected scoring type (PPR from HTML)
+        const initialScoringType = scoringTypeSelect.value;
+        await loadPlayers(initialScoringType);
+        updateTicker(playersData); // Update ticker after data is loaded
+
+        // Update ticker and player table on scoring type change
+        scoringTypeSelect.addEventListener('change', async () => {
+            const selectedScoringType = scoringTypeSelect.value;
+            await loadPlayers(selectedScoringType);
+            updateTicker(playersData);
+            // If on players.html, update the table too
+            if (document.getElementById('allPlayers')) {
+                updatePlayerTable(playersData);
             }
         });
     }
 
-    // Update ticker and player table on scoring type change
-    const scoringTypeSelect = document.getElementById('scoringType');
-    if (scoringTypeSelect) {
-        scoringTypeSelect.addEventListener('change', async () => {
-            const scoringType = scoringTypeSelect.value;
-            const loadingSpinner = document.getElementById('loading-spinner');
-            if (loadingSpinner) loadingSpinner.classList.remove('hidden');
-            await loadPlayers(scoringType);
-            updatePlayerTable(playersData);
-            updateTicker(playersData.slice(0, 10));
-            if (loadingSpinner) loadingSpinner.classList.add('hidden');
+    if (pauseButton && tickerContent) {
+        // Pause/resume ticker
+        pauseButton.addEventListener('click', () => {
+            isPaused = !isPaused;
+            pauseButton.textContent = isPaused ? 'Resume' : 'Pause';
+            if (isPaused) {
+                tickerContent.style.animationPlayState = 'paused';
+            } else {
+                tickerContent.style.animationPlayState = 'running';
+            }
         });
     }
+
+    // Player search on players.html
+    const playerSearch = document.getElementById('playerSearch');
+    const allPlayersDiv = document.getElementById('allPlayers');
+    if (playerSearch && allPlayersDiv) {
+        // Initial load for players.html
+        await loadPlayers('ppr'); // Default for players page can be PPR or standard
+        updatePlayerTable(playersData);
+
+        playerSearch.addEventListener('input', () => {
+            const searchTerm = playerSearch.value.toLowerCase();
+            const playerElements = allPlayersDiv.getElementsByClassName('player-card');
+            Array.from(playerElements).forEach(element => {
+                const name = element.querySelector('.text-lg').textContent.toLowerCase();
+                element.style.display = name.includes(searchTerm) ? 'flex' : 'none';
+            });
+        });
+    }
+
+    // Ensure the player data is loaded for any page that might need it (e.g., stats.html)
+    // If stats.html needs specific data, its own script block should call `loadPlayers`
+    // However, for generic player data, we can try to pre-load here
+    if (document.getElementById('stats-page-content')) { // Example ID for stats page
+        if (playersData.length === 0) { // Only load if not already loaded by ticker
+            await loadPlayers('standard'); // Default for stats page
+        }
+        // Additional stats page specific logic can go here.
+    }
 });
+
+// Add CSS for ticker animation
+const styleSheet = document.createElement("style");
+styleSheet.type = "text/css";
+styleSheet.innerText = `
+    @keyframes marquee {
+        0% { transform: translateX(0%); }
+        100% { transform: translateX(-50%); } /* Translate by half the width of duplicated content */
+    }
+    .ticker-animation {
+        animation: marquee 30s linear infinite;
+    }
+`;
+document.head.appendChild(styleSheet);
