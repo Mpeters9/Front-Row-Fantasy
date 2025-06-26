@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Front Row Fantasy - GOAT Tools</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&display=swap" rel="stylesheet">
     <link rel="icon" href="favicon.ico" type="image/x-icon">
     <link rel="stylesheet" href="styles.css">
     <script src="https://cdn.tailwindcss.com"></script>
@@ -53,14 +53,17 @@
 
     <main class="flex-grow max-w-7xl mx-auto py-8 px-4 w-full">
         <section class="text-center mb-12">
-            <h1 class="text-5xl font-bold text-yellow-300 mb-4 text-shadow-lg">GOAT-Tier Tools</h1>
+            <h1 class="text-5xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-yellow-300 to-teal-300 mb-4 text-glow-gold">GOAT-Tier Tools</h1>
             <p class="text-xl text-teal-200 max-w-3xl mx-auto">
                 Use our suite of advanced tools to build a championship-winning team. From drafting the ultimate roster to setting the perfect weekly lineup, we've got you covered.
             </p>
         </section>
 
-        <section id="goat-draft-builder" class="bg-gray-800 bg-opacity-80 p-6 rounded-xl shadow-lg mb-12 border border-teal-600">
-            <h2 class="text-3xl font-bold text-teal-400 mb-6 text-center">GOAT Draft Builds</h2>
+        <section id="goat-draft-builder" class="tool-card mb-12">
+            <h2 class="text-3xl font-bold text-center mb-6 text-transparent bg-clip-text bg-gradient-to-r from-yellow-300 to-teal-300 flex items-center justify-center gap-3">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                GOAT Draft Simulator (VORP-Based)
+            </h2>
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
                 <div class="lg:col-span-1">
                     <label for="draftScoringType" class="block text-gray-300 text-lg font-semibold mb-2">ADP Scoring Type:</label>
@@ -71,46 +74,52 @@
                     </select>
                 </div>
                 <div class="lg:col-span-2">
-                    <label class="block text-gray-300 text-lg font-semibold mb-2">Number of Players Per Position:</label>
-                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
-                        <div class="flex items-center space-x-2"><label for="qbCount" class="text-gray-400">QB:</label><select id="qbCount" class="form-select w-20"></select></div>
-                        <div class="flex items-center space-x-2"><label for="rbCount" class="text-gray-400">RB:</label><select id="rbCount" class="form-select w-20"></select></div>
-                        <div class="flex items-center space-x-2"><label for="wrCount" class="text-gray-400">WR:</label><select id="wrCount" class="form-select w-20"></select></div>
-                        <div class="flex items-center space-x-2"><label for="teCount" class="text-gray-400">TE:</label><select id="teCount" class="form-select w-20"></select></div>
-                        <div class="flex items-center space-x-2"><label for="flexCount" class="text-gray-400">FLEX:</label><select id="flexCount" class="form-select w-20"></select></div>
-                        <div class="flex items-center space-x-2"><label for="kCount" class="text-gray-400">K:</label><select id="kCount" class="form-select w-20"></select></div>
-                        <div class="flex items-center space-x-2"><label for="dstCount" class="text-gray-400">DST:</label><select id="dstCount" class="form-select w-20"></select></div>
+                    <label class="block text-gray-300 text-lg font-semibold mb-2">Roster Settings (1QB, 2RB, 2WR, 1TE, 1FLEX):</label>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div class="flex items-center space-x-2">
+                            <label for="benchCount" class="text-gray-400">Bench Spots:</label>
+                            <select id="benchCount" class="form-select w-20"></select>
+                        </div>
                     </div>
                 </div>
             </div>
-            <button id="generateBuildButton" class="cta-btn w-full mt-4">Generate GOAT Build</button>
+            <button id="generateBuildButton" class="cta-btn w-full mt-4">Simulate VORP Draft & Build My Team</button>
             <div id="draft-loading-spinner" class="mt-4 text-center hidden">
-                <div class="loader ease-linear rounded-full border-4 border-t-4 border-teal-400 h-8 w-8 mx-auto"></div>
-                <p class="text-teal-300 mt-2">Generating your team...</p>
+                <div class="loader"></div>
+                <p class="text-teal-300 mt-2">Simulating a 12-team draft and building your optimal roster...</p>
             </div>
             <div id="generatedTeamWrapper" class="mt-8 hidden">
-                <h3 class="text-2xl font-bold text-yellow-300 mb-4 text-center">Your Generated Draft Roster</h3>
-                <div id="generatedTeam" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4"></div>
+                <h3 class="text-2xl font-bold text-yellow-300 mb-4 text-center">Your VORP-Drafted Roster</h3>
+                <div id="generatedTeam" class="space-y-4"></div>
             </div>
         </section>
 
-        <section id="lineup-builder" class="bg-gray-800 bg-opacity-80 p-6 rounded-xl shadow-lg border border-teal-600">
-            <h2 class="text-3xl font-bold text-teal-400 mb-6 text-center">Best Lineup Builder</h2>
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <section id="lineup-builder" class="tool-card">
+            <h2 class="text-3xl font-bold text-center mb-6 text-transparent bg-clip-text bg-gradient-to-r from-yellow-300 to-teal-300 flex items-center justify-center gap-3">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M12 6V3m0 18v-3M5.636 5.636l-1.414-1.414M18.364 18.364l-1.414-1.414M5.636 18.364l-1.414 1.414M18.364 5.636l-1.414 1.414" /></svg>
+                Best Lineup Builder
+            </h2>
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
                 <div>
-                    <label for="playerList" class="block text-gray-300 text-lg font-semibold mb-2">Your Players:</label>
-                    <textarea id="playerList" rows="8" class="form-input w-full" placeholder="Paste your list of players here, one per line..."></textarea>
+                    <h4 class="text-xl font-semibold mb-2 text-white">Your Roster</h4>
+                    <div class="flex gap-2 mb-2">
+                        <input type="text" id="roster-search" class="form-input flex-grow" placeholder="Search to add player...">
+                        <button id="addPlayerButton" class="cta-btn px-4 py-2">Add</button>
+                    </div>
+                    <div id="roster-autocomplete" class="autocomplete-list"></div>
+                     <div class="flex gap-2 my-2" id="roster-filters">
+                        </div>
+                    <div id="roster-list" class="space-y-2 p-3 bg-gray-900 rounded-lg min-h-[200px]">
+                        <p class="text-gray-500 text-center">Add players to your roster.</p>
+                    </div>
                 </div>
                 <div>
-                    <label class="block text-gray-300 text-lg font-semibold mb-2">Optimal Lineup:</label>
-                    <button id="findLineupButton" class="cta-btn w-full mb-4">Find Best Lineup</button>
-                    <div id="lineup-loading-spinner" class="mt-4 text-center hidden">
-                        <div class="loader ease-linear rounded-full border-4 border-t-4 border-teal-400 h-8 w-8 mx-auto"></div>
-                        <p class="text-teal-300 mt-2">Calculating optimal lineup...</p>
-                    </div>
-                    <div id="bestLineup" class="space-y-2">
-                        <p class="text-gray-400 text-center">Enter your players and click the button to generate the optimal lineup based on projections.</p>
-                    </div>
+                     <h4 class="text-xl font-semibold mb-2 text-white">Optimal Starting Lineup</h4>
+                     <button id="findLineupButton" class="cta-btn w-full mb-4" disabled>Optimize Lineup</button>
+                     <div id="lineup-loading-spinner" class="mt-4 text-center hidden"><div class="loader"></div></div>
+                     <div id="bestLineup" class="space-y-3"></div>
+                     <h4 class="text-xl font-semibold mt-6 mb-2 text-white">Bench</h4>
+                     <div id="bench" class="space-y-2"></div>
                 </div>
             </div>
         </section>
