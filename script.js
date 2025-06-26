@@ -6,7 +6,6 @@ const scoringFiles = {
 };
 
 let adpPlayersData = []; // For ADP data (ticker, goat builder)
-let statsPlayersData = []; // For stats page data
 let isPaused = false;
 
 
@@ -38,27 +37,6 @@ async function loadAdpPlayers(scoringType) {
     } catch (error) {
         console.error('Error loading ADP player data:', error);
         adpPlayersData = []; // Clear data on error
-    }
-}
-
-/**
- * Loads player statistics data for the stats page.
- */
-async function loadStatsPlayers() {
-    const loader = document.getElementById('statsLoader');
-    if(loader) loader.classList.remove('hidden');
-    
-    try {
-        const response = await fetch('players_2025 Stats.json');
-        if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-        
-        statsPlayersData = await response.json();
-
-    } catch (error) {
-        console.error('Error loading stats player data:', error);
-        statsPlayersData = [];
-    } finally {
-        if(loader) loader.classList.add('hidden');
     }
 }
 
@@ -96,204 +74,77 @@ function updateTicker(players) {
     tickerContent.innerHTML = tickerHtml;
 }
 
-/**
- * Renders the stats table on the stats page.
- */
-function renderStatsTable() {
-    const table = document.getElementById('statsTable');
-    const tableHead = table.querySelector('thead');
-    const tableBody = table.querySelector('tbody');
-    if (!table || !tableHead || !tableBody) return;
 
-    // Get filter values
-    const posFilter = document.getElementById('positionSelect').value;
-    const searchFilter = document.getElementById('playerSearchStats').value.toLowerCase();
-    const showAdvanced = document.getElementById('advancedStatsCheckbox').checked;
-
-    // Filter data
-    let filteredData = statsPlayersData.filter(p => {
-        const nameMatch = p.Player.toLowerCase().includes(searchFilter);
-        let posMatch = true;
-        if (posFilter !== 'ALL') {
-             if (posFilter === 'FLEX') {
-                posMatch = ['RB', 'WR', 'TE'].includes(p.Pos);
-            } else {
-                posMatch = p.Pos === posFilter;
-            }
-        }
-        return nameMatch && posMatch;
-    });
-
-    // Clear table
-    tableHead.innerHTML = '';
-    tableBody.innerHTML = '';
-
-    // Define table headers
-    let headers = ['Player', 'Pos', 'Team', 'Games', 'Fantasy Points', 'FP/GM'];
-    if (showAdvanced) {
-        headers.push('Pass Yds', 'Pass TD', 'Rush Yds', 'Rush TD', 'Rec', 'Rec Yds', 'Rec TD');
-    }
-
-    // Populate headers
-    let headerHtml = '<tr>';
-    headers.forEach(h => headerHtml += `<th class="p-3">${h}</th>`);
-    headerHtml += '</tr>';
-    tableHead.innerHTML = headerHtml;
-
-    // Populate body
-    if (filteredData.length === 0) {
-        tableBody.innerHTML = `<tr><td colspan="${headers.length}" class="text-center p-4">No players match the current filters.</td></tr>`;
-        return;
-    }
-
-    let bodyHtml = '';
-    filteredData.forEach(p => {
-        bodyHtml += `<tr class="hover:bg-gray-800">
-            <td class="p-3 font-semibold text-white">${p.Player}</td>
-            <td class="p-3">${p.Pos}</td>
-            <td class="p-3">${p.Tm}</td>
-            <td class="p-3">${p.G}</td>
-            <td class="p-3 text-yellow-400 font-bold">${p.FantasyPoints.toFixed(1)}</td>
-            <td class="p-3">${p['FantasyPoints/GM'].toFixed(1)}</td>
-        `;
-        if (showAdvanced) {
-            bodyHtml += `
-            <td class="p-3">${p['Pass Yds']}</td>
-            <td class="p-3">${p['Pass TD']}</td>
-            <td class="p-3">${p['Rush Yds']}</td>
-            <td class="p-3">${p['Rush TD']}</td>
-            <td class="p-3">${p.Rec}</td>
-            <td class="p-3">${p['Rec Yds']}</td>
-            <td class="p-3">${p['Rec TD']}</td>`;
-        }
-        bodyHtml += '</tr>';
-    });
-    tableBody.innerHTML = bodyHtml;
-}
-
-
-// --- Page-Specific Initializers ---
+// --- GOAT PAGE SPECIFIC FUNCTIONS ---
 
 /**
- * Initializes functionality for the home page (index.html).
+ * Generates an optimal team build based on user-selected roster counts and ADP.
+ * This function is only used by the GOAT page.
+ * @param {Object} rosterCounts - An object with keys for each position and values for the number of players.
+ * @returns {Object} An object containing arrays of player objects for each position.
  */
-async function initHomePage() {
-    const scoringTypeSelect = document.getElementById('scoringType');
-    const pauseButton = document.getElementById('pauseButton');
-    const tickerContent = document.getElementById('tickerContent');
-    
-    if (scoringTypeSelect && tickerContent) {
-        const initialScoringType = scoringTypeSelect.value;
-        await loadAdpPlayers(initialScoringType);
-        updateTicker(adpPlayersData);
-
-        scoringTypeSelect.addEventListener('change', async () => {
-            const selectedScoringType = scoringTypeSelect.value;
-            await loadAdpPlayers(selectedScoringType);
-            updateTicker(adpPlayersData);
-        });
-
-        if (pauseButton) {
-            pauseButton.addEventListener('click', () => {
-                isPaused = !isPaused;
-                pauseButton.textContent = isPaused ? 'Resume' : 'Pause';
-                tickerContent.style.animationPlayState = isPaused ? 'paused' : 'running';
-            });
-        }
-    }
-}
-
-/**
- * Initializes functionality for the GOAT builder page (goat.html).
- */
-function initGoatPage() {
-    const positionSelectors = {
-        QB: document.getElementById('qbSelect'), RB: document.getElementById('rbSelect'),
-        WR: document.getElementById('wrSelect'), TE: document.getElementById('teSelect'),
-        FLEX: document.getElementById('flexSelect'), K: document.getElementById('kSelect'),
-        DST: document.getElementById('dstSelect')
-    };
-    const defaultRoster = { QB: 1, RB: 2, WR: 2, TE: 1, FLEX: 1, K: 1, DST: 1 };
-    
-    // Populate dropdowns with numbers
-    for (const pos in positionSelectors) {
-        const select = positionSelectors[pos];
-        if (select) {
-            for (let i = 0; i <= 8; i++) select.add(new Option(i, i));
-            select.value = defaultRoster[pos] || 0;
-        }
-    }
-    
-    document.getElementById('generateBuildButton').addEventListener('click', async () => {
-        const teamSection = document.getElementById('generated-team-section');
-        const loadingSpinner = document.getElementById('build-loading-spinner');
-        const teamDiv = document.getElementById('generatedTeam');
-        const scoringType = document.getElementById('scoringTypeGoat').value;
-
-        teamSection.classList.remove('hidden');
-        loadingSpinner.classList.remove('hidden');
-        teamDiv.innerHTML = '';
-
-        await loadAdpPlayers(scoringType);
-        
-        const rosterCounts = {};
-        for (const pos in positionSelectors) {
-            rosterCounts[pos] = parseInt(positionSelectors[pos].value, 10);
-        }
-
-        const build = generatePlayerBuild(rosterCounts);
-        
-        loadingSpinner.classList.add('hidden');
-        displayBuild(build);
-    });
-}
-
 function generatePlayerBuild(rosterCounts) {
-    if (!adpPlayersData || adpPlayersData.length === 0) return null;
+    if (!adpPlayersData || adpPlayersData.length === 0) {
+        console.error("ADP Player data is not loaded.");
+        return null;
+    }
 
     const build = {};
     const pickedPlayers = new Set();
     const positions = ['QB', 'RB', 'WR', 'TE', 'K', 'DST'];
 
+    // Select players for standard positions based on ADP
     positions.forEach(pos => {
         build[pos] = [];
         const playersForPos = adpPlayersData.filter(p => p.simplePosition === pos && !pickedPlayers.has(p.name));
-        for (let i = 0; i < rosterCounts[pos] && i < playersForPos.length; i++) {
+        const numToPick = rosterCounts[pos] || 0;
+        
+        for (let i = 0; i < numToPick && i < playersForPos.length; i++) {
             const player = playersForPos[i];
             build[pos].push(player);
             pickedPlayers.add(player.name);
         }
     });
 
+    // Select FLEX players from the remaining pool of WR, RB, and TE
     build['FLEX'] = [];
     const flexCandidates = adpPlayersData.filter(p => 
         ['WR', 'RB', 'TE'].includes(p.simplePosition) && !pickedPlayers.has(p.name)
     );
-    for (let i = 0; i < rosterCounts['FLEX'] && i < flexCandidates.length; i++) {
+    // The list is already sorted by ADP, so we take the top available players
+    const numFlexToPick = rosterCounts['FLEX'] || 0;
+    for (let i = 0; i < numFlexToPick && i < flexCandidates.length; i++) {
         const player = flexCandidates[i];
         build['FLEX'].push(player);
         pickedPlayers.add(player.name);
     }
+    
     return build;
 }
 
+/**
+ * Displays the generated team build in the UI on the GOAT page.
+ * @param {Object} build - The generated team build object.
+ */
 function displayBuild(build) {
     const container = document.getElementById('generatedTeam');
     if (!container) return;
 
     container.innerHTML = '';
     if (!build) {
-        container.innerHTML = `<p class="text-red-400 text-center col-span-full">Could not generate a build.</p>`;
+        container.innerHTML = `<p class="text-red-400 text-center col-span-full">Could not generate a build. Player data might be missing.</p>`;
         return;
     }
 
     const positionsToDisplay = ['QB', 'RB', 'WR', 'TE', 'FLEX', 'K', 'DST'];
+    
     positionsToDisplay.forEach(pos => {
         if (build[pos] && build[pos].length > 0) {
             build[pos].forEach(player => {
                 const card = document.createElement('div');
                 card.className = 'player-card p-3 bg-gray-900 rounded-lg shadow-md flex items-center space-x-3 border border-gray-700';
                 const posClass = `player-pos-${player.simplePosition.toLowerCase()}`;
+
                 card.innerHTML = `
                     <div>
                         <div class="text-lg font-semibold text-white">${player.name}</div>
@@ -302,23 +153,12 @@ function displayBuild(build) {
                             <span class="text-teal-300">${player.team}</span>
                         </div>
                         <div class="text-yellow-400 font-bold text-base mt-2">ADP: ${player.adp.toFixed(1)} (Rank: ${player.rank})</div>
-                    </div>`;
+                    </div>
+                `;
                 container.appendChild(card);
             });
         }
     });
-}
-
-/**
- * Initializes functionality for the stats page (stats.html).
- */
-async function initStatsPage() {
-    await loadStatsPlayers();
-    renderStatsTable();
-
-    document.getElementById('positionSelect').addEventListener('change', renderStatsTable);
-    document.getElementById('playerSearchStats').addEventListener('input', renderStatsTable);
-    document.getElementById('advancedStatsCheckbox').addEventListener('change', renderStatsTable);
 }
 
 
@@ -333,17 +173,87 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Page-specific initializations
-    if (document.getElementById('tickerContent')) {
-        initHomePage();
+    // --- HOME PAGE LOGIC (Ticker) ---
+    // This code only runs if it finds the ticker element, which is on the home page.
+    const tickerContent = document.getElementById('tickerContent');
+    if (tickerContent) {
+        const scoringTypeSelect = document.getElementById('scoringType');
+        const pauseButton = document.getElementById('pauseButton');
+
+        if (scoringTypeSelect) {
+            // Load initial data and set up listener for changes
+            (async () => {
+                await loadAdpPlayers(scoringTypeSelect.value);
+                updateTicker(adpPlayersData);
+            })();
+
+            scoringTypeSelect.addEventListener('change', async () => {
+                await loadAdpPlayers(scoringTypeSelect.value);
+                updateTicker(adpPlayersData);
+            });
+        }
+
+        if (pauseButton) {
+            pauseButton.addEventListener('click', () => {
+                isPaused = !isPaused;
+                pauseButton.textContent = isPaused ? 'Resume' : 'Pause';
+                tickerContent.style.animationPlayState = isPaused ? 'paused' : 'running';
+            });
+        }
     }
-    if (document.getElementById('goat-builder')) {
-        initGoatPage();
-    }
-    if (document.getElementById('statsTable')) {
-        initStatsPage();
+
+    // --- GOAT PAGE LOGIC (Build Generator) ---
+    // This code only runs on goat.html because it looks for the 'goat-builder' ID.
+    const goatBuilder = document.getElementById('goat-builder');
+    if (goatBuilder) {
+        const positionSelectors = {
+            QB: document.getElementById('qbSelect'), RB: document.getElementById('rbSelect'),
+            WR: document.getElementById('wrSelect'), TE: document.getElementById('teSelect'),
+            FLEX: document.getElementById('flexSelect'), K: document.getElementById('kSelect'),
+            DST: document.getElementById('dstSelect')
+        };
+        const defaultRoster = { QB: 1, RB: 2, WR: 2, TE: 1, FLEX: 1, K: 1, DST: 1 };
+        
+        // A necessary step: Populate dropdowns so the user can make selections.
+        for (const pos in positionSelectors) {
+            const select = positionSelectors[pos];
+            if (select) {
+                for (let i = 0; i <= 8; i++) {
+                    select.add(new Option(i, i));
+                }
+                select.value = defaultRoster[pos] || 0; // Set a default value
+            }
+        }
+        
+        const generateButton = document.getElementById('generateBuildButton');
+        const scoringTypeGoat = document.getElementById('scoringTypeGoat');
+        
+        generateButton.addEventListener('click', async () => {
+            const teamSection = document.getElementById('generated-team-section');
+            const loadingSpinner = document.getElementById('build-loading-spinner');
+            const teamDiv = document.getElementById('generatedTeam');
+
+            teamSection.classList.remove('hidden');
+            loadingSpinner.classList.remove('hidden');
+            teamDiv.innerHTML = '';
+
+            // Load player data based on selected scoring
+            await loadAdpPlayers(scoringTypeGoat.value);
+            
+            // Get roster counts from selectors
+            const rosterCounts = {};
+            for (const pos in positionSelectors) {
+                rosterCounts[pos] = parseInt(positionSelectors[pos].value, 10);
+            }
+
+            // Generate and display the build
+            const build = generatePlayerBuild(rosterCounts);
+            loadingSpinner.classList.add('hidden');
+            displayBuild(build);
+        });
     }
 });
+
 
 // Add global CSS styles dynamically
 const styleSheet = document.createElement("style");
