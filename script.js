@@ -36,6 +36,14 @@ async function loadPlayers(scoringType) {
         const response = await fetch(scoringFiles[scoringType]);
         if (!response.ok) throw new Error('Failed to load player data');
         playersData = await response.json();
+        // Validate and filter players
+        playersData = playersData.filter(player => 
+            player && 
+            typeof player.name === 'string' && 
+            typeof player.position === 'string' && 
+            typeof player.team === 'string' && 
+            typeof player.projectedPoints === 'number'
+        );
         localStorage.setItem(cacheKey, JSON.stringify(playersData));
     } catch (error) {
         console.error('Error loading players:', error);
@@ -174,8 +182,17 @@ async function generateDraftBuild() {
 
 function updatePlayerTable(players) {
     const tbody = document.getElementById('player-table-body');
+    if (!tbody) return; // Skip if table doesn't exist (e.g., on index.html)
     tbody.innerHTML = '';
-    players.slice(0, 10).forEach(player => {
+    const validPlayers = players.filter(player => 
+        player && 
+        typeof player.name === 'string' && 
+        typeof player.position === 'string' && 
+        typeof player.team === 'string' && 
+        typeof player.projectedPoints === 'number'
+    ).slice(0, 10);
+    
+    validPlayers.forEach(player => {
         const tr = document.createElement('tr');
         tr.innerHTML = `
             <td class="p-2">${player.name}</td>
@@ -189,6 +206,7 @@ function updatePlayerTable(players) {
 
 function showPlayerPopup(player) {
     const popup = document.getElementById('player-popup');
+    if (!popup) return; // Skip if popup doesn't exist
     popup.innerHTML = `
         <span class="close-btn">×</span>
         <h3 class="text-lg font-bold">${player.name}</h3>
@@ -205,8 +223,17 @@ function showPlayerPopup(player) {
 
 function updateTicker(players) {
     const tickerContent = document.getElementById('tickerContent');
+    if (!tickerContent) return; // Skip if ticker doesn't exist
     tickerContent.innerHTML = '';
-    players.forEach(player => {
+    const validPlayers = players.filter(player => 
+        player && 
+        typeof player.name === 'string' && 
+        typeof player.position === 'string' && 
+        typeof player.team === 'string' && 
+        typeof player.projectedPoints === 'number'
+    ).slice(0, 10);
+    
+    validPlayers.forEach(player => {
         const span = document.createElement('span');
         span.className = `ticker-player player-pos-${player.position}`;
         span.innerHTML = `
@@ -219,24 +246,24 @@ function updateTicker(players) {
     tickerContent.style.animation = isPaused ? 'none' : 'marquee 20s linear infinite';
 }
 
-document.getElementById('pauseButton').addEventListener('click', () => {
+document.getElementById('pauseButton')?.addEventListener('click', () => {
     isPaused = !isPaused;
     document.getElementById('pauseButton').textContent = isPaused ? 'Resume' : 'Pause';
     document.getElementById('tickerContent').style.animation = isPaused ? 'none' : 'marquee 20s linear infinite';
 });
 
-document.getElementById('scoringType').addEventListener('change', async () => {
+document.getElementById('scoringType')?.addEventListener('change', async () => {
     const scoringType = document.getElementById('scoringType').value;
-    document.getElementById('loading-spinner').classList.remove('hidden');
+    document.getElementById('loading-spinner')?.classList.remove('hidden');
     await loadPlayers(scoringType);
     updatePlayerTable(playersData);
     updateTicker(playersData.slice(0, 10));
-    document.getElementById('loading-spinner').classList.add('hidden');
+    document.getElementById('loading-spinner')?.classList.add('hidden');
 });
 
-document.getElementById('generateLineup').addEventListener('click', generateDraftBuild);
+document.getElementById('generateLineup')?.addEventListener('click', generateDraftBuild);
 
-document.getElementById('generateLineupBuild').addEventListener('click', () => {
+document.getElementById('generateLineupBuild')?.addEventListener('click', () => {
     const preset = document.getElementById('lineupPreset').value;
     const positions = preset === 'custom' ? {
         QB: parseInt(document.getElementById('qbCount').value),
