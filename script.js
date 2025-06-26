@@ -5,42 +5,31 @@ const scoringFiles = {
     half: 'Half PPR.json'
 };
 
-let adpPlayersData = []; // For ADP data (ticker, goat builder)
-let statsPlayersData = []; // For stats page data
+let adpPlayersData = []; // For ADP data (goat builder)
+let statsPlayersData = []; // For stats page and lineup builder
 let isTickerPaused = false;
 
 
 // --- Data Loading Functions ---
 
 /**
- * Loads player ADP data. Caches data to avoid redundant fetches.
+ * Loads player ADP data from JSON files for the Draft Builder.
  * @param {string} scoringType - 'standard', 'ppr', or 'half'.
  */
 async function loadAdpPlayers(scoringType) {
-    // Check if data for the requested scoring type is already loaded
-    if (adpPlayersData.length > 0 && adpPlayersData.scoringType === scoringType) {
-        return;
-    }
-    
+    if (adpPlayersData.length > 0 && adpPlayersData.scoringType === scoringType) return;
     try {
-        const filePath = scoringFiles[scoringType];
-        if (!filePath) throw new Error(`Invalid scoring type: ${scoringType}`);
-        const response = await fetch(filePath);
+        const response = await fetch(scoringFiles[scoringType]);
         if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
         const data = await response.json();
-        
         adpPlayersData = data.map(player => ({
             name: player.Player,
             position: player.POS,
             team: player.Team,
-            bye: player.Bye,
             adp: player.AVG,
-            rank: player.Rank,
             simplePosition: player.POS ? player.POS.replace(/\d+/, '') : ''
         })).sort((a, b) => a.adp - b.adp);
-
-        adpPlayersData.scoringType = scoringType; // Cache the type of data loaded
-
+        adpPlayersData.scoringType = scoringType;
     } catch (error) {
         console.error('Error loading ADP player data:', error);
         adpPlayersData = [];
@@ -48,10 +37,10 @@ async function loadAdpPlayers(scoringType) {
 }
 
 /**
- * Loads player statistics data. Caches data.
+ * Loads player statistics data (including fantasy points) for the Lineup Builder.
  */
 async function loadStatsPlayers() {
-    if (statsPlayersData.length > 0) return; // Don't reload if already loaded
+    if (statsPlayersData.length > 0) return;
     try {
         const response = await fetch('players_2025 Stats.json');
         if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
@@ -63,38 +52,79 @@ async function loadStatsPlayers() {
 }
 
 
-// --- UNIVERSAL TICKER FUNCTIONS ---
+// --- UNIVERSAL FANTASY POINTS TICKER ---
 
 /**
- * Initializes the universal ticker if it exists on the page.
+ * Initializes the universal ticker. It now pulls from the PPR file
+ * and generates filler fantasy points.
  */
 async function initTicker() {
     const tickerContent = document.getElementById('tickerContent');
-    if (!tickerContent) return;
+    if (!tickerContent) return; // Exit if no ticker on this page
 
-    const scoringSelect = document.getElementById('tickerScoringType');
     const pauseButton = document.getElementById('pauseButton');
+    
+    // Fetch base player data from the PPR file
+    try {
+        const response = await fetch('PPR.json');
+        if (!response.ok) throw new Error('Could not load ticker data.');
+        let basePlayers = await response.json();
 
-    // Initial load
-    await loadAdpPlayers(scoringSelect.value);
-    updateTickerUI(adpPlayersData);
+        // Generate "filler" fantasy points and get top 10 from each position
+        const tickerData = generateTickerData(basePlayers);
+        
+        updateTickerUI(tickerData); // Initial display
 
-    // Event listener for scoring changes
-    scoringSelect.addEventListener('change', async () => {
-        await loadAdpPlayers(scoringSelect.value);
-        updateTickerUI(adpPlayersData);
-    });
+        // Event listener for pause button
+        pauseButton.addEventListener('click', () => {
+            isTickerPaused = !isTickerPaused;
+            pauseButton.textContent = isTickerPaused ? 'Resume' : 'Pause';
+            tickerContent.style.animationPlayState = isTickerPaused ? 'paused' : 'running';
+        });
 
-    // Event listener for pause button
-    pauseButton.addEventListener('click', () => {
-        isTickerPaused = !isTickerPaused;
-        pauseButton.textContent = isTickerPaused ? 'Resume' : 'Pause';
-        tickerContent.style.animationPlayState = isTickerPaused ? 'paused' : 'running';
-    });
+    } catch (error) {
+        console.error("Ticker Error:", error);
+        tickerContent.innerHTML = '<span class="text-red-400 px-4">Could not load ticker data.</span>';
+    }
 }
 
 /**
- * Updates the ticker's HTML content.
+ * Generates filler fantasy points and gets top 10 players per position.
+ * @param {Array<Object>} players - Player data from a JSON file.
+ * @returns {Array<Object>} - A combined list of top players for the ticker.
+ */
+function generateTickerData(players) {
+    // Add a random "fantasyPoints" property to each player
+    const playersWithPoints = players.map(p => {
+        let maxPoints = 10;
+        const pos = p.POS.replace(/\d+/,'');
+        if (pos === 'QB') maxPoints = 35;
+        else if (pos === 'RB' || pos === 'WR') maxPoints = 28;
+        else if (pos === 'TE') maxPoints = 20;
+
+        return {
+            ...p,
+            fantasyPoints: Math.random() * maxPoints
+        };
+    });
+    
+    let topPlayers = [];
+    const positions = ['QB', 'RB', 'WR', 'TE'];
+    
+    positions.forEach(pos => {
+        const playersInPos = playersWithPoints
+            .filter(p => p.POS.replace(/\d+/,'') === pos)
+            .sort((a,b) => b.fantasyPoints - a.fantasyPoints)
+            .slice(0, 10); // Get top 10 for this position
+        topPlayers.push(...playersInPos);
+    });
+
+    // Shuffle the final list for variety
+    return topPlayers.sort(() => Math.random() - 0.5);
+}
+
+/**
+ * Updates the ticker's HTML to show fantasy points.
  * @param {Array<Object>} players - The player data to display.
  */
 function updateTickerUI(players) {
@@ -102,26 +132,24 @@ function updateTickerUI(players) {
     if (!tickerContent) return;
 
     if (!players || players.length === 0) {
-        tickerContent.innerHTML = '<span class="text-red-400 px-4">No player data available.</span>';
+        tickerContent.innerHTML = '<span class="text-red-400 px-4">No player data to display.</span>';
         return;
     }
 
-    const displayPlayers = players.slice(0, 25);
-    const tickerItems = [...displayPlayers, ...displayPlayers]; // Seamless loop
+    const tickerItems = [...players, ...players]; // Create a seamless loop
 
     tickerContent.innerHTML = tickerItems.map(player => `
         <div class="flex items-center mx-4 flex-shrink-0">
-            <span class="font-bold text-lg text-white mr-2">${player.name}</span>
-            <span class="player-pos-${player.simplePosition.toLowerCase()} font-semibold px-2 py-1 rounded-full text-xs">${player.simplePosition}</span>
-            <span class="text-teal-400 ml-2">ADP: ${player.adp ? player.adp.toFixed(1) : 'N/A'}</span>
-            <span class="text-gray-400 ml-2">(${player.team})</span>
+            <span class="font-bold text-lg text-white mr-2">${player.Player}</span>
+            <span class="player-pos-${player.POS.replace(/\d+/,'').toLowerCase()} font-semibold px-2 py-1 rounded-full text-xs">${player.POS.replace(/\d+/,'')}</span>
+            <span class="text-yellow-400 ml-2">FP: ${player.fantasyPoints.toFixed(1)}</span>
         </div>
     `).join('');
     
-    // Reset animation
+    // Reset animation if it wasn't paused
     if (!isTickerPaused) {
         tickerContent.style.animation = 'none';
-        void tickerContent.offsetWidth; // Force reflow
+        void tickerContent.offsetWidth; // Force a browser reflow
         tickerContent.style.animation = 'marquee 40s linear infinite';
     }
 }
@@ -130,10 +158,9 @@ function updateTickerUI(players) {
 // --- GOAT PAGE SPECIFIC FUNCTIONS ---
 
 /**
- * Initializes all tools on the GOAT page.
+ * Initializes all interactive tools on the GOAT page.
  */
 function initGoatPage() {
-    // 1. Initialize Draft Builder
     const draftBuilder = document.getElementById('goat-draft-builder');
     if (draftBuilder) {
         const positionCounts = {
@@ -145,16 +172,13 @@ function initGoatPage() {
         for (const [id, values] of Object.entries(positionCounts)) {
             const select = document.getElementById(id);
             if (select) {
-                for (let i = 0; i <= values.max; i++) {
-                    select.add(new Option(i, i));
-                }
+                for (let i = 0; i <= values.max; i++) select.add(new Option(i, i));
                 select.value = values.default;
             }
         }
         document.getElementById('generateBuildButton').addEventListener('click', generateGoatBuild);
     }
 
-    // 2. Initialize Lineup Builder
     const lineupBuilder = document.getElementById('lineup-builder');
     if (lineupBuilder) {
         document.getElementById('findLineupButton').addEventListener('click', findBestLineup);
@@ -174,8 +198,9 @@ async function generateGoatBuild() {
     teamDiv.innerHTML = '';
 
     await loadAdpPlayers(scoringType);
+    
     if (adpPlayersData.length === 0) {
-        teamDiv.innerHTML = `<p class="text-red-500 text-center col-span-full">Error: Could not load player data. Please try again.</p>`;
+        teamDiv.innerHTML = `<p class="text-red-500 text-center col-span-full">Error: Could not load player ADP data.</p>`;
     } else {
         const rosterCounts = {
             QB: parseInt(document.getElementById('qbCount').value), RB: parseInt(document.getElementById('rbCount').value),
@@ -240,7 +265,7 @@ function displayTeamBuild(team, container) {
             <div>
                 <div class="text-lg font-semibold text-white">${player.name}</div>
                 <div class="text-sm flex items-center gap-2 mt-1">
-                    <span class="player-pos-${player.simplePosition.toLowerCase()} font-semibold px-2 py-0.5 rounded">${player.draftedAs} (${player.simplePosition})</span>
+                    <span class="player-pos-${player.simplePosition.toLowerCase()} font-semibold px-2 py-0.5 rounded text-xs">${player.draftedAs} (${player.simplePosition})</span>
                     <span class="text-teal-300">${player.team}</span>
                 </div>
                 <div class="text-yellow-400 font-bold text-base mt-2">ADP: ${player.adp.toFixed(1)}</div>
@@ -259,6 +284,7 @@ async function findBestLineup() {
     lineupDiv.innerHTML = '';
     
     await loadStatsPlayers();
+    
     if (statsPlayersData.length === 0) {
         lineupDiv.innerHTML = `<p class="text-red-500">Error: Could not load player stats for optimization.</p>`;
     } else {
@@ -266,7 +292,6 @@ async function findBestLineup() {
         let userPlayers = statsPlayersData.filter(p => playerInput.includes(p.Player.toLowerCase()));
         
         const lineup = { QB: [], RB: [], WR: [], TE: [], FLEX: [] };
-        
         const fillPosition = (pos, count) => {
             const topPlayers = userPlayers.filter(p => p.Pos === pos).sort((a, b) => b.FantasyPoints - a.FantasyPoints).slice(0, count);
             lineup[pos] = topPlayers;
@@ -285,11 +310,7 @@ async function findBestLineup() {
         Object.keys(lineup).forEach(pos => {
             lineup[pos].forEach(player => {
                 totalPoints += player.FantasyPoints;
-                lineupDiv.innerHTML += `
-                    <div class="flex justify-between items-center bg-gray-900 p-2 rounded">
-                        <span class="font-bold text-white">${pos}: ${player.Player}</span>
-                        <span class="text-yellow-400">${player.FantasyPoints.toFixed(1)} Pts</span>
-                    </div>`;
+                lineupDiv.innerHTML += `<div class="flex justify-between items-center bg-gray-900 p-2 rounded"><span class="font-bold text-white">${pos}: ${player.Player}</span><span class="text-yellow-400">${player.FantasyPoints.toFixed(1)} Pts</span></div>`;
             });
         });
         lineupDiv.innerHTML += `<div class="text-center font-bold text-xl mt-4 text-teal-300">Total Projected Points: ${totalPoints.toFixed(1)}</div>`;
@@ -300,7 +321,7 @@ async function findBestLineup() {
 }
 
 
-// --- Main DOMContentLoaded Event Listener ---
+// --- Main Initializer ---
 document.addEventListener('DOMContentLoaded', () => {
     // Universal initializations
     const mobileMenuButton = document.getElementById('mobile-menu-button');
@@ -310,17 +331,15 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    initTicker(); // Initialize ticker on every page load
+    initTicker(); // Initialize the universal ticker
 
     // Page-specific initializations
     if (document.getElementById('goat-draft-builder')) {
         initGoatPage();
     }
-    // Add other page initializers here, for example:
-    // if (document.getElementById('stats-table')) { initStatsPage(); }
 });
 
-// Add global CSS styles dynamically
+// --- Dynamic Styles ---
 const styleSheet = document.createElement("style");
 styleSheet.type = "text/css";
 styleSheet.innerText = `
