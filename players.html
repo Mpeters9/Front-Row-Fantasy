@@ -4,130 +4,49 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Front Row Fantasy - Players</title>
-    <meta name="description" content="Your one-stop fantasy football trade analyzer, projections, and more.">
-    <meta name="keywords" content="fantasy football, players, stats, directory, NFL">
-    <meta name="author" content="Mpeters9">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&display=swap" rel="stylesheet">
     <link rel="icon" href="favicon.ico" type="image/x-icon">
     <link rel="stylesheet" href="styles.css">
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="min-h-screen flex flex-col font-poppins">
-
-    <!-- Header -->
-    <header>
+<body class="min-h-screen flex flex-col font-poppins bg-gradient-to-br from-[#0f2027] to-[#2c5364]">
+    <header class="sticky top-0 z-50 bg-opacity-98 bg-gray-900 shadow-lg border-b-2 border-teal-500">
         <div class="max-w-7xl mx-auto px-4 flex justify-between items-center py-3">
             <a href="index.html" class="text-2xl font-bold text-yellow text-glow">Front Row Fantasy</a>
-            <nav>
+            <nav class="hidden md:flex space-x-6">
                 <a href="index.html" class="nav-link">Home</a>
-                <a href="tools.html" class="nav-link" aria-current="page">Expert Tools</a>
+                <a href="tools.html" class="nav-link">Expert Tools</a>
                 <a href="goat.html" class="nav-link">GOAT</a>
                 <a href="guides.html" class="nav-link">Guides</a>
                 <a href="community.html" class="nav-link">Community</a>
-                <a href="players.html" class="nav-link">Players</a>
+                <a href="players.html" class="nav-link" aria-current="page">Players</a>
                 <a href="stats.html" class="nav-link">Stats</a>
-                <a href="#contact" class="nav-link">Contact</a>
             </nav>
-        </div>
-    </header>
-
-    <!-- Fantasy Points Ticker -->
-    <section class="marquee mb-6">
-        <div class="bg-teal-900 text-white p-2 rounded-t flex justify-between items-center shadow">
-            <span class="text-xl font-bold tracking-wide flex items-center gap-2">
-                <svg class="inline w-6 h-6 text-yellow-300" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12c0 4.97-4.03 9-9 9s-9-4.03-9-9 4.03-9 9-9 9 4.03 9 9z"/></svg>
-                Fantasy Points Ticker
-            </span>
-            <button id="pauseButton" class="cta-btn px-4 py-1" aria-pressed="false" aria-label="Pause ticker">Pause</button>
-        </div>
-        <div class="relative overflow-hidden bg-teal-800 rounded-b" style="height:2.5rem;">
-            <div id="tickerContent" class="absolute left-0 top-0 h-full flex items-center whitespace-nowrap transition-none" tabindex="0" aria-live="polite">
-                <span class="loading text-white">Loading fantasy points...</span>
+            <div class="md:hidden">
+                <button id="mobile-menu-button" class="text-teal-400 hover:text-yellow focus:outline-none">
+                    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
+                </button>
             </div>
         </div>
-    </section>
-
-    <!-- Hero / Splash -->
-    <section class="splash-section text-center mb-8">
-        <h1 class="text-4xl md:text-5xl font-bold mb-4 text-glow">Player Directory</h1>
-        <p class="text-lg md:text-xl mb-6">Browse and explore all NFL players for the 2025 season.</p>
-        <a href="#allPlayers" class="cta-btn">See All Players</a>
-    </section>
-
-    <!-- Main Content -->
-    <main class="max-w-7xl mx-auto px-4 flex-grow">
-        <div class="mb-4">
-            <input type="text" id="playerSearch" class="w-full p-2 rounded-md bg-white text-teal-800 border border-teal-300 focus:outline-none focus:ring-2 focus:ring-teal-500" placeholder="Search players...">
+        <nav id="mobile-menu" class="md:hidden hidden px-4 pb-3 space-y-2"></nav>
+    </header>
+     <section class="bg-gray-800 bg-opacity-80 p-3 rounded-lg shadow-lg my-4 mx-auto w-full max-w-7xl border border-teal-600">
+        <div class="flex items-center justify-center space-x-4 mb-3">
+            <h2 class="text-gray-300 text-lg font-semibold">Live Fantasy Points Leaders</h2>
+            <button id="pauseButton" class="cta-btn px-4 py-1">Pause</button>
         </div>
-        <section id="allPlayersSection" class="card mb-8">
-            <h2 class="section-title">All Players</h2>
-            <div id="playersLoader" class="hidden text-center">Loading...</div>
-            <div id="allPlayers" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4"></div>
+        <div class="overflow-hidden relative h-10 bg-gray-900 rounded-lg">
+            <div id="tickerContent" class="whitespace-nowrap absolute top-0 left-0 h-full flex items-center ticker-animation"></div>
+        </div>
+    </section>
+    <main class="flex-grow max-w-7xl mx-auto py-8 px-4 w-full">
+        <section id="players-page">
+            <h1 class="text-5xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-yellow-300 to-teal-300 mb-4 text-glow-gold text-center">Player Rankings</h1>
+            <input type="text" id="player-search-input" class="form-input w-full max-w-lg mx-auto mb-8" placeholder="Search for a player...">
+            <div id="player-list-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"></div>
         </section>
     </main>
-
-    <!-- Footer -->
-    <footer>
-        <div class="mb-2">
-            <a href="index.html" class="hover:text-yellow mx-2">Home</a>
-            <a href="tools.html" class="hover:text-yellow mx-2">Expert Tools</a>
-            <a href="goat.html" class="hover:text-yellow mx-2">GOAT</a>
-            <a href="guides.html" class="hover:text-yellow mx-2">Guides</a>
-            <a href="community.html" class="hover:text-yellow mx-2">Community</a>
-            <a href="players.html" class="hover:text-yellow mx-2">Players</a>
-            <a href="stats.html" class="hover:text-yellow mx-2">Stats</a>
-        </div>
-        © 2025 Front Row Fantasy. All rights reserved.
-    </footer>
-
+    <footer class="bg-gray-900 text-teal-400 py-6 border-t-2 border-teal-500 mt-12"></footer>
     <script src="script.js"></script>
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const allPlayersDiv = document.getElementById('allPlayers');
-            const playersLoader = document.getElementById('playersLoader');
-            const playerSearch = document.getElementById('playerSearch');
-
-            async function loadPlayers() {
-                if (!allPlayersDiv) return;
-                playersLoader.classList.remove('hidden');
-                try {
-                    // Use the same local JSON as everywhere else
-                    const response = await fetch('csv.json.json', { cache: 'no-store' });
-                    if (!response.ok) throw new Error('Failed to load csv.json.json');
-                    const players = await response.json();
-                    allPlayersDiv.innerHTML = '';
-                    players.forEach(player => {
-                        const div = document.createElement('div');
-                        div.className = 'glass p-4 rounded-xl shadow-md hover:shadow-glow transition-all text-center';
-                        div.innerHTML = `
-                            <div class="text-lg font-bold mb-1">${player.name}</div>
-                            <div class="text-sm mb-1">
-                                <span class="player-pos-${player.pos || player.position} font-semibold">${player.pos || player.position}</span>
-                                <span class="text-teal ml-1">${player.team}</span>
-                            </div>
-                            <div class="text-yellow font-bold text-base">${(player.fantasy_points_2023 || player.points || player.fantasy_points || 0).toFixed(1)} pts</div>
-                        `;
-                        allPlayersDiv.appendChild(div);
-                    });
-                } catch (error) {
-                    console.error('Players error:', error);
-                    allPlayersDiv.innerHTML = '<p class="text-red-400 text-center text-xs">Failed to load players.</p>';
-                } finally {
-                    playersLoader.classList.add('hidden');
-                }
-            }
-
-            playerSearch.addEventListener('input', () => {
-                const searchTerm = playerSearch.value.toLowerCase();
-                const playerElements = allPlayersDiv.getElementsByTagName('div');
-                Array.from(playerElements).forEach(element => {
-                    const name = element.querySelector('div').textContent.toLowerCase();
-                    element.style.display = name.includes(searchTerm) ? 'block' : 'none';
-                });
-            });
-
-            loadPlayers();
-        });
-    </script>
 </body>
 </html>
