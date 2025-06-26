@@ -1,22 +1,21 @@
-// --- Global Variables & Constants ---
+// --- Global Variables & Data Cache ---
 const scoringFiles = {
     standard: 'Standard ADP.json',
     ppr: 'PPR.json',
     half: 'Half PPR.json'
 };
-
-let adpDataCache = {}; // Cache for ADP data (ppr, half, standard)
-let statsPlayersData = []; // Cache for stats data
+let adpDataCache = {};
+let statsDataCache = null;
 let isTickerPaused = false;
 
 // --- Data Loading Functions ---
 
 /**
- * Loads and caches ADP data from JSON files. Defaults to 'ppr'.
+ * Loads and caches ADP data. Defaults to 'ppr'.
  * @param {string} scoring - 'ppr', 'half', or 'standard'.
  */
 async function loadAdpData(scoring = 'ppr') {
-    if (adpDataCache[scoring]) return adpDataCache[scoring]; // Use cache if available
+    if (adpDataCache[scoring]) return adpDataCache[scoring];
     try {
         const response = await fetch(scoringFiles[scoring]);
         if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
@@ -25,27 +24,26 @@ async function loadAdpData(scoring = 'ppr') {
             ...player,
             simplePosition: player.POS ? player.POS.replace(/\d+/, '') : ''
         })).sort((a, b) => a.AVG - b.AVG);
-        
-        adpDataCache[scoring] = formattedData; // Cache the data
+        adpDataCache[scoring] = formattedData;
         return formattedData;
     } catch (error) {
         console.error(`Error loading ADP data for ${scoring}:`, error);
-        return []; // Return empty array on error
+        return [];
     }
 }
 
 /**
  * Loads and caches player statistics data.
  */
-async function loadStatsPlayers() {
-    if (statsPlayersData.length > 0) return statsPlayersData;
+async function loadStatsData() {
+    if (statsDataCache) return statsDataCache;
     try {
         const response = await fetch('players_2025 Stats.json');
         if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-        statsPlayersData = await response.json();
-        return statsPlayersData;
+        statsDataCache = await response.json();
+        return statsDataCache;
     } catch (error) {
-        console.error('Error loading stats player data:', error);
+        console.error('Error loading stats data:', error);
         return [];
     }
 }
@@ -59,7 +57,7 @@ async function initTicker() {
     const pauseButton = document.getElementById('pauseButton');
 
     try {
-        const pprData = await loadAdpData('ppr');
+        const pprData = await loadAdpData('ppr'); // Base for player names
         const tickerData = generateTickerData(pprData);
         updateTickerUI(tickerData, tickerContent);
         
@@ -76,7 +74,7 @@ async function initTicker() {
 function generateTickerData(players) {
     const playersWithPoints = players.map(p => {
         let maxPoints = 10;
-        const pos = p.POS.replace(/\d+/, '');
+        const pos = p.POS.replace(/\d+/,'');
         if (pos === 'QB') maxPoints = 35;
         else if (pos === 'RB' || pos === 'WR') maxPoints = 28;
         else if (pos === 'TE') maxPoints = 20;
@@ -84,14 +82,15 @@ function generateTickerData(players) {
     });
 
     let topPlayers = [];
+    // Get top 10 from each position and add them in order
     ['QB', 'RB', 'WR', 'TE'].forEach(pos => {
         const playersInPos = playersWithPoints
-            .filter(p => p.POS.replace(/\d+/, '') === pos)
+            .filter(p => p.POS.replace(/\d+/,'') === pos)
             .sort((a, b) => b.fantasyPoints - a.fantasyPoints)
             .slice(0, 10);
         topPlayers.push(...playersInPos);
     });
-    return topPlayers.sort(() => Math.random() - 0.5);
+    return topPlayers; // Return the ordered list
 }
 
 function updateTickerUI(players, el) {
@@ -110,7 +109,7 @@ function updateTickerUI(players, el) {
     if (!isTickerPaused) {
         el.style.animation = 'none';
         void el.offsetWidth;
-        el.style.animation = 'marquee 40s linear infinite';
+        el.style.animation = 'marquee 60s linear infinite'; // Slowed down for readability
     }
 }
 
@@ -121,30 +120,35 @@ async function initHomePage() {
     const topPlayersSection = document.getElementById('top-players-section');
     if (!topPlayersSection) return;
 
-    const pprData = await loadAdpData('ppr'); // Default to PPR
-    if (!pprData.length) return;
+    const statsData = await loadStatsData();
+    if (!statsData.length) return;
 
-    const topQB = pprData.find(p => p.simplePosition === 'QB');
-    const topRB = pprData.find(p => p.simplePosition === 'RB');
-    const topWR = pprData.find(p => p.simplePosition === 'WR');
+    const topQBs = statsData.filter(p => p.Pos === 'QB').sort((a,b) => b.FantasyPoints - a.FantasyPoints).slice(0, 5);
+    const topRBs = statsData.filter(p => p.Pos === 'RB').sort((a,b) => b.FantasyPoints - a.FantasyPoints).slice(0, 5);
+    const topWRs = statsData.filter(p => p.Pos === 'WR').sort((a,b) => b.FantasyPoints - a.FantasyPoints).slice(0, 5);
 
-    populatePlayerCard('top-qb-card', topQB);
-    populatePlayerCard('top-rb-card', topRB);
-    populatePlayerCard('top-wr-card', topWR);
+    populateTop5List('top-qb-list', topQBs);
+    populateTop5List('top-rb-list', topRBs);
+    populateTop5List('top-wr-list', topWRs);
 }
 
-function populatePlayerCard(cardId, player) {
-    const card = document.getElementById(cardId);
-    const contentDiv = card.querySelector('.player-card-content');
-    if (!player) {
-        contentDiv.innerHTML = 'Player data not found.';
-        return;
-    }
-    contentDiv.innerHTML = `
-        <p class="text-xl font-semibold text-white">${player.Player}</p>
-        <p class="text-md text-teal-400">${player.Team} - ${player.POS}</p>
-        <p class="text-md text-gray-300 mt-2">ADP: <span class="font-bold text-yellow-400">${player.AVG.toFixed(1)}</span></p>
-    `;
+function populateTop5List(listId, players) {
+    const listEl = document.getElementById(listId);
+    if (!listEl) return;
+    
+    // Clear loader before populating
+    const cardContent = listEl.closest('.player-card-content');
+    if(cardContent) cardContent.innerHTML = '';
+    
+    listEl.innerHTML = players.map((p, index) => `
+        <li>
+            <span class="player-name">${index + 1}. ${p.Player}</span>
+            <span class="player-points">${p.FantasyPoints.toFixed(1)} pts</span>
+        </li>
+    `).join('');
+    
+    // Append the list to the card content div
+    if(cardContent) cardContent.appendChild(listEl);
 }
 
 
@@ -161,20 +165,20 @@ function initGoatPage() {
         };
         for (const [id, vals] of Object.entries(posOptions)) {
             const select = document.getElementById(id);
-            if (select) {
+            if(select) {
                 for (let i = 0; i <= vals.max; i++) select.add(new Option(i, i));
                 select.value = vals.def;
             }
         }
         document.getElementById('generateBuildButton').addEventListener('click', generateGoatBuild);
     }
-
     const lineupBuilder = document.getElementById('lineup-builder');
     if (lineupBuilder) {
         document.getElementById('findLineupButton').addEventListener('click', findBestLineup);
     }
 }
 
+// ... (Rest of GOAT page and other tool functions remain the same)
 async function generateGoatBuild() {
     const btn = document.getElementById('generateBuildButton');
     const spinner = document.getElementById('draft-loading-spinner');
@@ -213,6 +217,7 @@ function createTeamBuild(roster, adp) {
     const pick = (pos, count, draftedAs) => {
         let pickedCount = 0;
         const positions = Array.isArray(pos) ? pos : [pos];
+        // Use a for loop to avoid issues with removing from the array while iterating
         for (let i = 0; i < pool.length && pickedCount < count; i++) {
             const p = pool[i];
             if (positions.includes(p.simplePosition.toUpperCase()) && !picked.has(p.Player)) {
@@ -221,6 +226,8 @@ function createTeamBuild(roster, adp) {
                 pickedCount++;
             }
         }
+         // Filter out the picked players from the main pool
+        pool = pool.filter(p => !picked.has(p.Player));
     };
     
     pick('QB', roster.QB, 'QB');
@@ -231,7 +238,6 @@ function createTeamBuild(roster, adp) {
     pick('K', roster.K, 'K');
     pick('DST', roster.DST, 'DST');
     
-    // Sort final team by ADP
     return team.sort((x, y) => x.AVG - y.AVG);
 }
 
@@ -320,28 +326,3 @@ document.addEventListener('DOMContentLoaded', () => {
         initGoatPage();
     }
 });
-
-// --- Dynamic Styles ---
-const styleSheet = document.createElement("style");
-styleSheet.type = "text/css";
-styleSheet.innerText = `
-    .ticker-animation { animation: marquee 40s linear infinite; }
-    @keyframes marquee { 0% { transform: translateX(0%); } 100% { transform: translateX(-50%); } }
-    .form-select, .form-input, .cta-btn, .cta-btn-secondary { transition: all 0.2s ease-in-out; }
-    .cta-btn:disabled { background: #4b5563; cursor: not-allowed; }
-    .feature-card { background: rgba(17,24,39,0.85); border-radius: 1.25rem; box-shadow: 0 2px 16px rgba(20,184,166,0.10), 0 1.5px 8px #0004; padding: 2rem 1.5rem; border: 1.5px solid rgba(20,184,166,0.08); }
-    .form-select, .form-input { width: 100%; padding: 0.5rem; background-color: #1f2937; color: white; border: 1px solid #0d9488; border-radius: 0.375rem; }
-    .form-select {
-        appearance: none;
-        background-image: url('data:image/svg+xml;charset=UTF-8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="none" stroke="%236ee7b7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8l4 4 4-4"/></svg>');
-        background-repeat: no-repeat; background-position: right 0.5rem center; background-size: 1.5em 1.5em;
-    }
-    .loader { border-top-color: #facc15; animation: spin 1s linear infinite; }
-    @keyframes spin { to { transform: rotate(360deg); } }
-    .player-pos-qb { background-color: rgba(59, 130, 246, 0.2); color: #60a5fa; border: 1px solid #60a5fa; }
-    .player-pos-rb { background-color: rgba(34, 197, 94, 0.2); color: #22c55e; border: 1px solid #22c55e;}
-    .player-pos-wr { background-color: rgba(239, 68, 68, 0.2); color: #ef4444; border: 1px solid #ef4444;}
-    .player-pos-te { background-color: rgba(249, 115, 22, 0.2); color: #f97316; border: 1px solid #f97316;}
-    .player-pos-k, .player-pos-dst { background-color: rgba(107, 114, 128, 0.2); color: #9ca3af; border: 1px solid #9ca3af;}
-`;
-document.head.appendChild(styleSheet);
