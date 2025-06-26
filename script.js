@@ -127,7 +127,7 @@ function simulateSnakeDraft(players, leagueSize, draftPick, positionsNeeded, tot
             positionsNeeded[selectedPlayer.position]--;
         } else if (selectedPlayer.position === 'QB' && positionsNeeded['SF'] && positionsNeeded['SF'] > 0) {
             positionsNeeded['SF']--;
-        } else if (['RB', 'WR', 'TE'].includes(selectedPlayer.position) && positionsNeeded['FLEX'] && positionsNeeded['FLEX'] > 0) {
+        } else if (['RB', 'WR', 'TE'].includes(p.position) && positionsNeeded['FLEX'] && positionsNeeded['FLEX'] > 0) {
             positionsNeeded['FLEX']--;
         }
 
@@ -138,21 +138,21 @@ function simulateSnakeDraft(players, leagueSize, draftPick, positionsNeeded, tot
 }
 
 async function generateDraftBuild() {
-    const leagueSize = parseInt(document.getElementById('leagueSize').value);
-    const draftPick = parseInt(document.getElementById('draftPick').value);
-    const scoringType = document.getElementById('scoringType').value;
-    const benchSize = parseInt(document.getElementById('benchSize').value);
-    const preset = document.getElementById('draftLineupPreset').value;
+    const leagueSize = parseInt(document.getElementById('leagueSize')?.value || 12);
+    const draftPick = parseInt(document.getElementById('draftPick')?.value || 1);
+    const scoringType = document.getElementById('scoringType')?.value || 'ppr';
+    const benchSize = parseInt(document.getElementById('benchSize')?.value || 6);
+    const preset = document.getElementById('draftLineupPreset')?.value || 'ppr';
 
     const positionsNeeded = preset === 'custom' ? {
-        QB: parseInt(document.getElementById('draftQbCount').value),
-        SF: parseInt(document.getElementById('draftSfCount').value),
-        RB: parseInt(document.getElementById('draftRbCount').value),
-        WR: parseInt(document.getElementById('draftWrCount').value),
-        TE: parseInt(document.getElementById('draftTeCount').value),
-        FLEX: parseInt(document.getElementById('draftFlexCount').value),
-        DST: parseInt(document.getElementById('draftDstCount').value),
-        K: parseInt(document.getElementById('draftKCount').value)
+        QB: parseInt(document.getElementById('draftQbCount')?.value || 1),
+        SF: parseInt(document.getElementById('draftSfCount')?.value || 0),
+        RB: parseInt(document.getElementById('draftRbCount')?.value || 2),
+        WR: parseInt(document.getElementById('draftWrCount')?.value || 2),
+        TE: parseInt(document.getElementById('draftTeCount')?.value || 1),
+        FLEX: parseInt(document.getElementById('draftFlexCount')?.value || 1),
+        DST: parseInt(document.getElementById('draftDstCount')?.value || 1),
+        K: parseInt(document.getElementById('draftKCount')?.value || 1)
     } : {
         std: { QB: 1, SF: 0, RB: 2, WR: 2, TE: 1, FLEX: 1, DST: 1, K: 1 },
         ppr: { QB: 1, SF: 0, RB: 2, WR: 2, TE: 1, FLEX: 1, DST: 1, K: 1 },
@@ -167,17 +167,19 @@ async function generateDraftBuild() {
 
     const totalPicks = Object.values(positionsNeeded).reduce((sum, count) => sum + count, 0) + benchSize;
 
-    document.getElementById('loading-spinner').classList.remove('hidden');
+    document.getElementById('loading-spinner')?.classList.remove('hidden');
     await loadPlayers(scoringType);
     const draftOrder = simulateSnakeDraft(playersData, leagueSize, draftPick, positionsNeeded, totalPicks);
-    document.getElementById('loading-spinner').classList.add('hidden');
+    document.getElementById('loading-spinner')?.classList.add('hidden');
 
     const resultDiv = document.getElementById('build-result');
-    resultDiv.innerHTML = '<h3 class="text-lg font-semibold text-yellow">Your Draft Build</h3><ul class="list-disc pl-6 mt-2"></ul>';
-    const ul = resultDiv.querySelector('ul');
-    draftOrder.forEach(player => {
-        ul.innerHTML += `<li class="player-pos-${player.position}">${player.round}. ${player.name} (${player.position}, ${player.team}) - ${player.projectedPoints.toFixed(1)} pts (VORP: ${player.vorp.toFixed(1)})</li>`;
-    });
+    if (resultDiv) {
+        resultDiv.innerHTML = '<h3 class="text-lg font-semibold text-yellow">Your Draft Build</h3><ul class="list-disc pl-6 mt-2"></ul>';
+        const ul = resultDiv.querySelector('ul');
+        draftOrder.forEach(player => {
+            ul.innerHTML += `<li class="player-pos-${player.position}">${player.round}. ${player.name} (${player.position}, ${player.team}) - ${player.projectedPoints.toFixed(1)} pts (VORP: ${player.vorp.toFixed(1)})</li>`;
+        });
+    }
 }
 
 function updatePlayerTable(players) {
@@ -246,34 +248,19 @@ function updateTicker(players) {
     tickerContent.style.animation = isPaused ? 'none' : 'marquee 20s linear infinite';
 }
 
-document.getElementById('pauseButton')?.addEventListener('click', () => {
-    isPaused = !isPaused;
-    document.getElementById('pauseButton').textContent = isPaused ? 'Resume' : 'Pause';
-    document.getElementById('tickerContent').style.animation = isPaused ? 'none' : 'marquee 20s linear infinite';
-});
-
-document.getElementById('scoringType')?.addEventListener('change', async () => {
-    const scoringType = document.getElementById('scoringType').value;
-    document.getElementById('loading-spinner')?.classList.remove('hidden');
-    await loadPlayers(scoringType);
-    updatePlayerTable(playersData);
-    updateTicker(playersData.slice(0, 10));
-    document.getElementById('loading-spinner')?.classList.add('hidden');
-});
-
 document.getElementById('generateLineup')?.addEventListener('click', generateDraftBuild);
 
 document.getElementById('generateLineupBuild')?.addEventListener('click', () => {
-    const preset = document.getElementById('lineupPreset').value;
+    const preset = document.getElementById('lineupPreset')?.value || 'ppr';
     const positions = preset === 'custom' ? {
-        QB: parseInt(document.getElementById('qbCount').value),
-        SF: parseInt(document.getElementById('sfCount').value),
-        RB: parseInt(document.getElementById('rbCount').value),
-        WR: parseInt(document.getElementById('wrCount').value),
-        TE: parseInt(document.getElementById('teCount').value),
-        FLEX: parseInt(document.getElementById('flexCount').value),
-        DST: parseInt(document.getElementById('dstCount').value),
-        K: parseInt(document.getElementById('kCount').value)
+        QB: parseInt(document.getElementById('qbCount')?.value || 1),
+        SF: parseInt(document.getElementById('sfCount')?.value || 0),
+        RB: parseInt(document.getElementById('rbCount')?.value || 2),
+        WR: parseInt(document.getElementById('wrCount')?.value || 2),
+        TE: parseInt(document.getElementById('teCount')?.value || 1),
+        FLEX: parseInt(document.getElementById('flexCount')?.value || 1),
+        DST: parseInt(document.getElementById('dstCount')?.value || 1),
+        K: parseInt(document.getElementById('kCount')?.value || 1)
     } : {
         std: { QB: 1, SF: 0, RB: 2, WR: 2, TE: 1, FLEX: 1, DST: 1, K: 1 },
         ppr: { QB: 1, SF: 0, RB: 2, WR: 2, TE: 1, FLEX: 1, DST: 1, K: 1 },
@@ -287,6 +274,7 @@ document.getElementById('generateLineupBuild')?.addEventListener('click', () => 
     }[preset];
 
     const resultDiv = document.getElementById('lineup-result');
+    if (!resultDiv) return;
     const playersCopy = [...playersData];
     const lineup = [];
     
@@ -319,4 +307,31 @@ document.addEventListener('DOMContentLoaded', async () => {
     await loadPlayers('ppr');
     updatePlayerTable(playersData);
     updateTicker(playersData.slice(0, 10));
+
+    // Pause/resume ticker
+    const pauseButton = document.getElementById('pauseButton');
+    if (pauseButton) {
+        pauseButton.addEventListener('click', () => {
+            isPaused = !isPaused;
+            pauseButton.textContent = isPaused ? 'Resume' : 'Pause';
+            const tickerContent = document.getElementById('tickerContent');
+            if (tickerContent) {
+                tickerContent.style.animation = isPaused ? 'none' : 'marquee 20s linear infinite';
+            }
+        });
+    }
+
+    // Update ticker and player table on scoring type change
+    const scoringTypeSelect = document.getElementById('scoringType');
+    if (scoringTypeSelect) {
+        scoringTypeSelect.addEventListener('change', async () => {
+            const scoringType = scoringTypeSelect.value;
+            const loadingSpinner = document.getElementById('loading-spinner');
+            if (loadingSpinner) loadingSpinner.classList.remove('hidden');
+            await loadPlayers(scoringType);
+            updatePlayerTable(playersData);
+            updateTicker(playersData.slice(0, 10));
+            if (loadingSpinner) loadingSpinner.classList.add('hidden');
+        });
+    }
 });
