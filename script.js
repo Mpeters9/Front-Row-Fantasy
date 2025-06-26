@@ -1,66 +1,73 @@
+// --- Global Variables & Constants ---
 const scoringFiles = {
     standard: 'Standard ADP.json',
     ppr: 'PPR.json',
     half: 'Half PPR.json'
 };
 
-// Global variable to store player data, accessible across modules
-let playersData = [];
+let adpPlayersData = []; // For ADP data (ticker, goat builder)
+let statsPlayersData = []; // For stats page data
 let isPaused = false;
-let tickerInterval; // To store the interval ID for clearing
 
-// --- Utility Functions ---
+
+// --- Data Loading Functions ---
 
 /**
- * Fetches player data based on the specified scoring type.
+ * Loads player ADP data for the ticker and GOAT builder.
  * @param {string} scoringType - 'standard', 'ppr', or 'half'.
- * @returns {Promise<void>}
  */
-async function loadPlayers(scoringType) {
-    const loadingSpinner = document.getElementById('loading-spinner');
-    if (loadingSpinner) {
-        loadingSpinner.classList.remove('hidden');
-    }
-
+async function loadAdpPlayers(scoringType) {
     try {
         const filePath = scoringFiles[scoringType];
-        if (!filePath) {
-            console.error('Invalid scoring type:', scoringType);
-            playersData = [];
-            return;
-        }
+        if (!filePath) throw new Error(`Invalid scoring type: ${scoringType}`);
+        
         const response = await fetch(filePath);
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
+        if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+        
         const data = await response.json();
-        playersData = data.map(player => ({
+        adpPlayersData = data.map(player => ({
             name: player.Player,
-            position: player.POS, // Assuming POS includes the position like 'QB1', 'WR2'
+            position: player.POS,
             team: player.Team,
             bye: player.Bye,
             adp: player.AVG,
             rank: player.Rank,
-            // Add a simplified position for styling if POS is too detailed (e.g., 'QB', 'RB', 'WR', 'TE', 'K', 'DST')
             simplePosition: player.POS ? player.POS.replace(/\d+/, '') : ''
-        }));
-        // Sort by ADP for ticker display
-        playersData.sort((a, b) => a.adp - b.adp);
+        })).sort((a, b) => a.adp - b.adp);
 
     } catch (error) {
-        console.error('Error loading player data:', error);
-        playersData = []; // Clear data on error
+        console.error('Error loading ADP player data:', error);
+        adpPlayersData = []; // Clear data on error
+    }
+}
+
+/**
+ * Loads player statistics data for the stats page.
+ */
+async function loadStatsPlayers() {
+    const loader = document.getElementById('statsLoader');
+    if(loader) loader.classList.remove('hidden');
+    
+    try {
+        const response = await fetch('players_2025 Stats.json');
+        if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+        
+        statsPlayersData = await response.json();
+
+    } catch (error) {
+        console.error('Error loading stats player data:', error);
+        statsPlayersData = [];
     } finally {
-        if (loadingSpinner) {
-            loadingSpinner.classList.add('hidden');
-        }
+        if(loader) loader.classList.add('hidden');
     }
 }
 
 
+// --- UI Update Functions ---
+
 /**
- * Updates the live fantasy ticker with the top N players.
- * @param {Array<Object>} players - Array of player objects to display in the ticker.
+ * Updates the live fantasy ticker.
+ * @param {Array<Object>} players - Array of player objects to display.
  */
 function updateTicker(players) {
     const tickerContent = document.getElementById('tickerContent');
@@ -68,86 +75,256 @@ function updateTicker(players) {
 
     if (!players || players.length === 0) {
         tickerContent.innerHTML = '<span class="text-red-400 px-4">No player data available.</span>';
-        tickerContent.style.animation = 'none'; // Stop animation if no data
         return;
     }
 
     let tickerHtml = '';
-    // Duplicate content to create a seamless loop
-    const displayPlayers = players.slice(0, 15); // Show top 15 for the ticker
-    const totalPlayersForTicker = 30; // To make the animation smooth, duplicate enough times
-    for (let i = 0; i < totalPlayersForTicker; i++) {
-        const player = displayPlayers[i % displayPlayers.length]; // Cycle through the top 15
-        if (player) {
-            // Use simplePosition for class names if available, fallback to full position
-            const posClass = player.simplePosition ? `player-pos-${player.simplePosition.toLowerCase()}` : '';
-            tickerHtml += `
-                <div class="flex items-center mx-4 flex-shrink-0">
-                    <span class="font-bold text-lg text-white mr-2">${player.name}</span>
-                    <span class="text-sm ${posClass} font-semibold px-2 py-1 rounded-full">${player.simplePosition || player.position}</span>
-                    <span class="text-teal-400 ml-2">ADP: ${player.adp ? player.adp.toFixed(1) : 'N/A'}</span>
-                    <span class="text-gray-400 ml-2">(${player.team})</span>
-                </div>
-            `;
-        }
-    }
-    tickerContent.innerHTML = tickerHtml;
+    const displayPlayers = players.slice(0, 20);
+    const tickerItems = [...displayPlayers, ...displayPlayers]; // Duplicate for seamless loop
 
-    // Restart animation if it was paused and content updated
-    if (!isPaused) {
-        tickerContent.style.animation = 'none'; // Reset animation
-        // Force reflow to restart animation
-        void tickerContent.offsetWidth;
-        tickerContent.style.animation = 'marquee 30s linear infinite';
-    }
+    tickerItems.forEach(player => {
+        const posClass = player.simplePosition ? `player-pos-${player.simplePosition.toLowerCase()}` : '';
+        tickerHtml += `
+            <div class="flex items-center mx-4 flex-shrink-0">
+                <span class="font-bold text-lg text-white mr-2">${player.name}</span>
+                <span class="text-sm ${posClass} font-semibold px-2 py-1 rounded-full">${player.simplePosition || player.position}</span>
+                <span class="text-teal-400 ml-2">ADP: ${player.adp ? player.adp.toFixed(1) : 'N/A'}</span>
+                <span class="text-gray-400 ml-2">(${player.team})</span>
+            </div>
+        `;
+    });
+    tickerContent.innerHTML = tickerHtml;
 }
 
-
 /**
- * Populates the player table on the players.html page.
- * @param {Array<Object>} players - The array of player data.
+ * Renders the stats table on the stats page.
  */
-function updatePlayerTable(players) {
-    const allPlayersDiv = document.getElementById('allPlayers');
-    if (!allPlayersDiv) return; // Only run if on players.html
+function renderStatsTable() {
+    const table = document.getElementById('statsTable');
+    const tableHead = table.querySelector('thead');
+    const tableBody = table.querySelector('tbody');
+    if (!table || !tableHead || !tableBody) return;
 
-    allPlayersDiv.innerHTML = ''; // Clear existing players
+    // Get filter values
+    const posFilter = document.getElementById('positionSelect').value;
+    const searchFilter = document.getElementById('playerSearchStats').value.toLowerCase();
+    const showAdvanced = document.getElementById('advancedStatsCheckbox').checked;
 
-    if (!players || players.length === 0) {
-        allPlayersDiv.innerHTML = '<p class="text-red-400 text-center text-xs">No player data available.</p>';
+    // Filter data
+    let filteredData = statsPlayersData.filter(p => {
+        const nameMatch = p.Player.toLowerCase().includes(searchFilter);
+        let posMatch = true;
+        if (posFilter !== 'ALL') {
+             if (posFilter === 'FLEX') {
+                posMatch = ['RB', 'WR', 'TE'].includes(p.Pos);
+            } else {
+                posMatch = p.Pos === posFilter;
+            }
+        }
+        return nameMatch && posMatch;
+    });
+
+    // Clear table
+    tableHead.innerHTML = '';
+    tableBody.innerHTML = '';
+
+    // Define table headers
+    let headers = ['Player', 'Pos', 'Team', 'Games', 'Fantasy Points', 'FP/GM'];
+    if (showAdvanced) {
+        headers.push('Pass Yds', 'Pass TD', 'Rush Yds', 'Rush TD', 'Rec', 'Rec Yds', 'Rec TD');
+    }
+
+    // Populate headers
+    let headerHtml = '<tr>';
+    headers.forEach(h => headerHtml += `<th class="p-3">${h}</th>`);
+    headerHtml += '</tr>';
+    tableHead.innerHTML = headerHtml;
+
+    // Populate body
+    if (filteredData.length === 0) {
+        tableBody.innerHTML = `<tr><td colspan="${headers.length}" class="text-center p-4">No players match the current filters.</td></tr>`;
         return;
     }
 
-    players.forEach(player => {
-        const div = document.createElement('div');
-        div.className = 'player-card p-3 bg-gray-800 rounded-lg shadow-md flex items-center space-x-3 transition duration-200 ease-in-out transform hover:scale-105';
-        const posClass = player.simplePosition ? `player-pos-${player.simplePosition.toLowerCase()}` : `player-pos-${player.position ? player.position.replace(/\d+/, '').toLowerCase() : 'unknown'}`;
-
-        div.innerHTML = `
-            <img src="https://via.placeholder.com/40" alt="${player.name}" class="w-10 h-10 rounded-full object-cover border-2 border-teal-500">
-            <div>
-                <div class="text-lg font-semibold text-white">${player.name}</div>
-                <div class="text-sm">
-                    <span class="${posClass} font-semibold px-2 py-0.5 rounded">${player.position}</span>
-                    <span class="text-teal-300 ml-1">${player.team}</span>
-                </div>
-                <div class="text-yellow-400 font-bold text-base">ADP: ${player.adp ? player.adp.toFixed(1) : 'N/A'}</div>
-            </div>
-            <button class="ml-auto text-gray-400 hover:text-white" aria-label="View player details">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                    <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd" />
-                </svg>
-            </button>
+    let bodyHtml = '';
+    filteredData.forEach(p => {
+        bodyHtml += `<tr class="hover:bg-gray-800">
+            <td class="p-3 font-semibold text-white">${p.Player}</td>
+            <td class="p-3">${p.Pos}</td>
+            <td class="p-3">${p.Tm}</td>
+            <td class="p-3">${p.G}</td>
+            <td class="p-3 text-yellow-400 font-bold">${p.FantasyPoints.toFixed(1)}</td>
+            <td class="p-3">${p['FantasyPoints/GM'].toFixed(1)}</td>
         `;
-        allPlayersDiv.appendChild(div);
+        if (showAdvanced) {
+            bodyHtml += `
+            <td class="p-3">${p['Pass Yds']}</td>
+            <td class="p-3">${p['Pass TD']}</td>
+            <td class="p-3">${p['Rush Yds']}</td>
+            <td class="p-3">${p['Rush TD']}</td>
+            <td class="p-3">${p.Rec}</td>
+            <td class="p-3">${p['Rec Yds']}</td>
+            <td class="p-3">${p['Rec TD']}</td>`;
+        }
+        bodyHtml += '</tr>';
     });
+    tableBody.innerHTML = bodyHtml;
 }
 
 
-// --- Event Listeners and Initial Load ---
+// --- Page-Specific Initializers ---
 
-document.addEventListener('DOMContentLoaded', async () => {
-    // Mobile menu toggle
+/**
+ * Initializes functionality for the home page (index.html).
+ */
+async function initHomePage() {
+    const scoringTypeSelect = document.getElementById('scoringType');
+    const pauseButton = document.getElementById('pauseButton');
+    const tickerContent = document.getElementById('tickerContent');
+    
+    if (scoringTypeSelect && tickerContent) {
+        const initialScoringType = scoringTypeSelect.value;
+        await loadAdpPlayers(initialScoringType);
+        updateTicker(adpPlayersData);
+
+        scoringTypeSelect.addEventListener('change', async () => {
+            const selectedScoringType = scoringTypeSelect.value;
+            await loadAdpPlayers(selectedScoringType);
+            updateTicker(adpPlayersData);
+        });
+
+        if (pauseButton) {
+            pauseButton.addEventListener('click', () => {
+                isPaused = !isPaused;
+                pauseButton.textContent = isPaused ? 'Resume' : 'Pause';
+                tickerContent.style.animationPlayState = isPaused ? 'paused' : 'running';
+            });
+        }
+    }
+}
+
+/**
+ * Initializes functionality for the GOAT builder page (goat.html).
+ */
+function initGoatPage() {
+    const positionSelectors = {
+        QB: document.getElementById('qbSelect'), RB: document.getElementById('rbSelect'),
+        WR: document.getElementById('wrSelect'), TE: document.getElementById('teSelect'),
+        FLEX: document.getElementById('flexSelect'), K: document.getElementById('kSelect'),
+        DST: document.getElementById('dstSelect')
+    };
+    const defaultRoster = { QB: 1, RB: 2, WR: 2, TE: 1, FLEX: 1, K: 1, DST: 1 };
+    
+    // Populate dropdowns with numbers
+    for (const pos in positionSelectors) {
+        const select = positionSelectors[pos];
+        if (select) {
+            for (let i = 0; i <= 8; i++) select.add(new Option(i, i));
+            select.value = defaultRoster[pos] || 0;
+        }
+    }
+    
+    document.getElementById('generateBuildButton').addEventListener('click', async () => {
+        const teamSection = document.getElementById('generated-team-section');
+        const loadingSpinner = document.getElementById('build-loading-spinner');
+        const teamDiv = document.getElementById('generatedTeam');
+        const scoringType = document.getElementById('scoringTypeGoat').value;
+
+        teamSection.classList.remove('hidden');
+        loadingSpinner.classList.remove('hidden');
+        teamDiv.innerHTML = '';
+
+        await loadAdpPlayers(scoringType);
+        
+        const rosterCounts = {};
+        for (const pos in positionSelectors) {
+            rosterCounts[pos] = parseInt(positionSelectors[pos].value, 10);
+        }
+
+        const build = generatePlayerBuild(rosterCounts);
+        
+        loadingSpinner.classList.add('hidden');
+        displayBuild(build);
+    });
+}
+
+function generatePlayerBuild(rosterCounts) {
+    if (!adpPlayersData || adpPlayersData.length === 0) return null;
+
+    const build = {};
+    const pickedPlayers = new Set();
+    const positions = ['QB', 'RB', 'WR', 'TE', 'K', 'DST'];
+
+    positions.forEach(pos => {
+        build[pos] = [];
+        const playersForPos = adpPlayersData.filter(p => p.simplePosition === pos && !pickedPlayers.has(p.name));
+        for (let i = 0; i < rosterCounts[pos] && i < playersForPos.length; i++) {
+            const player = playersForPos[i];
+            build[pos].push(player);
+            pickedPlayers.add(player.name);
+        }
+    });
+
+    build['FLEX'] = [];
+    const flexCandidates = adpPlayersData.filter(p => 
+        ['WR', 'RB', 'TE'].includes(p.simplePosition) && !pickedPlayers.has(p.name)
+    );
+    for (let i = 0; i < rosterCounts['FLEX'] && i < flexCandidates.length; i++) {
+        const player = flexCandidates[i];
+        build['FLEX'].push(player);
+        pickedPlayers.add(player.name);
+    }
+    return build;
+}
+
+function displayBuild(build) {
+    const container = document.getElementById('generatedTeam');
+    if (!container) return;
+
+    container.innerHTML = '';
+    if (!build) {
+        container.innerHTML = `<p class="text-red-400 text-center col-span-full">Could not generate a build.</p>`;
+        return;
+    }
+
+    const positionsToDisplay = ['QB', 'RB', 'WR', 'TE', 'FLEX', 'K', 'DST'];
+    positionsToDisplay.forEach(pos => {
+        if (build[pos] && build[pos].length > 0) {
+            build[pos].forEach(player => {
+                const card = document.createElement('div');
+                card.className = 'player-card p-3 bg-gray-900 rounded-lg shadow-md flex items-center space-x-3 border border-gray-700';
+                const posClass = `player-pos-${player.simplePosition.toLowerCase()}`;
+                card.innerHTML = `
+                    <div>
+                        <div class="text-lg font-semibold text-white">${player.name}</div>
+                        <div class="text-sm flex items-center gap-2 mt-1">
+                            <span class="${posClass} font-semibold px-2 py-0.5 rounded">${pos === 'FLEX' ? `FLEX (${player.simplePosition})` : player.simplePosition}</span>
+                            <span class="text-teal-300">${player.team}</span>
+                        </div>
+                        <div class="text-yellow-400 font-bold text-base mt-2">ADP: ${player.adp.toFixed(1)} (Rank: ${player.rank})</div>
+                    </div>`;
+                container.appendChild(card);
+            });
+        }
+    });
+}
+
+/**
+ * Initializes functionality for the stats page (stats.html).
+ */
+async function initStatsPage() {
+    await loadStatsPlayers();
+    renderStatsTable();
+
+    document.getElementById('positionSelect').addEventListener('change', renderStatsTable);
+    document.getElementById('playerSearchStats').addEventListener('input', renderStatsTable);
+    document.getElementById('advancedStatsCheckbox').addEventListener('change', renderStatsTable);
+}
+
+
+// --- Main DOMContentLoaded Event Listener ---
+document.addEventListener('DOMContentLoaded', () => {
+    // Mobile Menu Toggle (runs on all pages)
     const mobileMenuButton = document.getElementById('mobile-menu-button');
     const mobileMenu = document.getElementById('mobile-menu');
     if (mobileMenuButton && mobileMenu) {
@@ -156,81 +333,54 @@ document.addEventListener('DOMContentLoaded', async () => {
         });
     }
 
-    // Initialize ticker and scoring type selector only if elements exist on the page
-    const scoringTypeSelect = document.getElementById('scoringType');
-    const pauseButton = document.getElementById('pauseButton');
-    const tickerContent = document.getElementById('tickerContent');
-
-    if (scoringTypeSelect && tickerContent) {
-        // Load players based on default selected scoring type (PPR from HTML)
-        const initialScoringType = scoringTypeSelect.value;
-        await loadPlayers(initialScoringType);
-        updateTicker(playersData); // Update ticker after data is loaded
-
-        // Update ticker and player table on scoring type change
-        scoringTypeSelect.addEventListener('change', async () => {
-            const selectedScoringType = scoringTypeSelect.value;
-            await loadPlayers(selectedScoringType);
-            updateTicker(playersData);
-            // If on players.html, update the table too
-            if (document.getElementById('allPlayers')) {
-                updatePlayerTable(playersData);
-            }
-        });
+    // Page-specific initializations
+    if (document.getElementById('tickerContent')) {
+        initHomePage();
     }
-
-    if (pauseButton && tickerContent) {
-        // Pause/resume ticker
-        pauseButton.addEventListener('click', () => {
-            isPaused = !isPaused;
-            pauseButton.textContent = isPaused ? 'Resume' : 'Pause';
-            if (isPaused) {
-                tickerContent.style.animationPlayState = 'paused';
-            } else {
-                tickerContent.style.animationPlayState = 'running';
-            }
-        });
+    if (document.getElementById('goat-builder')) {
+        initGoatPage();
     }
-
-    // Player search on players.html
-    const playerSearch = document.getElementById('playerSearch');
-    const allPlayersDiv = document.getElementById('allPlayers');
-    if (playerSearch && allPlayersDiv) {
-        // Initial load for players.html
-        await loadPlayers('ppr'); // Default for players page can be PPR or standard
-        updatePlayerTable(playersData);
-
-        playerSearch.addEventListener('input', () => {
-            const searchTerm = playerSearch.value.toLowerCase();
-            const playerElements = allPlayersDiv.getElementsByClassName('player-card');
-            Array.from(playerElements).forEach(element => {
-                const name = element.querySelector('.text-lg').textContent.toLowerCase();
-                element.style.display = name.includes(searchTerm) ? 'flex' : 'none';
-            });
-        });
-    }
-
-    // Ensure the player data is loaded for any page that might need it (e.g., stats.html)
-    // If stats.html needs specific data, its own script block should call `loadPlayers`
-    // However, for generic player data, we can try to pre-load here
-    if (document.getElementById('stats-page-content')) { // Example ID for stats page
-        if (playersData.length === 0) { // Only load if not already loaded by ticker
-            await loadPlayers('standard'); // Default for stats page
-        }
-        // Additional stats page specific logic can go here.
+    if (document.getElementById('statsTable')) {
+        initStatsPage();
     }
 });
 
-// Add CSS for ticker animation
+// Add global CSS styles dynamically
 const styleSheet = document.createElement("style");
 styleSheet.type = "text/css";
 styleSheet.innerText = `
     @keyframes marquee {
         0% { transform: translateX(0%); }
-        100% { transform: translateX(-50%); } /* Translate by half the width of duplicated content */
+        100% { transform: translateX(-50%); }
     }
     .ticker-animation {
-        animation: marquee 30s linear infinite;
+        animation: marquee 40s linear infinite;
     }
+    .loader {
+        border-top-color: #facc15;
+        animation: spin 1s linear infinite;
+    }
+    @keyframes spin {
+        to { transform: rotate(360deg); }
+    }
+    .form-select {
+        width: 100%;
+        padding: 0.5rem;
+        background-color: #1f2937;
+        color: white;
+        border: 1px solid #0d9488;
+        border-radius: 0.375rem;
+        appearance: none;
+        background-image: url('data:image/svg+xml;charset=UTF-8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="none" stroke="%236ee7b7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8l4 4 4-4"/></svg>');
+        background-repeat: no-repeat;
+        background-position: right 0.5rem center;
+        background-size: 1.5em 1.5em;
+    }
+    .player-pos-qb { background-color: rgba(239, 68, 68, 0.2); color: #f87171; }
+    .player-pos-rb { background-color: rgba(16, 185, 129, 0.2); color: #34d399; }
+    .player-pos-wr { background-color: rgba(59, 130, 246, 0.2); color: #60a5fa; }
+    .player-pos-te { background-color: rgba(139, 92, 246, 0.2); color: #a78bfa; }
+    .player-pos-k { background-color: rgba(245, 158, 11, 0.2); color: #f59e0b; }
+    .player-pos-dst { background-color: rgba(107, 114, 128, 0.2); color: #9ca3af; }
 `;
 document.head.appendChild(styleSheet);
