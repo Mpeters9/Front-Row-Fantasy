@@ -13,6 +13,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="min-h-screen flex flex-col font-poppins bg-gradient-to-br from-[#0f2027] to-[#2c5364]" aria-label="GOAT Page Content">
+    <!-- Header -->
     <header class="sticky top-0 z-50 bg-opacity-98 bg-gray-900 shadow-lg border-b-2 border-teal-500">
         <div class="max-w-7xl mx-auto px-4 flex justify-between items-center py-3">
             <a href="index.html" class="text-2xl font-bold text-yellow text-glow">Front Row Fantasy</a>
@@ -26,4 +27,117 @@
                 <a href="stats.html" class="nav-link">Stats</a>
             </nav>
             <div class="md:hidden">
-                <button id="mobile-menu-
+                <button id="mobile-menu-button" class="text-teal-400 hover:text-yellow focus:outline-none">
+                    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
+                </button>
+            </div>
+        </div>
+        <nav id="mobile-menu" class="md:hidden hidden px-4 pb-3 space-y-2">
+            <a href="index.html" class="block nav-link-mobile">Home</a>
+            <a href="tools.html" class="block nav-link-mobile">Expert Tools</a>
+            <a href="goat.html" class="block nav-link-mobile" aria-current="page">GOAT</a>
+            <a href="guides.html" class="block nav-link-mobile">Guides</a>
+            <a href="community.html" class="block nav-link-mobile">Community</a>
+            <a href="players.html" class="block nav-link-mobile">Players</a>
+            <a href="stats.html" class="block nav-link-mobile">Stats</a>
+        </nav>
+    </header>
+
+    <!-- Universal Fantasy Points Ticker -->
+    <section class="bg-gray-800 bg-opacity-80 p-3 rounded-lg shadow-lg my-4 mx-auto w-full max-w-7xl border border-teal-600">
+        <div class="flex items-center justify-center space-x-4 mb-3">
+            <h2 class="text-gray-300 text-lg font-semibold">Live Fantasy Points Leaders</h2>
+            <button id="pauseButton" class="bg-yellow-500 hover:bg-yellow-600 text-gray-900 font-semibold py-2 px-4 rounded-md shadow-md transition duration-300 ease-in-out">Pause</button>
+        </div>
+        <div class="overflow-hidden relative h-10 bg-gray-900 rounded-lg">
+            <div id="tickerContent" class="whitespace-nowrap absolute top-0 left-0 h-full flex items-center ticker-animation">
+                <span class="text-gray-400 px-4">Loading fantasy points...</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- Main Content -->
+    <main class="flex-grow max-w-7xl mx-auto py-8 px-4 w-full">
+        <section class="text-center mb-12">
+            <h1 class="text-5xl font-bold text-yellow-300 mb-4 text-shadow-lg">GOAT-Tier Tools</h1>
+            <p class="text-xl text-teal-200 max-w-3xl mx-auto">
+                Use our suite of advanced tools to build a championship-winning team. From drafting the ultimate roster to setting the perfect weekly lineup, we've got you covered.
+            </p>
+        </section>
+
+        <!-- GOAT Draft Build Tool -->
+        <section id="goat-draft-builder" class="bg-gray-800 bg-opacity-80 p-6 rounded-xl shadow-lg mb-12 border border-teal-600">
+            <h2 class="text-3xl font-bold text-teal-400 mb-6 text-center">GOAT Draft Builds</h2>
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
+                <div class="lg:col-span-1">
+                    <label for="draftScoringType" class="block text-gray-300 text-lg font-semibold mb-2">ADP Scoring Type:</label>
+                    <select id="draftScoringType" class="form-select w-full">
+                        <option value="ppr" selected>PPR</option>
+                        <option value="half">Half-PPR</option>
+                        <option value="standard">Standard</option>
+                    </select>
+                </div>
+                <div class="lg:col-span-2">
+                    <label class="block text-gray-300 text-lg font-semibold mb-2">Number of Players Per Position:</label>
+                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+                        <div class="flex items-center space-x-2"><label for="qbCount" class="text-gray-400">QB:</label><select id="qbCount" class="form-select w-20"></select></div>
+                        <div class="flex items-center space-x-2"><label for="rbCount" class="text-gray-400">RB:</label><select id="rbCount" class="form-select w-20"></select></div>
+                        <div class="flex items-center space-x-2"><label for="wrCount" class="text-gray-400">WR:</label><select id="wrCount" class="form-select w-20"></select></div>
+                        <div class="flex items-center space-x-2"><label for="teCount" class="text-gray-400">TE:</label><select id="teCount" class="form-select w-20"></select></div>
+                        <div class="flex items-center space-x-2"><label for="flexCount" class="text-gray-400">FLEX:</label><select id="flexCount" class="form-select w-20"></select></div>
+                        <div class="flex items-center space-x-2"><label for="kCount" class="text-gray-400">K:</label><select id="kCount" class="form-select w-20"></select></div>
+                        <div class="flex items-center space-x-2"><label for="dstCount" class="text-gray-400">DST:</label><select id="dstCount" class="form-select w-20"></select></div>
+                    </div>
+                </div>
+            </div>
+            <button id="generateBuildButton" class="cta-btn w-full mt-4">Generate GOAT Build</button>
+            <div id="draft-loading-spinner" class="mt-4 text-center hidden">
+                <div class="loader ease-linear rounded-full border-4 border-t-4 border-teal-400 h-8 w-8 mx-auto"></div>
+                <p class="text-teal-300 mt-2">Generating your team...</p>
+            </div>
+            <div id="generatedTeamWrapper" class="mt-8 hidden">
+                <h3 class="text-2xl font-bold text-yellow-300 mb-4 text-center">Your Generated Draft Roster</h3>
+                <div id="generatedTeam" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4"></div>
+            </div>
+        </section>
+
+        <!-- Best Lineup Builder Tool -->
+        <section id="lineup-builder" class="bg-gray-800 bg-opacity-80 p-6 rounded-xl shadow-lg border border-teal-600">
+            <h2 class="text-3xl font-bold text-teal-400 mb-6 text-center">Best Lineup Builder</h2>
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <div>
+                    <label for="playerList" class="block text-gray-300 text-lg font-semibold mb-2">Your Players:</label>
+                    <textarea id="playerList" rows="8" class="form-input w-full" placeholder="Paste your list of players here, one per line..."></textarea>
+                </div>
+                <div>
+                    <label class="block text-gray-300 text-lg font-semibold mb-2">Optimal Lineup:</label>
+                    <button id="findLineupButton" class="cta-btn w-full mb-4">Find Best Lineup</button>
+                    <div id="lineup-loading-spinner" class="mt-4 text-center hidden">
+                        <div class="loader ease-linear rounded-full border-4 border-t-4 border-teal-400 h-8 w-8 mx-auto"></div>
+                        <p class="text-teal-300 mt-2">Calculating optimal lineup...</p>
+                    </div>
+                    <div id="bestLineup" class="space-y-2">
+                        <p class="text-gray-400 text-center">Enter your players and click the button to generate the optimal lineup based on projections.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-teal-400 py-6 border-t-2 border-teal-500 mt-12">
+        <div class="mb-2 flex flex-wrap justify-center gap-4">
+            <a href="index.html" class="hover:text-yellow">Home</a>
+            <a href="tools.html" class="hover:text-yellow">Expert Tools</a>
+            <a href="goat.html" class="hover:text-yellow">GOAT</a>
+            <a href="guides.html" class="hover:text-yellow">Guides</a>
+            <a href="community.html" class="hover:text-yellow">Community</a>
+            <a href="players.html" class="hover:text-yellow">Players</a>
+            <a href="stats.html" class="hover:text-yellow">Stats</a>
+        </div>
+        <div class="text-center text-sm">© 2025 Front Row Fantasy. All rights reserved.</div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
