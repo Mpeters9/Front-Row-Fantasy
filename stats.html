@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Front Row Fantasy - [Page Name]</title>
-    <meta
+    <title>Front Row Fantasy - Player Statistics</title>
+    <meta name="description" content="In-depth player statistics for fantasy football. Filter by year, position, and player to find the data you need.">
     <meta name="keywords" content="fantasy football, stats, analytics, NFL, player stats">
     <meta name="author" content="Mpeters9">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
@@ -12,138 +12,102 @@
     <link rel="stylesheet" href="styles.css">
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="min-h-screen flex flex-col font-poppins">
-
-    <!-- Header -->
-    <header>
+<body class="min-h-screen flex flex-col font-poppins bg-gradient-to-br from-[#0f2027] to-[#2c5364]" aria-label="Stats Page Content">
+    <header class="sticky top-0 z-50 bg-opacity-98 bg-gray-900 shadow-lg border-b-2 border-teal-500">
         <div class="max-w-7xl mx-auto px-4 flex justify-between items-center py-3">
             <a href="index.html" class="text-2xl font-bold text-yellow text-glow">Front Row Fantasy</a>
-            <nav>
+            <nav class="hidden md:flex space-x-6">
                 <a href="index.html" class="nav-link">Home</a>
-                <a href="tools.html" class="nav-link" aria-current="page">Expert Tools</a>
+                <a href="tools.html" class="nav-link">Expert Tools</a>
                 <a href="goat.html" class="nav-link">GOAT</a>
                 <a href="guides.html" class="nav-link">Guides</a>
                 <a href="community.html" class="nav-link">Community</a>
                 <a href="players.html" class="nav-link">Players</a>
-                <a href="stats.html" class="nav-link">Stats</a>
-                <a href="#contact" class="nav-link">Contact</a>
+                <a href="stats.html" class="nav-link" aria-current="page">Stats</a>
             </nav>
-        </div>
-    </header>
-
-    <!-- Fantasy Points Ticker -->
-    <section class="marquee mb-6">
-        <div class="bg-teal-900 text-white p-2 rounded-t flex justify-between items-center shadow">
-            <span class="text-xl font-bold tracking-wide flex items-center gap-2">
-                <svg class="inline w-6 h-6 text-yellow-300" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12c0 4.97-4.03 9-9 9s-9-4.03-9-9 4.03-9 9-9 9 4.03 9 9z"/></svg>
-                Fantasy Points Ticker
-            </span>
-            <button id="pauseButton" class="cta-btn px-4 py-1" aria-pressed="false" aria-label="Pause ticker">Pause</button>
-        </div>
-        <div class="relative overflow-hidden bg-teal-800 rounded-b" style="height:2.5rem;">
-            <div id="tickerContent" class="absolute left-0 top-0 h-full flex items-center whitespace-nowrap transition-none" tabindex="0" aria-live="polite">
-                <span class="loading text-white">Loading fantasy points...</span>
+            <div class="md:hidden">
+                <button id="mobile-menu-button" class="text-teal-400 hover:text-yellow focus:outline-none">
+                    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
+                </button>
             </div>
         </div>
-    </section>
+        <nav id="mobile-menu" class="md:hidden hidden px-4 pb-3 space-y-2">
+            <a href="index.html" class="block nav-link-mobile">Home</a>
+            <a href="tools.html" class="block nav-link-mobile">Expert Tools</a>
+            <a href="goat.html" class="block nav-link-mobile">GOAT</a>
+            <a href="guides.html" class="block nav-link-mobile">Guides</a>
+            <a href="community.html" class="block nav-link-mobile">Community</a>
+            <a href="players.html" class="block nav-link-mobile">Players</a>
+            <a href="stats.html" class="block nav-link-mobile" aria-current="page">Stats</a>
+        </nav>
+    </header>
 
-    <!-- Hero / Splash -->
-    <section class="splash-section text-center mb-8">
-        <h1 class="text-4xl md:text-5xl font-bold mb-4 text-glow">Your Ultimate Fantasy Football Command Center</h1>
-        <p class="text-lg md:text-xl mb-6">Real-time stats, expert tools, and breaking news for every fantasy manager.</p>
-        <a href="#statsTable" class="cta-btn">Explore Players</a>
-    </section>
+    <main class="flex-grow max-w-7xl mx-auto py-8 px-4 w-full">
+        <section class="text-center mb-10">
+            <h1 class="text-5xl font-bold text-yellow-300 mb-3 text-shadow-lg">Player Statistics Dashboard</h1>
+            <p class="text-xl text-teal-200 max-w-3xl mx-auto">Dive into detailed player stats. Use the filters below to refine your search and uncover key insights.</p>
+        </section>
 
-    <!-- Main Content -->
-    <main class="max-w-7xl mx-auto px-4 flex-grow">
-        <div class="card mb-4">
-            <div class="flex flex-col sm:flex-row gap-4">
-                <div class="flex-1">
-                    <label for="yearSelect" class="block text-sm font-medium">Select Year:</label>
-                    <select id="yearSelect" class="mt-1 block w-full bg-white border border-teal-300 rounded-md p-2 text-sm text-teal-800">
-                        <option value="2025">2025</option>
-                        <option value="2024">2024</option>
-                        <option value="2023">2023</option>
-                        <option value="2022">2022</option>
+        <div class="p-6 bg-gray-800 bg-opacity-80 rounded-xl shadow-lg border border-teal-600 mb-8">
+            <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4 items-end">
+                <div>
+                    <label for="yearSelect" class="block text-sm font-medium text-gray-300 mb-1">Year</label>
+                    <select id="yearSelect" class="form-select">
+                        <option value="2025" selected>2025</option>
+                        <option value="2024" disabled>2024 (not available)</option>
                     </select>
                 </div>
-                <div class="flex-1">
-                    <label for="positionSelect" class="block text-sm font-medium">Select Position:</label>
-                    <select id="positionSelect" class="mt-1 block w-full bg-white border border-teal-300 rounded-md p-2 text-sm text-teal-800">
-                        <option value="all">All</option>
+                <div>
+                    <label for="positionSelect" class="block text-sm font-medium text-gray-300 mb-1">Position</label>
+                    <select id="positionSelect" class="form-select">
+                        <option value="ALL">All Positions</option>
                         <option value="QB">QB</option>
                         <option value="RB">RB</option>
                         <option value="WR">WR</option>
                         <option value="TE">TE</option>
-                        <option value="Flex">Flex (RB/WR/TE)</option>
-                        <option value="SuperFlex">SuperFlex (QB/RB/WR/TE)</option>
+                        <option value="FLEX">Flex (RB/WR/TE)</option>
+                        <option value="K">K</option>
+                        <option value="DST">DST</option>
                     </select>
                 </div>
-                <div class="flex-1">
-                    <label for="playerSelect" class="block text-sm font-medium">Select Player:</label>
-                    <select id="playerSelect" class="mt-1 block w-full bg-white border border-teal-300 rounded-md p-2 text-sm text-teal-800">
-                        <option value="all">All Players</option>
-                    </select>
+                 <div>
+                    <label for="playerSearchStats" class="block text-sm font-medium text-gray-300 mb-1">Player Name</label>
+                    <input type="text" id="playerSearchStats" class="form-select" placeholder="Search by name...">
                 </div>
-            </div>
-            <div class="mt-2">
-                <input type="checkbox" id="advancedStatsCheckbox" class="mr-2">
-                <label for="advancedStatsCheckbox" class="text-sm">Show Advanced Stats</label>
+                <div class="flex items-center justify-start pt-6">
+                     <input type="checkbox" id="advancedStatsCheckbox" class="h-5 w-5 rounded bg-gray-700 border-teal-500 text-teal-600 focus:ring-teal-500">
+                     <label for="advancedStatsCheckbox" class="ml-2 text-gray-200">Show Advanced Stats</label>
+                </div>
             </div>
         </div>
-        <div id="statsLoader" class="hidden text-center mb-4">Loading...</div>
+
+        <div id="statsLoader" class="text-center mb-4 hidden">
+             <div class="loader ease-linear rounded-full border-4 border-t-4 border-teal-400 h-10 w-10 mx-auto"></div>
+             <p class="text-teal-300 mt-2">Loading Player Stats...</p>
+        </div>
         <div class="overflow-x-auto">
-            <table id="statsTable" class="w-full bg-teal-800/50 backdrop-blur-md rounded-lg shadow-md text-sm">
-                <thead>
-                    <tr class="bg-teal-700/60">
-                        <th class="p-2 text-white">Player</th>
-                        <th class="p-2 text-white">Team</th>
-                        <th class="p-2 text-white">Fantasy Points</th>
-                        <th class="p-2 text-white">FP/G</th>
-                        <th class="p-2 text-white">Total Yards</th>
-                        <th class="p-2 text-white">Total Touchdowns</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr><td colspan="6" class="p-2 text-center">Loading...</td></tr>
-                </tbody>
+            <table id="statsTable" class="w-full text-left whitespace-nowrap">
+                <thead class="bg-gray-700 bg-opacity-80 text-teal-300 uppercase text-sm">
+                    </thead>
+                <tbody class="bg-gray-900 bg-opacity-70 divide-y divide-gray-700">
+                    </tbody>
             </table>
         </div>
     </main>
 
-    <!-- Footer -->
-    <footer>
-        <div class="mb-2">
-            <a href="index.html" class="hover:text-yellow mx-2">Home</a>
-            <a href="tools.html" class="hover:text-yellow mx-2">Expert Tools</a>
-            <a href="goat.html" class="hover:text-yellow mx-2">GOAT</a>
-            <a href="guides.html" class="hover:text-yellow mx-2">Guides</a>
-            <a href="community.html" class="hover:text-yellow mx-2">Community</a>
-            <a href="players.html" class="hover:text-yellow mx-2">Players</a>
-            <a href="stats.html" class="hover:text-yellow mx-2">Stats</a>
+    <footer class="bg-gray-900 text-teal-400 py-6 border-t-2 border-teal-500 mt-8">
+        <div class="mb-2 flex flex-wrap justify-center gap-4">
+            <a href="index.html" class="hover:text-yellow">Home</a>
+            <a href="tools.html" class="hover:text-yellow">Expert Tools</a>
+            <a href="goat.html" class="hover:text-yellow">GOAT</a>
+            <a href="guides.html" class="hover:text-yellow">Guides</a>
+            <a href="community.html" class="hover:text-yellow">Community</a>
+            <a href="players.html" class="hover:text-yellow">Players</a>
+            <a href="stats.html" class="hover:text-yellow">Stats</a>
         </div>
-        © 2025 Front Row Fantasy. All rights reserved.
+        <div class="text-center text-sm">© 2025 Front Row Fantasy. All rights reserved.</div>
     </footer>
-    <div id="loading-spinner" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-30 z-50 hidden">
-      <div class="loader ease-linear rounded-full border-8 border-t-8 border-gray-200 h-16 w-16"></div>
-    </div>
+
     <script src="script.js"></script>
-    <script>
-        async function buildTickerFromLocal() {
-            tickerContent.innerHTML = '<span class="loading text-white">Loading fantasy points...</span>';
-            try {
-                if (!playersData.length) {
-                    await fetchAllProjections('standard');
-                }
-                if (!playersData.length) {
-                    tickerContent.innerHTML = '<span class="text-red-400">No player data available.</span>';
-                    return;
-                }
-                // ...existing ticker code...
-            } catch (e) {
-                tickerContent.innerHTML = '<span class="text-red-400">Failed to load ticker data.</span>';
-            }
-        }
-    </script>
 </body>
 </html>
