@@ -29,7 +29,7 @@
             </div>
         </div>
         <nav id="mobile-menu" class="md:hidden hidden px-4 pb-3 space-y-2">
-            <a href="index.html" class="block nav-link-mobile">Home</a>
+             <a href="index.html" class="block nav-link-mobile">Home</a>
             <a href="tools.html" class="block nav-link-mobile">Expert Tools</a>
             <a href="goat.html" class="block nav-link-mobile" aria-current="page">GOAT</a>
             <a href="guides.html" class="block nav-link-mobile">Guides</a>
@@ -62,7 +62,7 @@
         <section id="goat-draft-builder" class="tool-card mb-12">
             <h2 class="text-3xl font-bold text-center mb-6 text-transparent bg-clip-text bg-gradient-to-r from-yellow-300 to-teal-300 flex items-center justify-center gap-3">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-                GOAT Draft Simulator (VORP-Based)
+                AI Mock Draft
             </h2>
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-x-8 gap-y-6 mb-6">
                 <div>
@@ -79,7 +79,7 @@
                 </div>
                 <div class="lg:col-span-2">
                     <label class="block text-gray-300 text-lg font-semibold mb-2">Roster Settings:</label>
-                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+                    <div class="grid grid-cols-3 sm:grid-cols-6 gap-4">
                         <div class="flex items-center space-x-2"><label for="qbCount" class="text-gray-400">QB:</label><select id="qbCount" class="form-select w-20"></select></div>
                         <div class="flex items-center space-x-2"><label for="rbCount" class="text-gray-400">RB:</label><select id="rbCount" class="form-select w-20"></select></div>
                         <div class="flex items-center space-x-2"><label for="wrCount" class="text-gray-400">WR:</label><select id="wrCount" class="form-select w-20"></select></div>
@@ -89,17 +89,25 @@
                     </div>
                 </div>
             </div>
-            <button id="generateBuildButton" class="cta-btn w-full mt-4">Simulate VORP Draft & Build My Team</button>
+            <button id="generateBuildButton" class="cta-btn w-full mt-4">Simulate Draft & Build My Team</button>
             <div id="draft-loading-spinner" class="mt-4 text-center hidden">
                 <div class="loader"></div>
                 <p class="text-teal-300 mt-2">Simulating a 12-team draft and building your optimal roster...</p>
             </div>
             <div id="generatedTeamWrapper" class="mt-8 hidden">
-                <h3 class="text-2xl font-bold text-yellow-300 mb-4 text-center">Your VORP-Drafted Roster</h3>
-                <div id="generatedTeam" class="space-y-4"></div>
+                <h3 class="text-2xl font-bold text-yellow-300 mb-4 text-center">Your Drafted Roster</h3>
+                <div id="generatedTeam" class="grid grid-cols-1 lg:grid-cols-2 gap-x-8">
+                    <div>
+                        <h4 class="text-xl font-semibold text-teal-300 mb-2 border-b border-gray-700 pb-1">Starters</h4>
+                        <div id="starters-list" class="space-y-2"></div>
+                    </div>
+                    <div>
+                        <h4 class="text-xl font-semibold text-teal-300 mb-2 border-b border-gray-700 pb-1">Bench</h4>
+                        <div id="bench-list" class="space-y-2"></div>
+                    </div>
+                </div>
             </div>
         </section>
-
     </main>
 
     <footer class="bg-gray-900 text-teal-400 py-6 border-t-2 border-teal-500 mt-12">
