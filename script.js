@@ -1,30 +1,19 @@
 document.addEventListener('DOMContentLoaded', () => {
     // --- App State & Config ---
-    const state = {
-        adp: { ppr: [], half: [], standard: [] },
-        stats: [],
-        isTickerPaused: false,
-    };
-    const scoringFiles = {
-        standard: 'Standard ADP.json',
-        ppr: 'PPR.json',
-        half: 'Half PPR.json'
-    };
+    const state = { adp: {}, stats: [], isTickerPaused: false };
+    const scoringFiles = { standard: 'Standard ADP.json', ppr: 'PPR.json', half: 'Half PPR.json' };
 
     // --- Data Loading ---
     const loadAdpData = async (scoring = 'ppr') => {
-        if (state.adp[scoring].length > 0) return state.adp[scoring];
+        if (state.adp[scoring]?.length > 0) return state.adp[scoring];
         try {
             const res = await fetch(scoringFiles[scoring]);
             if (!res.ok) throw new Error('ADP data not found');
             const data = await res.json();
-            const formatted = data.map(p => ({ ...p, simplePosition: p.POS.replace(/\d+/, '') }))
-                                  .sort((a, b) => a.AVG - b.AVG);
-            state.adp[scoring] = formatted;
-            return formatted;
+            state.adp[scoring] = data.map(p => ({ ...p, simplePosition: p.POS.replace(/\d+/, '') }));
+            return state.adp[scoring];
         } catch (e) { console.error(`Failed to load ${scoring} ADP data:`, e); return []; }
     };
-
     const loadStatsData = async () => {
         if (state.stats.length > 0) return state.stats;
         try {
@@ -43,55 +32,50 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- Universal Components ---
     const initUniversal = () => {
+        // Mobile Menu
         const mobileMenuButton = document.getElementById('mobile-menu-button');
         if (mobileMenuButton) {
-            mobileMenuButton.addEventListener('click', () => {
-                document.getElementById('mobile-menu').classList.toggle('hidden');
-            });
+            const nav = document.querySelector('header nav');
+            const mobileNav = document.getElementById('mobile-menu');
+            mobileNav.innerHTML = nav.innerHTML; // Sync nav links
+            mobileMenuButton.addEventListener('click', () => mobileNav.classList.toggle('hidden'));
+        }
+        // Footer
+        const footer = document.querySelector('footer');
+        if(footer && !footer.innerHTML){
+             footer.innerHTML = `<div class="mb-2 flex flex-wrap justify-center gap-4"><a href="index.html" class="hover:text-yellow">Home</a><a href="tools.html" class="hover:text-yellow">Expert Tools</a><a href="goat.html" class="hover:text-yellow">GOAT</a><a href="guides.html" class="hover:text-yellow">Guides</a><a href="community.html" class="hover:text-yellow">Community</a><a href="players.html" class="hover:text-yellow">Players</a><a href="stats.html" class="hover:text-yellow">Stats</a></div><div class="text-center text-sm">© 2025 Front Row Fantasy. All rights reserved.</div>`;
         }
         initTicker();
     };
 
     const initTicker = async () => {
-        const tickerContent = document.getElementById('tickerContent');
-        if (!tickerContent) return;
-        const pauseButton = document.getElementById('pauseButton');
+        const tickerEl = document.getElementById('tickerContent');
+        if (!tickerEl) return;
+        const pauseBtn = document.getElementById('pauseButton');
         try {
-            const pprData = await loadAdpData('ppr');
-            const tickerData = generateTickerData(pprData);
-            updateTickerUI(tickerData, tickerContent);
-            pauseButton.addEventListener('click', () => {
-                state.isTickerPaused = !state.isTickerPaused;
-                pauseButton.textContent = state.isTickerPaused ? 'Resume' : 'Pause';
-                tickerContent.style.animationPlayState = state.isTickerPaused ? 'paused' : 'running';
+            const stats = await loadStatsData();
+            if (!stats.length) throw new Error('No stats for ticker');
+            let tickerData = [];
+            ['QB', 'RB', 'WR', 'TE'].forEach(pos => {
+                tickerData.push(...stats.filter(p => p.Pos === pos).sort((a,b) => b.FantasyPoints-a.FantasyPoints).slice(0, 10));
             });
-        } catch (e) { tickerContent.innerHTML = `<span class="text-red-400 px-4">Could not load ticker data.</span>`; }
+            updateTickerUI(tickerData, tickerEl);
+            pauseBtn.addEventListener('click', () => {
+                state.isTickerPaused = !state.isTickerPaused;
+                tickerEl.style.animationPlayState = state.isTickerPaused ? 'paused' : 'running';
+                pauseBtn.textContent = state.isTickerPaused ? 'Resume' : 'Pause';
+            });
+        } catch (e) { tickerEl.innerHTML = `<span class="text-red-400 px-4">Could not load ticker data.</span>`; }
     };
 
-    const generateTickerData = (players) => {
-        const playersWithPoints = players.map(p => {
-            let maxPoints = 10;
-            const pos = p.POS.replace(/\d+/,'');
-            if (pos === 'QB') maxPoints = 35;
-            else if (pos === 'RB' || pos === 'WR') maxPoints = 28;
-            else if (pos === 'TE') maxPoints = 20;
-            return { ...p, fantasyPoints: Math.random() * maxPoints };
-        });
-        let topPlayers = [];
-        ['QB', 'RB', 'WR', 'TE'].forEach(pos => {
-            topPlayers.push(...playersWithPoints.filter(p => p.POS.replace(/\d+/,'') === pos).sort((a,b) => b.fantasyPoints - a.fantasyPoints).slice(0, 10));
-        });
-        return topPlayers;
-    };
-    
     const updateTickerUI = (players, el) => {
         if (!players.length) return;
-        const tickerItems = [...players, ...players];
-        el.innerHTML = tickerItems.map(p => `
+        const items = [...players, ...players];
+        el.innerHTML = items.map(p => `
             <div class="flex items-center mx-4 flex-shrink-0">
                 <span class="font-bold text-lg text-white mr-2">${p.Player}</span>
-                <span class="player-pos-${p.POS.replace(/\d+/,'').toLowerCase()} font-semibold px-2 py-1 rounded-full text-xs">${p.POS.replace(/\d+/,'')}</span>
-                <span class="text-yellow-400 ml-2">FP: ${p.fantasyPoints.toFixed(1)}</span>
+                <span class="player-pos-${p.Pos.toLowerCase()} font-semibold px-2 py-1 rounded-full text-xs">${p.Pos}</span>
+                <span class="text-yellow-400 ml-2">FP: ${p.FantasyPoints.toFixed(1)}</span>
             </div>
         `).join('');
         if (!state.isTickerPaused) {
@@ -101,114 +85,133 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
-    // --- Home Page ---
+    // --- Page Specific Initializers ---
     const initHomePage = async () => {
         const stats = await loadStatsData();
         if (!stats.length) return;
-        const populateTop5 = (pos, listId) => {
-            const contentDiv = document.getElementById(listId)?.closest('.player-card-content');
-            if (!contentDiv) return;
-            const top5 = stats.filter(p => p.Pos === pos).sort((a,b) => b.FantasyPoints - a.FantasyPoints).slice(0, 5);
-            contentDiv.innerHTML = `<ol class="space-y-3">${top5.map((p, i) => `<li><span class="player-name">${i + 1}. ${p.Player}</span><span class="player-points">${p.FantasyPoints.toFixed(1)} pts</span></li>`).join('')}</ol>`;
+        const populate = (pos, listId) => {
+            const el = document.getElementById(listId);
+            if (!el) return;
+            const top5 = stats.filter(p => p.Pos === pos).sort((a,b) => b.FantasyPoints-a.FantasyPoints).slice(0, 5);
+            el.innerHTML = top5.map((p, i) => `<li><span class="player-name">${i + 1}. ${p.Player}</span><span class="player-points">${p.FantasyPoints.toFixed(1)} pts</span></li>`).join('');
         };
-        populateTop5('QB', 'top-qb-list');
-        populateTop5('RB', 'top-rb-list');
-        populateTop5('WR', 'top-wr-list');
+        populate('QB', 'top-qb-list');
+        populate('RB', 'top-rb-list');
+        populate('WR', 'top-wr-list');
     };
 
-    // --- GOAT Page ---
-    const initGoatPage = () => {
-        const draftBuilder = document.getElementById('goat-draft-builder');
-        if (draftBuilder) {
-            const posOptions = {
-                qbCount: { def: 1, max: 2, label: 'QB' }, rbCount: { def: 2, max: 5, label: 'RB' },
-                wrCount: { def: 2, max: 5, label: 'WR' }, teCount: { def: 1, max: 2, label: 'TE' },
-                flexCount: { def: 1, max: 2, label: 'FLEX' }, benchCount: { def: 6, max: 10, label: 'BENCH' }
-            };
-            for (const [id, vals] of Object.entries(posOptions)) {
-                const select = document.getElementById(id);
-                if(select) { for (let i = 0; i <= vals.max; i++) select.add(new Option(i, i)); select.value = vals.def; }
-            }
-            const draftPosSelect = document.getElementById('draftPosition');
-            if (draftPosSelect) { for (let i = 1; i <= 12; i++) draftPosSelect.add(new Option(i, i)); }
-            document.getElementById('generateBuildButton').addEventListener('click', generateGoatBuild);
-        }
-    };
-
-    const generateGoatBuild = async () => {
-        const btn = document.getElementById('generateBuildButton'), spinner = document.getElementById('draft-loading-spinner'), wrapper = document.getElementById('generatedTeamWrapper'), teamDiv = document.getElementById('generatedTeam'), scoring = document.getElementById('draftScoringType').value;
-        btn.disabled = true;
-        spinner.classList.remove('hidden');
-        wrapper.classList.add('hidden');
-        
-        const [adp, stats] = await Promise.all([loadAdpData(scoring), loadStatsData()]);
-        if (!adp.length || !stats.length) { /* Handle error */ return; }
-
-        const rosterSettings = {
-            QB: parseInt(document.getElementById('qbCount').value), RB: parseInt(document.getElementById('rbCount').value),
-            WR: parseInt(document.getElementById('wrCount').value), TE: parseInt(document.getElementById('teCount').value),
-            FLEX: parseInt(document.getElementById('flexCount').value), BENCH: parseInt(document.getElementById('benchCount').value)
-        };
-        const startersCount = rosterSettings.QB + rosterSettings.RB + rosterSettings.WR + rosterSettings.TE + rosterSettings.FLEX;
-        const rosterSize = startersCount + rosterSettings.BENCH;
-        const userDraftPos = parseInt(document.getElementById('draftPosition').value);
-
-        const replacementPoints = {
-            QB: stats.filter(p=>p.Pos === 'QB').sort((a,b)=>b.FantasyPoints-a.FantasyPoints)[12]?.FantasyPoints || 0,
-            RB: stats.filter(p=>p.Pos === 'RB').sort((a,b)=>b.FantasyPoints-a.FantasyPoints)[30]?.FantasyPoints || 0,
-            WR: stats.filter(p=>p.Pos === 'WR').sort((a,b)=>b.FantasyPoints-a.FantasyPoints)[36]?.FantasyPoints || 0,
-            TE: stats.filter(p=>p.Pos === 'TE').sort((a,b)=>b.FantasyPoints-a.FantasyPoints)[12]?.FantasyPoints || 0,
-        };
-        
-        const draftPool = adp.map(p => {
-            const pStats = stats.find(s => s.Player === p.Player);
-            const vorp = pStats ? pStats.FantasyPoints - (replacementPoints[p.simplePosition] || -5) : -99;
-            return {...p, vorp};
-        }).sort((a, b) => b.vorp - a.vorp);
-
-        let teams = Array(12).fill(0).map(() => []);
-        let available = [...draftPool];
-        
-        for (let round = 0; round < rosterSize; round++) {
-            const picks = (round % 2 === 0) ? [...Array(12).keys()] : [...Array(12).keys()].reverse(); // Snake draft
-            for (const pickNum of picks) {
-                if (available.length === 0) break;
-                let choice = available[0]; // AI defaults to best VORP
-                if (pickNum !== (userDraftPos - 1)) {
-                    const rand = Math.random();
-                    if(rand > 0.9) choice = available.sort((a,b)=>a.AVG-b.AVG)[0]; // 10% chance AI picks by ADP
-                }
-                teams[pickNum].push(choice);
-                available = available.filter(p => p.Player !== choice.Player);
-            }
-        }
-        
-        const userTeam = teams[userDraftPos - 1];
-        const starters = userTeam.slice(0, startersCount);
-        const bench = userTeam.slice(startersCount);
-
-        document.getElementById('starters-list').innerHTML = starters.map(p => playerCardHTML(p, round + 1)).join('');
-        document.getElementById('bench-list').innerHTML = bench.map(p => playerCardHTML(p, round + 1)).join('');
-
-        spinner.classList.add('hidden');
-        wrapper.classList.remove('hidden');
-        btn.disabled = false;
+    const initStatsPage = async () => {
+        const filters = ['positionFilter', 'statSort', 'playerSearch', 'advancedStatsCheckbox'];
+        filters.forEach(id => document.getElementById(id)?.addEventListener('input', renderStatsTable));
+        renderStatsTable();
     };
     
-    const playerCardHTML = (p) => `
-        <div class="player-card p-3 bg-gray-900 rounded-lg shadow-md flex justify-between items-center">
-            <div>
-                <div class="text-lg font-semibold text-white">${p.Player}</div>
-                <div class="text-sm text-gray-400">${p.Team} - ${p.POS}</div>
-            </div>
-            <div class="text-right">
-                <div class="text-sm text-yellow-400 font-bold">VORP: ${p.vorp ? p.vorp.toFixed(2): 'N/A'}</div>
-                <div class="text-xs text-gray-500">ADP: ${p.AVG.toFixed(1)}</div>
-            </div>
-        </div>`;
+    const initToolsPage = async () => {
+        const stats = await loadStatsData();
+        const teams = [...new Set(stats.map(p => p.Tm))].sort();
+        const t1Select = document.getElementById('matchupTeam1Select');
+        const t2Select = document.getElementById('matchupTeam2Select');
+        teams.forEach(t => { t1Select.add(new Option(t, t)); t2Select.add(new Option(t, t)); });
+        document.getElementById('predictMatchupBtn').addEventListener('click', () => predictMatchup(stats));
+        initTradeAnalyzer(stats);
+    };
     
-    // --- Main Initializer ---
+    const initPlayersPage = async () => {
+        const players = await loadAdpData('ppr');
+        const container = document.getElementById('player-list-container');
+        const searchInput = document.getElementById('player-search-input');
+        
+        const render = (pList) => {
+            container.innerHTML = pList.map(p => `<div class="tool-card">${p.Player} (${p.POS}, ${p.Team}) - ADP: ${p.AVG.toFixed(1)}</div>`).join('');
+        };
+        
+        searchInput.addEventListener('input', () => {
+            const query = searchInput.value.toLowerCase();
+            render(players.filter(p => p.Player.toLowerCase().includes(query)));
+        });
+        
+        render(players);
+    };
+    
+    const initGoatPage = () => { /* Logic for GOAT page exists in the global scope */ };
+
+    // --- Main Logic for Pages ---
+    
+    // Stats Page
+    const renderStatsTable = async () => {
+        const data = await loadStatsData();
+        const pos = document.getElementById('positionFilter').value;
+        const sort = document.getElementById('statSort').value;
+        const search = document.getElementById('playerSearch').value.toLowerCase();
+        const advanced = document.getElementById('advancedStatsCheckbox').checked;
+
+        let filtered = data.filter(p => (pos === 'ALL' || p.Pos === pos || (pos === 'FLEX' && ['RB','WR','TE'].includes(p.Pos))) && p.Player.toLowerCase().includes(search));
+        filtered.sort((a, b) => (b[sort] || 0) - (a[sort] || 0));
+
+        const table = document.getElementById('statsTable');
+        let headers = ['Player', 'Pos', 'Team', 'Games', 'FP/GM', 'FantasyPoints'];
+        if (advanced) headers.push('Pass Yds', 'Pass TD', 'Rush Yds', 'Rush TD', 'Rec', 'Rec Yds', 'Rec TD');
+        table.querySelector('thead').innerHTML = `<tr>${headers.map(h => `<th class="p-3">${h}</th>`).join('')}</tr>`;
+        table.querySelector('tbody').innerHTML = filtered.map(p => `
+            <tr class="hover:bg-gray-800">
+                <td class="p-3 font-semibold text-white">${p.Player}</td><td>${p.Pos}</td><td>${p.Tm}</td><td>${p.G}</td><td>${p['FantasyPoints/GM'].toFixed(1)}</td><td class="text-yellow-400 font-bold">${p.FantasyPoints.toFixed(1)}</td>
+                ${advanced ? `<td>${p['Pass Yds']}</td><td>${p['Pass TD']}</td><td>${p['Rush Yds']}</td><td>${p['Rush TD']}</td><td>${p.Rec}</td><td>${p['Rec Yds']}</td><td>${p['Rec TD']}</td>` : ''}
+            </tr>`).join('');
+    };
+
+    // Tools Page
+    const predictMatchup = (stats) => {
+        const t1 = document.getElementById('matchupTeam1Select').value, t2 = document.getElementById('matchupTeam2Select').value;
+        const resultEl = document.getElementById('predictionResult');
+        if (!t1 || !t2 || t1 === t2) { resultEl.textContent = 'Please select two different teams.'; resultEl.classList.remove('hidden'); return; }
+        const score1 = stats.filter(p => p.Tm === t1).reduce((sum, p) => sum + (p['FantasyPoints/GM'] || 0), 0);
+        const score2 = stats.filter(p => p.Tm === t2).reduce((sum, p) => sum + (p['FantasyPoints/GM'] || 0), 0);
+        resultEl.innerHTML = `<span class="font-bold text-white">${t1}:</span> <span class="text-yellow-300">${score1.toFixed(1)} pts</span><br><span class="font-bold text-white">${t2}:</span> <span class="text-yellow-300">${score2.toFixed(1)} pts</span>`;
+        resultEl.classList.remove('hidden');
+    };
+
+    const initTradeAnalyzer = (stats) => {
+        let team1 = [], team2 = [];
+        const setup = (inputId, listId, team) => {
+            const input = document.getElementById(inputId), list = document.getElementById(listId);
+            input.addEventListener('input', () => {
+                const q = input.value.toLowerCase();
+                if (q.length < 2) { list.innerHTML = ''; return; }
+                list.innerHTML = stats.filter(p => p.Player.toLowerCase().includes(q)).slice(0,5).map(p => `<li data-player='${JSON.stringify(p)}'>${p.Player}</li>`).join('');
+            });
+            list.addEventListener('click', e => {
+                if (e.target.tagName !== 'LI') return;
+                team.push(JSON.parse(e.target.dataset.player));
+                input.value = ''; list.innerHTML = '';
+                renderTrade();
+            });
+        };
+        const renderTrade = () => {
+            const t1Div = document.getElementById('team1-players'), t2Div = document.getElementById('team2-players');
+            t1Div.innerHTML = team1.map((p,i) => `<div class="trade-player" data-idx="${i}" data-team="1">${p.Player}<button class="remove-btn">x</button></div>`).join('');
+            t2Div.innerHTML = team2.map((p,i) => `<div class="trade-player" data-idx="${i}" data-team="2">${p.Player}<button class="remove-btn">x</button></div>`).join('');
+        };
+        document.getElementById('trade-analyzer').addEventListener('click', e => {
+            if (!e.target.classList.contains('remove-btn')) return;
+            const p = e.target.parentElement;
+            (p.dataset.team === '1' ? team1 : team2).splice(parseInt(p.dataset.idx), 1);
+            renderTrade();
+        });
+        document.getElementById('analyzeTradeBtn').addEventListener('click', () => {
+            const v1 = team1.reduce((s,p)=>s+p.FantasyPoints,0), v2 = team2.reduce((s,p)=>s+p.FantasyPoints,0);
+            const verdict = document.getElementById('trade-verdict');
+            document.getElementById('trade-results').classList.remove('hidden');
+            verdict.textContent = Math.abs(v1-v2)<5 ? 'This trade is fair.' : (v1>v2 ? 'Side 1 wins.' : 'Side 2 wins.');
+        });
+        setup('player1-search', 'player1-autocomplete', team1);
+        setup('player2-search', 'player2-autocomplete', team2);
+    };
+
+    // --- App Initialization ---
     initUniversal();
     if (document.getElementById('top-players-section')) initHomePage();
     if (document.getElementById('goat-draft-builder')) initGoatPage();
+    if (document.getElementById('tools-page')) initToolsPage();
+    if (document.getElementById('stats-page')) initStatsPage();
+    if (document.getElementById('players-page')) initPlayersPage();
 });
