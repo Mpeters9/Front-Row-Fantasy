@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Front Row Fantasy - Your ultimate destination for fantasy football success.">
+    <meta name="description" content="Front Row Fantasy - Your ultimate destination for fantasy football success. Access real-time stats, expert tools, and community insights to dominate your league.">
     <meta name="keywords" content="fantasy football, draft strategies, player rankings, real-time stats, expert tools">
     <title>Front Row Fantasy - Ultimate Fantasy Football Hub</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
@@ -28,16 +28,48 @@
         </div>
         <nav id="mobile-menu" class="md:hidden hidden px-4 pb-3 space-y-2"></nav>
     </header>
+
+    <div id="news-ticker-container" class="bg-gray-800 text-teal-300 py-2 overflow-hidden">
+        <div id="news-ticker" class="ticker-animation whitespace-nowrap">
+            </div>
+    </div>
+    
     <main class="flex-grow max-w-7xl mx-auto py-8 px-4 w-full">
         <section class="text-center mb-12">
             <h1 class="text-5xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-yellow-300 to-teal-300 mb-4 text-glow-gold">Dominate Your League</h1>
-            <p class="text-xl text-teal-200 mb-6 max-w-2xl mx-auto">Front Row Fantasy provides cutting-edge tools and insights for every fantasy football enthusiast.</p>
-            <a href="goat.html" class="cta-btn text-lg">Access the GOAT Tools</a>
+            <p class="text-xl text-teal-200 mb-6 max-w-2xl mx-auto">Front Row Fantasy provides cutting-edge tools and insights for every fantasy football enthusiast. From draft prep to weekly management, we've got you covered.</p>
+             <a href="goat.html" class="cta-btn text-lg">Access the GOAT Tools</a>
+        </section>
+
+        <section class="mb-12">
+            <h2 class="text-3xl font-bold text-center mb-8 text-teal-300">Key Features</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="feature-card text-center">
+                    <h3 class="text-2xl font-semibold mb-3 text-yellow-400">AI Mock Draft</h3>
+                    <p class="text-teal-200">Simulate drafts against our smart AI to practice different strategies and find the best values at every pick.</p>
+                </div>
+                <div class="feature-card text-center">
+                    <h3 class="text-2xl font-semibold mb-3 text-yellow-400">Lineup Optimizer</h3>
+                    <p class="text-teal-200">Get weekly, data-driven lineup recommendations to maximize your scoring potential and win your matchups.</p>
+                </div>
+                <div class="feature-card text-center">
+                    <h3 class="text-2xl font-semibold mb-3 text-yellow-400">Trade Analyzer</h3>
+                    <p class="text-teal-200">Evaluate trades with our intelligent analyzer to ensure you're always getting the better end of the deal.</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="top-players-section">
+            <h2 class="text-3xl font-bold text-center mb-8 text-teal-300">Top Players to Watch</h2>
+            <div id="player-showcase-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                </div>
         </section>
     </main>
+
     <footer class="bg-gray-900 text-teal-400 py-6 border-t-2 border-teal-500 mt-8">
         <div class="text-center text-sm">© 2025 Front Row Fantasy. All rights reserved.</div>
     </footer>
+    
     <script src="script.js"></script>
 </body>
 </html>
