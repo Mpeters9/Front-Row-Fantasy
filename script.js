@@ -1,13 +1,15 @@
 document.addEventListener('DOMContentLoaded', () => {
 
+    // Central configuration for the entire application
     const config = {
-        dataFiles: ['players.json'],
+        dataFiles: ['players.json'], // Now loads from the single, combined file
         rosterSettings: { QB: 1, RB: 2, WR: 2, TE: 1, FLEX: 1, SUPER_FLEX: 0, DST: 1, K: 1, BENCH: 6 },
         positions: ["QB", "RB", "WR", "TE", "DST", "K"],
         flexPositions: ["RB", "WR", "TE"],
         superflexPositions: ["QB", "RB", "WR", "TE"]
     };
 
+    // Main application object
     const App = {
         playerData: [],
         hasDataLoaded: false,
