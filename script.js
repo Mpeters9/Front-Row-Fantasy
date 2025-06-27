@@ -2,7 +2,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Central configuration for the entire application
     const config = {
-        dataFiles: ['players.json'],
+        dataFiles: ['players.json'], // Now loads from the single, combined file
         rosterSettings: { QB: 1, RB: 2, WR: 2, TE: 1, FLEX: 1, SUPER_FLEX: 0, DST: 1, K: 1, BENCH: 6 },
         positions: ["QB", "RB", "WR", "TE", "DST", "K"],
         flexPositions: ["RB", "WR", "TE"],
@@ -36,7 +36,39 @@ document.addEventListener('DOMContentLoaded', () => {
             if (document.getElementById('trade-analyzer')) this.initTradeAnalyzer();
         },
         
-        // --- CORE & UI FUNCTIONS ---
+        // --- INTERACTIVE MOCK DRAFT (FIXED) ---
+        initMockDraftSimulator() {
+            const controls = {
+                startBtn: document.getElementById('start-draft-button'),
+                // Corrected IDs to match mock-draft.html
+                scoringSelect: document.getElementById('draftScoringType'),
+                sizeSelect: document.getElementById('leagueSize'),
+                pickSelect: document.getElementById('userPick'),
+                settingsContainer: document.getElementById('draft-settings-container'),
+                draftingContainer: document.getElementById('interactive-draft-container'),
+                completeContainer: document.getElementById('draft-complete-container'),
+                restartBtn: document.getElementById('restart-draft-button'),
+            };
+
+            if (!controls.startBtn) return;
+            
+            const updateUserPickOptions = () => {
+                const size = parseInt(controls.sizeSelect.value);
+                controls.pickSelect.innerHTML = '';
+                for (let i = 1; i <= size; i++) {
+                    controls.pickSelect.add(new Option(`Pick ${i}`, i));
+                }
+            };
+
+            controls.sizeSelect.addEventListener('change', updateUserPickOptions);
+            controls.startBtn.addEventListener('click', () => this.startInteractiveDraft(controls));
+            controls.restartBtn.addEventListener('click', () => this.resetDraftUI(controls));
+            
+            // This initial call populates the dropdown on page load
+            updateUserPickOptions();
+        },
+
+        // --- ALL OTHER FUNCTIONS ---
         
         initMobileMenu() {
             const mobileMenuButton = document.getElementById('mobile-menu-button');
@@ -105,9 +137,6 @@ document.addEventListener('DOMContentLoaded', () => {
             const points = base + (Math.random() * range);
             return Math.max(0, points); 
         },
-
-        // --- PAGE-SPECIFIC INITIALIZERS ---
-        
         initTopPlayers() {
             const container = document.getElementById('player-showcase-container');
             if (!container || !this.playerData.length) return;
@@ -273,14 +302,6 @@ document.addEventListener('DOMContentLoaded', () => {
             [tool.player1Input, tool.player2Input].forEach(input => { input.addEventListener('input', e => this.showAutocomplete(e.target)); });
             tool.analyzeBtn.addEventListener('click', () => { const player1 = this.playerData.find(p => p.name === tool.player1Input.value); const player2 = this.playerData.find(p => p.name === tool.player2Input.value); this.analyzeStartSit(player1, player2); });
         },
-        showAutocomplete(inputElement) {
-            const listId = inputElement.id + '-autocomplete';
-            let list = document.getElementById(listId);
-            if (!list) { list = document.createElement('div'); list.id = listId; list.className = 'autocomplete-list'; inputElement.parentNode.appendChild(list); }
-            const searchTerm = inputElement.value.toLowerCase(); list.innerHTML = ''; if (searchTerm.length < 2) return;
-            const filtered = this.playerData.filter(p => p.name.toLowerCase().includes(searchTerm)).slice(0, 5);
-            filtered.forEach(player => { const item = document.createElement('li'); item.textContent = `${player.name} (${player.team})`; item.addEventListener('click', () => { inputElement.value = player.name; list.innerHTML = ''; }); list.appendChild(item); });
-        },
         analyzeStartSit(p1, p2) {
             const resultsContainer = document.getElementById('start-sit-results');
             if (!p1 || !p2) { resultsContainer.innerHTML = `<p class="text-red-400">Please select two valid players.</p>`; resultsContainer.classList.remove('hidden'); return; }
@@ -296,7 +317,7 @@ document.addEventListener('DOMContentLoaded', () => {
             return `While both are viable options, **${winner.name}** gets the edge. Our model indicates that ${winner.name} ${randomReason} Consider starting ${loser.name} only in deeper leagues or as a bye-week replacement.`;
         },
         initMockDraftSimulator() {
-             const controls = { startBtn: document.getElementById('start-draft-button'), scoringSelect: document.getElementById('draft-scoring'), sizeSelect: document.getElementById('draft-league-size'), pickSelect: document.getElementById('draft-user-pick'), settingsContainer: document.getElementById('draft-settings-container'), draftingContainer: document.getElementById('interactive-draft-container'), completeContainer: document.getElementById('draft-complete-container'), restartBtn: document.getElementById('restart-draft-button'), };
+             const controls = { startBtn: document.getElementById('start-draft-button'), scoringSelect: document.getElementById('draftScoringType'), sizeSelect: document.getElementById('leagueSize'), pickSelect: document.getElementById('userPick'), settingsContainer: document.getElementById('draft-settings-container'), draftingContainer: document.getElementById('interactive-draft-container'), completeContainer: document.getElementById('draft-complete-container'), restartBtn: document.getElementById('restart-draft-button'), };
             if (!controls.startBtn) return;
             const updateUserPickOptions = () => { const size = parseInt(controls.sizeSelect.value); controls.pickSelect.innerHTML = ''; for (let i = 1; i <= size; i++) { controls.pickSelect.add(new Option(`Pick ${i}`, i)); } };
             controls.sizeSelect.addEventListener('change', updateUserPickOptions);
