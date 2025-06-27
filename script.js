@@ -1,176 +1,168 @@
-/**
- * Front Row Fantasy - Main Application Script
- * Version: 4.4 - Mobile Navigation Fix & Firebase Integration
- */
+document.addEventListener('DOMContentLoaded', () => {
 
-const state = {
-    db: null,
-    auth: null,
-    allPlayers: [],
-    isDataUploaded: false,
-    lineupRoster: [],
-    startSitPlayers: { player1: null, player2: null }
-};
+    const config = {
+        dataFiles: [
+            'players_part1.json',
+            'players_part2.json',
+            'players_part3.json'
+        ],
+        rosterSettings: { QB: 1, RB: 2, WR: 2, TE: 1, FLEX: 1, DST: 1, K: 1, BENCH: 6 }
+    };
 
-const config = {
-    lineupPresets: {
-        'PPR: 1QB, 2RB, 2WR, 1TE, 1FLX, 1DST, 1K': { QB: 1, RB: 2, WR: 2, TE: 1, FLEX: 1, DST: 1, K: 1 },
-        'Standard: 1QB, 2RB, 2WR, 1TE, 1FLX, 1DST, 1K': { QB: 1, RB: 2, WR: 2, TE: 1, FLEX: 1, DST: 1, K: 1 },
-        'SuperFlex Redraft: 1QB, 1SF, 2RB, 2WR, 1TE, 1FLX, 1DST, 1K': { QB: 1, RB: 2, WR: 2, TE: 1, FLEX: 1, 'SUPER_FLEX': 1, DST: 1, K: 1 },
-    }
-};
-
-
-// --- CORE UI & FIREBASE MODULE ---
-
-const AppCore = {
-    async init() {
-        this.initMobileMenu();
+    const App = {
+        allPlayers: [],
         
-        // Only run Firebase logic on the main app page
-        if(document.getElementById('app-status')) {
-            await this.initFirebase();
-            await this.checkAndFetchData();
-            if (state.isDataUploaded) {
-                ToolsModule.init(state.allPlayers);
+        async init() {
+            this.initMobileMenu();
+            if (document.getElementById('goat-draft-builder')) {
+                await this.loadAllData();
+                this.setupDraftControls();
             }
-        }
-    },
-
-    initMobileMenu() {
-        const mobileMenuButton = document.getElementById('mobile-menu-button');
-        const mobileNav = document.getElementById('mobile-menu');
+        },
         
-        if (mobileMenuButton && mobileNav) {
-            mobileMenuButton.addEventListener('click', () => {
-                mobileNav.classList.toggle('hidden');
-            });
-        }
-    },
+        initMobileMenu() {
+            const mobileMenuButton = document.getElementById('mobile-menu-button');
+            const mainNav = document.querySelector('header nav.hidden');
+            const mobileNav = document.getElementById('mobile-menu');
 
-    async initFirebase() {
-        const { initializeApp, getFirestore, getAuth, onAuthStateChanged, signInAnonymously, signInWithCustomToken } = window.firebase;
-        const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : {};
+            if (mobileMenuButton && mainNav && mobileNav) {
+                mobileNav.innerHTML = mainNav.innerHTML;
+                mobileMenuButton.addEventListener('click', () => {
+                    mobileNav.classList.toggle('hidden');
+                });
+            }
+        },
 
-        if (Object.keys(firebaseConfig).length === 0) {
-            document.getElementById('status-text').textContent = "Firebase config not found. App cannot run.";
-            return;
-        }
+        async loadAllData() {
+            try {
+                const fetchPromises = config.dataFiles.map(file => fetch(file).then(res => res.json()));
+                const allParts = await Promise.all(fetchPromises);
+                this.allPlayers = allParts.flat(); // Combine all parts into a single array
+                
+                this.allPlayers.forEach(p => {
+                    p.simplePosition = p.position.replace(/\d+$/, '');
+                    p.vorp = 1000 / Math.sqrt(p.adp.standard || 300); // Value Over Replacement Player
+                });
+            } catch (error) {
+                console.error("Error loading player data:", error);
+            }
+        },
 
-        const app = initializeApp(firebaseConfig);
-        state.db = getFirestore(app);
-        state.auth = getAuth(app);
-        
-        await new Promise(resolve => {
-            onAuthStateChanged(state.auth, async (user) => {
-                if (user) {
-                    resolve();
-                } else {
-                    try {
-                        if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
-                           await signInWithCustomToken(state.auth, __initial_auth_token);
-                        } else {
-                           await signInAnonymously(state.auth);
+        setupDraftControls() {
+            const leagueSizeSelect = document.getElementById('leagueSize');
+            const draftPositionSelect = document.getElementById('draftPosition');
+            const generateButton = document.getElementById('generateDraftBuildButton');
+
+            const updateDraftPositions = () => {
+                const size = parseInt(leagueSizeSelect.value);
+                draftPositionSelect.innerHTML = '';
+                for (let i = 1; i <= size; i++) {
+                    draftPositionSelect.add(new Option(i, i));
+                }
+            }
+            
+            leagueSizeSelect.addEventListener('change', updateDraftPositions);
+            generateButton.addEventListener('click', () => this.runMockDraft());
+            updateDraftPositions();
+        },
+
+        runMockDraft() {
+            const loader = document.getElementById('draft-loading-spinner');
+            const resultsWrapper = document.getElementById('draft-results-wrapper');
+            loader.classList.remove('hidden');
+            resultsWrapper.classList.add('hidden');
+
+            const leagueSize = 12;
+            const userDraftPos = parseInt(document.getElementById('draftPosition').value) - 1;
+            let availablePlayers = [...this.allPlayers];
+            
+            const teams = Array.from({ length: leagueSize }, () => ({ roster: [], needs: { ...config.rosterSettings } }));
+            const totalRounds = Object.values(config.rosterSettings).reduce((sum, val) => sum + val, 0);
+
+            for (let round = 0; round < totalRounds; round++) {
+                const picksInRoundOrder = (round % 2 !== 0) ? 
+                    Array.from({ length: leagueSize }, (_, i) => leagueSize - 1 - i) :
+                    Array.from({ length: leagueSize }, (_, i) => i);
+
+                for (const teamIndex of picksInRoundOrder) {
+                    if (availablePlayers.length === 0) break;
+                    
+                    const team = teams[teamIndex];
+                    
+                    const pickOptions = availablePlayers.slice(0, 20).map(player => {
+                        let score = player.vorp;
+                        if (team.needs[player.simplePosition] > 0) {
+                            score *= 1.25; 
+                        } else if (player.simplePosition.match(/RB|WR|TE/) && team.needs['FLEX'] > 0) {
+                             score *= 1.1;
                         }
-                    } catch (error) {
-                        console.error("Auth Error:", error);
-                        document.getElementById('status-text').textContent = "Authentication failed.";
+                        const playersLeftInTier = availablePlayers.filter(p => p.position === player.position && p.tier === player.tier).length;
+                        if (playersLeftInTier <= 2) {
+                            score *= 1.15;
+                        }
+                        score *= (1 + (Math.random() - 0.5) * 0.1); 
+                        return { player, score };
+                    }).sort((a, b) => b.score - a.score);
+
+                    const draftedPlayer = pickOptions.length > 0 ? pickOptions[0].player : availablePlayers[0];
+                    
+                    if (draftedPlayer) {
+                        draftedPlayer.draftedAt = `(${(round + 1)}.${picksInRoundOrder.indexOf(teamIndex) + 1})`;
+                        team.roster.push(draftedPlayer);
+
+                        if(team.needs[draftedPlayer.simplePosition] > 0) {
+                            team.needs[draftedPlayer.simplePosition]--;
+                        } else if (draftedPlayer.simplePosition.match(/RB|WR|TE/) && team.needs['FLEX'] > 0) {
+                            team.needs['FLEX']--;
+                        }
+                        
+                        availablePlayers = availablePlayers.filter(p => p.name !== draftedPlayer.name);
                     }
                 }
-            });
-        });
-    },
+            }
+            this.displayDraftResults(teams[userDraftPos].roster);
+            loader.classList.add('hidden');
+            resultsWrapper.classList.remove('hidden');
+        },
 
-    async checkAndFetchData() {
-        const { collection, getDocs } = window.firebase;
-        const statusText = document.getElementById('status-text');
-        const uploaderBtn = document.getElementById('upload-data-btn');
-        const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+        displayDraftResults(roster) {
+            const startersEl = document.getElementById('starters-list');
+            const benchEl = document.getElementById('bench-list');
+            startersEl.innerHTML = '';
+            benchEl.innerHTML = '';
 
-        const playersColRef = collection(state.db, `artifacts/${appId}/public/data/players`);
-        const snapshot = await getDocs(playersColRef);
+            const starters = [];
+            const bench = [];
+            const rosterSlots = { ...config.rosterSettings };
 
-        if (snapshot.empty) {
-            statusText.textContent = "Database is empty. Please use the button below for a one-time setup.";
-            uploaderBtn.classList.remove('hidden');
-            state.isDataUploaded = false;
-        } else {
-            statusText.textContent = `Player data loaded (${snapshot.size} players). Tools are ready.`;
-            state.allPlayers = snapshot.docs.map(doc => doc.data());
-            state.isDataUploaded = true;
-            this.enableTools();
-        }
-    },
+            roster.sort((a,b) => a.adp.standard - b.adp.standard);
 
-    async uploadData() {
-        const { writeBatch, doc, collection } = window.firebase;
-        const uploaderBtn = document.getElementById('upload-data-btn');
-        const uploadStatus = document.getElementById('upload-status');
-        const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
-        
-        uploaderBtn.disabled = true;
-        uploadStatus.textContent = "Reading local players.json...";
-        
-        try {
-            const response = await fetch('players.json');
-            if (!response.ok) throw new Error('players.json file not found. Make sure it is in the same directory as your HTML files.');
-            const players = await response.json();
-            uploadStatus.textContent = `Uploading ${players.length} players... This may take a moment.`;
-
-            const batch = writeBatch(state.db);
-            const playersColRef = collection(state.db, `artifacts/${appId}/public/data/players`);
-
-            players.forEach(player => {
-                const docId = player.name.replace(/[^a-zA-Z0-9]/g, "") || player.name;
-                if (docId) {
-                    batch.set(doc(playersColRef, docId), player);
+            roster.forEach(player => {
+                if (rosterSlots[player.simplePosition] > 0) {
+                    starters.push(player);
+                    rosterSlots[player.simplePosition]--;
+                } else if (player.simplePosition.match(/RB|WR|TE/) && rosterSlots['FLEX'] > 0) {
+                    player.displayPos = 'FLEX';
+                    starters.push(player);
+                    rosterSlots['FLEX']--;
+                } else {
+                    bench.push(player);
                 }
             });
+            
+            starters.sort((a,b) => a.adp.standard - b.adp.standard);
 
-            await batch.commit();
-
-            uploadStatus.textContent = "Upload complete! Reloading from database...";
-            uploaderBtn.classList.add('hidden');
-            await this.checkAndFetchData();
-
-        } catch (error) {
-            uploadStatus.textContent = `Upload failed: ${error.message}`;
-            console.error("Upload Error:", error);
-            uploaderBtn.disabled = false;
+            startersEl.innerHTML = starters.map(p => `
+                <div class="player-card player-pos-${p.simplePosition.toLowerCase()}">
+                    <strong>${p.displayPos || p.simplePosition}:</strong> ${p.name} <span class="text-gray-400">${p.draftedAt}</span>
+                </div>`).join('');
+                
+            benchEl.innerHTML = bench.map(p => `
+                 <div class="player-card player-pos-${p.simplePosition.toLowerCase()}">
+                    <strong>BEN:</strong> ${p.name} <span class="text-gray-400">${p.draftedAt}</span>
+                </div>`).join('');
         }
-    },
+    };
 
-    enableTools() {
-        const draftBuilder = document.getElementById('goat-draft-builder');
-        const lineupTools = document.getElementById('lineup-tools');
-        if (draftBuilder) draftBuilder.classList.remove('opacity-50', 'pointer-events-none');
-        if (lineupTools) lineupTools.classList.remove('opacity-50', 'pointer-events-none');
-    }
-};
-
-// --- TOOLS MODULE ---
-const ToolsModule = {
-    init(players) {
-        state.allPlayers = players;
-        this.injectHTML();
-        this.setupAll();
-    },
-    
-    injectHTML() {
-        // Inject HTML for both tools
-    },
-
-    setupAll() {
-        // Setup event listeners for both tools
-    },
-    
-    // ... all intelligent tool logic (runMockDraft, etc.)
-};
-
-// --- APP INITIALIZER ---
-document.addEventListener('DOMContentLoaded', async () => {
-    document.getElementById('upload-data-btn')?.addEventListener('click', () => AppCore.uploadData());
-    AppCore.init();
+    App.init();
 });
-
-
