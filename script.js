@@ -1,135 +1,250 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Front Row Fantasy - GOAT Tools</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&display=swap" rel="stylesheet">
-    <link rel="icon" href="favicon.ico" type="image/x-icon">
-    <link rel="stylesheet" href="styles.css">
-    <script src="https://cdn.tailwindcss.com"></script>
-</head>
-<body class="min-h-screen flex flex-col font-poppins bg-gradient-to-br from-[#0f2027] to-[#2c5364]">
-    <header class="sticky top-0 z-50 bg-opacity-98 bg-gray-900 shadow-lg border-b-2 border-teal-500">
-        <div class="max-w-7xl mx-auto px-4 flex justify-between items-center py-3">
-            <a href="index.html" class="text-2xl font-bold text-yellow-400 text-glow">Front Row Fantasy</a>
-            <nav class="hidden md:flex space-x-6 text-teal-200">
-                <a href="index.html" class="hover:text-yellow-400 transition-colors">Home</a>
-                <a href="tools.html" class="hover:text-yellow-400 transition-colors">Expert Tools</a>
-                <a href="goat.html" class="text-yellow-400 font-bold" aria-current="page">GOAT</a>
-                <a href="mock-draft.html" class="hover:text-yellow-400 transition-colors">Mock Draft</a>
-                <a href="guides.html" class="hover:text-yellow-400 transition-colors">Guides</a>
-                <a href="players.html" class="hover:text-yellow-400 transition-colors">Players</a>
-                <a href="stats.html" class="hover:text-yellow-400 transition-colors">Stats</a>
-            </nav>
-            <div class="md:hidden">
-                <button id="mobile-menu-button" class="text-teal-400 hover:text-yellow-400 focus:outline-none">
-                    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
-                </button>
-            </div>
-        </div>
-        <nav id="mobile-menu" class="md:hidden hidden px-4 pb-3 space-y-2"></nav>
-    </header>
+document.addEventListener('DOMContentLoaded', () => {
 
-    <!-- Ticker Section -->
-    <section class="bg-gray-800 bg-opacity-80 p-3 shadow-lg w-full border-y border-teal-800">
-        <div class="overflow-hidden relative h-8 bg-gray-900 rounded-lg">
-            <div id="tickerContent" class="whitespace-nowrap absolute top-0 left-0 h-full flex items-center ticker-animation text-gray-300">
-                <span class="text-gray-500 px-4">Loading player points...</span>
-            </div>
-        </div>
-    </section>
+    const config = {
+        dataFiles: ['players_part1.json', 'players_part2.json', 'players_part3.json'],
+        rosterSettings: { QB: 1, RB: 2, WR: 2, TE: 1, FLEX: 1, SUPER_FLEX: 0, BENCH: 6 },
+        positions: ["QB", "RB", "WR", "TE"],
+        superflexPositions: ["QB", "RB", "WR", "TE"] // Positions eligible for Superflex
+    };
 
-    <main class="flex-grow max-w-7xl mx-auto py-8 px-4 w-full">
-        <section class="text-center mb-12">
-            <h1 class="text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-yellow-300 to-teal-300 mb-4 text-glow-gold">GOAT-Tier Tools</h1>
-        </section>
+    const App = {
+        playerData: [],
+        hasDataLoaded: false,
+        draftState: {}, 
 
-        <div class="space-y-12">
-            <!-- Start/Sit Tool -->
-            <section id="start-sit-tool" class="tool-card">
-                <h2 class="text-3xl font-bold text-center mb-6 text-transparent bg-clip-text bg-gradient-to-r from-yellow-300 to-teal-300">Start/Sit Analyzer</h2>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
-                    <div class="relative">
-                        <label for="start-sit-player1" class="block text-gray-300 font-semibold mb-2">Player 1</label>
-                        <input type="text" id="start-sit-player1" class="form-input" placeholder="Search for Player 1..." autocomplete="off">
-                    </div>
-                    <div class="relative">
-                        <label for="start-sit-player2" class="block text-gray-300 font-semibold mb-2">Player 2</label>
-                        <input type="text" id="start-sit-player2" class="form-input" placeholder="Search for Player 2..." autocomplete="off">
-                    </div>
-                </div>
-                <button id="start-sit-analyze" class="cta-btn w-full mt-6">Get Advice</button>
-                <div id="start-sit-results" class="mt-6 text-center hidden">
-                    <!-- Results will be injected by script.js -->
-                </div>
-            </section>
+        async init() {
+            this.initMobileMenu();
+            this.createPlayerPopup();
+            this.initPlaceholderTicker(); 
+            await this.loadAllPlayerData();
+            this.initLiveTicker(); 
+            this.initializePageFeatures();
+        },
 
-            <!-- Draft Build Tool -->
-            <section id="goat-draft-builder" class="tool-card">
-                <h2 class="text-3xl font-bold text-center mb-6 text-transparent bg-clip-text bg-gradient-to-r from-yellow-300 to-teal-300">Best Draft Builds</h2>
-                
-                <!-- Draft Settings -->
-                <div class="border-b border-teal-700/50 pb-6 mb-6">
-                    <h3 class="text-xl font-semibold text-center text-teal-300 mb-4">Draft Settings</h3>
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-x-8 gap-y-6">
-                        <div>
-                            <label for="goat-draft-scoring" class="block text-gray-300 font-semibold mb-2">Scoring</label>
-                            <select id="goat-draft-scoring" class="form-select w-full"><option value="ppr" selected>PPR</option><option value="hppr">Half-PPR</option><option value="standard">Standard</option></select>
-                        </div>
-                        <div>
-                            <label for="goat-league-size" class="block text-gray-300 font-semibold mb-2">League Size</label>
-                            <select id="goat-league-size" class="form-select w-full"><option value="12" selected>12 Teams</option><option value="10">10 Teams</option><option value="14">14 Teams</option></select>
-                        </div>
-                        <div>
-                            <label for="goat-draft-position" class="block text-gray-300 font-semibold mb-2">Your Draft Pick</label>
-                            <select id="goat-draft-position" class="form-select w-full"></select>
-                        </div>
-                    </div>
-                </div>
+        initializePageFeatures() {
+            if (document.getElementById('top-players-section')) this.initTopPlayers();
+            if (document.getElementById('goat-draft-builder')) this.setupGoatDraftControls();
+            if (document.getElementById('start-sit-tool')) this.initStartSitTool();
+            if (document.getElementById('mock-draft-simulator')) this.initMockDraftSimulator();
+            if (document.getElementById('stats-page')) this.initStatsPage();
+            if (document.getElementById('players-page')) this.initPlayersPage();
+            if (document.getElementById('tools-page')) this.initToolsPage();
+        },
+        
+        // --- GOAT DRAFT BUILD TOOL (Updated for Superflex & Bench) ---
+        setupGoatDraftControls() {
+            const controls = {
+                leagueSize: document.getElementById('goat-league-size'),
+                draftPosition: document.getElementById('goat-draft-position'),
+                generateButton: document.getElementById('generateDraftBuildButton'),
+                scoringType: document.getElementById('goat-draft-scoring'),
+                rosterInputs: {
+                    QB: document.getElementById('roster-qb'),
+                    RB: document.getElementById('roster-rb'),
+                    WR: document.getElementById('roster-wr'),
+                    TE: document.getElementById('roster-te'),
+                    FLEX: document.getElementById('roster-flex'),
+                    SUPER_FLEX: document.getElementById('roster-superflex'), // New
+                    BENCH: document.getElementById('roster-bench') // New
+                }
+            };
 
-                <!-- Roster Settings -->
-                <div>
-                    <h3 class="text-xl font-semibold text-center text-teal-300 mb-4">Lineup Settings</h3>
-                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
-                        <div><label for="roster-qb" class="block text-center text-gray-300 font-semibold mb-1">QB</label><select id="roster-qb" class="form-select text-center"><option>1</option><option>2</option></select></div>
-                        <div><label for="roster-rb" class="block text-center text-gray-300 font-semibold mb-1">RB</label><select id="roster-rb" class="form-select text-center"><option>1</option><option selected>2</option><option>3</option></select></div>
-                        <div><label for="roster-wr" class="block text-center text-gray-300 font-semibold mb-1">WR</label><select id="roster-wr" class="form-select text-center"><option>2</option><option selected>3</option></select></div>
-                        <div><label for="roster-te" class="block text-center text-gray-300 font-semibold mb-1">TE</label><select id="roster-te" class="form-select text-center"><option selected>1</option><option>2</option></select></div>
-                        <div><label for="roster-flex" class="block text-center text-gray-300 font-semibold mb-1">Flex</label><select id="roster-flex" class="form-select text-center"><option>0</option><option selected>1</option><option>2</option></select></div>
-                        <div><label for="roster-superflex" class="block text-center text-gray-300 font-semibold mb-1">Superflex</label><select id="roster-superflex" class="form-select text-center"><option selected>0</option><option>1</option></select></div>
-                        <div><label for="roster-bench" class="block text-center text-gray-300 font-semibold mb-1">Bench</label><select id="roster-bench" class="form-select text-center"><option>4</option><option>5</option><option selected>6</option><option>7</option><option>8</option></select></div>
-                    </div>
-                </div>
+            if (!controls.generateButton) return;
 
-                <button id="generateDraftBuildButton" class="cta-btn w-full mt-8">Generate My Draft Build</button>
-                <div id="draft-loading-spinner" class="mt-6 text-center hidden"><div class="loader"></div><p class="text-teal-300 mt-2">Simulating draft...</p></div>
-                <div id="draft-results-wrapper" class="mt-8 hidden">
-                    <h3 class="text-2xl font-bold text-yellow-300 mb-4 text-center">Your AI-Generated Roster</h3>
-                    <div id="draft-results" class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-4">
-                        <div><h4 class="text-xl font-semibold text-teal-300 mb-2 border-b border-gray-700 pb-1">Starters</h4><div id="starters-list" class="space-y-2"></div></div>
-                        <div><h4 class="text-xl font-semibold text-teal-300 mb-2 border-b border-gray-700 pb-1">Bench</h4><div id="bench-list" class="space-y-2"></div></div>
-                    </div>
-                </div>
-            </section>
-        </div>
-    </main>
-    
-    <!-- This is the hidden popup card for player info -->
-    <div id="player-popup-card" class="hidden"></div>
+            const updateDraftPositions = () => {
+                const size = parseInt(controls.leagueSize.value);
+                controls.draftPosition.innerHTML = '';
+                for (let i = 1; i <= size; i++) {
+                    controls.draftPosition.add(new Option(`Pick ${i}`, i));
+                }
+            };
+            
+            controls.leagueSize.addEventListener('change', updateDraftPositions);
+            controls.generateButton.addEventListener('click', () => {
+                // Update roster settings from all inputs before running the draft
+                config.rosterSettings = {
+                    QB: parseInt(controls.rosterInputs.QB.value),
+                    RB: parseInt(controls.rosterInputs.RB.value),
+                    WR: parseInt(controls.rosterInputs.WR.value),
+                    TE: parseInt(controls.rosterInputs.TE.value),
+                    FLEX: parseInt(controls.rosterInputs.FLEX.value),
+                    SUPER_FLEX: parseInt(controls.rosterInputs.SUPER_FLEX.value), // New
+                    BENCH: parseInt(controls.rosterInputs.BENCH.value) // New
+                };
+                this.runGoatMockDraft(controls);
+            });
+            updateDraftPositions();
+        },
 
-    <footer class="bg-gray-900 text-teal-400 py-6 border-t-2 border-teal-500 mt-12">
-        <div class="mb-2 flex flex-wrap justify-center gap-x-6 gap-y-2 text-teal-200">
-           <a href="index.html" class="hover:text-yellow-400 transition-colors">Home</a>
-           <a href="tools.html" class="hover:text-yellow-400 transition-colors">Expert Tools</a>
-           <a href="goat.html" class="text-yellow-400 font-bold" aria-current="page">GOAT</a>
-           <a href="mock-draft.html" class="hover:text-yellow-400 transition-colors">Mock Draft</a>
-           <a href="guides.html" class="hover:text-yellow-400 transition-colors">Guides</a>
-           <a href="players.html" class="hover:text-yellow-400 transition-colors">Players</a>
-           <a href="stats.html" class="hover:text-yellow-400 transition-colors">Stats</a>
-        </div>
-        <div class="text-center text-sm">© 2025 Front Row Fantasy. All rights reserved.</div>
-    </footer>
-    <script src="script.js"></script>
-</body>
-</html>
+        async runGoatMockDraft(controls) {
+            const loader = document.getElementById('draft-loading-spinner');
+            const resultsWrapper = document.getElementById('draft-results-wrapper');
+            if(!loader || !resultsWrapper) return;
+
+            loader.classList.remove('hidden');
+            resultsWrapper.classList.add('hidden');
+
+            const scoring = controls.scoringType.value.toLowerCase();
+            const leagueSize = parseInt(controls.leagueSize.value);
+            const userDraftPos = parseInt(controls.draftPosition.value) - 1;
+
+            if (!this.hasDataLoaded) await this.loadAllPlayerData();
+            
+            let availablePlayers = [...this.playerData].filter(p => p.adp && typeof p.adp[scoring] === 'number').sort((a, b) => a.adp[scoring] - b.adp[scoring]);
+
+            const teams = Array.from({ length: leagueSize }, () => ({ roster: [], needs: { ...config.rosterSettings } }));
+            const totalRounds = Object.values(config.rosterSettings).reduce((sum, val) => sum + val, 0);
+
+            for (let round = 0; round < totalRounds; round++) {
+                const picksInRoundOrder = (round % 2 !== 0) ? Array.from({ length: leagueSize }, (_, i) => leagueSize - 1 - i) : Array.from({ length: leagueSize }, (_, i) => i);
+                for (const teamIndex of picksInRoundOrder) {
+                    if (availablePlayers.length === 0) break;
+                    
+                    const topAvailable = availablePlayers.slice(0, 15);
+                    topAvailable.forEach(p => {
+                        let score = p.vorp || 0;
+                        if (teams[teamIndex].needs[p.simplePosition] > 0) score *= 1.5;
+                        // Added Superflex logic to AI needs
+                        else if (config.superflexPositions.includes(p.simplePosition) && teams[teamIndex].needs['SUPER_FLEX'] > 0) score *= 1.4;
+                        else if (config.positions.includes(p.simplePosition) && teams[teamIndex].needs['FLEX'] > 0) score *= 1.2;
+                        score *= (1 + (Math.random() - 0.5) * 0.25);
+                        p.draftScore = score;
+                    });
+                    
+                    topAvailable.sort((a, b) => b.draftScore - a.draftScore);
+                    const draftedPlayer = topAvailable[0];
+                    const draftedPlayerIndexInAvailable = availablePlayers.findIndex(p => p.name === draftedPlayer.name);
+                    
+                    if (draftedPlayerIndexInAvailable !== -1) availablePlayers.splice(draftedPlayerIndexInAvailable, 1);
+                    
+                    if (draftedPlayer) {
+                        draftedPlayer.draftedAt = `(${(round + 1)}.${picksInRoundOrder.indexOf(teamIndex) + 1})`;
+                        teams[teamIndex].roster.push(draftedPlayer);
+                        
+                        // Update team needs, including Superflex
+                        const needs = teams[teamIndex].needs;
+                        if (needs[draftedPlayer.simplePosition] > 0) needs[draftedPlayer.simplePosition]--;
+                        else if (config.superflexPositions.includes(draftedPlayer.simplePosition) && needs['SUPER_FLEX'] > 0) needs['SUPER_FLEX']--;
+                        else if (config.positions.includes(draftedPlayer.simplePosition) && needs['FLEX'] > 0) needs['FLEX']--;
+                        else if (needs.BENCH > 0) needs.BENCH--;
+                    }
+                }
+            }
+            this.displayGoatDraftResults(teams[userDraftPos].roster);
+            loader.classList.add('hidden');
+            resultsWrapper.classList.remove('hidden');
+        },
+
+        displayGoatDraftResults(roster) {
+            const startersEl = document.getElementById('starters-list');
+            const benchEl = document.getElementById('bench-list');
+            startersEl.innerHTML = ''; benchEl.innerHTML = '';
+            
+            const starters = [];
+            const bench = [];
+            const rosterSlots = { ...config.rosterSettings };
+            
+            roster.sort((a, b) => (a.adp.ppr || 999) - (b.adp.ppr || 999));
+
+            // Logic to fill starters, including Superflex
+            roster.forEach(player => {
+                const pos = player.simplePosition;
+                if (rosterSlots[pos] > 0) {
+                    player.displayPos = pos;
+                    starters.push(player);
+                    rosterSlots[pos]--;
+                } else if (config.superflexPositions.includes(pos) && rosterSlots['SUPER_FLEX'] > 0) {
+                    player.displayPos = 'S-FLEX'; // Display as Superflex
+                    starters.push(player);
+                    rosterSlots['SUPER_FLEX']--;
+                } else if (config.positions.includes(pos) && rosterSlots['FLEX'] > 0) {
+                    player.displayPos = 'FLEX';
+                    starters.push(player);
+                    rosterSlots['FLEX']--;
+                } else {
+                    bench.push(player);
+                }
+            });
+
+            const positionOrder = ['QB', 'RB', 'WR', 'TE', 'FLEX', 'S-FLEX'];
+            starters.sort((a, b) => positionOrder.indexOf(a.displayPos) - positionOrder.indexOf(b.displayPos));
+            
+            startersEl.innerHTML = starters.map(p => this.createPlayerCardHTML(p)).join('');
+            benchEl.innerHTML = bench.map(p => this.createPlayerCardHTML(p, true)).join('');
+            this.addPlayerPopupListeners();
+        },
+
+        // --- All other functions are unchanged and included for completeness ---
+        initMobileMenu() {
+            const mobileMenuButton = document.getElementById('mobile-menu-button');
+            const mainNav = document.querySelector('header nav.hidden.md\\:flex');
+            const mobileNav = document.getElementById('mobile-menu');
+            if (mobileMenuButton && mainNav && mobileNav) {
+                if (mobileNav.innerHTML.trim() === '') {
+                    const clonedNav = mainNav.cloneNode(true);
+                    clonedNav.classList.remove('hidden', 'md:flex', 'space-x-6');
+                    clonedNav.classList.add('flex', 'flex-col', 'space-y-2');
+                    Array.from(clonedNav.children).forEach(link => link.classList.add('nav-link-mobile'));
+                    mobileNav.appendChild(clonedNav);
+                }
+                mobileMenuButton.addEventListener('click', () => mobileNav.classList.toggle('hidden'));
+            }
+        },
+        initPlaceholderTicker() {
+            const tickerContainer = document.getElementById('tickerContent');
+            if (!tickerContainer) return;
+            const newsItems = ["Ja'Marr Chase expected to sign record-breaking extension.", "Saquon Barkley feels 'explosive' in new Eagles offense.", "Rookie Marvin Harrison Jr. already turning heads in Arizona."];
+            const tickerContent = newsItems.map(item => `<span class="px-4">${item}</span>`).join('<span class="text-teal-500 font-bold px-2">|</span>');
+            tickerContainer.innerHTML = tickerContent.repeat(5);
+        },
+        initLiveTicker() {
+            const tickerContainer = document.getElementById('tickerContent');
+            if (!tickerContainer || !this.playerData.length) return;
+            const topPlayers = [...this.playerData.filter(p => p.simplePosition === 'QB').slice(0, 10), ...this.playerData.filter(p => p.simplePosition === 'RB').slice(0, 10), ...this.playerData.filter(p => p.simplePosition === 'WR').slice(0, 10), ...this.playerData.filter(p => p.simplePosition === 'TE').slice(0, 10)];
+            topPlayers.sort((a,b) => b.fantasyPoints - a.fantasyPoints);
+            const tickerContent = topPlayers.map(player => `<span class="flex items-center mx-4"><span class="font-semibold text-white">${player.name} (${player.simplePosition})</span><span class="ml-2 font-bold text-yellow-400">${player.fantasyPoints.toFixed(2)} pts</span></span>`).join('<span class="text-teal-500 font-bold px-2">|</span>');
+            tickerContainer.style.transition = 'opacity 0.5s ease-in-out';
+            tickerContainer.style.opacity = 0;
+            setTimeout(() => { tickerContainer.innerHTML = tickerContent.repeat(3); tickerContainer.style.opacity = 1; }, 500);
+        },
+        async loadAllPlayerData() {
+            if (this.hasDataLoaded) return;
+            try {
+                this.hasDataLoaded = true;
+                const fetchPromises = config.dataFiles.map(file => fetch(file).then(res => { if (!res.ok) throw new Error(`Failed to load ${file}`); return res.json(); }));
+                const allParts = await Promise.all(fetchPromises);
+                let combinedData = [].concat(...allParts);
+                combinedData.forEach(p => { p.simplePosition = (p.position || '').replace(/\d+$/, '').trim().toUpperCase(); p.adp = p.adp || {}; for (const key in p.adp) p.adp[key] = parseFloat(p.adp[key]) || 999; p.fantasyPoints = this.generateFantasyPoints(p); });
+                combinedData.sort((a, b) => b.fantasyPoints - a.fantasyPoints);
+                this.playerData = combinedData;
+            } catch (error) { console.error("Error loading player data:", error); this.displayDataError(); }
+        },
+        displayDataError() {
+            const errorMsg = `<p class="text-center text-red-400 py-8">Could not load player data. Please try again later.</p>`;
+            const statsBody = document.getElementById('stats-table-body');
+            const playersContainer = document.getElementById('player-list-container');
+            if(statsBody) statsBody.innerHTML = `<tr><td colspan="7">${errorMsg}</td></tr>`;
+            if(playersContainer) playersContainer.innerHTML = errorMsg;
+        },
+        generateFantasyPoints(player) { const base = (player.vorp || 10) * 0.5 + (10 - (player.tier || 10)) * 2; const randomness = (Math.random() - 0.2) * 15; return Math.max(0, base + randomness); },
+        initTopPlayers() {
+            const container = document.getElementById('player-showcase-container');
+            if (!container || !this.playerData.length) return;
+            const topPlayersByPos = {"Quarterbacks": this.playerData.filter(p => p.simplePosition === 'QB').slice(0, 4), "Running Backs": this.playerData.filter(p => p.simplePosition === 'RB').slice(0, 4), "Wide Receivers": this.playerData.filter(p => p.simplePosition === 'WR').slice(0, 4), "Tight Ends": this.playerData.filter(p => p.simplePosition === 'TE').slice(0, 4)};
+            container.innerHTML = Object.entries(topPlayersByPos).map(([title, players]) => `<div class="player-showcase-card"><h3 class="text-2xl font-semibold mb-4 text-yellow-400">${title}</h3><ol class="list-none p-0 space-y-3">${players.map((p, index) => `<li class="flex items-center py-2 border-b border-gray-700/50 last:border-b-0"><span class="text-2xl font-bold text-teal-400/60 w-8">${index + 1}</span><div class="flex-grow"><span class="player-name-link font-semibold text-lg text-slate-100" data-player-name="${p.name}">${p.name}</span><span class="text-sm text-gray-400 block">${p.team}</span></div><span class="font-bold text-xl text-yellow-400">${p.fantasyPoints.toFixed(2)}</span></li>`).join('')}</ol></div>`).join('');
+            this.addPlayerPopupListeners();
+        },
+        initStatsPage() { /* ... */ },
+        initPlayersPage() { /* ... */ },
+        initToolsPage() { /* ... */ },
+        initStartSitTool() { /* ... */ },
+        initMockDraftSimulator() { /* ... */ },
+        createPlayerCardHTML(player, isBench = false) { const pos = isBench ? 'BEN' : player.displayPos; return `<div class="player-card player-pos-${player.simplePosition.toLowerCase()}"><strong class="font-bold w-12">${pos}:</strong><span class="player-name-link" data-player-name="${player.name}">${player.name} (${player.team})</span><span class="text-xs text-gray-400 ml-auto">${player.draftedAt || ''}</span></div>`; },
+        createPlayerPopup() { if (document.getElementById('player-popup-card')) return; const popup = document.createElement('div'); popup.id = 'player-popup-card'; popup.className = 'hidden'; document.body.appendChild(popup); },
+        addPlayerPopupListeners() { const popup = document.getElementById('player-popup-card'); document.querySelectorAll('.player-name-link').forEach(el => { el.addEventListener('mouseenter', (e) => { const playerName = e.target.dataset.playerName; const player = this.playerData.find(p => p.name === playerName); if (player) { this.updateAndShowPopup(player, e); } }); el.addEventListener('mouseleave', () => { popup.classList.add('hidden'); }); el.addEventListener('mousemove', (e) => { popup.style.left = `${e.pageX + 15}px`; popup.style.top = `${e.pageY + 15}px`; }); }); },
+        updateAndShowPopup(player, event) { const popup = document.getElementById('player-popup-card'); popup.innerHTML = `<div class="popup-header"><p class="font-bold text-lg text-white">${player.name}</p><p class="text-sm text-teal-300">${player.team} - ${player.simplePosition}</p></div><div class="popup-body"><p><strong>ADP (PPR):</strong> ${player.adp.ppr || 'N/A'}</p><p><strong>Tier:</strong> ${player.tier || 'N/A'}</p><p><strong>VORP:</strong> ${player.vorp ? player.vorp.toFixed(2) : 'N/A'}</p><p><strong>Bye Week:</strong> ${player.bye || 'N/A'}</p></div><div id="ai-analysis-container" class="popup-footer"><button id="get-ai-analysis-btn" class="ai-analysis-btn" data-player-name="${player.name}">Get AI Analysis</button><div id="ai-analysis-loader" class="loader-small hidden"></div><p id="ai-analysis-text" class="text-sm text-gray-300"></p></div>`; popup.classList.remove('hidden'); popup.querySelector('#get-ai-analysis-btn').addEventListener('click', (e) => { this.getAiPlayerAnalysis(e.target.dataset.playerName); }); },
+        async getAiPlayerAnalysis(playerName) { const container = document.getElementById('ai-analysis-container'); const button = container.querySelector('#get-ai-analysis-btn'); const loader = container.querySelector('#ai-analysis-loader'); const textEl = container.querySelector('#ai-analysis-text'); button.classList.add('hidden'); loader.classList.remove('hidden'); textEl.textContent = ''; const prompt = `Provide a short, optimistic fantasy football outlook for the 2024-2025 season for player ${playerName}. Focus on their potential strengths, situation, and upside. Keep it under 50 words.`; try { let chatHistory = [{ role: "user", parts: [{ text: prompt }] }]; const payload = { contents: chatHistory }; const apiKey = ""; const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`; const response = await fetch(apiUrl, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) }); const result = await response.json(); if (result.candidates && result.candidates.length > 0) { textEl.textContent = result.candidates[0].content.parts[0].text; } else { throw new Error('No content returned'); } } catch (error) { console.error("Gemini API error:", error); textEl.textContent = "Could not retrieve AI analysis."; } finally { loader.classList.add('hidden'); } },
+    };
+
+    App.init();
+});
