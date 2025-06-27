@@ -74,16 +74,16 @@
                     <h3 class="text-xl font-semibold text-center text-teal-300 mb-4">Draft Settings</h3>
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-x-8 gap-y-6">
                         <div>
-                            <label for="draftScoringType" class="block text-gray-300 font-semibold mb-2">Scoring</label>
-                            <select id="draftScoringType" class="form-select w-full"><option value="ppr" selected>PPR</option><option value="hppr">Half-PPR</option><option value="standard">Standard</option></select>
+                            <label for="goat-draft-scoring" class="block text-gray-300 font-semibold mb-2">Scoring</label>
+                            <select id="goat-draft-scoring" class="form-select w-full"><option value="ppr" selected>PPR</option><option value="hppr">Half-PPR</option><option value="standard">Standard</option></select>
                         </div>
                         <div>
-                            <label for="leagueSize" class="block text-gray-300 font-semibold mb-2">League Size</label>
-                            <select id="leagueSize" class="form-select w-full"><option value="12" selected>12 Teams</option><option value="10">10 Teams</option><option value="14">14 Teams</option></select>
+                            <label for="goat-league-size" class="block text-gray-300 font-semibold mb-2">League Size</label>
+                            <select id="goat-league-size" class="form-select w-full"><option value="12" selected>12 Teams</option><option value="10">10 Teams</option><option value="14">14 Teams</option></select>
                         </div>
                         <div>
-                            <label for="draftPosition" class="block text-gray-300 font-semibold mb-2">Your Draft Pick</label>
-                            <select id="draftPosition" class="form-select w-full"></select>
+                            <label for="goat-draft-position" class="block text-gray-300 font-semibold mb-2">Your Draft Pick</label>
+                            <select id="goat-draft-position" class="form-select w-full"></select>
                         </div>
                     </div>
                 </div>
@@ -100,7 +100,7 @@
                     </div>
                 </div>
 
-                <button id="generateDraftBuildButton" class="cta-btn w-full mt-8">Generate New Draft Build</button>
+                <button id="generateDraftBuildButton" class="cta-btn w-full mt-8">Generate My Draft Build</button>
                 <div id="draft-loading-spinner" class="mt-6 text-center hidden"><div class="loader"></div><p class="text-teal-300 mt-2">Simulating draft...</p></div>
                 <div id="draft-results-wrapper" class="mt-8 hidden">
                     <h3 class="text-2xl font-bold text-yellow-300 mb-4 text-center">Your AI-Generated Roster</h3>
