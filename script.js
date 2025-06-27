@@ -103,9 +103,6 @@ document.addEventListener('DOMContentLoaded', () => {
             const points = base + (Math.random() * range);
             return Math.max(0, points); 
         },
-
-        // --- PAGE INITIALIZERS ---
-        
         initTopPlayers() {
             const container = document.getElementById('player-showcase-container');
             if (!container || !this.playerData.length) return;
