@@ -17,8 +17,8 @@
         "position": "WR",
         "bye": 6,
         "adp": {
-            "ppr": 2,
-            "half_ppr": 3,
+            "ppr": 2.5,
+            "half_ppr": 3.5,
             "standard": 5
         },
         "projections": {}
@@ -30,7 +30,7 @@
         "bye": 9,
         "adp": {
             "ppr": 3,
-            "half_ppr": 4,
+            "half_ppr": 3.5,
             "standard": 3
         },
         "projections": {
@@ -62,8 +62,8 @@
         "position": "RB",
         "bye": 5,
         "adp": {
-            "ppr": 4,
-            "half_ppr": 2,
+            "ppr": 3.5,
+            "half_ppr": 2.5,
             "standard": 2
         },
         "projections": {}
@@ -75,7 +75,7 @@
         "bye": 10,
         "adp": {
             "ppr": 5,
-            "half_ppr": 6,
+            "half_ppr": 5.5,
             "standard": 6
         },
         "projections": {}
@@ -98,8 +98,8 @@
         "position": "WR",
         "bye": 8,
         "adp": {
-            "ppr": 7,
-            "half_ppr": 8,
+            "ppr": 7.5,
+            "half_ppr": 8.5,
             "standard": 10
         },
         "projections": {}
@@ -111,8 +111,8 @@
         "bye": 14,
         "adp": {
             "ppr": 8,
-            "half_ppr": 7,
-            "standard": 9
+            "half_ppr": 8.5,
+            "standard": 9.5
         },
         "projections": {}
     },
@@ -122,8 +122,8 @@
         "position": "RB",
         "bye": 14,
         "adp": {
-            "ppr": 9,
-            "half_ppr": 12,
+            "ppr": 8.5,
+            "half_ppr": 11.5,
             "standard": 11
         },
         "projections": {}
@@ -134,9 +134,9 @@
         "position": "WR",
         "bye": 6,
         "adp": {
-            "ppr": 10,
+            "ppr": 11,
             "half_ppr": 11,
-            "standard": 13
+            "standard": 13.5
         },
         "projections": {}
     },
@@ -147,7 +147,7 @@
         "bye": 8,
         "adp": {
             "ppr": 11,
-            "half_ppr": 9,
+            "half_ppr": 9.5,
             "standard": 7
         },
         "projections": {}
@@ -158,9 +158,9 @@
         "position": "WR",
         "bye": 8,
         "adp": {
-            "ppr": 12,
-            "half_ppr": 10,
-            "standard": 8
+            "ppr": 11,
+            "half_ppr": 9.5,
+            "standard": 9
         },
         "projections": {}
     },
@@ -171,8 +171,8 @@
         "bye": 8,
         "adp": {
             "ppr": 13,
-            "half_ppr": 14,
-            "standard": 14
+            "half_ppr": 13,
+            "standard": 13.5
         },
         "projections": {}
     },
@@ -182,9 +182,9 @@
         "position": "RB",
         "bye": 7,
         "adp": {
-            "ppr": 14,
+            "ppr": 14.5,
             "half_ppr": 13,
-            "standard": 12
+            "standard": 11.5
         },
         "projections": {}
     },
@@ -194,9 +194,9 @@
         "position": "WR",
         "bye": 5,
         "adp": {
-            "ppr": 15,
-            "half_ppr": 15,
-            "standard": 18
+            "ppr": 14.5,
+            "half_ppr": 15.5,
+            "standard": 19.5
         },
         "projections": {}
     },
@@ -206,9 +206,9 @@
         "position": "WR",
         "bye": 9,
         "adp": {
-            "ppr": 16,
-            "half_ppr": 18,
-            "standard": 21
+            "ppr": 16.5,
+            "half_ppr": 17.5,
+            "standard": 21.5
         },
         "projections": {
             "name": "A.J. Brown",
@@ -238,9 +238,9 @@
         "position": "RB",
         "bye": 12,
         "adp": {
-            "ppr": 17,
-            "half_ppr": 16,
-            "standard": 15
+            "ppr": 16.5,
+            "half_ppr": 15.5,
+            "standard": 14
         },
         "projections": {}
     },
@@ -250,9 +250,9 @@
         "position": "TE",
         "bye": 8,
         "adp": {
-            "ppr": 18,
-            "half_ppr": 17,
-            "standard": 16
+            "ppr": 18.5,
+            "half_ppr": 17.5,
+            "standard": 16.5
         },
         "projections": {}
     },
@@ -262,9 +262,9 @@
         "position": "WR",
         "bye": 12,
         "adp": {
-            "ppr": 19,
+            "ppr": 18.5,
             "half_ppr": 19,
-            "standard": 24
+            "standard": 24.5
         },
         "projections": {}
     },
@@ -274,9 +274,9 @@
         "position": "RB",
         "bye": 11,
         "adp": {
-            "ppr": 20,
+            "ppr": 20.5,
             "half_ppr": 20,
-            "standard": 19
+            "standard": 19.5
         },
         "projections": {}
     },
@@ -287,8 +287,8 @@
         "bye": 10,
         "adp": {
             "ppr": 21,
-            "half_ppr": 30,
-            "standard": 44
+            "half_ppr": 30.5,
+            "standard": 44.5
         },
         "projections": {}
     },
@@ -298,8 +298,8 @@
         "position": "RB",
         "bye": 9,
         "adp": {
-            "ppr": 22,
-            "half_ppr": 21,
+            "ppr": 22.5,
+            "half_ppr": 23,
             "standard": 20
         },
         "projections": {}
@@ -311,8 +311,8 @@
         "bye": 10,
         "adp": {
             "ppr": 23,
-            "half_ppr": 23,
-            "standard": 33
+            "half_ppr": 25,
+            "standard": 32.5
         },
         "projections": {}
     },
@@ -323,8 +323,8 @@
         "bye": 9,
         "adp": {
             "ppr": 24,
-            "half_ppr": 24,
-            "standard": 31
+            "half_ppr": 25.5,
+            "standard": 31.5
         },
         "projections": {}
     },
@@ -334,8 +334,8 @@
         "position": "TE",
         "bye": 8,
         "adp": {
-            "ppr": 25,
-            "half_ppr": 25,
+            "ppr": 25.5,
+            "half_ppr": 26,
             "standard": 26
         },
         "projections": {}
@@ -347,8 +347,8 @@
         "bye": 5,
         "adp": {
             "ppr": 26,
-            "half_ppr": 22,
-            "standard": 17
+            "half_ppr": 24.5,
+            "standard": 18.5
         },
         "projections": {}
     },
@@ -360,7 +360,7 @@
         "adp": {
             "ppr": 27,
             "half_ppr": 31,
-            "standard": 37
+            "standard": 37.5
         },
         "projections": {}
     },
@@ -370,9 +370,9 @@
         "position": "WR",
         "bye": 8,
         "adp": {
-            "ppr": 28,
-            "half_ppr": 32,
-            "standard": 40
+            "ppr": 28.5,
+            "half_ppr": 31.5,
+            "standard": 38.5
         },
         "projections": {}
     },
@@ -382,9 +382,9 @@
         "position": "RB",
         "bye": 10,
         "adp": {
-            "ppr": 29,
-            "half_ppr": 29,
-            "standard": 27
+            "ppr": 28.5,
+            "half_ppr": 30,
+            "standard": 27.5
         },
         "projections": {}
     },
@@ -395,7 +395,7 @@
         "bye": 12,
         "adp": {
             "ppr": 30,
-            "half_ppr": 34,
+            "half_ppr": 32,
             "standard": 32
         },
         "projections": {}
@@ -406,8 +406,8 @@
         "position": "WR",
         "bye": 8,
         "adp": {
-            "ppr": 31,
-            "half_ppr": 26,
+            "ppr": 30.5,
+            "half_ppr": 26.5,
             "standard": 28
         },
         "projections": {}
@@ -418,9 +418,9 @@
         "position": "WR",
         "bye": 12,
         "adp": {
-            "ppr": 32,
-            "half_ppr": 35,
-            "standard": 34
+            "ppr": 31.5,
+            "half_ppr": 32.5,
+            "standard": 34.5
         },
         "projections": {}
     },
@@ -430,9 +430,9 @@
         "position": "RB",
         "bye": 9,
         "adp": {
-            "ppr": 33,
-            "half_ppr": 36,
-            "standard": 30
+            "ppr": 34,
+            "half_ppr": 33,
+            "standard": 30.5
         },
         "projections": {}
     },
@@ -443,8 +443,8 @@
         "bye": 8,
         "adp": {
             "ppr": 34,
-            "half_ppr": 33,
-            "standard": 25
+            "half_ppr": 31.5,
+            "standard": 25.5
         },
         "projections": {}
     },
@@ -455,8 +455,8 @@
         "bye": 7,
         "adp": {
             "ppr": 35,
-            "half_ppr": 28,
-            "standard": 22
+            "half_ppr": 30,
+            "standard": 21.5
         },
         "projections": {}
     },
@@ -466,8 +466,8 @@
         "position": "QB",
         "bye": 7,
         "adp": {
-            "ppr": 36,
-            "half_ppr": 27,
+            "ppr": 35.5,
+            "half_ppr": 29.5,
             "standard": 23
         },
         "projections": {}
@@ -478,9 +478,9 @@
         "position": "WR",
         "bye": 9,
         "adp": {
-            "ppr": 37,
-            "half_ppr": 38,
-            "standard": 41
+            "ppr": 36,
+            "half_ppr": 36.5,
+            "standard": 42.5
         },
         "projections": {}
     },
@@ -490,8 +490,8 @@
         "position": "WR",
         "bye": 14,
         "adp": {
-            "ppr": 38,
-            "half_ppr": 44,
+            "ppr": 38.5,
+            "half_ppr": 47,
             "standard": 60
         },
         "projections": {}
@@ -502,9 +502,9 @@
         "position": "WR",
         "bye": 10,
         "adp": {
-            "ppr": 39,
-            "half_ppr": 42,
-            "standard": 56
+            "ppr": 39.5,
+            "half_ppr": 43,
+            "standard": 57.5
         },
         "projections": {}
     },
@@ -515,7 +515,7 @@
         "bye": 12,
         "adp": {
             "ppr": 40,
-            "half_ppr": 37,
+            "half_ppr": 35,
             "standard": 29
         },
         "projections": {}
@@ -526,8 +526,8 @@
         "position": "WR",
         "bye": 5,
         "adp": {
-            "ppr": 41,
-            "half_ppr": 41,
+            "ppr": 40.5,
+            "half_ppr": 42.5,
             "standard": 45
         },
         "projections": {}
@@ -538,9 +538,9 @@
         "position": "WR",
         "bye": 8,
         "adp": {
-            "ppr": 42,
+            "ppr": 43,
             "half_ppr": 48,
-            "standard": 57
+            "standard": 57.5
         },
         "projections": {}
     },
@@ -550,9 +550,9 @@
         "position": "RB",
         "bye": 7,
         "adp": {
-            "ppr": 43,
-            "half_ppr": 40,
-            "standard": 36
+            "ppr": 43.5,
+            "half_ppr": 42.5,
+            "standard": 35
         },
         "projections": {}
     },
@@ -563,8 +563,8 @@
         "bye": 5,
         "adp": {
             "ppr": 44,
-            "half_ppr": 49,
-            "standard": 53
+            "half_ppr": 48,
+            "standard": 53.5
         },
         "projections": {}
     },
@@ -574,9 +574,9 @@
         "position": "TE",
         "bye": 14,
         "adp": {
-            "ppr": 45,
+            "ppr": 44.5,
             "half_ppr": 43,
-            "standard": 43
+            "standard": 43.5
         },
         "projections": {}
     },
@@ -587,8 +587,8 @@
         "bye": 9,
         "adp": {
             "ppr": 46,
-            "half_ppr": 50,
-            "standard": 51
+            "half_ppr": 48.5,
+            "standard": 53.5
         },
         "projections": {}
     },
@@ -598,9 +598,9 @@
         "position": "RB",
         "bye": 12,
         "adp": {
-            "ppr": 47,
-            "half_ppr": 47,
-            "standard": 47
+            "ppr": 47.5,
+            "half_ppr": 47.5,
+            "standard": 46
         },
         "projections": {}
     },
@@ -611,8 +611,8 @@
         "bye": 9,
         "adp": {
             "ppr": 48,
-            "half_ppr": 39,
-            "standard": 38
+            "half_ppr": 42.5,
+            "standard": 37.5
         },
         "projections": {}
     },
@@ -622,9 +622,9 @@
         "position": "WR",
         "bye": 12,
         "adp": {
-            "ppr": 49,
-            "half_ppr": 51,
-            "standard": 49
+            "ppr": 48.5,
+            "half_ppr": 48.5,
+            "standard": 51
         },
         "projections": {}
     },
@@ -634,9 +634,9 @@
         "position": "WR",
         "bye": 8,
         "adp": {
-            "ppr": 50,
-            "half_ppr": 63,
-            "standard": 71
+            "ppr": 49.5,
+            "half_ppr": 64,
+            "standard": 72
         },
         "projections": {}
     },
@@ -647,8 +647,8 @@
         "bye": 10,
         "adp": {
             "ppr": 51,
-            "half_ppr": 57,
-            "standard": 72
+            "half_ppr": 60.5,
+            "standard": 73
         },
         "projections": {}
     },
@@ -658,9 +658,9 @@
         "position": "WR",
         "bye": 7,
         "adp": {
-            "ppr": 52,
-            "half_ppr": 55,
-            "standard": 58
+            "ppr": 52.5,
+            "half_ppr": 53.5,
+            "standard": 58.5
         },
         "projections": {}
     },
@@ -670,9 +670,9 @@
         "position": "RB",
         "bye": 8,
         "adp": {
-            "ppr": 53,
-            "half_ppr": 45,
-            "standard": 42
+            "ppr": 53.5,
+            "half_ppr": 47,
+            "standard": 42.5
         },
         "projections": {}
     },
@@ -682,8 +682,8 @@
         "position": "RB",
         "bye": 14,
         "adp": {
-            "ppr": 54,
-            "half_ppr": 53,
+            "ppr": 53.5,
+            "half_ppr": 52.5,
             "standard": 48
         },
         "projections": {}
@@ -694,9 +694,9 @@
         "position": "WR",
         "bye": 12,
         "adp": {
-            "ppr": 55,
-            "half_ppr": 59,
-            "standard": 73
+            "ppr": 55.5,
+            "half_ppr": 61,
+            "standard": 73.5
         },
         "projections": {}
     },
@@ -706,9 +706,9 @@
         "position": "WR",
         "bye": 10,
         "adp": {
-            "ppr": 56,
-            "half_ppr": 65,
-            "standard": 78
+            "ppr": 55.5,
+            "half_ppr": 66,
+            "standard": 77
         },
         "projections": {}
     },
@@ -719,8 +719,8 @@
         "bye": 11,
         "adp": {
             "ppr": 57,
-            "half_ppr": 52,
-            "standard": 39
+            "half_ppr": 49,
+            "standard": 38.5
         },
         "projections": {}
     },
@@ -730,9 +730,9 @@
         "position": "RB",
         "bye": 6,
         "adp": {
-            "ppr": 58,
-            "half_ppr": 54,
-            "standard": 46
+            "ppr": 57.5,
+            "half_ppr": 53.5,
+            "standard": 45.5
         },
         "projections": {}
     },
@@ -743,8 +743,8 @@
         "bye": 10,
         "adp": {
             "ppr": 59,
-            "half_ppr": 46,
-            "standard": 35
+            "half_ppr": 47.5,
+            "standard": 34.5
         },
         "projections": {
             "name": "Joe Burrow",
@@ -775,9 +775,9 @@
         "position": "WR",
         "bye": 14,
         "adp": {
-            "ppr": 60,
-            "half_ppr": 62,
-            "standard": 76
+            "ppr": 61,
+            "half_ppr": 63.5,
+            "standard": 74.5
         },
         "projections": {}
     },
@@ -788,8 +788,8 @@
         "bye": 12,
         "adp": {
             "ppr": 61,
-            "half_ppr": 60,
-            "standard": 50
+            "half_ppr": 62,
+            "standard": 52
         },
         "projections": {}
     },
@@ -799,9 +799,9 @@
         "position": "WR",
         "bye": 9,
         "adp": {
-            "ppr": 62,
-            "half_ppr": 58,
-            "standard": 64
+            "ppr": 62.5,
+            "half_ppr": 60.5,
+            "standard": 65
         },
         "projections": {}
     },
@@ -811,8 +811,8 @@
         "position": "WR",
         "bye": 5,
         "adp": {
-            "ppr": 63,
-            "half_ppr": 70,
+            "ppr": 64,
+            "half_ppr": 69,
             "standard": 79
         },
         "projections": {}
@@ -823,9 +823,9 @@
         "position": "WR",
         "bye": 11,
         "adp": {
-            "ppr": 64,
-            "half_ppr": 67,
-            "standard": 75
+            "ppr": 64.5,
+            "half_ppr": 67.5,
+            "standard": 74
         },
         "projections": {}
     },
@@ -836,8 +836,8 @@
         "bye": 6,
         "adp": {
             "ppr": 65,
-            "half_ppr": 68,
-            "standard": 74
+            "half_ppr": 67.5,
+            "standard": 73.5
         },
         "projections": {}
     },
@@ -847,9 +847,9 @@
         "position": "RB",
         "bye": 8,
         "adp": {
-            "ppr": 66,
-            "half_ppr": 56,
-            "standard": 52
+            "ppr": 65,
+            "half_ppr": 60,
+            "standard": 53.5
         },
         "projections": {}
     },
@@ -859,9 +859,9 @@
         "position": "RB",
         "bye": 14,
         "adp": {
-            "ppr": 67,
-            "half_ppr": 61,
-            "standard": 54
+            "ppr": 65.5,
+            "half_ppr": 62.5,
+            "standard": 55.5
         },
         "projections": {}
     },
@@ -871,9 +871,9 @@
         "position": "WR",
         "bye": 9,
         "adp": {
-            "ppr": 68,
+            "ppr": 66.5,
             "half_ppr": 64,
-            "standard": 68
+            "standard": 67.5
         },
         "projections": {}
     },
@@ -884,8 +884,8 @@
         "bye": 12,
         "adp": {
             "ppr": 69,
-            "half_ppr": 74,
-            "standard": 81
+            "half_ppr": 75,
+            "standard": 80
         },
         "projections": {}
     },
@@ -895,9 +895,9 @@
         "position": "WR",
         "bye": 8,
         "adp": {
-            "ppr": 70,
-            "half_ppr": 76,
-            "standard": 93
+            "ppr": 70.5,
+            "half_ppr": 77,
+            "standard": 95
         },
         "projections": {}
     },
@@ -907,8 +907,8 @@
         "position": "RB",
         "bye": 8,
         "adp": {
-            "ppr": 71,
-            "half_ppr": 66,
+            "ppr": 71.5,
+            "half_ppr": 67.5,
             "standard": 59
         },
         "projections": {}
@@ -919,9 +919,9 @@
         "position": "WR",
         "bye": 14,
         "adp": {
-            "ppr": 72,
-            "half_ppr": 80,
-            "standard": 94
+            "ppr": 72.5,
+            "half_ppr": 79,
+            "standard": 95
         },
         "projections": {}
     },
@@ -933,7 +933,7 @@
         "adp": {
             "ppr": 73,
             "half_ppr": 69,
-            "standard": 62
+            "standard": 61.5
         },
         "projections": {}
     },
@@ -945,7 +945,7 @@
         "adp": {
             "ppr": 74,
             "half_ppr": 77,
-            "standard": 65
+            "standard": 66
         },
         "projections": {}
     },
@@ -955,9 +955,9 @@
         "position": "RB",
         "bye": 9,
         "adp": {
-            "ppr": 75,
-            "half_ppr": 73,
-            "standard": 63
+            "ppr": 75.5,
+            "half_ppr": 73.5,
+            "standard": 63.5
         },
         "projections": {}
     },
@@ -967,9 +967,9 @@
         "position": "RB",
         "bye": 5,
         "adp": {
-            "ppr": 76,
+            "ppr": 75.5,
             "half_ppr": 75,
-            "standard": 67
+            "standard": 67.5
         },
         "projections": {}
     },
@@ -980,8 +980,8 @@
         "bye": 7,
         "adp": {
             "ppr": 77,
-            "half_ppr": 81,
-            "standard": 91
+            "half_ppr": 80.5,
+            "standard": 93.5
         },
         "projections": {}
     },
@@ -991,9 +991,9 @@
         "position": "WR",
         "bye": 14,
         "adp": {
-            "ppr": 78,
-            "half_ppr": 89,
-            "standard": 105
+            "ppr": 78.5,
+            "half_ppr": 91,
+            "standard": 103.5
         },
         "projections": {}
     },
@@ -1003,9 +1003,9 @@
         "position": "WR",
         "bye": 5,
         "adp": {
-            "ppr": 79,
-            "half_ppr": 95,
-            "standard": 107
+            "ppr": 78.5,
+            "half_ppr": 97.5,
+            "standard": 106
         },
         "projections": {}
     },
@@ -1016,8 +1016,8 @@
         "bye": 5,
         "adp": {
             "ppr": 80,
-            "half_ppr": 86,
-            "standard": 95
+            "half_ppr": 87.5,
+            "standard": 96
         },
         "projections": {}
     },
@@ -1027,9 +1027,9 @@
         "position": "RB",
         "bye": 10,
         "adp": {
-            "ppr": 81,
-            "half_ppr": 79,
-            "standard": 70
+            "ppr": 81.5,
+            "half_ppr": 78,
+            "standard": 70.5
         },
         "projections": {}
     },
@@ -1039,9 +1039,9 @@
         "position": "RB",
         "bye": 10,
         "adp": {
-            "ppr": 82,
-            "half_ppr": 82,
-            "standard": 77
+            "ppr": 82.5,
+            "half_ppr": 81.5,
+            "standard": 75
         },
         "projections": {}
     },
@@ -1053,7 +1053,7 @@
         "adp": {
             "ppr": 83,
             "half_ppr": 88,
-            "standard": 109
+            "standard": 108.5
         },
         "projections": {}
     },
@@ -1063,8 +1063,8 @@
         "position": "RB",
         "bye": 6,
         "adp": {
-            "ppr": 84,
-            "half_ppr": 78,
+            "ppr": 83,
+            "half_ppr": 77.5,
             "standard": 66
         },
         "projections": {}
@@ -1076,8 +1076,8 @@
         "bye": 10,
         "adp": {
             "ppr": 85,
-            "half_ppr": 71,
-            "standard": 55
+            "half_ppr": 71.5,
+            "standard": 56
         },
         "projections": {}
     },
@@ -1088,7 +1088,7 @@
         "bye": 5,
         "adp": {
             "ppr": 86,
-            "half_ppr": 98,
+            "half_ppr": 99,
             "standard": 118
         },
         "projections": {}
@@ -1099,9 +1099,9 @@
         "position": "RB",
         "bye": 12,
         "adp": {
-            "ppr": 87,
+            "ppr": 88,
             "half_ppr": 88,
-            "standard": 85
+            "standard": 86.5
         },
         "projections": {}
     },
@@ -1112,8 +1112,8 @@
         "bye": 6,
         "adp": {
             "ppr": 88,
-            "half_ppr": 84,
-            "standard": 82
+            "half_ppr": 85.5,
+            "standard": 80.5
         },
         "projections": {
             "name": "T.J. Hockenson",
@@ -1143,9 +1143,9 @@
         "position": "QB",
         "bye": 9,
         "adp": {
-            "ppr": 89,
-            "half_ppr": 72,
-            "standard": 61
+            "ppr": 90,
+            "half_ppr": 73,
+            "standard": 60.5
         },
         "projections": {}
     },
@@ -1156,8 +1156,8 @@
         "bye": 8,
         "adp": {
             "ppr": 90,
-            "half_ppr": 93,
-            "standard": 89
+            "half_ppr": 95.5,
+            "standard": 92
         },
         "projections": {}
     },
@@ -1167,9 +1167,9 @@
         "position": "WR",
         "bye": 14,
         "adp": {
-            "ppr": 91,
-            "half_ppr": 99,
-            "standard": 108
+            "ppr": 90.5,
+            "half_ppr": 99.5,
+            "standard": 106
         },
         "projections": {}
     },
@@ -1181,7 +1181,7 @@
         "adp": {
             "ppr": 92,
             "half_ppr": 102,
-            "standard": 114
+            "standard": 115
         },
         "projections": {}
     },
@@ -1191,9 +1191,9 @@
         "position": "QB",
         "bye": 8,
         "adp": {
-            "ppr": 93,
-            "half_ppr": 85,
-            "standard": 84
+            "ppr": 94.5,
+            "half_ppr": 86.5,
+            "standard": 83
         },
         "projections": {}
     },
@@ -1203,9 +1203,9 @@
         "position": "RB",
         "bye": 6,
         "adp": {
-            "ppr": 94,
-            "half_ppr": 104,
-            "standard": 113
+            "ppr": 94.5,
+            "half_ppr": 105.5,
+            "standard": 114.5
         },
         "projections": {}
     },
@@ -1216,8 +1216,8 @@
         "bye": 9,
         "adp": {
             "ppr": 95,
-            "half_ppr": 107,
-            "standard": 124
+            "half_ppr": 106,
+            "standard": 127
         },
         "projections": {}
     },
@@ -1228,8 +1228,8 @@
         "bye": 9,
         "adp": {
             "ppr": 96,
-            "half_ppr": 92,
-            "standard": 102
+            "half_ppr": 95,
+            "standard": 103
         },
         "projections": {}
     },
@@ -1239,9 +1239,9 @@
         "position": "RB",
         "bye": 5,
         "adp": {
-            "ppr": 97,
-            "half_ppr": 91,
-            "standard": 88
+            "ppr": 96,
+            "half_ppr": 93.5,
+            "standard": 90
         },
         "projections": {}
     },
@@ -1251,8 +1251,8 @@
         "position": "TE",
         "bye": 10,
         "adp": {
-            "ppr": 98,
-            "half_ppr": 90,
+            "ppr": 96,
+            "half_ppr": 93.5,
             "standard": 80
         },
         "projections": {}
@@ -1263,9 +1263,9 @@
         "position": "WR",
         "bye": 6,
         "adp": {
-            "ppr": 99,
-            "half_ppr": 123,
-            "standard": 135
+            "ppr": 98.5,
+            "half_ppr": 122,
+            "standard": 136.5
         },
         "projections": {}
     },
@@ -1275,9 +1275,9 @@
         "position": "QB",
         "bye": 12,
         "adp": {
-            "ppr": 100,
-            "half_ppr": 83,
-            "standard": 69
+            "ppr": 98.5,
+            "half_ppr": 82.5,
+            "standard": 70
         },
         "projections": {}
     },
@@ -1287,9 +1287,9 @@
         "position": "WR",
         "bye": 7,
         "adp": {
-            "ppr": 101,
-            "half_ppr": 113,
-            "standard": 128
+            "ppr": 101.5,
+            "half_ppr": 112.5,
+            "standard": 130.5
         },
         "projections": {}
     },
@@ -1299,9 +1299,9 @@
         "position": "QB",
         "bye": 14,
         "adp": {
-            "ppr": 102,
-            "half_ppr": 94,
-            "standard": 98
+            "ppr": 103,
+            "half_ppr": 96,
+            "standard": 97.5
         },
         "projections": {}
     },
@@ -1311,9 +1311,9 @@
         "position": "TE",
         "bye": 12,
         "adp": {
-            "ppr": 103,
-            "half_ppr": 106,
-            "standard": 101
+            "ppr": 104.5,
+            "half_ppr": 105.5,
+            "standard": 99.5
         },
         "projections": {}
     },
@@ -1323,9 +1323,9 @@
         "position": "WR",
         "bye": 12,
         "adp": {
-            "ppr": 104,
-            "half_ppr": 127,
-            "standard": 141
+            "ppr": 104.5,
+            "half_ppr": 125.5,
+            "standard": 140.5
         },
         "projections": {}
     },
@@ -1335,9 +1335,9 @@
         "position": "RB",
         "bye": 14,
         "adp": {
-            "ppr": 105,
-            "half_ppr": 108,
-            "standard": 96
+            "ppr": 107,
+            "half_ppr": 106.5,
+            "standard": 96.5
         },
         "projections": {}
     },
@@ -1347,9 +1347,9 @@
         "position": "RB",
         "bye": 8,
         "adp": {
-            "ppr": 106,
-            "half_ppr": 112,
-            "standard": 104
+            "ppr": 107,
+            "half_ppr": 110,
+            "standard": 103.5
         },
         "projections": {}
     },
@@ -1361,7 +1361,7 @@
         "adp": {
             "ppr": 107,
             "half_ppr": 103,
-            "standard": 97
+            "standard": 96.5
         },
         "projections": {}
     },
@@ -1371,9 +1371,9 @@
         "position": "WR",
         "bye": 11,
         "adp": {
-            "ppr": 108,
+            "ppr": 107.5,
             "half_ppr": 117,
-            "standard": 147
+            "standard": 145
         },
         "projections": {}
     },
@@ -1383,9 +1383,9 @@
         "position": "RB",
         "bye": 14,
         "adp": {
-            "ppr": 109,
-            "half_ppr": 101,
-            "standard": 83
+            "ppr": 108,
+            "half_ppr": 101.5,
+            "standard": 81.5
         },
         "projections": {}
     },
@@ -1395,9 +1395,9 @@
         "position": "RB",
         "bye": 12,
         "adp": {
-            "ppr": 110,
-            "half_ppr": 100,
-            "standard": 92
+            "ppr": 108,
+            "half_ppr": 100.5,
+            "standard": 94.5
         },
         "projections": {}
     },
@@ -1407,9 +1407,9 @@
         "position": "WR",
         "bye": 7,
         "adp": {
-            "ppr": 111,
-            "half_ppr": 125,
-            "standard": 156
+            "ppr": 110,
+            "half_ppr": 123.5,
+            "standard": 158
         },
         "projections": {}
     },
@@ -1419,9 +1419,9 @@
         "position": "QB",
         "bye": 5,
         "adp": {
-            "ppr": 112,
-            "half_ppr": 97,
-            "standard": 87
+            "ppr": 111,
+            "half_ppr": 98.5,
+            "standard": 88
         },
         "projections": {}
     },
@@ -1432,7 +1432,7 @@
         "bye": 8,
         "adp": {
             "ppr": 113,
-            "half_ppr": 111,
+            "half_ppr": 109.5,
             "standard": 103
         },
         "projections": {}
@@ -1444,8 +1444,8 @@
         "bye": 12,
         "adp": {
             "ppr": 114,
-            "half_ppr": 109,
-            "standard": 90
+            "half_ppr": 107,
+            "standard": 92.5
         },
         "projections": {}
     },
@@ -1455,9 +1455,9 @@
         "position": "QB",
         "bye": 10,
         "adp": {
-            "ppr": 115,
-            "half_ppr": 105,
-            "standard": 99
+            "ppr": 116,
+            "half_ppr": 105.5,
+            "standard": 97.5
         },
         "projections": {}
     },
@@ -1467,9 +1467,9 @@
         "position": "QB",
         "bye": 8,
         "adp": {
-            "ppr": 116,
-            "half_ppr": 96,
-            "standard": 86
+            "ppr": 117,
+            "half_ppr": 98.5,
+            "standard": 87.5
         },
         "projections": {}
     },
@@ -1479,9 +1479,9 @@
         "position": "QB",
         "bye": 14,
         "adp": {
-            "ppr": 117,
-            "half_ppr": 114,
-            "standard": 116
+            "ppr": 118,
+            "half_ppr": 112.5,
+            "standard": 116.5
         },
         "projections": {}
     },
@@ -1491,8 +1491,8 @@
         "position": "RB",
         "bye": 10,
         "adp": {
-            "ppr": 118,
-            "half_ppr": 119,
+            "ppr": 119.5,
+            "half_ppr": 120,
             "standard": 106
         },
         "projections": {}
@@ -1503,9 +1503,9 @@
         "position": "WR",
         "bye": 5,
         "adp": {
-            "ppr": 119,
-            "half_ppr": 128,
-            "standard": 133
+            "ppr": 120,
+            "half_ppr": 126.5,
+            "standard": 134.5
         },
         "projections": {}
     },
@@ -1515,9 +1515,9 @@
         "position": "TE",
         "bye": 9,
         "adp": {
-            "ppr": 120,
-            "half_ppr": 115,
-            "standard": 110
+            "ppr": 121.5,
+            "half_ppr": 115.5,
+            "standard": 112.5
         },
         "projections": {}
     },
@@ -1527,9 +1527,9 @@
         "position": "WR",
         "bye": 6,
         "adp": {
-            "ppr": 121,
-            "half_ppr": 124,
-            "standard": 143
+            "ppr": 122,
+            "half_ppr": 123,
+            "standard": 142
         },
         "projections": {}
     },
@@ -1540,8 +1540,8 @@
         "bye": 14,
         "adp": {
             "ppr": 122,
-            "half_ppr": 146,
-            "standard": 166
+            "half_ppr": 143.5,
+            "standard": 166.5
         },
         "projections": {}
     },
@@ -1551,9 +1551,9 @@
         "position": "RB",
         "bye": 14,
         "adp": {
-            "ppr": 123,
-            "half_ppr": 121,
-            "standard": 115
+            "ppr": 122,
+            "half_ppr": 120.5,
+            "standard": 115.5
         },
         "projections": {}
     },
@@ -1563,9 +1563,9 @@
         "position": "QB",
         "bye": 6,
         "adp": {
-            "ppr": 124,
-            "half_ppr": 122,
-            "standard": 125
+            "ppr": 126,
+            "half_ppr": 121,
+            "standard": 127.5
         },
         "projections": {}
     },
@@ -1575,9 +1575,9 @@
         "position": "TE",
         "bye": 11,
         "adp": {
-            "ppr": 125,
-            "half_ppr": 126,
-            "standard": 119
+            "ppr": 126,
+            "half_ppr": 124.5,
+            "standard": 118.5
         },
         "projections": {}
     },
@@ -1588,8 +1588,8 @@
         "bye": 12,
         "adp": {
             "ppr": 126,
-            "half_ppr": 133,
-            "standard": 142
+            "half_ppr": 131.5,
+            "standard": 141.5
         },
         "projections": {}
     },
@@ -1599,9 +1599,9 @@
         "position": "QB",
         "bye": 12,
         "adp": {
-            "ppr": 127,
-            "half_ppr": 110,
-            "standard": 100
+            "ppr": 126,
+            "half_ppr": 109,
+            "standard": 98
         },
         "projections": {}
     },
@@ -1611,9 +1611,9 @@
         "position": "RB",
         "bye": 8,
         "adp": {
-            "ppr": 128,
-            "half_ppr": 132,
-            "standard": 123
+            "ppr": 127.5,
+            "half_ppr": 130.5,
+            "standard": 124.5
         },
         "projections": {}
     },
@@ -1623,9 +1623,9 @@
         "position": "RB",
         "bye": 10,
         "adp": {
-            "ppr": 129,
+            "ppr": 127.5,
             "half_ppr": 129,
-            "standard": 122
+            "standard": 124
         },
         "projections": {}
     },
@@ -1635,9 +1635,9 @@
         "position": "QB",
         "bye": 5,
         "adp": {
-            "ppr": 130,
+            "ppr": 127.5,
             "half_ppr": 116,
-            "standard": 111
+            "standard": 113.5
         },
         "projections": {}
     },
@@ -1647,9 +1647,9 @@
         "position": "RB",
         "bye": 12,
         "adp": {
-            "ppr": 131,
-            "half_ppr": 131,
-            "standard": 132
+            "ppr": 129.5,
+            "half_ppr": 130,
+            "standard": 131.5
         },
         "projections": {}
     },
@@ -1659,9 +1659,9 @@
         "position": "QB",
         "bye": 8,
         "adp": {
-            "ppr": 132,
-            "half_ppr": 120,
-            "standard": 121
+            "ppr": 133.5,
+            "half_ppr": 120.5,
+            "standard": 120.5
         },
         "projections": {}
     },
@@ -1671,9 +1671,9 @@
         "position": "WR",
         "bye": 10,
         "adp": {
-            "ppr": 133,
-            "half_ppr": 136,
-            "standard": 145
+            "ppr": 134,
+            "half_ppr": 136.5,
+            "standard": 142.5
         },
         "projections": {}
     },
@@ -1684,8 +1684,8 @@
         "bye": 7,
         "adp": {
             "ppr": 134,
-            "half_ppr": 144,
-            "standard": 149
+            "half_ppr": 142,
+            "standard": 145.5
         },
         "projections": {}
     },
@@ -1696,8 +1696,8 @@
         "bye": 6,
         "adp": {
             "ppr": 135,
-            "half_ppr": 118,
-            "standard": 112
+            "half_ppr": 120,
+            "standard": 113.5
         },
         "projections": {}
     },
@@ -1707,9 +1707,9 @@
         "position": "TE",
         "bye": 5,
         "adp": {
-            "ppr": 136,
+            "ppr": 135.5,
             "half_ppr": 139,
-            "standard": 120
+            "standard": 120.5
         },
         "projections": {}
     },
@@ -1719,9 +1719,9 @@
         "position": "TE",
         "bye": 5,
         "adp": {
-            "ppr": 137,
-            "half_ppr": 130,
-            "standard": 117
+            "ppr": 135.5,
+            "half_ppr": 129.5,
+            "standard": 116.5
         },
         "projections": {}
     },
@@ -1731,9 +1731,9 @@
         "position": "RB",
         "bye": 10,
         "adp": {
-            "ppr": 138,
-            "half_ppr": 137,
-            "standard": 127
+            "ppr": 137,
+            "half_ppr": 138,
+            "standard": 128.5
         },
         "projections": {}
     },
@@ -1743,9 +1743,9 @@
         "position": "RB",
         "bye": 8,
         "adp": {
-            "ppr": 139,
+            "ppr": 140,
             "half_ppr": 141,
-            "standard": 138
+            "standard": 138.5
         },
         "projections": {}
     },
@@ -1755,8 +1755,8 @@
         "position": "TE",
         "bye": 7,
         "adp": {
-            "ppr": 140,
-            "half_ppr": 138,
+            "ppr": 140.5,
+            "half_ppr": 139,
             "standard": 131
         },
         "projections": {}
@@ -1768,8 +1768,8 @@
         "bye": 9,
         "adp": {
             "ppr": 141,
-            "half_ppr": 140,
-            "standard": 126
+            "half_ppr": 139.5,
+            "standard": 128
         },
         "projections": {}
     },
@@ -1779,9 +1779,9 @@
         "position": "TE",
         "bye": 9,
         "adp": {
-            "ppr": 142,
-            "half_ppr": 142,
-            "standard": 146
+            "ppr": 141.5,
+            "half_ppr": 141,
+            "standard": 144
         },
         "projections": {}
     },
@@ -1791,9 +1791,9 @@
         "position": "WR",
         "bye": 9,
         "adp": {
-            "ppr": 143,
-            "half_ppr": 148,
-            "standard": 164
+            "ppr": 145,
+            "half_ppr": 145.5,
+            "standard": 163.5
         },
         "projections": {}
     },
@@ -1803,9 +1803,9 @@
         "position": "QB",
         "bye": 5,
         "adp": {
-            "ppr": 144,
-            "half_ppr": 135,
-            "standard": 140
+            "ppr": 145.5,
+            "half_ppr": 136.5,
+            "standard": 139.5
         },
         "projections": {}
     },
@@ -1815,8 +1815,8 @@
         "position": "RB",
         "bye": 14,
         "adp": {
-            "ppr": 145,
-            "half_ppr": 149,
+            "ppr": 145.5,
+            "half_ppr": 146,
             "standard": 139
         },
         "projections": {}
@@ -1829,7 +1829,7 @@
         "adp": {
             "ppr": 146,
             "half_ppr": 159,
-            "standard": 152
+            "standard": 153
         },
         "projections": {}
     },
@@ -1839,7 +1839,7 @@
         "position": "TE",
         "bye": 7,
         "adp": {
-            "ppr": 147,
+            "ppr": 146,
             "half_ppr": 152,
             "standard": 154
         },
@@ -1851,9 +1851,9 @@
         "position": "TE",
         "bye": 10,
         "adp": {
-            "ppr": 148,
-            "half_ppr": 150,
-            "standard": 134
+            "ppr": 148.5,
+            "half_ppr": 148.5,
+            "standard": 136.5
         },
         "projections": {}
     },
@@ -1864,8 +1864,8 @@
         "bye": 12,
         "adp": {
             "ppr": 149,
-            "half_ppr": 134,
-            "standard": 130
+            "half_ppr": 136,
+            "standard": 131
         },
         "projections": {}
     },
@@ -1875,9 +1875,9 @@
         "position": "WR",
         "bye": 12,
         "adp": {
-            "ppr": 150,
-            "half_ppr": 156,
-            "standard": 183
+            "ppr": 149,
+            "half_ppr": 155.5,
+            "standard": 184.5
         },
         "projections": {}
     },
@@ -1887,9 +1887,9 @@
         "position": "RB",
         "bye": 12,
         "adp": {
-            "ppr": 151,
-            "half_ppr": 151,
-            "standard": 137
+            "ppr": 150,
+            "half_ppr": 150,
+            "standard": 138
         },
         "projections": {}
     },
@@ -1899,9 +1899,9 @@
         "position": "QB",
         "bye": 14,
         "adp": {
-            "ppr": 152,
-            "half_ppr": 143,
-            "standard": 144
+            "ppr": 154,
+            "half_ppr": 141.5,
+            "standard": 142.5
         },
         "projections": {}
     },
@@ -1911,9 +1911,9 @@
         "position": "RB",
         "bye": 5,
         "adp": {
-            "ppr": 153,
-            "half_ppr": 162,
-            "standard": 160
+            "ppr": 154,
+            "half_ppr": 161.5,
+            "standard": 161.5
         },
         "projections": {}
     },
@@ -1923,9 +1923,9 @@
         "position": "WR",
         "bye": 7,
         "adp": {
-            "ppr": 154,
-            "half_ppr": 172,
-            "standard": 194
+            "ppr": 157,
+            "half_ppr": 171.5,
+            "standard": 197.5
         },
         "projections": {}
     },
@@ -1935,9 +1935,9 @@
         "position": "WR",
         "bye": 9,
         "adp": {
-            "ppr": 155,
-            "half_ppr": 154,
-            "standard": 161
+            "ppr": 157,
+            "half_ppr": 152.5,
+            "standard": 162
         },
         "projections": {}
     },
@@ -1947,9 +1947,9 @@
         "position": "RB",
         "bye": 8,
         "adp": {
-            "ppr": 156,
-            "half_ppr": 147,
-            "standard": 129
+            "ppr": 157,
+            "half_ppr": 145,
+            "standard": 130.5
         },
         "projections": {}
     },
@@ -1959,9 +1959,9 @@
         "position": "WR",
         "bye": 14,
         "adp": {
-            "ppr": 157,
-            "half_ppr": 155,
-            "standard": 168
+            "ppr": 157.5,
+            "half_ppr": 154,
+            "standard": 169.5
         },
         "projections": {}
     },
@@ -1985,7 +1985,7 @@
         "adp": {
             "ppr": 159,
             "half_ppr": 170,
-            "standard": 171
+            "standard": 171.5
         },
         "projections": {}
     },
@@ -1995,9 +1995,9 @@
         "position": "QB",
         "bye": 8,
         "adp": {
-            "ppr": 160,
+            "ppr": 159.5,
             "half_ppr": 151,
-            "standard": 151
+            "standard": 152.5
         },
         "projections": {}
     },
@@ -2007,9 +2007,9 @@
         "position": "TE",
         "bye": 5,
         "adp": {
-            "ppr": 161,
-            "half_ppr": 157,
-            "standard": 148
+            "ppr": 159.5,
+            "half_ppr": 157.5,
+            "standard": 145.5
         },
         "projections": {}
     },
@@ -2019,9 +2019,9 @@
         "position": "QB",
         "bye": 8,
         "adp": {
-            "ppr": 162,
-            "half_ppr": 145,
-            "standard": 136
+            "ppr": 160,
+            "half_ppr": 142.5,
+            "standard": 137.5
         },
         "projections": {}
     },
@@ -2031,8 +2031,8 @@
         "position": "WR",
         "bye": 12,
         "adp": {
-            "ppr": 163,
-            "half_ppr": 183,
+            "ppr": 161,
+            "half_ppr": 186.5,
             "standard": 215
         },
         "projections": {}
@@ -2043,9 +2043,9 @@
         "position": "RB",
         "bye": 5,
         "adp": {
-            "ppr": 164,
+            "ppr": 161.5,
             "half_ppr": 173,
-            "standard": 185
+            "standard": 189.5
         },
         "projections": {}
     },
@@ -2055,9 +2055,9 @@
         "position": "QB",
         "bye": 10,
         "adp": {
-            "ppr": 165,
-            "half_ppr": 158,
-            "standard": 157
+            "ppr": 163.5,
+            "half_ppr": 157.5,
+            "standard": 158
         },
         "projections": {}
     },
@@ -2067,9 +2067,9 @@
         "position": "TE",
         "bye": 8,
         "adp": {
-            "ppr": 166,
-            "half_ppr": 171,
-            "standard": 170
+            "ppr": 164.5,
+            "half_ppr": 170.5,
+            "standard": 171.5
         },
         "projections": {}
     },
@@ -2079,9 +2079,9 @@
         "position": "TE",
         "bye": 5,
         "adp": {
-            "ppr": 167,
-            "half_ppr": 163,
-            "standard": 150
+            "ppr": 168,
+            "half_ppr": 165.5,
+            "standard": 146.5
         },
         "projections": {}
     },
@@ -2091,9 +2091,9 @@
         "position": "WR",
         "bye": 14,
         "adp": {
-            "ppr": 168,
-            "half_ppr": 166,
-            "standard": 174
+            "ppr": 168.5,
+            "half_ppr": 166.5,
+            "standard": 175
         },
         "projections": {}
     },
@@ -2103,9 +2103,9 @@
         "position": "TE",
         "bye": 14,
         "adp": {
-            "ppr": 169,
-            "half_ppr": 168,
-            "standard": 163
+            "ppr": 168.5,
+            "half_ppr": 168.5,
+            "standard": 162.5
         },
         "projections": {}
     },
@@ -2115,9 +2115,9 @@
         "position": "RB",
         "bye": 9,
         "adp": {
-            "ppr": 170,
-            "half_ppr": 169,
-            "standard": 158
+            "ppr": 168.5,
+            "half_ppr": 170,
+            "standard": 158.5
         },
         "projections": {}
     },
@@ -2127,9 +2127,9 @@
         "position": "RB",
         "bye": 12,
         "adp": {
-            "ppr": 171,
-            "half_ppr": 165,
-            "standard": 159
+            "ppr": 169.5,
+            "half_ppr": 166.5,
+            "standard": 160
         },
         "projections": {}
     },
@@ -2139,7 +2139,7 @@
         "position": "TE",
         "bye": 12,
         "adp": {
-            "ppr": 172,
+            "ppr": 171.5,
             "half_ppr": 167,
             "standard": 162
         },
@@ -2151,8 +2151,8 @@
         "position": "RB",
         "bye": 14,
         "adp": {
-            "ppr": 173,
-            "half_ppr": 164,
+            "ppr": 172,
+            "half_ppr": 166,
             "standard": 153
         },
         "projections": {}
@@ -2163,9 +2163,9 @@
         "position": "WR",
         "bye": 14,
         "adp": {
-            "ppr": 174,
-            "half_ppr": 177,
-            "standard": 201
+            "ppr": 175.5,
+            "half_ppr": 178.5,
+            "standard": 206
         },
         "projections": {}
     },
@@ -2175,9 +2175,9 @@
         "position": "QB",
         "bye": 8,
         "adp": {
-            "ppr": 175,
-            "half_ppr": 160,
-            "standard": 155
+            "ppr": 176,
+            "half_ppr": 161.5,
+            "standard": 157.5
         },
         "projections": {}
     },
@@ -2187,9 +2187,9 @@
         "position": "TE",
         "bye": 10,
         "adp": {
-            "ppr": 176,
-            "half_ppr": 174,
-            "standard": 177
+            "ppr": 176.5,
+            "half_ppr": 175.5,
+            "standard": 179
         },
         "projections": {}
     },
@@ -2199,9 +2199,9 @@
         "position": "WR",
         "bye": 11,
         "adp": {
-            "ppr": 177,
-            "half_ppr": 179,
-            "standard": 195
+            "ppr": 176.5,
+            "half_ppr": 182,
+            "standard": 197.5
         },
         "projections": {}
     },
@@ -2212,8 +2212,8 @@
         "bye": 9,
         "adp": {
             "ppr": 178,
-            "half_ppr": 186,
-            "standard": 210
+            "half_ppr": 193.5,
+            "standard": 217.5
         },
         "projections": {}
     },
@@ -2223,9 +2223,9 @@
         "position": "WR",
         "bye": 6,
         "adp": {
-            "ppr": 179,
-            "half_ppr": 188,
-            "standard": 211
+            "ppr": 180,
+            "half_ppr": 193.5,
+            "standard": 222.5
         },
         "projections": {}
     },
@@ -2235,8 +2235,8 @@
         "position": "RB",
         "bye": 6,
         "adp": {
-            "ppr": 180,
-            "half_ppr": 182,
+            "ppr": 180.5,
+            "half_ppr": 184.5,
             "standard": 165
         },
         "projections": {}
@@ -2248,7 +2248,7 @@
         "bye": 5,
         "adp": {
             "ppr": 181,
-            "half_ppr": 176,
+            "half_ppr": 177,
             "standard": 173
         },
         "projections": {}
@@ -2259,9 +2259,9 @@
         "position": "RB",
         "bye": 7,
         "adp": {
-            "ppr": 182,
-            "half_ppr": 181,
-            "standard": 176
+            "ppr": 184,
+            "half_ppr": 183,
+            "standard": 176.5
         },
         "projections": {}
     },
@@ -2271,9 +2271,9 @@
         "position": "TE",
         "bye": 9,
         "adp": {
-            "ppr": 183,
-            "half_ppr": 180,
-            "standard": 169
+            "ppr": 184.5,
+            "half_ppr": 182,
+            "standard": 170.5
         },
         "projections": {}
     },
@@ -2283,9 +2283,9 @@
         "position": "WR",
         "bye": "",
         "adp": {
-            "ppr": 184,
-            "half_ppr": 175,
-            "standard": 178
+            "ppr": 185,
+            "half_ppr": 177,
+            "standard": 179
         },
         "projections": {}
     },
@@ -2295,9 +2295,9 @@
         "position": "WR",
         "bye": 8,
         "adp": {
-            "ppr": 185,
-            "half_ppr": 193,
-            "standard": 216
+            "ppr": 185.5,
+            "half_ppr": 200,
+            "standard": 227.5
         },
         "projections": {}
     },
@@ -2307,9 +2307,9 @@
         "position": "WR",
         "bye": 8,
         "adp": {
-            "ppr": 186,
-            "half_ppr": 194,
-            "standard": 226
+            "ppr": 185.5,
+            "half_ppr": 202.5,
+            "standard": 233
         },
         "projections": {}
     },
@@ -2319,9 +2319,9 @@
         "position": "TE",
         "bye": 9,
         "adp": {
-            "ppr": 187,
-            "half_ppr": 190,
-            "standard": 186
+            "ppr": 185.5,
+            "half_ppr": 194,
+            "standard": 190
         },
         "projections": {}
     },
@@ -2331,9 +2331,9 @@
         "position": "WR",
         "bye": 7,
         "adp": {
-            "ppr": 188,
-            "half_ppr": 189,
-            "standard": 181
+            "ppr": 187,
+            "half_ppr": 193.5,
+            "standard": 181.5
         },
         "projections": {}
     },
@@ -2343,9 +2343,9 @@
         "position": "RB",
         "bye": 10,
         "adp": {
-            "ppr": 189,
-            "half_ppr": 206,
-            "standard": 221
+            "ppr": 187,
+            "half_ppr": 215.5,
+            "standard": 230.5
         },
         "projections": {}
     },
@@ -2355,9 +2355,9 @@
         "position": "QB",
         "bye": 11,
         "adp": {
-            "ppr": 190,
-            "half_ppr": 185,
-            "standard": 198
+            "ppr": 190.5,
+            "half_ppr": 192,
+            "standard": 200
         },
         "projections": {}
     },
@@ -2367,9 +2367,9 @@
         "position": "RB",
         "bye": 11,
         "adp": {
-            "ppr": 191,
-            "half_ppr": 199,
-            "standard": 203
+            "ppr": 191.5,
+            "half_ppr": 207,
+            "standard": 208
         },
         "projections": {}
     },
@@ -2380,8 +2380,8 @@
         "bye": 8,
         "adp": {
             "ppr": 192,
-            "half_ppr": 198,
-            "standard": 202
+            "half_ppr": 207,
+            "standard": 206
         },
         "projections": {}
     },
@@ -2391,9 +2391,9 @@
         "position": "TE",
         "bye": 10,
         "adp": {
-            "ppr": 193,
-            "half_ppr": 191,
-            "standard": 191
+            "ppr": 192.5,
+            "half_ppr": 194,
+            "standard": 193
         },
         "projections": {}
     },
@@ -2403,9 +2403,9 @@
         "position": "WR",
         "bye": 5,
         "adp": {
-            "ppr": 194,
-            "half_ppr": 208,
-            "standard": 257
+            "ppr": 193.5,
+            "half_ppr": 217,
+            "standard": 261.5
         },
         "projections": {}
     },
@@ -2415,9 +2415,9 @@
         "position": "WR",
         "bye": 14,
         "adp": {
-            "ppr": 195,
-            "half_ppr": 207,
-            "standard": 224
+            "ppr": 194,
+            "half_ppr": 215.5,
+            "standard": 231
         },
         "projections": {}
     },
@@ -2427,9 +2427,9 @@
         "position": "RB",
         "bye": 5,
         "adp": {
-            "ppr": 196,
-            "half_ppr": 192,
-            "standard": 189
+            "ppr": 195,
+            "half_ppr": 194,
+            "standard": 192
         },
         "projections": {}
     },
@@ -2440,8 +2440,8 @@
         "bye": 6,
         "adp": {
             "ppr": 197,
-            "half_ppr": 203,
-            "standard": 200
+            "half_ppr": 209.5,
+            "standard": 202.5
         },
         "projections": {}
     },
@@ -2452,7 +2452,7 @@
         "bye": 8,
         "adp": {
             "ppr": 198,
-            "half_ppr": 239,
+            "half_ppr": 245,
             "standard": 299
         },
         "projections": {}
@@ -2464,8 +2464,8 @@
         "bye": 10,
         "adp": {
             "ppr": 199,
-            "half_ppr": 211,
-            "standard": 251
+            "half_ppr": 219.5,
+            "standard": 255.5
         },
         "projections": {}
     },
@@ -2475,9 +2475,9 @@
         "position": "TE",
         "bye": 11,
         "adp": {
-            "ppr": 200,
-            "half_ppr": 195,
-            "standard": 205
+            "ppr": 201.5,
+            "half_ppr": 202.5,
+            "standard": 214.5
         },
         "projections": {}
     },
@@ -2487,9 +2487,9 @@
         "position": "RB",
         "bye": 9,
         "adp": {
-            "ppr": 201,
-            "half_ppr": 178,
-            "standard": 175
+            "ppr": 202,
+            "half_ppr": 179.5,
+            "standard": 176
         },
         "projections": {}
     },
@@ -2499,8 +2499,8 @@
         "position": "QB",
         "bye": 11,
         "adp": {
-            "ppr": 202,
-            "half_ppr": 187,
+            "ppr": 202.5,
+            "half_ppr": 193.5,
             "standard": 179
         },
         "projections": {}
@@ -2512,8 +2512,8 @@
         "bye": 14,
         "adp": {
             "ppr": 203,
-            "half_ppr": 200,
-            "standard": 246
+            "half_ppr": 207,
+            "standard": 252
         },
         "projections": {}
     },
@@ -2523,9 +2523,9 @@
         "position": "QB",
         "bye": 11,
         "adp": {
-            "ppr": 204,
-            "half_ppr": 205,
-            "standard": 204
+            "ppr": 206.5,
+            "half_ppr": 212.5,
+            "standard": 213
         },
         "projections": {}
     },
@@ -2535,9 +2535,9 @@
         "position": "RB",
         "bye": 10,
         "adp": {
-            "ppr": 205,
-            "half_ppr": 213,
-            "standard": 209
+            "ppr": 206.5,
+            "half_ppr": 220.5,
+            "standard": 217
         },
         "projections": {}
     },
@@ -2547,9 +2547,9 @@
         "position": "WR",
         "bye": 8,
         "adp": {
-            "ppr": 206,
-            "half_ppr": 209,
-            "standard": 266
+            "ppr": 207.5,
+            "half_ppr": 217.5,
+            "standard": 269
         },
         "projections": {}
     },
@@ -2559,8 +2559,8 @@
         "position": "RB",
         "bye": 9,
         "adp": {
-            "ppr": 207,
-            "half_ppr": 184,
+            "ppr": 208,
+            "half_ppr": 190.5,
             "standard": 172
         },
         "projections": {}
@@ -2571,9 +2571,9 @@
         "position": "TE",
         "bye": 14,
         "adp": {
-            "ppr": 208,
-            "half_ppr": 219,
-            "standard": 243
+            "ppr": 208.5,
+            "half_ppr": 232,
+            "standard": 251
         },
         "projections": {}
     },
@@ -2583,9 +2583,9 @@
         "position": "RB",
         "bye": 7,
         "adp": {
-            "ppr": 209,
-            "half_ppr": 240,
-            "standard": 297
+            "ppr": 208.5,
+            "half_ppr": 243.5,
+            "standard": 287.5
         },
         "projections": {}
     },
@@ -2596,8 +2596,8 @@
         "bye": 8,
         "adp": {
             "ppr": 210,
-            "half_ppr": 196,
-            "standard": 197
+            "half_ppr": 204,
+            "standard": 197.5
         },
         "projections": {}
     },
@@ -2607,9 +2607,9 @@
         "position": "RB",
         "bye": 10,
         "adp": {
-            "ppr": 211,
-            "half_ppr": 197,
-            "standard": 184
+            "ppr": 210.5,
+            "half_ppr": 204.5,
+            "standard": 187.5
         },
         "projections": {}
     },
@@ -2620,8 +2620,8 @@
         "bye": 10,
         "adp": {
             "ppr": 212,
-            "half_ppr": 218,
-            "standard": 250
+            "half_ppr": 230.5,
+            "standard": 254
         },
         "projections": {}
     },
@@ -2631,9 +2631,9 @@
         "position": "TE",
         "bye": 14,
         "adp": {
-            "ppr": 213,
-            "half_ppr": 212,
-            "standard": 230
+            "ppr": 212.5,
+            "half_ppr": 219.5,
+            "standard": 239
         },
         "projections": {}
     },
@@ -2643,9 +2643,9 @@
         "position": "WR",
         "bye": 5,
         "adp": {
-            "ppr": 214,
-            "half_ppr": 210,
-            "standard": 249
+            "ppr": 213.5,
+            "half_ppr": 218.5,
+            "standard": 253
         },
         "projections": {}
     },
@@ -2655,9 +2655,9 @@
         "position": "QB",
         "bye": 14,
         "adp": {
-            "ppr": 215,
-            "half_ppr": 202,
-            "standard": 187
+            "ppr": 214.5,
+            "half_ppr": 207.5,
+            "standard": 191.5
         },
         "projections": {}
     },
@@ -2667,9 +2667,9 @@
         "position": "WR",
         "bye": 11,
         "adp": {
-            "ppr": 216,
-            "half_ppr": 220,
-            "standard": 270
+            "ppr": 217,
+            "half_ppr": 232.5,
+            "standard": 271.5
         },
         "projections": {}
     },
@@ -2680,8 +2680,8 @@
         "bye": 14,
         "adp": {
             "ppr": 217,
-            "half_ppr": 214,
-            "standard": 213
+            "half_ppr": 224.5,
+            "standard": 223.5
         },
         "projections": {}
     },
@@ -2691,9 +2691,9 @@
         "position": "WR",
         "bye": 10,
         "adp": {
-            "ppr": 218,
-            "half_ppr": 216,
-            "standard": 281
+            "ppr": 218.5,
+            "half_ppr": 228.5,
+            "standard": 279.5
         },
         "projections": {}
     },
@@ -2703,9 +2703,9 @@
         "position": "RB",
         "bye": 8,
         "adp": {
-            "ppr": 219,
-            "half_ppr": 234,
-            "standard": 247
+            "ppr": 219.5,
+            "half_ppr": 242.5,
+            "standard": 252.5
         },
         "projections": {}
     },
@@ -2717,7 +2717,7 @@
         "adp": {
             "ppr": 220,
             "half_ppr": 249,
-            "standard": 291
+            "standard": 284
         },
         "projections": {}
     },
@@ -2727,9 +2727,9 @@
         "position": "WR",
         "bye": 5,
         "adp": {
-            "ppr": 221,
-            "half_ppr": 242,
-            "standard": 264
+            "ppr": 221.5,
+            "half_ppr": 244.5,
+            "standard": 268.5
         },
         "projections": {}
     },
@@ -2739,9 +2739,9 @@
         "position": "WR",
         "bye": "",
         "adp": {
-            "ppr": 222,
-            "half_ppr": 201,
-            "standard": 206
+            "ppr": 222.5,
+            "half_ppr": 207.5,
+            "standard": 215
         },
         "projections": {}
     },
@@ -2751,9 +2751,9 @@
         "position": "RB",
         "bye": 10,
         "adp": {
-            "ppr": 223,
-            "half_ppr": 244,
-            "standard": 240
+            "ppr": 222.5,
+            "half_ppr": 245.5,
+            "standard": 249.5
         },
         "projections": {}
     },
@@ -2763,9 +2763,9 @@
         "position": "TE",
         "bye": 8,
         "adp": {
-            "ppr": 224,
-            "half_ppr": 236,
-            "standard": 261
+            "ppr": 223.5,
+            "half_ppr": 242.5,
+            "standard": 267
         },
         "projections": {}
     },
@@ -2775,9 +2775,9 @@
         "position": "TE",
         "bye": 8,
         "adp": {
-            "ppr": 225,
-            "half_ppr": 227,
-            "standard": 244
+            "ppr": 226.5,
+            "half_ppr": 238.5,
+            "standard": 251
         },
         "projections": {}
     },
@@ -2787,9 +2787,9 @@
         "position": "WR",
         "bye": 7,
         "adp": {
-            "ppr": 226,
-            "half_ppr": 235,
-            "standard": 284
+            "ppr": 229,
+            "half_ppr": 242.5,
+            "standard": 280.5
         },
         "projections": {}
     },
@@ -2799,9 +2799,9 @@
         "position": "RB",
         "bye": 5,
         "adp": {
-            "ppr": 227,
-            "half_ppr": 252,
-            "standard": 214
+            "ppr": 229.5,
+            "half_ppr": 250,
+            "standard": 226
         },
         "projections": {}
     },
@@ -2811,9 +2811,9 @@
         "position": "WR",
         "bye": 9,
         "adp": {
-            "ppr": 228,
-            "half_ppr": 245,
-            "standard": 293
+            "ppr": 231,
+            "half_ppr": 246,
+            "standard": 285.5
         },
         "projections": {}
     },
@@ -2823,9 +2823,9 @@
         "position": "WR",
         "bye": 10,
         "adp": {
-            "ppr": 229,
-            "half_ppr": 217,
-            "standard": 274
+            "ppr": 232,
+            "half_ppr": 229.5,
+            "standard": 230
         },
         "projections": {}
     },
@@ -2835,9 +2835,9 @@
         "position": "WR",
         "bye": 8,
         "adp": {
-            "ppr": 230,
-            "half_ppr": 264,
-            "standard": 305
+            "ppr": 232.5,
+            "half_ppr": 271,
+            "standard": 293
         },
         "projections": {}
     },
@@ -2847,9 +2847,9 @@
         "position": "TE",
         "bye": 12,
         "adp": {
-            "ppr": 231,
-            "half_ppr": 253,
-            "standard": 237
+            "ppr": 232.5,
+            "half_ppr": 259,
+            "standard": 244.5
         },
         "projections": {}
     },
@@ -2859,9 +2859,9 @@
         "position": "RB",
         "bye": 11,
         "adp": {
-            "ppr": 232,
-            "half_ppr": 204,
-            "standard": 199
+            "ppr": 233.5,
+            "half_ppr": 212,
+            "standard": 201
         },
         "projections": {}
     },
@@ -2871,9 +2871,9 @@
         "position": "TE",
         "bye": 8,
         "adp": {
-            "ppr": 233,
-            "half_ppr": 241,
-            "standard": 242
+            "ppr": 235,
+            "half_ppr": 232,
+            "standard": 251
         },
         "projections": {}
     },
@@ -2883,9 +2883,9 @@
         "position": "WR",
         "bye": 10,
         "adp": {
-            "ppr": 234,
-            "half_ppr": 243,
-            "standard": 227
+            "ppr": 235.5,
+            "half_ppr": 244.5,
+            "standard": 235
         },
         "projections": {}
     },
@@ -2895,9 +2895,9 @@
         "position": "QB",
         "bye": 9,
         "adp": {
-            "ppr": 235,
-            "half_ppr": 240,
-            "standard": 220
+            "ppr": 235.5,
+            "half_ppr": 230,
+            "standard": 230.5
         },
         "projections": {}
     },
@@ -2908,8 +2908,8 @@
         "bye": 10,
         "adp": {
             "ppr": 236,
-            "half_ppr": 228,
-            "standard": 236
+            "half_ppr": 226,
+            "standard": 243.5
         },
         "projections": {}
     },
@@ -2919,9 +2919,9 @@
         "position": "TE",
         "bye": 11,
         "adp": {
-            "ppr": 237,
-            "half_ppr": 266,
-            "standard": 300
+            "ppr": 239,
+            "half_ppr": 275.5,
+            "standard": 291.5
         },
         "projections": {}
     },
@@ -2931,9 +2931,9 @@
         "position": "RB",
         "bye": 12,
         "adp": {
-            "ppr": 238,
-            "half_ppr": 262,
-            "standard": 286
+            "ppr": 239.5,
+            "half_ppr": 274,
+            "standard": 282
         },
         "projections": {}
     },
@@ -2943,9 +2943,9 @@
         "position": "RB",
         "bye": 9,
         "adp": {
-            "ppr": 239,
-            "half_ppr": 249,
-            "standard": 271
+            "ppr": 242.5,
+            "half_ppr": 249.5,
+            "standard": 272
         },
         "projections": {}
     },
@@ -2955,9 +2955,9 @@
         "position": "QB",
         "bye": 9,
         "adp": {
-            "ppr": 240,
-            "half_ppr": 242,
-            "standard": 225
+            "ppr": 246,
+            "half_ppr": 233,
+            "standard": 233
         },
         "projections": {}
     },
@@ -2967,9 +2967,9 @@
         "position": "QB",
         "bye": 8,
         "adp": {
-            "ppr": 241,
-            "half_ppr": 250,
-            "standard": 235
+            "ppr": 247.5,
+            "half_ppr": 249,
+            "standard": 242.5
         },
         "projections": {}
     },
@@ -2979,9 +2979,9 @@
         "position": "TE",
         "bye": 12,
         "adp": {
-            "ppr": 242,
-            "half_ppr": 288,
-            "standard": 340
+            "ppr": 248,
+            "half_ppr": 294,
+            "standard": 312
         },
         "projections": {}
     },
@@ -2991,9 +2991,9 @@
         "position": "TE",
         "bye": 5,
         "adp": {
-            "ppr": 243,
-            "half_ppr": 223,
-            "standard": 219
+            "ppr": 248,
+            "half_ppr": 235.5,
+            "standard": 230
         },
         "projections": {}
     },
@@ -3003,9 +3003,9 @@
         "position": "WR",
         "bye": 12,
         "adp": {
-            "ppr": 244,
-            "half_ppr": 265,
-            "standard": 310
+            "ppr": 248.5,
+            "half_ppr": 265.5,
+            "standard": 295
         },
         "projections": {}
     },
@@ -3015,9 +3015,9 @@
         "position": "WR",
         "bye": 12,
         "adp": {
-            "ppr": 245,
-            "half_ppr": 277,
-            "standard": 280
+            "ppr": 251,
+            "half_ppr": 293,
+            "standard": 278.5
         },
         "projections": {}
     },
@@ -3027,9 +3027,9 @@
         "position": "RB",
         "bye": 14,
         "adp": {
-            "ppr": 246,
-            "half_ppr": 257,
-            "standard": 245
+            "ppr": 251,
+            "half_ppr": 252.5,
+            "standard": 251.5
         },
         "projections": {}
     },
@@ -3039,9 +3039,9 @@
         "position": "WR",
         "bye": 12,
         "adp": {
-            "ppr": 247,
-            "half_ppr": 275,
-            "standard": 301
+            "ppr": 251.5,
+            "half_ppr": 278,
+            "standard": 290.5
         },
         "projections": {}
     },
@@ -3051,9 +3051,9 @@
         "position": "RB",
         "bye": 7,
         "adp": {
-            "ppr": 248,
-            "half_ppr": 264,
-            "standard": 313
+            "ppr": 252,
+            "half_ppr": 257,
+            "standard": 296
         },
         "projections": {}
     },
@@ -3063,9 +3063,9 @@
         "position": "WR",
         "bye": 8,
         "adp": {
-            "ppr": 249,
-            "half_ppr": 284,
-            "standard": 328
+            "ppr": 252.5,
+            "half_ppr": 297,
+            "standard": 299
         },
         "projections": {}
     },
@@ -3075,8 +3075,8 @@
         "position": "WR",
         "bye": 14,
         "adp": {
-            "ppr": 250,
-            "half_ppr": 273,
+            "ppr": 254.5,
+            "half_ppr": 236,
             "standard": null
         },
         "projections": {}
@@ -3087,9 +3087,9 @@
         "position": "WR",
         "bye": 9,
         "adp": {
-            "ppr": 251,
-            "half_ppr": 286,
-            "standard": 344
+            "ppr": 254.5,
+            "half_ppr": 288,
+            "standard": 315
         },
         "projections": {}
     },
@@ -3099,9 +3099,9 @@
         "position": "WR",
         "bye": 12,
         "adp": {
-            "ppr": 252,
-            "half_ppr": 260,
-            "standard": 265
+            "ppr": 254.5,
+            "half_ppr": 238,
+            "standard": 260
         },
         "projections": {}
     },
@@ -3111,9 +3111,9 @@
         "position": "WR",
         "bye": 14,
         "adp": {
-            "ppr": 253,
-            "half_ppr": 259,
-            "standard": 290
+            "ppr": 255,
+            "half_ppr": 267,
+            "standard": 284
         },
         "projections": {}
     },
@@ -3123,9 +3123,9 @@
         "position": "RB",
         "bye": 10,
         "adp": {
-            "ppr": 254,
-            "half_ppr": 267,
-            "standard": 239
+            "ppr": 255.5,
+            "half_ppr": 280,
+            "standard": 249.5
         },
         "projections": {}
     },
@@ -3135,9 +3135,9 @@
         "position": "TE",
         "bye": 9,
         "adp": {
-            "ppr": 255,
-            "half_ppr": 282,
-            "standard": 279
+            "ppr": 256.5,
+            "half_ppr": 298,
+            "standard": 278.5
         },
         "projections": {}
     },
@@ -3147,9 +3147,9 @@
         "position": "RB",
         "bye": 10,
         "adp": {
-            "ppr": 256,
-            "half_ppr": 254,
-            "standard": 222
+            "ppr": 256.5,
+            "half_ppr": 251,
+            "standard": 231
         },
         "projections": {}
     },
@@ -3159,9 +3159,9 @@
         "position": "RB",
         "bye": 11,
         "adp": {
-            "ppr": 257,
-            "half_ppr": 255,
-            "standard": 282
+            "ppr": 257.5,
+            "half_ppr": 263,
+            "standard": 280
         },
         "projections": {}
     },
@@ -3172,8 +3172,8 @@
         "bye": 8,
         "adp": {
             "ppr": 258,
-            "half_ppr": 265,
-            "standard": 289
+            "half_ppr": 277,
+            "standard": 284
         },
         "projections": {}
     },
@@ -3183,9 +3183,9 @@
         "position": "TE",
         "bye": 12,
         "adp": {
-            "ppr": 259,
-            "half_ppr": 269,
-            "standard": 217
+            "ppr": 258.5,
+            "half_ppr": 282,
+            "standard": 228
         },
         "projections": {}
     },
@@ -3195,9 +3195,9 @@
         "position": "WR",
         "bye": 7,
         "adp": {
-            "ppr": 260,
-            "half_ppr": 285,
-            "standard": 339
+            "ppr": 259,
+            "half_ppr": 290,
+            "standard": 311
         },
         "projections": {}
     },
@@ -3207,9 +3207,9 @@
         "position": "WR",
         "bye": 8,
         "adp": {
-            "ppr": 261,
-            "half_ppr": 288,
-            "standard": 338
+            "ppr": 260,
+            "half_ppr": 296,
+            "standard": 310
         },
         "projections": {}
     },
@@ -3219,9 +3219,9 @@
         "position": "WR",
         "bye": 10,
         "adp": {
-            "ppr": 262,
-            "half_ppr": 304,
-            "standard": 354
+            "ppr": 260.5,
+            "half_ppr": 302.5,
+            "standard": 329
         },
         "projections": {}
     },
@@ -3231,9 +3231,9 @@
         "position": "WR",
         "bye": 6,
         "adp": {
-            "ppr": 263,
-            "half_ppr": 279,
-            "standard": 305
+            "ppr": 261.5,
+            "half_ppr": 308,
+            "standard": 265
         },
         "projections": {}
     },
@@ -3243,9 +3243,9 @@
         "position": "WR",
         "bye": 12,
         "adp": {
-            "ppr": 264,
-            "half_ppr": 278,
-            "standard": 321
+            "ppr": 261.5,
+            "half_ppr": 295,
+            "standard": 291
         },
         "projections": {}
     },
@@ -3255,9 +3255,9 @@
         "position": "RB",
         "bye": 6,
         "adp": {
-            "ppr": 265,
-            "half_ppr": 255,
-            "standard": null
+            "ppr": 262.5,
+            "half_ppr": 262,
+            "standard": 258.5
         },
         "projections": {}
     },
@@ -3267,8 +3267,8 @@
         "position": "WR",
         "bye": 5,
         "adp": {
-            "ppr": 266,
-            "half_ppr": 284,
+            "ppr": 263,
+            "half_ppr": 252,
             "standard": 304
         },
         "projections": {}
@@ -3279,9 +3279,9 @@
         "position": "WR",
         "bye": 9,
         "adp": {
-            "ppr": 267,
-            "half_ppr": 277,
-            "standard": 336
+            "ppr": 264,
+            "half_ppr": 281,
+            "standard": 307
         },
         "projections": {}
     },
@@ -3291,9 +3291,9 @@
         "position": "TE",
         "bye": 8,
         "adp": {
-            "ppr": 268,
-            "half_ppr": 276,
-            "standard": null
+            "ppr": 269,
+            "half_ppr": 241,
+            "standard": 276
         },
         "projections": {}
     },
@@ -3303,9 +3303,9 @@
         "position": "RB",
         "bye": 12,
         "adp": {
-            "ppr": 269,
-            "half_ppr": 231,
-            "standard": 208
+            "ppr": 265,
+            "half_ppr": 240.5,
+            "standard": 216.5
         },
         "projections": {}
     },
@@ -3316,8 +3316,8 @@
         "bye": 12,
         "adp": {
             "ppr": 270,
-            "half_ppr": 251,
-            "standard": 234
+            "half_ppr": 255,
+            "standard": 242
         },
         "projections": {}
     },
@@ -3327,9 +3327,9 @@
         "position": "WR",
         "bye": 12,
         "adp": {
-            "ppr": 271,
-            "half_ppr": 299,
-            "standard": null
+            "ppr": 268,
+            "half_ppr": 272,
+            "standard": 299
         },
         "projections": {}
     },
@@ -3339,9 +3339,9 @@
         "position": "WR",
         "bye": 8,
         "adp": {
-            "ppr": 272,
-            "half_ppr": 286,
-            "standard": null
+            "ppr": 270,
+            "half_ppr": 253,
+            "standard": 286
         },
         "projections": {}
     },
@@ -3351,9 +3351,9 @@
         "position": "RB",
         "bye": 9,
         "adp": {
-            "ppr": 273,
-            "half_ppr": 289,
-            "standard": 332
+            "ppr": 270.5,
+            "half_ppr": 281.5,
+            "standard": 311
         },
         "projections": {}
     },
@@ -3363,9 +3363,9 @@
         "position": "WR",
         "bye": 14,
         "adp": {
-            "ppr": 274,
-            "half_ppr": 287,
-            "standard": null
+            "ppr": 280,
+            "half_ppr": 254,
+            "standard": 287
         },
         "projections": {}
     },
@@ -3375,9 +3375,9 @@
         "position": "WR",
         "bye": 10,
         "adp": {
-            "ppr": 275,
-            "half_ppr": 280,
-            "standard": 273
+            "ppr": 272.5,
+            "half_ppr": 301,
+            "standard": 272.5
         },
         "projections": {}
     },
@@ -3387,9 +3387,9 @@
         "position": "WR",
         "bye": 8,
         "adp": {
-            "ppr": 276,
-            "half_ppr": 317,
-            "standard": 288
+            "ppr": 274,
+            "half_ppr": 287.5,
+            "standard": 283.5
         },
         "projections": {}
     },
@@ -3399,9 +3399,9 @@
         "position": "WR",
         "bye": 6,
         "adp": {
-            "ppr": 277,
-            "half_ppr": 283,
-            "standard": 285
+            "ppr": 274,
+            "half_ppr": 312,
+            "standard": 244
         },
         "projections": {}
     },
@@ -3411,9 +3411,9 @@
         "position": "WR",
         "bye": 12,
         "adp": {
-            "ppr": 278,
-            "half_ppr": 307,
-            "standard": 325
+            "ppr": 274,
+            "half_ppr": 287.5,
+            "standard": 297
         },
         "projections": {}
     },
@@ -3423,9 +3423,9 @@
         "position": "WR",
         "bye": 10,
         "adp": {
-            "ppr": 279,
-            "half_ppr": 310,
-            "standard": null
+            "ppr": 275,
+            "half_ppr": 297,
+            "standard": 342
         },
         "projections": {}
     },
@@ -3435,9 +3435,9 @@
         "position": "RB",
         "bye": 5,
         "adp": {
-            "ppr": 280,
-            "half_ppr": 292,
-            "standard": 327
+            "ppr": 276.5,
+            "half_ppr": 263,
+            "standard": 298
         },
         "projections": {}
     },
@@ -3447,9 +3447,9 @@
         "position": "QB",
         "bye": 5,
         "adp": {
-            "ppr": 281,
-            "half_ppr": 261,
-            "standard": 233
+            "ppr": 279.5,
+            "half_ppr": 270,
+            "standard": 242
         },
         "projections": {}
     },
@@ -3459,9 +3459,9 @@
         "position": "TE",
         "bye": 8,
         "adp": {
-            "ppr": 282,
-            "half_ppr": 306,
-            "standard": 292
+            "ppr": 277,
+            "half_ppr": 302.5,
+            "standard": 289
         },
         "projections": {}
     },
@@ -3471,9 +3471,9 @@
         "position": "RB",
         "bye": 12,
         "adp": {
-            "ppr": 283,
-            "half_ppr": 274,
-            "standard": 252
+            "ppr": 267,
+            "half_ppr": 302,
+            "standard": 256
         },
         "projections": {}
     },
@@ -3483,7 +3483,7 @@
         "position": "WR",
         "bye": 14,
         "adp": {
-            "ppr": 284,
+            "ppr": 271,
             "half_ppr": null,
             "standard": null
         },
@@ -3495,9 +3495,9 @@
         "position": "RB",
         "bye": 14,
         "adp": {
-            "ppr": 285,
-            "half_ppr": 284,
-            "standard": 267
+            "ppr": 280,
+            "half_ppr": 309,
+            "standard": 269
         },
         "projections": {}
     },
@@ -3507,7 +3507,7 @@
         "position": "WR",
         "bye": 9,
         "adp": {
-            "ppr": 286,
+            "ppr": 275,
             "half_ppr": null,
             "standard": null
         },
@@ -3519,8 +3519,8 @@
         "position": "WR",
         "bye": 11,
         "adp": {
-            "ppr": 287,
-            "half_ppr": 281,
+            "ppr": 282,
+            "half_ppr": 303,
             "standard": 311
         },
         "projections": {}
@@ -3531,7 +3531,7 @@
         "position": "TE",
         "bye": 12,
         "adp": {
-            "ppr": 288,
+            "ppr": 283,
             "half_ppr": 314,
             "standard": null
         },
@@ -3543,9 +3543,9 @@
         "position": "WR",
         "bye": 5,
         "adp": {
-            "ppr": 289,
-            "half_ppr": 322,
-            "standard": 350
+            "ppr": 279,
+            "half_ppr": 335,
+            "standard": 322
         },
         "projections": {}
     },
@@ -3555,7 +3555,7 @@
         "position": "RB",
         "bye": 9,
         "adp": {
-            "ppr": 290,
+            "ppr": 283,
             "half_ppr": null,
             "standard": 268
         },
@@ -3567,7 +3567,7 @@
         "position": "WR",
         "bye": 7,
         "adp": {
-            "ppr": 291,
+            "ppr": 296,
             "half_ppr": 313,
             "standard": null
         },
@@ -3579,7 +3579,7 @@
         "position": "WR",
         "bye": 9,
         "adp": {
-            "ppr": 292,
+            "ppr": 285,
             "half_ppr": null,
             "standard": null
         },
@@ -3591,7 +3591,7 @@
         "position": "WR",
         "bye": 10,
         "adp": {
-            "ppr": 293,
+            "ppr": 286,
             "half_ppr": null,
             "standard": null
         },
@@ -3605,7 +3605,7 @@
         "adp": {
             "ppr": 294,
             "half_ppr": 318,
-            "standard": 334
+            "standard": 305
         },
         "projections": {}
     },
@@ -3615,7 +3615,7 @@
         "position": "WR",
         "bye": 14,
         "adp": {
-            "ppr": 295,
+            "ppr": 288,
             "half_ppr": null,
             "standard": null
         },
@@ -3627,7 +3627,7 @@
         "position": "WR",
         "bye": 7,
         "adp": {
-            "ppr": 296,
+            "ppr": 289,
             "half_ppr": null,
             "standard": null
         },
@@ -3639,7 +3639,7 @@
         "position": "WR",
         "bye": 12,
         "adp": {
-            "ppr": 297,
+            "ppr": 291,
             "half_ppr": null,
             "standard": null
         },
@@ -3651,7 +3651,7 @@
         "position": "WR",
         "bye": 14,
         "adp": {
-            "ppr": 298,
+            "ppr": 292,
             "half_ppr": null,
             "standard": null
         },
@@ -3663,7 +3663,7 @@
         "position": "WR",
         "bye": 10,
         "adp": {
-            "ppr": 299,
+            "ppr": 293,
             "half_ppr": null,
             "standard": null
         },
@@ -3675,9 +3675,9 @@
         "position": "WR",
         "bye": 8,
         "adp": {
-            "ppr": 300,
+            "ppr": 296,
             "half_ppr": null,
-            "standard": 331
+            "standard": 301
         },
         "projections": {}
     },
@@ -3687,9 +3687,9 @@
         "position": "WR",
         "bye": 6,
         "adp": {
-            "ppr": 301,
+            "ppr": 298,
             "half_ppr": 327,
-            "standard": 353
+            "standard": 327
         },
         "projections": {}
     },
@@ -3699,9 +3699,9 @@
         "position": "RB",
         "bye": 8,
         "adp": {
-            "ppr": 302,
-            "half_ppr": 302,
-            "standard": 329
+            "ppr": 299,
+            "half_ppr": 323,
+            "standard": 309.5
         },
         "projections": {}
     },
@@ -3711,7 +3711,7 @@
         "position": "TE",
         "bye": 7,
         "adp": {
-            "ppr": 303,
+            "ppr": 300,
             "half_ppr": null,
             "standard": null
         },
@@ -3723,7 +3723,7 @@
         "position": "QB",
         "bye": 10,
         "adp": {
-            "ppr": 304,
+            "ppr": 302,
             "half_ppr": null,
             "standard": null
         },
@@ -3735,7 +3735,7 @@
         "position": "TE",
         "bye": 5,
         "adp": {
-            "ppr": 305,
+            "ppr": 303,
             "half_ppr": null,
             "standard": null
         },
@@ -3747,7 +3747,7 @@
         "position": "WR",
         "bye": 14,
         "adp": {
-            "ppr": 306,
+            "ppr": 304,
             "half_ppr": null,
             "standard": null
         },
@@ -3759,7 +3759,7 @@
         "position": "WR",
         "bye": 8,
         "adp": {
-            "ppr": 307,
+            "ppr": 305,
             "half_ppr": null,
             "standard": null
         },
@@ -3771,9 +3771,9 @@
         "position": "QB",
         "bye": 14,
         "adp": {
-            "ppr": 308,
-            "half_ppr": 321,
-            "standard": 349
+            "ppr": 307,
+            "half_ppr": 334,
+            "standard": 321
         },
         "projections": {}
     },
@@ -3796,8 +3796,8 @@
         "bye": 11,
         "adp": {
             "ppr": 310,
-            "half_ppr": 295,
-            "standard": 324
+            "half_ppr": 320,
+            "standard": 306
         },
         "projections": {}
     },
@@ -3856,8 +3856,8 @@
         "bye": 10,
         "adp": {
             "ppr": 315,
-            "half_ppr": 285,
-            "standard": 315
+            "half_ppr": 315,
+            "standard": 298.5
         },
         "projections": {}
     },
@@ -3916,8 +3916,8 @@
         "bye": 10,
         "adp": {
             "ppr": 320,
-            "half_ppr": 325,
-            "standard": 330
+            "half_ppr": 337,
+            "standard": 312
         },
         "projections": {}
     },
@@ -3928,8 +3928,8 @@
         "bye": 14,
         "adp": {
             "ppr": 321,
-            "half_ppr": 303,
-            "standard": 333
+            "half_ppr": 326,
+            "standard": 303
         },
         "projections": {}
     },
@@ -3941,7 +3941,7 @@
         "adp": {
             "ppr": 322,
             "half_ppr": null,
-            "standard": 277
+            "standard": 235
         },
         "projections": {}
     },
@@ -4025,7 +4025,7 @@
         "adp": {
             "ppr": 329,
             "half_ppr": null,
-            "standard": 318
+            "standard": 286
         },
         "projections": {}
     },
@@ -4048,8 +4048,8 @@
         "bye": 5,
         "adp": {
             "ppr": 331,
-            "half_ppr": null,
-            "standard": 254
+            "half_ppr": 325,
+            "standard": 257.5
         },
         "projections": {}
     },
@@ -4108,8 +4108,8 @@
         "bye": 14,
         "adp": {
             "ppr": 336,
-            "half_ppr": 305,
-            "standard": 314
+            "half_ppr": 277,
+            "standard": 276.5
         },
         "projections": {}
     },
@@ -4216,8 +4216,8 @@
         "bye": "",
         "adp": {
             "ppr": 345,
-            "half_ppr": 328,
-            "standard": 337
+            "half_ppr": 309,
+            "standard": 309
         },
         "projections": {}
     },
@@ -4240,8 +4240,8 @@
         "bye": 6,
         "adp": {
             "ppr": 347,
-            "half_ppr": 296,
-            "standard": 312
+            "half_ppr": 321,
+            "standard": 295.5
         },
         "projections": {}
     },
@@ -4252,8 +4252,8 @@
         "bye": 14,
         "adp": {
             "ppr": 348,
-            "half_ppr": 286,
-            "standard": 283
+            "half_ppr": 316,
+            "standard": 280
         },
         "projections": {}
     },
@@ -4396,8 +4396,8 @@
         "bye": 10,
         "adp": {
             "ppr": 360,
-            "half_ppr": 326,
-            "standard": 352
+            "half_ppr": 338,
+            "standard": 326
         },
         "projections": {}
     },
@@ -4696,8 +4696,8 @@
         "bye": 12,
         "adp": {
             "ppr": null,
-            "half_ppr": null,
-            "standard": 167
+            "half_ppr": 215,
+            "standard": 168
         },
         "projections": {}
     },
@@ -4708,8 +4708,8 @@
         "bye": 9,
         "adp": {
             "ppr": null,
-            "half_ppr": null,
-            "standard": 180
+            "half_ppr": 221,
+            "standard": 178
         },
         "projections": {}
     },
@@ -4720,8 +4720,8 @@
         "bye": 7,
         "adp": {
             "ppr": null,
-            "half_ppr": null,
-            "standard": 188
+            "half_ppr": 229,
+            "standard": 192
         },
         "projections": {}
     },
@@ -4732,7 +4732,7 @@
         "bye": 6,
         "adp": {
             "ppr": null,
-            "half_ppr": null,
+            "half_ppr": 228,
             "standard": 190
         },
         "projections": {}
@@ -4744,8 +4744,8 @@
         "bye": 5,
         "adp": {
             "ppr": null,
-            "half_ppr": null,
-            "standard": 192
+            "half_ppr": 224,
+            "standard": 187
         },
         "projections": {}
     },
@@ -4756,8 +4756,8 @@
         "bye": 7,
         "adp": {
             "ppr": null,
-            "half_ppr": null,
-            "standard": 193
+            "half_ppr": 222,
+            "standard": 183
         },
         "projections": {}
     },
@@ -4768,8 +4768,8 @@
         "bye": 6,
         "adp": {
             "ppr": null,
-            "half_ppr": null,
-            "standard": 196
+            "half_ppr": 225,
+            "standard": 189
         },
         "projections": {}
     },
@@ -4780,8 +4780,8 @@
         "bye": 10,
         "adp": {
             "ppr": null,
-            "half_ppr": null,
-            "standard": 207
+            "half_ppr": 241,
+            "standard": 201
         },
         "projections": {}
     },
@@ -4792,8 +4792,8 @@
         "bye": 8,
         "adp": {
             "ppr": null,
-            "half_ppr": null,
-            "standard": 212
+            "half_ppr": 247,
+            "standard": 206
         },
         "projections": {}
     },
@@ -4804,8 +4804,8 @@
         "bye": 12,
         "adp": {
             "ppr": null,
-            "half_ppr": null,
-            "standard": 218
+            "half_ppr": 237,
+            "standard": 198
         },
         "projections": {}
     },
@@ -4816,8 +4816,8 @@
         "bye": 10,
         "adp": {
             "ppr": null,
-            "half_ppr": null,
-            "standard": 223
+            "half_ppr": 253,
+            "standard": 214
         },
         "projections": {}
     },
@@ -4828,8 +4828,8 @@
         "bye": 8,
         "adp": {
             "ppr": null,
-            "half_ppr": null,
-            "standard": 228
+            "half_ppr": 246,
+            "standard": 205
         },
         "projections": {}
     },
@@ -4841,7 +4841,7 @@
         "adp": {
             "ppr": null,
             "half_ppr": null,
-            "standard": 229
+            "standard": 156
         },
         "projections": {}
     },
@@ -4852,8 +4852,8 @@
         "bye": 14,
         "adp": {
             "ppr": null,
-            "half_ppr": null,
-            "standard": 231
+            "half_ppr": 275,
+            "standard": 239
         },
         "projections": {}
     },
@@ -4864,8 +4864,8 @@
         "bye": 5,
         "adp": {
             "ppr": null,
-            "half_ppr": null,
-            "standard": 232
+            "half_ppr": 248,
+            "standard": 207
         },
         "projections": {}
     },
@@ -4876,8 +4876,8 @@
         "bye": 14,
         "adp": {
             "ppr": null,
-            "half_ppr": null,
-            "standard": 238
+            "half_ppr": 256,
+            "standard": 215
         },
         "projections": {}
     },
@@ -4888,8 +4888,8 @@
         "bye": 9,
         "adp": {
             "ppr": null,
-            "half_ppr": null,
-            "standard": 241
+            "half_ppr": 265,
+            "standard": 227
         },
         "projections": {}
     },
@@ -4901,7 +4901,7 @@
         "adp": {
             "ppr": null,
             "half_ppr": null,
-            "standard": 248
+            "standard": 186
         },
         "projections": {}
     },
@@ -4913,7 +4913,7 @@
         "adp": {
             "ppr": null,
             "half_ppr": null,
-            "standard": 253
+            "standard": 193
         },
         "projections": {}
     },
@@ -4925,7 +4925,7 @@
         "adp": {
             "ppr": null,
             "half_ppr": null,
-            "standard": 256
+            "standard": 200
         },
         "projections": {}
     },
@@ -4936,8 +4936,8 @@
         "bye": 9,
         "adp": {
             "ppr": null,
-            "half_ppr": null,
-            "standard": 258
+            "half_ppr": 260,
+            "standard": 220
         },
         "projections": {}
     },
@@ -4949,7 +4949,7 @@
         "adp": {
             "ppr": null,
             "half_ppr": null,
-            "standard": 259
+            "standard": 210
         },
         "projections": {}
     },
@@ -4960,8 +4960,8 @@
         "bye": 5,
         "adp": {
             "ppr": null,
-            "half_ppr": null,
-            "standard": 262
+            "half_ppr": 261,
+            "standard": 221
         },
         "projections": {}
     },
@@ -4973,7 +4973,7 @@
         "adp": {
             "ppr": null,
             "half_ppr": null,
-            "standard": 263
+            "standard": 217
         },
         "projections": {}
     },
@@ -4984,8 +4984,8 @@
         "bye": 8,
         "adp": {
             "ppr": null,
-            "half_ppr": null,
-            "standard": 265
+            "half_ppr": 258,
+            "standard": 218
         },
         "projections": {}
     },
@@ -4996,8 +4996,8 @@
         "bye": 8,
         "adp": {
             "ppr": null,
-            "half_ppr": null,
-            "standard": 269
+            "half_ppr": 283,
+            "standard": 252
         },
         "projections": {}
     },
@@ -5008,8 +5008,8 @@
         "bye": 12,
         "adp": {
             "ppr": null,
-            "half_ppr": null,
-            "standard": 272
+            "half_ppr": 269,
+            "standard": 234
         },
         "projections": {}
     },
@@ -5020,8 +5020,8 @@
         "bye": 9,
         "adp": {
             "ppr": null,
-            "half_ppr": null,
-            "standard": 275
+            "half_ppr": 268,
+            "standard": 233
         },
         "projections": {}
     },
@@ -5033,7 +5033,7 @@
         "adp": {
             "ppr": null,
             "half_ppr": null,
-            "standard": 276
+            "standard": 233
         },
         "projections": {}
     },
@@ -5044,8 +5044,8 @@
         "bye": 14,
         "adp": {
             "ppr": null,
-            "half_ppr": null,
-            "standard": 278
+            "half_ppr": 272,
+            "standard": 236
         },
         "projections": {}
     },
@@ -5057,7 +5057,7 @@
         "adp": {
             "ppr": null,
             "half_ppr": null,
-            "standard": 287
+            "standard": 245
         },
         "projections": {}
     },
@@ -5068,8 +5068,8 @@
         "bye": 11,
         "adp": {
             "ppr": null,
-            "half_ppr": null,
-            "standard": 294
+            "half_ppr": 285,
+            "standard": 253
         },
         "projections": {}
     },
@@ -5081,7 +5081,7 @@
         "adp": {
             "ppr": null,
             "half_ppr": null,
-            "standard": 295
+            "standard": 253
         },
         "projections": {}
     },
@@ -5093,7 +5093,7 @@
         "adp": {
             "ppr": null,
             "half_ppr": null,
-            "standard": 296
+            "standard": 255
         },
         "projections": {}
     },
@@ -5104,8 +5104,8 @@
         "bye": 10,
         "adp": {
             "ppr": null,
-            "half_ppr": null,
-            "standard": 298
+            "half_ppr": 300,
+            "standard": 273
         },
         "projections": {}
     },
@@ -5117,7 +5117,7 @@
         "adp": {
             "ppr": null,
             "half_ppr": null,
-            "standard": 302
+            "standard": 262
         },
         "projections": {}
     },
@@ -5128,8 +5128,8 @@
         "bye": 5,
         "adp": {
             "ppr": null,
-            "half_ppr": null,
-            "standard": 303
+            "half_ppr": 291,
+            "standard": 263
         },
         "projections": {}
     },
@@ -5141,7 +5141,7 @@
         "adp": {
             "ppr": null,
             "half_ppr": null,
-            "standard": 307
+            "standard": 268
         },
         "projections": {}
     },
@@ -5153,7 +5153,7 @@
         "adp": {
             "ppr": null,
             "half_ppr": null,
-            "standard": 308
+            "standard": 269
         },
         "projections": {}
     },
@@ -5165,7 +5165,7 @@
         "adp": {
             "ppr": null,
             "half_ppr": null,
-            "standard": 309
+            "standard": 270
         },
         "projections": {}
     },
@@ -5177,7 +5177,7 @@
         "adp": {
             "ppr": null,
             "half_ppr": null,
-            "standard": 316
+            "standard": 281
         },
         "projections": {}
     },
@@ -5188,8 +5188,8 @@
         "bye": 12,
         "adp": {
             "ppr": null,
-            "half_ppr": null,
-            "standard": 317
+            "half_ppr": 311,
+            "standard": 283
         },
         "projections": {}
     },
@@ -5201,7 +5201,7 @@
         "adp": {
             "ppr": null,
             "half_ppr": null,
-            "standard": 319
+            "standard": 289
         },
         "projections": {}
     },
@@ -5212,8 +5212,8 @@
         "bye": 8,
         "adp": {
             "ppr": null,
-            "half_ppr": null,
-            "standard": 320
+            "half_ppr": 319,
+            "standard": 290
         },
         "projections": {}
     },
@@ -5225,7 +5225,7 @@
         "adp": {
             "ppr": null,
             "half_ppr": null,
-            "standard": 322
+            "standard": 291
         },
         "projections": {}
     },
@@ -5237,19 +5237,7 @@
         "adp": {
             "ppr": null,
             "half_ppr": null,
-            "standard": 323
-        },
-        "projections": {}
-    },
-    {
-        "name": "Tennessee Titans",
-        "team": "DST",
-        "position": "DST",
-        "bye": 10,
-        "adp": {
-            "ppr": null,
-            "half_ppr": null,
-            "standard": 335
+            "standard": 292
         },
         "projections": {}
     },
@@ -5272,8 +5260,8 @@
         "bye": 12,
         "adp": {
             "ppr": null,
-            "half_ppr": null,
-            "standard": 326
+            "half_ppr": 322,
+            "standard": 298
         },
         "projections": {}
     },
@@ -5284,8 +5272,8 @@
         "bye": 6,
         "adp": {
             "ppr": null,
-            "half_ppr": null,
-            "standard": 343
+            "half_ppr": 329,
+            "standard": 314
         },
         "projections": {}
     },
@@ -5296,8 +5284,8 @@
         "bye": 8,
         "adp": {
             "ppr": null,
-            "half_ppr": null,
-            "standard": 345
+            "half_ppr": 330,
+            "standard": 316
         },
         "projections": {}
     },
@@ -5308,8 +5296,8 @@
         "bye": 8,
         "adp": {
             "ppr": null,
-            "half_ppr": null,
-            "standard": 346
+            "half_ppr": 331,
+            "standard": 317
         },
         "projections": {}
     },
@@ -5320,8 +5308,8 @@
         "bye": 9,
         "adp": {
             "ppr": null,
-            "half_ppr": null,
-            "standard": 347
+            "half_ppr": 332,
+            "standard": 318
         },
         "projections": {}
     },
@@ -5332,8 +5320,8 @@
         "bye": 11,
         "adp": {
             "ppr": null,
-            "half_ppr": null,
-            "standard": 348
+            "half_ppr": 333,
+            "standard": 320
         },
         "projections": {}
     },
@@ -5344,8 +5332,20 @@
         "bye": 14,
         "adp": {
             "ppr": null,
-            "half_ppr": null,
-            "standard": 351
+            "half_ppr": 336,
+            "standard": 324
+        },
+        "projections": {}
+    },
+    {
+        "name": "Tennessee Titans",
+        "team": "DST",
+        "position": "DST",
+        "bye": 10,
+        "adp": {
+            "ppr": null,
+            "half_ppr": 327,
+            "standard": 306
         },
         "projections": {}
     }
