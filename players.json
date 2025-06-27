@@ -5,9 +5,9 @@
     "position": "WR",
     "bye": 10,
     "adp": {
-      "standard": 1,
       "ppr": 1,
-      "hppr": 1
+      "half_ppr": 1,
+      "standard": 1
     },
     "tier": 1,
     "vorp": 185.5,
@@ -32,110 +32,14 @@
     }
   },
   {
-    "name": "Bijan Robinson",
-    "team": "ATL",
-    "position": "RB",
-    "bye": 5,
-    "adp": {
-      "standard": 2,
-      "ppr": 4,
-      "hppr": 2.5
-    },
-    "tier": 1,
-    "vorp": 165.2,
-    "projections": {
-      "season": 310.5,
-      "weekly": [
-        19.5,
-        21.2,
-        18.7,
-        19.9,
-        0,
-        22.1,
-        17.8,
-        20.3,
-        19.5,
-        18.1,
-        23.4,
-        19.8,
-        20.1,
-        19.1
-      ]
-    }
-  },
-  {
-    "name": "Saquon Barkley",
-    "team": "PHI",
-    "position": "RB",
-    "bye": 9,
-    "adp": {
-      "standard": 3,
-      "ppr": 3,
-      "hppr": 3.5
-    },
-    "tier": 1,
-    "vorp": 160.2,
-    "projections": {
-      "season": 305,
-      "weekly": [
-        18.8,
-        20.5,
-        22.1,
-        17.5,
-        19.8,
-        18.3,
-        21.4,
-        20,
-        0,
-        22.5,
-        19.1,
-        18.9,
-        20.7,
-        21.2
-      ]
-    }
-  },
-  {
-    "name": "Jahmyr Gibbs",
-    "team": "DET",
-    "position": "RB",
-    "bye": 8,
-    "adp": {
-      "standard": 4,
-      "ppr": 6,
-      "hppr": 5.5
-    },
-    "tier": 1,
-    "vorp": 155.8,
-    "projections": {
-      "season": 298.5,
-      "weekly": [
-        18.1,
-        19.4,
-        17.9,
-        21.5,
-        20.1,
-        19.8,
-        18.2,
-        0,
-        21.9,
-        19.5,
-        20.3,
-        22.1,
-        19.4,
-        18.3
-      ]
-    }
-  },
-  {
     "name": "Justin Jefferson",
     "team": "MIN",
     "position": "WR",
     "bye": 6,
     "adp": {
-      "standard": 4.5,
       "ppr": 2.5,
-      "hppr": 3
+      "half_ppr": 3,
+      "standard": 4.5
     },
     "tier": 1,
     "vorp": 180.1,
@@ -160,14 +64,64 @@
     }
   },
   {
+    "name": "Saquon Barkley",
+    "team": "PHI",
+    "position": "RB",
+    "bye": 9,
+    "adp": {
+      "ppr": 3,
+      "half_ppr": 3.5,
+      "standard": 3
+    },
+    "tier": 1,
+    "vorp": 160.2,
+    "projections": {
+      "receptions": 50,
+      "receivingYards": 400,
+      "receivingTDs": 3
+    }
+  },
+  {
+    "name": "Bijan Robinson",
+    "team": "ATL",
+    "position": "RB",
+    "bye": 5,
+    "adp": {
+      "ppr": 3.5,
+      "half_ppr": 2.5,
+      "standard": 2
+    },
+    "tier": 1,
+    "vorp": 165.2,
+    "projections": {
+      "season": 310.5,
+      "weekly": [
+        19.5,
+        21.2,
+        18.7,
+        19.9,
+        0,
+        22.1,
+        17.8,
+        20.3,
+        19.5,
+        18.1,
+        23.4,
+        19.8,
+        20.1,
+        19.1
+      ]
+    }
+  },
+  {
     "name": "CeeDee Lamb",
     "team": "DAL",
     "position": "WR",
     "bye": 10,
     "adp": {
-      "standard": 6,
       "ppr": 5,
-      "hppr": 5.5
+      "half_ppr": 5.5,
+      "standard": 6
     },
     "tier": 1,
     "vorp": 175,
@@ -192,14 +146,174 @@
     }
   },
   {
+    "name": "Jahmyr Gibbs",
+    "team": "DET",
+    "position": "RB",
+    "bye": 8,
+    "adp": {
+      "ppr": 6,
+      "half_ppr": 5,
+      "standard": 4
+    },
+    "tier": 1,
+    "vorp": 155.8,
+    "projections": {
+      "season": 298.5,
+      "weekly": [
+        18.1,
+        19.4,
+        17.9,
+        21.5,
+        20.1,
+        19.8,
+        18.2,
+        0,
+        21.9,
+        19.5,
+        20.3,
+        22.1,
+        19.4,
+        18.3
+      ]
+    }
+  },
+  {
+    "name": "Puka Nacua",
+    "team": "LAR",
+    "position": "WR",
+    "bye": 8,
+    "adp": {
+      "ppr": 7.5,
+      "half_ppr": 8.5,
+      "standard": 10.5
+    },
+    "tier": 2,
+    "vorp": 145.5,
+    "projections": {
+      "season": 295,
+      "weekly": [
+        20.1,
+        18.7,
+        19.9,
+        18.5,
+        22.3,
+        19.1,
+        18.4,
+        0,
+        21.2,
+        19.8,
+        18.9,
+        20.5,
+        19.6,
+        17
+      ]
+    }
+  },
+  {
+    "name": "Malik Nabers",
+    "team": "NYG",
+    "position": "WR",
+    "bye": 14,
+    "adp": {
+      "ppr": 8,
+      "half_ppr": 7,
+      "standard": 9
+    },
+    "tier": 2,
+    "vorp": 142.1,
+    "projections": {
+      "season": 285.5,
+      "weekly": [
+        18.8,
+        19.9,
+        17.4,
+        20.1,
+        18.3,
+        19.5,
+        17.8,
+        20.6,
+        18.9,
+        17.2,
+        19.8,
+        21.1,
+        17,
+        0
+      ]
+    }
+  },
+  {
+    "name": "Christian McCaffrey",
+    "team": "SF",
+    "position": "RB",
+    "bye": 14,
+    "adp": {
+      "ppr": 8.5,
+      "half_ppr": 12,
+      "standard": 11
+    },
+    "tier": 1,
+    "vorp": 195,
+    "projections": {
+      "season": 360,
+      "weekly": [
+        23.5,
+        22.1,
+        24.8,
+        21.9,
+        25.3,
+        22.8,
+        21.5,
+        24.1,
+        23.3,
+        22.6,
+        24.9,
+        23.2,
+        22,
+        0
+      ]
+    }
+  },
+  {
+    "name": "Nico Collins",
+    "team": "HOU",
+    "position": "WR",
+    "bye": 6,
+    "adp": {
+      "ppr": 11,
+      "half_ppr": 11,
+      "standard": 13.5
+    },
+    "tier": 2,
+    "vorp": 128.4,
+    "projections": {
+      "season": 275,
+      "weekly": [
+        18.2,
+        17.5,
+        19.1,
+        16.8,
+        20.5,
+        0,
+        18.9,
+        17.1,
+        19.8,
+        16.5,
+        20.2,
+        18.3,
+        17.9,
+        16.2
+      ]
+    }
+  },
+  {
     "name": "Ashton Jeanty",
     "team": "LV",
     "position": "RB",
     "bye": 8,
     "adp": {
-      "standard": 7,
       "ppr": 11,
-      "hppr": 9.5
+      "half_ppr": 9.5,
+      "standard": 7
     },
     "tier": 2,
     "vorp": 140.3,
@@ -229,9 +343,9 @@
     "position": "WR",
     "bye": 8,
     "adp": {
-      "standard": 9,
       "ppr": 11,
-      "hppr": 10
+      "half_ppr": 10,
+      "standard": 9
     },
     "tier": 2,
     "vorp": 138.9,
@@ -256,174 +370,14 @@
     }
   },
   {
-    "name": "Malik Nabers",
-    "team": "NYG",
-    "position": "WR",
-    "bye": 14,
-    "adp": {
-      "standard": 9,
-      "ppr": 8,
-      "hppr": 7
-    },
-    "tier": 2,
-    "vorp": 142.1,
-    "projections": {
-      "season": 285.5,
-      "weekly": [
-        18.8,
-        19.9,
-        17.4,
-        20.1,
-        18.3,
-        19.5,
-        17.8,
-        20.6,
-        18.9,
-        17.2,
-        19.8,
-        21.1,
-        17,
-        0
-      ]
-    }
-  },
-  {
-    "name": "Puka Nacua",
-    "team": "LAR",
-    "position": "WR",
-    "bye": 8,
-    "adp": {
-      "standard": 10.5,
-      "ppr": 7.5,
-      "hppr": 9
-    },
-    "tier": 2,
-    "vorp": 145.5,
-    "projections": {
-      "season": 295,
-      "weekly": [
-        20.1,
-        18.7,
-        19.9,
-        18.5,
-        22.3,
-        19.1,
-        18.4,
-        0,
-        21.2,
-        19.8,
-        18.9,
-        20.5,
-        19.6,
-        17
-      ]
-    }
-  },
-  {
-    "name": "Christian McCaffrey",
-    "team": "SF",
-    "position": "RB",
-    "bye": 14,
-    "adp": {
-      "standard": 11,
-      "ppr": 8.5,
-      "hppr": 11.5
-    },
-    "tier": 1,
-    "vorp": 195,
-    "projections": {
-      "season": 360,
-      "weekly": [
-        23.5,
-        22.1,
-        24.8,
-        21.9,
-        25.3,
-        22.8,
-        21.5,
-        24.1,
-        23.3,
-        22.6,
-        24.9,
-        23.2,
-        22,
-        0
-      ]
-    }
-  },
-  {
-    "name": "Derrick Henry",
-    "team": "BAL",
-    "position": "RB",
-    "bye": 7,
-    "adp": {
-      "standard": 11.5,
-      "ppr": 14.5,
-      "hppr": 13
-    },
-    "tier": 2,
-    "vorp": 135.2,
-    "projections": {
-      "season": 260,
-      "weekly": [
-        16.5,
-        17.2,
-        15.8,
-        18.1,
-        16.9,
-        17.5,
-        0,
-        18.8,
-        16.2,
-        17.9,
-        19.5,
-        15.6,
-        17.3,
-        16.7
-      ]
-    }
-  },
-  {
-    "name": "Nico Collins",
-    "team": "HOU",
-    "position": "WR",
-    "bye": 6,
-    "adp": {
-      "standard": 13.5,
-      "ppr": 11,
-      "hppr": 11
-    },
-    "tier": 2,
-    "vorp": 128.4,
-    "projections": {
-      "season": 275,
-      "weekly": [
-        18.2,
-        17.5,
-        19.1,
-        16.8,
-        20.5,
-        0,
-        18.9,
-        17.1,
-        19.8,
-        16.5,
-        20.2,
-        18.3,
-        17.9,
-        16.2
-      ]
-    }
-  },
-  {
     "name": "Brian Thomas Jr.",
     "team": "JAC",
     "position": "WR",
     "bye": 8,
     "adp": {
-      "standard": 13.5,
       "ppr": 13,
-      "hppr": 13
+      "half_ppr": 14,
+      "standard": 13.5
     },
     "tier": 2,
     "vorp": 125.6,
@@ -448,14 +402,110 @@
     }
   },
   {
+    "name": "Derrick Henry",
+    "team": "BAL",
+    "position": "RB",
+    "bye": 7,
+    "adp": {
+      "ppr": 14.5,
+      "half_ppr": 13,
+      "standard": 11.5
+    },
+    "tier": 2,
+    "vorp": 135.2,
+    "projections": {
+      "season": 260,
+      "weekly": [
+        16.5,
+        17.2,
+        15.8,
+        18.1,
+        16.9,
+        17.5,
+        0,
+        18.8,
+        16.2,
+        17.9,
+        19.5,
+        15.6,
+        17.3,
+        16.7
+      ]
+    }
+  },
+  {
+    "name": "Drake London",
+    "team": "ATL",
+    "position": "WR",
+    "bye": 5,
+    "adp": {
+      "ppr": 14.5,
+      "half_ppr": 15,
+      "standard": 18
+    },
+    "tier": 3,
+    "vorp": 110.3,
+    "projections": {
+      "season": 250,
+      "weekly": [
+        16.2,
+        15.8,
+        17.1,
+        14.9,
+        0,
+        18.2,
+        15.5,
+        17.8,
+        15.9,
+        14.3,
+        18.8,
+        16.1,
+        17.5,
+        14.9
+      ]
+    }
+  },
+  {
+    "name": "A.J. Brown",
+    "team": "PHI",
+    "position": "WR",
+    "bye": 9,
+    "adp": {
+      "ppr": 16.5,
+      "half_ppr": 18,
+      "standard": 21.5
+    },
+    "tier": 1,
+    "vorp": 150.1,
+    "projections": {
+      "season": 300,
+      "weekly": [
+        19.8,
+        21.1,
+        18.5,
+        22.3,
+        20.5,
+        19.2,
+        21.8,
+        20.1,
+        0,
+        22.8,
+        20.2,
+        19.9,
+        21.5,
+        19.3
+      ]
+    }
+  },
+  {
     "name": "De'Von Achane",
     "team": "MIA",
     "position": "RB",
     "bye": 12,
     "adp": {
-      "standard": 14,
       "ppr": 16.5,
-      "hppr": 15.5
+      "half_ppr": 15.5,
+      "standard": 14
     },
     "tier": 2,
     "vorp": 120.7,
@@ -485,9 +535,9 @@
     "position": "TE",
     "bye": 8,
     "adp": {
-      "standard": 16.5,
       "ppr": 18.5,
-      "hppr": 18
+      "half_ppr": 18,
+      "standard": 16.5
     },
     "tier": 1,
     "vorp": 85.1,
@@ -512,238 +562,14 @@
     }
   },
   {
-    "name": "Josh Jacobs",
-    "team": "GB",
-    "position": "RB",
-    "bye": 5,
-    "adp": {
-      "standard": 17,
-      "ppr": 26,
-      "hppr": 23
-    },
-    "tier": 3,
-    "vorp": 115.4,
-    "projections": {
-      "season": 230,
-      "weekly": [
-        14.8,
-        15.5,
-        13.9,
-        16.2,
-        0,
-        15.8,
-        14.1,
-        16.9,
-        13.5,
-        15.2,
-        17.5,
-        14.6,
-        16,
-        14
-      ]
-    }
-  },
-  {
-    "name": "Drake London",
-    "team": "ATL",
-    "position": "WR",
-    "bye": 5,
-    "adp": {
-      "standard": 18,
-      "ppr": 14.5,
-      "hppr": 15
-    },
-    "tier": 3,
-    "vorp": 110.3,
-    "projections": {
-      "season": 250,
-      "weekly": [
-        16.2,
-        15.8,
-        17.1,
-        14.9,
-        0,
-        18.2,
-        15.5,
-        17.8,
-        15.9,
-        14.3,
-        18.8,
-        16.1,
-        17.5,
-        14.9
-      ]
-    }
-  },
-  {
-    "name": "Bucky Irving",
-    "team": "TB",
-    "position": "RB",
-    "bye": 9,
-    "adp": {
-      "standard": 20,
-      "ppr": 22.5,
-      "hppr": 21
-    },
-    "tier": 3,
-    "vorp": 110.1,
-    "projections": {
-      "season": 225,
-      "weekly": [
-        14.5,
-        15.1,
-        13.8,
-        16.5,
-        15.2,
-        14.1,
-        15.9,
-        14.8,
-        0,
-        16.8,
-        15.5,
-        14.3,
-        15.7,
-        13.8
-      ]
-    }
-  },
-  {
-    "name": "Jonathan Taylor",
-    "team": "IND",
-    "position": "RB",
-    "bye": 11,
-    "adp": {
-      "standard": 20.5,
-      "ppr": 20.5,
-      "hppr": 20.5
-    },
-    "tier": 3,
-    "vorp": 112.8,
-    "projections": {
-      "season": 235,
-      "weekly": [
-        15.1,
-        16.2,
-        14.5,
-        17,
-        15.8,
-        14.9,
-        16.8,
-        15.2,
-        17.5,
-        16.1,
-        0,
-        15.9,
-        16.5,
-        14.5
-      ]
-    }
-  },
-  {
-    "name": "A.J. Brown",
-    "team": "PHI",
-    "position": "WR",
-    "bye": 9,
-    "adp": {
-      "standard": 21.5,
-      "ppr": 16.5,
-      "hppr": 17.5
-    },
-    "tier": 1,
-    "vorp": 150.1,
-    "projections": {
-      "season": 300,
-      "weekly": [
-        19.8,
-        21.1,
-        18.5,
-        22.3,
-        20.5,
-        19.2,
-        21.8,
-        20.1,
-        0,
-        22.8,
-        20.2,
-        19.9,
-        21.5,
-        19.3
-      ]
-    }
-  },
-  {
-    "name": "Josh Allen",
-    "team": "BUF",
-    "position": "QB",
-    "bye": 7,
-    "adp": {
-      "standard": 22,
-      "ppr": 35,
-      "hppr": 30.5
-    },
-    "tier": 1,
-    "vorp": 105.1,
-    "projections": {
-      "season": 420,
-      "weekly": [
-        28.5,
-        27.2,
-        29.8,
-        26.5,
-        30.1,
-        28.9,
-        0,
-        29.5,
-        27.8,
-        28.2,
-        30.5,
-        26.9,
-        29.1,
-        27
-      ]
-    }
-  },
-  {
-    "name": "Lamar Jackson",
-    "team": "BAL",
-    "position": "QB",
-    "bye": 7,
-    "adp": {
-      "standard": 23.5,
-      "ppr": 35.5,
-      "hppr": 29.5
-    },
-    "tier": 1,
-    "vorp": 102.3,
-    "projections": {
-      "season": 410,
-      "weekly": [
-        27.8,
-        26.5,
-        28.9,
-        25.8,
-        29.5,
-        27.1,
-        0,
-        28.8,
-        26.9,
-        27.5,
-        29.8,
-        26.1,
-        28.3,
-        26
-      ]
-    }
-  },
-  {
     "name": "Ladd McConkey",
     "team": "LAC",
     "position": "WR",
     "bye": 12,
     "adp": {
-      "standard": 24.5,
       "ppr": 18.5,
-      "hppr": 19
+      "half_ppr": 19,
+      "standard": 24.5
     },
     "tier": 3,
     "vorp": 108.2,
@@ -768,194 +594,98 @@
     }
   },
   {
-    "name": "Kyren Williams",
-    "team": "LAR",
+    "name": "Jonathan Taylor",
+    "team": "IND",
     "position": "RB",
-    "bye": 8,
+    "bye": 11,
     "adp": {
-      "standard": 25.5,
-      "ppr": 34,
-      "hppr": 31.5
+      "ppr": 20.5,
+      "half_ppr": 20,
+      "standard": 19.5
     },
     "tier": 3,
-    "vorp": 105.9,
+    "vorp": 112.8,
     "projections": {
-      "season": 222,
+      "season": 235,
       "weekly": [
-        14.2,
         15.1,
-        13.8,
-        16.1,
-        14.8,
-        13.5,
-        15.8,
-        0,
-        16.9,
-        14.2,
-        15.5,
-        17.1,
+        16.2,
         14.5,
-        13.5
-      ]
-    }
-  },
-  {
-    "name": "Trey McBride",
-    "team": "ARI",
-    "position": "TE",
-    "bye": 8,
-    "adp": {
-      "standard": 26,
-      "ppr": 25.5,
-      "hppr": 26
-    },
-    "tier": 2,
-    "vorp": 75.3,
-    "projections": {
-      "season": 210,
-      "weekly": [
-        13.5,
-        12.8,
-        14.5,
-        11.9,
+        17,
         15.8,
-        12.2,
-        11.5,
-        0,
         14.9,
-        12.5,
-        13.8,
-        15.5,
-        12.1,
-        11
+        16.8,
+        15.2,
+        17.5,
+        16.1,
+        0,
+        15.9,
+        16.5,
+        14.5
       ]
     }
   },
   {
-    "name": "Chase Brown",
-    "team": "CIN",
-    "position": "RB",
+    "name": "Rashee Rice",
+    "team": "KC",
+    "position": "WR",
     "bye": 10,
     "adp": {
-      "standard": 27.5,
-      "ppr": 29,
-      "hppr": 30
+      "ppr": 21,
+      "half_ppr": 30.5,
+      "standard": 44.5
     },
     "tier": 3,
-    "vorp": 100.2,
+    "vorp": 98.4,
     "projections": {
-      "season": 220,
+      "season": 240,
       "weekly": [
-        14.1,
-        14.8,
-        13.5,
-        15.9,
-        14.5,
-        13.8,
-        15.5,
-        14.2,
-        16.1,
-        0,
         15.8,
-        13.9,
+        16.5,
         14.9,
-        12
-      ]
-    }
-  },
-  {
-    "name": "Jaxon Smith-Njigba",
-    "team": "SEA",
-    "position": "WR",
-    "bye": 8,
-    "adp": {
-      "standard": 28,
-      "ppr": 31,
-      "hppr": 26.5
-    },
-    "tier": 3,
-    "vorp": 100.8,
-    "projections": {
-      "season": 230,
-      "weekly": [
-        14.9,
-        15.5,
-        14.1,
-        16.2,
-        15.1,
-        13.8,
-        15.8,
-        0,
         17.1,
-        14.5,
-        15.9,
-        17.5,
-        14.8,
-        13.8
+        16.2,
+        15.5,
+        17.8,
+        16.1,
+        18.5,
+        0,
+        16.9,
+        15.3,
+        17.6,
+        14.8
       ]
     }
   },
   {
-    "name": "Breece Hall",
-    "team": "NYJ",
+    "name": "Bucky Irving",
+    "team": "TB",
     "position": "RB",
     "bye": 9,
     "adp": {
-      "standard": 30.5,
-      "ppr": 33,
-      "hppr": 33
+      "ppr": 22.5,
+      "half_ppr": 21,
+      "standard": 20
     },
     "tier": 3,
-    "vorp": 95.7,
+    "vorp": 110.1,
     "projections": {
-      "season": 215,
+      "season": 225,
       "weekly": [
-        13.8,
         14.5,
-        13.1,
-        15.5,
-        14.2,
-        13.1,
         15.1,
         13.8,
-        0,
         16.5,
+        15.2,
+        14.1,
+        15.9,
         14.8,
-        13.5,
-        15,
-        12.1
-      ]
-    }
-  },
-  {
-    "name": "Jayden Daniels",
-    "team": "WAS",
-    "position": "QB",
-    "bye": 12,
-    "adp": {
-      "standard": 29,
-      "ppr": 40,
-      "hppr": 35.5
-    },
-    "tier": 2,
-    "vorp": 90.1,
-    "projections": {
-      "season": 390,
-      "weekly": [
-        26.5,
-        25.8,
-        27.1,
-        24.9,
-        28.2,
-        25.5,
-        27.8,
-        25.9,
-        24.3,
-        28.8,
-        26.1,
         0,
-        26.5,
-        24
+        16.8,
+        15.5,
+        14.3,
+        15.7,
+        13.8
       ]
     }
   },
@@ -965,9 +695,9 @@
     "position": "WR",
     "bye": 10,
     "adp": {
-      "standard": 32.5,
       "ppr": 23,
-      "hppr": 24.5
+      "half_ppr": 22,
+      "standard": 32.5
     },
     "tier": 3,
     "vorp": 105.1,
@@ -997,9 +727,9 @@
     "position": "WR",
     "bye": 9,
     "adp": {
-      "standard": 31.5,
       "ppr": 24,
-      "hppr": 25.5
+      "half_ppr": 25.5,
+      "standard": 31.5
     },
     "tier": 3,
     "vorp": 102.6,
@@ -1024,130 +754,66 @@
     }
   },
   {
-    "name": "Tyreek Hill",
-    "team": "MIA",
-    "position": "WR",
-    "bye": 12,
+    "name": "Trey McBride",
+    "team": "ARI",
+    "position": "TE",
+    "bye": 8,
     "adp": {
-      "standard": 32,
-      "ppr": 30,
-      "hppr": 32
+      "ppr": 25.5,
+      "half_ppr": 24,
+      "standard": 26
     },
-    "tier": 1,
-    "vorp": 168.3,
+    "tier": 2,
+    "vorp": 75.3,
     "projections": {
-      "season": 315,
+      "season": 210,
       "weekly": [
-        20.5,
-        21.8,
-        19.9,
-        22.5,
-        21.1,
-        20.8,
-        19.2,
-        22.9,
-        20.5,
-        21.3,
-        23.1,
-        0,
-        21.4,
-        20
-      ]
-    }
-  },
-  {
-    "name": "James Cook",
-    "team": "BUF",
-    "position": "RB",
-    "bye": 7,
-    "adp": {
-      "standard": 35,
-      "ppr": 43,
-      "hppr": 41.5
-    },
-    "tier": 4,
-    "vorp": 88.2,
-    "projections": {
-      "season": 212,
-      "weekly": [
-        13.7,
-        14.2,
-        12.9,
-        15.1,
-        13.8,
+        13.5,
         12.8,
-        0,
-        15.5,
-        14.1,
-        13.2,
-        15.8,
         14.5,
-        12.4,
-        13
+        11.9,
+        15.8,
+        12.2,
+        11.5,
+        0,
+        14.9,
+        12.5,
+        13.8,
+        15.5,
+        12.1,
+        11
       ]
     }
   },
   {
-    "name": "Terry McLaurin",
-    "team": "WAS",
-    "position": "WR",
-    "bye": 12,
+    "name": "Josh Jacobs",
+    "team": "GB",
+    "position": "RB",
+    "bye": 5,
     "adp": {
-      "standard": 34.5,
-      "ppr": 32.5,
-      "hppr": 32.5
+      "ppr": 26.5,
+      "half_ppr": 23,
+      "standard": 17
     },
     "tier": 3,
-    "vorp": 92.5,
+    "vorp": 115.4,
     "projections": {
-      "season": 228,
+      "season": 230,
       "weekly": [
         14.8,
-        15.2,
-        13.9,
-        16,
-        14.9,
-        13.5,
         15.5,
-        14.1,
-        16.8,
-        14.2,
+        13.9,
+        16.2,
+        0,
         15.8,
-        0,
-        15.3,
-        13
-      ]
-    }
-  },
-  {
-    "name": "Joe Burrow",
-    "team": "CIN",
-    "position": "QB",
-    "bye": 10,
-    "adp": {
-      "standard": 35.5,
-      "ppr": 59,
-      "hppr": 48.5
-    },
-    "tier": 1,
-    "vorp": 94.2,
-    "projections": {
-      "season": 400,
-      "weekly": [
-        27.2,
-        26.1,
-        28.5,
-        25.5,
-        29.8,
-        26.8,
-        25.9,
-        28.1,
-        27.5,
-        0,
-        28.3,
-        26.2,
-        29.1,
-        25
+        14.1,
+        16.9,
+        13.5,
+        15.2,
+        17.5,
+        14.6,
+        16,
+        14
       ]
     }
   },
@@ -1157,9 +823,9 @@
     "position": "WR",
     "bye": 8,
     "adp": {
-      "standard": 37.5,
       "ppr": 27,
-      "hppr": 31.5
+      "half_ppr": 31.5,
+      "standard": 37.5
     },
     "tier": 3,
     "vorp": 95.8,
@@ -1184,46 +850,14 @@
     }
   },
   {
-    "name": "Jalen Hurts",
-    "team": "PHI",
-    "position": "QB",
-    "bye": 9,
-    "adp": {
-      "standard": 38,
-      "ppr": 48,
-      "hppr": 43
-    },
-    "tier": 2,
-    "vorp": 98.7,
-    "projections": {
-      "season": 380,
-      "weekly": [
-        25.5,
-        24.8,
-        26.1,
-        23.9,
-        27.2,
-        24.5,
-        26.8,
-        24.9,
-        0,
-        27.8,
-        25.1,
-        24.3,
-        26.1,
-        23
-      ]
-    }
-  },
-  {
     "name": "Davante Adams",
     "team": "LAR",
     "position": "WR",
     "bye": 8,
     "adp": {
-      "standard": 38.5,
-      "ppr": 28.5,
-      "hppr": 31
+      "ppr": 27.5,
+      "half_ppr": 32,
+      "standard": 38.5
     },
     "tier": 3,
     "vorp": 94.7,
@@ -1248,34 +882,258 @@
     }
   },
   {
-    "name": "Alvin Kamara",
-    "team": "NO",
+    "name": "Chase Brown",
+    "team": "CIN",
     "position": "RB",
-    "bye": 11,
+    "bye": 10,
     "adp": {
-      "standard": 38.5,
-      "ppr": 57,
-      "hppr": 49
+      "ppr": 27.5,
+      "half_ppr": 29,
+      "standard": 27.5
     },
-    "tier": 4,
-    "vorp": 78.4,
+    "tier": 3,
+    "vorp": 100.2,
     "projections": {
-      "season": 210,
+      "season": 220,
       "weekly": [
-        13.5,
-        14.2,
-        12.8,
-        15.1,
-        13.9,
-        12.5,
+        14.1,
         14.8,
+        13.5,
+        15.9,
+        14.5,
+        13.8,
+        15.5,
+        14.2,
+        16.1,
+        0,
+        15.8,
+        13.9,
+        14.9,
+        12
+      ]
+    }
+  },
+  {
+    "name": "Tyreek Hill",
+    "team": "MIA",
+    "position": "WR",
+    "bye": 12,
+    "adp": {
+      "ppr": 30,
+      "half_ppr": 34,
+      "standard": 32
+    },
+    "tier": 1,
+    "vorp": 168.3,
+    "projections": {
+      "season": 315,
+      "weekly": [
+        20.5,
+        21.8,
+        19.9,
+        22.5,
+        21.1,
+        20.8,
+        19.2,
+        22.9,
+        20.5,
+        21.3,
+        23.1,
+        0,
+        21.4,
+        20
+      ]
+    }
+  },
+  {
+    "name": "Jaxon Smith-Njigba",
+    "team": "SEA",
+    "position": "WR",
+    "bye": 8,
+    "adp": {
+      "ppr": 31,
+      "half_ppr": 26.5,
+      "standard": 28
+    },
+    "tier": 3,
+    "vorp": 100.8,
+    "projections": {
+      "season": 230,
+      "weekly": [
+        14.9,
+        15.5,
+        14.1,
+        16.2,
+        15.1,
+        13.8,
+        15.8,
+        0,
+        17.1,
+        14.5,
+        15.9,
+        17.5,
+        14.8,
+        13.8
+      ]
+    }
+  },
+  {
+    "name": "Terry McLaurin",
+    "team": "WAS",
+    "position": "WR",
+    "bye": 12,
+    "adp": {
+      "ppr": 32.5,
+      "half_ppr": 32.5,
+      "standard": 34.5
+    },
+    "tier": 3,
+    "vorp": 92.5,
+    "projections": {
+      "season": 228,
+      "weekly": [
+        14.8,
+        15.2,
+        13.9,
+        16,
+        14.9,
+        13.5,
+        15.5,
+        14.1,
+        16.8,
+        14.2,
+        15.8,
+        0,
+        15.3,
+        13
+      ]
+    }
+  },
+  {
+    "name": "Breece Hall",
+    "team": "NYJ",
+    "position": "RB",
+    "bye": 9,
+    "adp": {
+      "ppr": 33.5,
+      "half_ppr": 33,
+      "standard": 30.5
+    },
+    "tier": 3,
+    "vorp": 95.7,
+    "projections": {
+      "season": 215,
+      "weekly": [
+        13.8,
+        14.5,
         13.1,
         15.5,
-        12.9,
+        14.2,
+        13.1,
+        15.1,
+        13.8,
         0,
+        16.5,
         14.8,
-        12.1,
-        11
+        13.5,
+        15,
+        12.1
+      ]
+    }
+  },
+  {
+    "name": "Kyren Williams",
+    "team": "LAR",
+    "position": "RB",
+    "bye": 8,
+    "adp": {
+      "ppr": 34,
+      "half_ppr": 31.5,
+      "standard": 25.5
+    },
+    "tier": 3,
+    "vorp": 105.9,
+    "projections": {
+      "season": 222,
+      "weekly": [
+        14.2,
+        15.1,
+        13.8,
+        16.1,
+        14.8,
+        13.5,
+        15.8,
+        0,
+        16.9,
+        14.2,
+        15.5,
+        17.1,
+        14.5,
+        13.5
+      ]
+    }
+  },
+  {
+    "name": "Lamar Jackson",
+    "team": "BAL",
+    "position": "QB",
+    "bye": 7,
+    "adp": {
+      "ppr": 35,
+      "half_ppr": 27,
+      "standard": 23.5
+    },
+    "tier": 1,
+    "vorp": 102.3,
+    "projections": {
+      "season": 410,
+      "weekly": [
+        27.8,
+        26.5,
+        28.9,
+        25.8,
+        29.5,
+        27.1,
+        0,
+        28.8,
+        26.9,
+        27.5,
+        29.8,
+        26.1,
+        28.3,
+        26
+      ]
+    }
+  },
+  {
+    "name": "Josh Allen",
+    "team": "BUF",
+    "position": "QB",
+    "bye": 7,
+    "adp": {
+      "ppr": 35,
+      "half_ppr": 30,
+      "standard": 22
+    },
+    "tier": 1,
+    "vorp": 105.1,
+    "projections": {
+      "season": 420,
+      "weekly": [
+        28.5,
+        27.2,
+        29.8,
+        26.5,
+        30.1,
+        28.9,
+        0,
+        29.5,
+        27.8,
+        28.2,
+        30.5,
+        26.9,
+        29.1,
+        27
       ]
     }
   },
@@ -1285,9 +1143,9 @@
     "position": "WR",
     "bye": 9,
     "adp": {
-      "standard": 41,
-      "ppr": 37,
-      "hppr": 36.5
+      "ppr": 36.5,
+      "half_ppr": 38,
+      "standard": 41
     },
     "tier": 4,
     "vorp": 88.6,
@@ -1312,558 +1170,14 @@
     }
   },
   {
-    "name": "Kenneth Walker III",
-    "team": "SEA",
-    "position": "RB",
-    "bye": 8,
-    "adp": {
-      "standard": 42.5,
-      "ppr": 54,
-      "hppr": 47
-    },
-    "tier": 4,
-    "vorp": 82.1,
-    "projections": {
-      "season": 208,
-      "weekly": [
-        13.5,
-        14.1,
-        12.8,
-        15.1,
-        13.9,
-        12.5,
-        14.8,
-        0,
-        16.5,
-        13.2,
-        14.8,
-        16.2,
-        13.5,
-        11.5
-      ]
-    }
-  },
-  {
-    "name": "George Kittle",
-    "team": "SF",
-    "position": "TE",
-    "bye": 14,
-    "adp": {
-      "standard": 43.5,
-      "ppr": 44.5,
-      "hppr": 44
-    },
-    "tier": 2,
-    "vorp": 65.7,
-    "projections": {
-      "season": 200,
-      "weekly": [
-        12.8,
-        12.1,
-        13.8,
-        11.5,
-        14.8,
-        11.2,
-        10.5,
-        13.9,
-        11.5,
-        12.8,
-        14.1,
-        12.7,
-        11.1,
-        0
-      ]
-    }
-  },
-  {
-    "name": "Rashee Rice",
-    "team": "KC",
-    "position": "WR",
-    "bye": 10,
-    "adp": {
-      "standard": 44.5,
-      "ppr": 21,
-      "hppr": 30.5
-    },
-    "tier": 3,
-    "vorp": 98.4,
-    "projections": {
-      "season": 240,
-      "weekly": [
-        15.8,
-        16.5,
-        14.9,
-        17.1,
-        16.2,
-        15.5,
-        17.8,
-        16.1,
-        18.5,
-        0,
-        16.9,
-        15.3,
-        17.6,
-        14.8
-      ]
-    }
-  },
-  {
-    "name": "DJ Moore",
-    "team": "CHI",
-    "position": "WR",
-    "bye": 5,
-    "adp": {
-      "standard": 45,
-      "ppr": 40.5,
-      "hppr": 42
-    },
-    "tier": 4,
-    "vorp": 80.5,
-    "projections": {
-      "season": 218,
-      "weekly": [
-        14,
-        14.8,
-        13.2,
-        15.8,
-        0,
-        14.5,
-        16.1,
-        14.8,
-        17.2,
-        15.1,
-        13.9,
-        16.3,
-        14.2,
-        12
-      ]
-    }
-  },
-  {
-    "name": "Omarion Hampton",
-    "team": "LAC",
-    "position": "RB",
-    "bye": 12,
-    "adp": {
-      "standard": 46,
-      "ppr": 47.5,
-      "hppr": 47.5
-    },
-    "tier": 4,
-    "vorp": 85.3,
-    "projections": {
-      "season": 208,
-      "weekly": [
-        13.5,
-        14.1,
-        12.8,
-        15.2,
-        13.9,
-        12.5,
-        14.5,
-        13.1,
-        15.8,
-        12.9,
-        14.2,
-        0,
-        14.5,
-        12
-      ]
-    }
-  },
-  {
-    "name": "Joe Mixon",
-    "team": "HOU",
-    "position": "RB",
-    "bye": 6,
-    "adp": {
-      "standard": 46.5,
-      "ppr": 58,
-      "hppr": 54
-    },
-    "tier": 4,
-    "vorp": 79.2,
-    "projections": {
-      "season": 205,
-      "weekly": [
-        13.1,
-        13.8,
-        12.5,
-        14.8,
-        13.5,
-        0,
-        14.2,
-        12.8,
-        15.1,
-        13.2,
-        14.5,
-        15.9,
-        12.8,
-        10.8
-      ]
-    }
-  },
-  {
-    "name": "Chuba Hubbard",
-    "team": "CAR",
-    "position": "RB",
-    "bye": 14,
-    "adp": {
-      "standard": 47,
-      "ppr": 53.5,
-      "hppr": 52.5
-    },
-    "tier": 4,
-    "vorp": 80.6,
-    "projections": {
-      "season": 200,
-      "weekly": [
-        12.8,
-        13.5,
-        12.1,
-        14.5,
-        13.2,
-        11.8,
-        14.1,
-        12.5,
-        15.5,
-        12.2,
-        13.8,
-        15.2,
-        13.0,
-        0
-      ]
-    }
-  },
-  {
-    "name": "Courtland Sutton",
-    "team": "DEN",
-    "position": "WR",
-    "bye": 12,
-    "adp": {
-      "standard": 51,
-      "ppr": 48.5,
-      "hppr": 48.5
-    },
-    "tier": 5,
-    "vorp": 72.3,
-    "projections": {
-      "season": 200,
-      "weekly": [
-        12.8,
-        13.5,
-        12.1,
-        14.5,
-        13.2,
-        11.8,
-        14.1,
-        12.5,
-        15.5,
-        12.2,
-        13.8,
-        0,
-        14,
-        11
-      ]
-    }
-  },
-  {
-    "name": "RJ Harvey",
-    "team": "DEN",
-    "position": "RB",
-    "bye": 12,
-    "adp": {
-      "standard": 52.5,
-      "ppr": 61,
-      "hppr": 61.5
-    },
-    "tier": 5,
-    "vorp": 72.8,
-    "projections": {
-      "season": 195,
-      "weekly": [
-        12.5,
-        13.1,
-        11.8,
-        14.1,
-        12.9,
-        11.5,
-        13.8,
-        12.1,
-        14.8,
-        11.9,
-        13.5,
-        0,
-        13.0,
-        10.5
-      ]
-    }
-  },
-  {
-    "name": "DeVonta Smith",
-    "team": "PHI",
-    "position": "WR",
-    "bye": 9,
-    "adp": {
-      "standard": 53,
-      "ppr": 46,
-      "hppr": 48.5
-    },
-    "tier": 4,
-    "vorp": 75.1,
-    "projections": {
-      "season": 208,
-      "weekly": [
-        13.5,
-        14.2,
-        12.8,
-        15.1,
-        14.1,
-        12.8,
-        14.8,
-        13.2,
-        0,
-        16.1,
-        14.5,
-        13.1,
-        14.8,
-        12
-      ]
-    }
-  },
-  {
-    "name": "James Conner",
-    "team": "ARI",
-    "position": "RB",
-    "bye": 8,
-    "adp": {
-      "standard": 53.5,
-      "ppr": 64,
-      "hppr": 59
-    },
-    "tier": 5,
-    "vorp": 75.6,
-    "projections": {
-      "season": 198,
-      "weekly": [
-        12.8,
-        13.2,
-        11.9,
-        14.2,
-        13.1,
-        11.5,
-        13.8,
-        0,
-        15.1,
-        12.5,
-        13.9,
-        15.5,
-        12.5,
-        10.0
-      ]
-    }
-  },
-  {
-    "name": "DK Metcalf",
-    "team": "PIT",
-    "position": "WR",
-    "bye": 5,
-    "adp": {
-      "standard": 53.5,
-      "ppr": 44,
-      "hppr": 48
-    },
-    "tier": 4,
-    "vorp": 76.4,
-    "projections": {
-      "season": 205,
-      "weekly": [
-        13.2,
-        13.8,
-        12.5,
-        14.8,
-        0,
-        13.1,
-        15.1,
-        13.5,
-        15.8,
-        12.9,
-        14.2,
-        15.9,
-        13.2,
-        11
-      ]
-    }
-  },
-  {
-    "name": "TreVeyon Henderson",
-    "team": "NE",
-    "position": "RB",
-    "bye": 14,
-    "adp": {
-      "standard": 54.5,
-      "ppr": 65.5,
-      "hppr": 61.5
-    },
-    "tier": 5,
-    "vorp": 70.1,
-    "projections": {
-      "season": 190,
-      "weekly": [
-        12.1,
-        12.8,
-        11.5,
-        13.8,
-        12.5,
-        11.1,
-        13.2,
-        11.8,
-        14.8,
-        11.2,
-        12.9,
-        14.5,
-        12.8,
-        0
-      ]
-    }
-  },
-  {
-    "name": "Patrick Mahomes II",
-    "team": "KC",
-    "position": "QB",
-    "bye": 10,
-    "adp": {
-      "standard": 56,
-      "ppr": 84,
-      "hppr": 71
-    },
-    "tier": 2,
-    "vorp": 88.5,
-    "projections": {
-      "season": 385,
-      "weekly": [
-        26.1,
-        25.5,
-        27.8,
-        24.5,
-        28.9,
-        26.2,
-        24.8,
-        27.1,
-        25.8,
-        0,
-        27.5,
-        25.1,
-        28.2,
-        24.0
-      ]
-    }
-  },
-  {
-    "name": "Xavier Worthy",
-    "team": "KC",
-    "position": "WR",
-    "bye": 10,
-    "adp": {
-      "standard": 57,
-      "ppr": 41,
-      "hppr": 43.5
-    },
-    "tier": 4,
-    "vorp": 82.3,
-    "projections": {
-      "season": 215,
-      "weekly": [
-        13.8,
-        14.5,
-        13.1,
-        15.5,
-        14.2,
-        12.8,
-        14.9,
-        13.5,
-        16.1,
-        0,
-        14.8,
-        13.2,
-        15.1,
-        12.5
-      ]
-    }
-  },
-  {
-    "name": "Jameson Williams",
-    "team": "DET",
-    "position": "WR",
-    "bye": 8,
-    "adp": {
-      "standard": 57,
-      "ppr": 43,
-      "hppr": 42
-    },
-    "tier": 4,
-    "vorp": 78.9,
-    "projections": {
-      "season": 210,
-      "weekly": [
-        13.5,
-        14.1,
-        12.8,
-        15.2,
-        13.9,
-        12.5,
-        14.5,
-        0,
-        16.8,
-        13.2,
-        14.8,
-        16.5,
-        13.8,
-        11.8
-      ]
-    }
-  },
-  {
-    "name": "Zay Flowers",
-    "team": "BAL",
-    "position": "WR",
-    "bye": 7,
-    "adp": {
-      "standard": 58.5,
-      "ppr": 52.5,
-      "hppr": 53
-    },
-    "tier": 5,
-    "vorp": 67.4,
-    "projections": {
-      "season": 190,
-      "weekly": [
-        12.1,
-        12.8,
-        11.5,
-        13.8,
-        12.5,
-        11.1,
-        0,
-        13.2,
-        11.8,
-        14.5,
-        11.2,
-        12.9,
-        14.1,
-        11.5
-      ]
-    }
-  },
-  {
     "name": "Tetairoa McMillan",
     "team": "CAR",
     "position": "WR",
     "bye": 14,
     "adp": {
-      "standard": 60,
-      "ppr": 38.5,
-      "hppr": 46.5
+      "ppr": 38,
+      "half_ppr": 46.5,
+      "standard": 60
     },
     "tier": 4,
     "vorp": 85.1,
@@ -1888,342 +1202,355 @@
     }
   },
   {
-    "name": "David Montgomery",
-    "team": "DET",
-    "position": "RB",
-    "bye": 8,
+    "name": "Jayden Daniels",
+    "team": "WAS",
+    "position": "QB",
+    "bye": 12,
     "adp": {
-      "standard": 60,
-      "ppr": 71.5,
-      "hppr": 68
-    },
-    "tier": 5,
-    "vorp": 68.3,
-    "projections": {
-      "season": 185,
-      "weekly": [
-        11.8,
-        12.5,
-        11.1,
-        13.5,
-        12.1,
-        10.8,
-        12.8,
-        0,
-        14.1,
-        11.5,
-        12.9,
-        14.8,
-        11.8,
-        9.8
-      ]
-    }
-  },
-  {
-    "name": "Sam LaPorta",
-    "team": "DET",
-    "position": "TE",
-    "bye": 8,
-    "adp": {
-      "standard": 61.5,
-      "ppr": 73,
-      "hppr": 69
+      "ppr": 39.5,
+      "half_ppr": 35.5,
+      "standard": 29
     },
     "tier": 2,
-    "vorp": 60.5,
+    "vorp": 90.1,
     "projections": {
-      "season": 195,
+      "season": 390,
       "weekly": [
-        12.5,
-        11.8,
-        13.5,
-        10.9,
-        14.2,
-        11.5,
-        10.8,
+        26.5,
+        25.8,
+        27.1,
+        24.9,
+        28.2,
+        25.5,
+        27.8,
+        25.9,
+        24.3,
+        28.8,
+        26.1,
         0,
-        14.1,
-        11.2,
-        12.8,
-        14.9,
-        11.8,
-        10.0
+        26.5,
+        24
       ]
     }
   },
   {
-    "name": "Baker Mayfield",
-    "team": "TB",
+    "name": "DJ Moore",
+    "team": "CHI",
+    "position": "WR",
+    "bye": 5,
+    "adp": {
+      "ppr": 40.5,
+      "half_ppr": 40.5,
+      "standard": 45
+    },
+    "tier": 4,
+    "vorp": 80.5,
+    "projections": {
+      "season": 218,
+      "weekly": [
+        14,
+        14.8,
+        13.2,
+        15.8,
+        0,
+        14.5,
+        16.1,
+        14.8,
+        17.2,
+        15.1,
+        13.9,
+        16.3,
+        14.2,
+        12
+      ]
+    }
+  },
+  {
+    "name": "Xavier Worthy",
+    "team": "KC",
+    "position": "WR",
+    "bye": 10,
+    "adp": {
+      "ppr": 41,
+      "half_ppr": 43,
+      "standard": 57.5
+    },
+    "tier": 4,
+    "vorp": 82.3,
+    "projections": {
+      "season": 215,
+      "weekly": [
+        13.8,
+        14.5,
+        13.1,
+        15.5,
+        14.2,
+        12.8,
+        14.9,
+        13.5,
+        16.1,
+        0,
+        14.8,
+        13.2,
+        15.1,
+        12.5
+      ]
+    }
+  },
+  {
+    "name": "James Cook",
+    "team": "BUF",
+    "position": "RB",
+    "bye": 7,
+    "adp": {
+      "ppr": 43,
+      "half_ppr": 41.5,
+      "standard": 34
+    },
+    "tier": 4,
+    "vorp": 88.2,
+    "projections": {
+      "season": 212,
+      "weekly": [
+        13.7,
+        14.2,
+        12.9,
+        15.1,
+        13.8,
+        12.8,
+        0,
+        15.5,
+        14.1,
+        13.2,
+        15.8,
+        14.5,
+        12.4,
+        13
+      ]
+    }
+  },
+  {
+    "name": "Jameson Williams",
+    "team": "DET",
+    "position": "WR",
+    "bye": 8,
+    "adp": {
+      "ppr": 43,
+      "half_ppr": 42,
+      "standard": 57.5
+    },
+    "tier": 4,
+    "vorp": 78.9,
+    "projections": {
+      "season": 210,
+      "weekly": [
+        13.5,
+        14.1,
+        12.8,
+        15.2,
+        13.9,
+        12.5,
+        14.5,
+        0,
+        16.8,
+        13.2,
+        14.8,
+        16.5,
+        13.8,
+        11.8
+      ]
+    }
+  },
+  {
+    "name": "George Kittle",
+    "team": "SF",
+    "position": "TE",
+    "bye": 14,
+    "adp": {
+      "ppr": 44,
+      "half_ppr": 44,
+      "standard": 43.5
+    },
+    "tier": 2,
+    "vorp": 65.7,
+    "projections": {
+      "season": 200,
+      "weekly": [
+        12.8,
+        12.1,
+        13.8,
+        11.5,
+        14.8,
+        11.2,
+        10.5,
+        13.9,
+        11.5,
+        12.8,
+        14.1,
+        12.7,
+        11.1,
+        0
+      ]
+    }
+  },
+  {
+    "name": "DK Metcalf",
+    "team": "PIT",
+    "position": "WR",
+    "bye": 5,
+    "adp": {
+      "ppr": 44,
+      "half_ppr": 49,
+      "standard": 53.5
+    },
+    "tier": 4,
+    "vorp": 76.4,
+    "projections": {
+      "season": 205,
+      "weekly": [
+        13.2,
+        13.8,
+        12.5,
+        14.8,
+        0,
+        13.1,
+        15.1,
+        13.5,
+        15.8,
+        12.9,
+        14.2,
+        15.9,
+        13.2,
+        11
+      ]
+    }
+  },
+  {
+    "name": "DeVonta Smith",
+    "team": "PHI",
+    "position": "WR",
+    "bye": 9,
+    "adp": {
+      "ppr": 46,
+      "half_ppr": 46,
+      "standard": 51
+    },
+    "tier": 4,
+    "vorp": 75.1,
+    "projections": {
+      "season": 208,
+      "weekly": [
+        13.5,
+        14.2,
+        12.8,
+        15.1,
+        14.1,
+        12.8,
+        14.8,
+        13.2,
+        0,
+        16.1,
+        14.5,
+        13.1,
+        14.8,
+        12
+      ]
+    }
+  },
+  {
+    "name": "Omarion Hampton",
+    "team": "LAC",
+    "position": "RB",
+    "bye": 12,
+    "adp": {
+      "ppr": 47.5,
+      "half_ppr": 47.5,
+      "standard": 46
+    },
+    "tier": 4,
+    "vorp": 85.3,
+    "projections": {
+      "season": 208,
+      "weekly": [
+        13.5,
+        14.1,
+        12.8,
+        15.2,
+        13.9,
+        12.5,
+        14.5,
+        13.1,
+        15.8,
+        12.9,
+        14.2,
+        0,
+        14.5,
+        12
+      ]
+    }
+  },
+  {
+    "name": "Jalen Hurts",
+    "team": "PHI",
     "position": "QB",
     "bye": 9,
     "adp": {
-      "standard": 62,
-      "ppr": 91,
-      "hppr": 75
+      "ppr": 48,
+      "half_ppr": 41,
+      "standard": 38
     },
-    "tier": 3,
-    "vorp": 80.3,
+    "tier": 2,
+    "vorp": 98.7,
     "projections": {
-      "season": 370,
+      "season": 380,
       "weekly": [
+        25.5,
         24.8,
-        23.5,
-        25.8,
-        22.9,
-        26.2,
-        23.8,
-        22.9,
-        25.1,
-        0,
+        26.1,
+        23.9,
+        27.2,
+        24.5,
         26.8,
-        24.1,
-        23.2,
+        24.9,
+        0,
+        27.8,
         25.1,
-        22.0
+        24.3,
+        26.1,
+        23
       ]
     }
   },
   {
-    "name": "Quinshon Judkins",
-    "team": "CLE",
-    "position": "RB",
-    "bye": 9,
+    "name": "Courtland Sutton",
+    "team": "DEN",
+    "position": "WR",
+    "bye": 12,
     "adp": {
-      "standard": 63,
-      "ppr": 75.5,
-      "hppr": 73.5
+      "ppr": 48,
+      "half_ppr": 48.5,
+      "standard": 51
     },
     "tier": 5,
-    "vorp": 66.8,
+    "vorp": 72.3,
     "projections": {
-      "season": 180,
+      "season": 200,
       "weekly": [
-        11.5,
-        12.1,
-        10.8,
-        13.1,
-        11.8,
-        10.5,
         12.8,
-        11.1,
-        0,
+        13.5,
+        12.1,
         14.5,
-        11.9,
-        10.8,
-        12.5,
-        9.8
-      ]
-    }
-  },
-  {
-    "name": "Chris Godwin",
-    "team": "TB",
-    "position": "WR",
-    "bye": 9,
-    "adp": {
-      "standard": 64.5,
-      "ppr": 62.5,
-      "hppr": 60
-    },
-    "tier": 5,
-    "vorp": 62.1,
-    "projections": {
-      "season": 188,
-      "weekly": [
-        12.1,
-        12.8,
-        11.5,
-        13.8,
-        12.5,
-        11.1,
-        13.1,
-        11.8,
-        0,
-        15.1,
-        12.2,
-        11.1,
-        13.5,
-        10.5
-      ]
-    }
-  },
-  {
-    "name": "D'Andre Swift",
-    "team": "CHI",
-    "position": "RB",
-    "bye": 5,
-    "adp": {
-      "standard": 65,
-      "ppr": 73,
-      "hppr": 75
-    },
-    "tier": 5,
-    "vorp": 65.4,
-    "projections": {
-      "season": 182,
-      "weekly": [
-        11.8,
-        12.2,
-        10.9,
         13.2,
-        0,
         11.8,
-        13.5,
-        11.9,
-        14.8,
-        11.5,
-        12.8,
-        14.2,
-        11.8,
-        9.5
-      ]
-    }
-  },
-  {
-    "name": "Aaron Jones Sr.",
-    "team": "MIN",
-    "position": "RB",
-    "bye": 6,
-    "adp": {
-      "standard": 65,
-      "ppr": 83,
-      "hppr": 76.5
-    },
-    "tier": 6,
-    "vorp": 62.1,
-    "projections": {
-      "season": 178,
-      "weekly": [
-        11.5,
-        11.8,
-        10.5,
-        12.8,
-        11.5,
-        0,
-        13.1,
-        11.1,
         14.1,
-        11.2,
         12.5,
+        15.5,
+        12.2,
         13.8,
-        11.5,
-        9.1
-      ]
-    }
-  },
-  {
-    "name": "Jerry Jeudy",
-    "team": "CLE",
-    "position": "WR",
-    "bye": 9,
-    "adp": {
-      "standard": 66.5,
-      "ppr": 68,
-      "hppr": 63.5
-    },
-    "tier": 6,
-    "vorp": 54.2,
-    "projections": {
-      "season": 185,
-      "weekly": [
-        11.8,
-        12.5,
-        11.1,
-        13.5,
-        12.1,
-        10.8,
-        12.8,
-        11.5,
         0,
-        14.8,
-        11.9,
-        10.8,
-        13.2,
-        10.2
+        14,
+        11
       ]
-    }
-  },
-  {
-    "name": "Kaleb Johnson",
-    "team": "PIT",
-    "position": "RB",
-    "bye": 5,
-    "adp": {
-      "standard": 67,
-      "ppr": 75.5,
-      "hppr": 74.5
-    },
-    "tier": 5,
-    "vorp": 65.9,
-    "projections": {
-      "season": 180,
-      "weekly": [
-        11.5,
-        12.1,
-        10.8,
-        13.1,
-        0,
-        11.8,
-        13.5,
-        11.9,
-        14.8,
-        11.5,
-        12.8,
-        14.2,
-        11.8,
-        9.2
-      ]
-    }
-  },
-  {
-    "name": "Tony Pollard",
-    "team": "TEN",
-    "position": "RB",
-    "bye": 10,
-    "adp": {
-      "standard": 70.5,
-      "ppr": 81.5,
-      "hppr": 78
-    },
-    "tier": 6,
-    "vorp": 60.3,
-    "projections": {
-      "season": 0,
-      "weekly": []
-    }
-  },
-  {
-    "name": "Travis Hunter",
-    "team": "JAC",
-    "position": "WR",
-    "bye": 8,
-    "adp": {
-      "standard": 72,
-      "ppr": 49.5,
-      "hppr": 64.5
-    },
-    "tier": 5,
-    "vorp": 70.1,
-    "projections": {
-      "season": 0,
-      "weekly": []
-    }
-  },
-  {
-    "name": "Jordan Addison",
-    "team": "MIN",
-    "position": "WR",
-    "bye": 6,
-    "adp": {
-      "standard": 73,
-      "ppr": 65,
-      "hppr": 68.5
-    },
-    "tier": 5,
-    "vorp": 56.9,
-    "projections": {
-      "season": 0,
-      "weekly": []
     }
   },
   {
@@ -2232,502 +1559,30 @@
     "position": "WR",
     "bye": 10,
     "adp": {
-      "standard": 73,
       "ppr": 51,
-      "hppr": 59.5
+      "half_ppr": 60.5,
+      "standard": 73
     },
     "tier": 5,
     "vorp": 68.9,
     "projections": {
-      "season": 0,
-      "weekly": []
+      "season": 198,
+      "weekly": [
+        12.8,
+        13.2,
+        12.1,
+        14.2,
+        13.1,
+        11.8,
+        13.9,
+        12.2,
+        15.8,
+        0,
+        13.5,
+        12.1,
+        14.3,
+        11
+      ]
     }
-  },
-  {
-    "name": "Jaylen Waddle",
-    "team": "MIA",
-    "position": "WR",
-    "bye": 12,
-    "adp": {
-      "standard": 73.5,
-      "ppr": 55.5,
-      "hppr": 61
-    },
-    "tier": 5,
-    "vorp": 65.3,
-    "projections": {
-      "season": 0,
-      "weekly": []
-    }
-  },
-  {
-    "name": "Jauan Jennings",
-    "team": "SF",
-    "position": "WR",
-    "bye": 14,
-    "adp": {
-      "standard": 74,
-      "ppr": 60.5,
-      "hppr": 62
-    },
-    "tier": 5,
-    "vorp": 60.1,
-    "projections": {
-      "season": 0,
-      "weekly": []
-    }
-  },
-  {
-    "name": "Bo Nix",
-    "team": "DEN",
-    "position": "QB",
-    "bye": 12,
-    "adp": {
-      "standard": 74,
-      "ppr": 100,
-      "hppr": 86.5
-    },
-    "tier": 3,
-    "vorp": 79.2,
-    "projections": {
-      "season": 0,
-      "weekly": []
-    }
-  },
-  {
-    "name": "Chris Olave",
-    "team": "NO",
-    "position": "WR",
-    "bye": 11,
-    "adp": {
-      "standard": 74.5,
-      "ppr": 64.5,
-      "hppr": 68
-    },
-    "tier": 5,
-    "vorp": 57.3,
-    "projections": {
-      "season": 0,
-      "weekly": []
-    }
-  },
-  {
-    "name": "Isiah Pacheco",
-    "team": "KC",
-    "position": "RB",
-    "bye": 10,
-    "adp": {
-      "standard": 75,
-      "ppr": 82.5,
-      "hppr": 81.5
-    },
-    "tier": 6,
-    "vorp": 58.7,
-    "projections": {
-      "season": 0,
-      "weekly": []
-    }
-  },
-  {
-    "name": "Calvin Ridley",
-    "team": "TEN",
-    "position": "WR",
-    "bye": 10,
-    "adp": {
-      "standard": 76,
-      "ppr": 55.5,
-      "hppr": 66.5
-    },
-    "tier": 5,
-    "vorp": 63.8,
-    "projections": {
-      "season": 0,
-      "weekly": []
-    }
-  },
-  {
-    "name": "Deebo Samuel Sr.",
-    "team": "WAS",
-    "position": "WR",
-    "bye": 12,
-    "adp": {
-      "standard": 79,
-      "ppr": 68.5,
-      "hppr": 73.5
-    },
-    "tier": 6,
-    "vorp": 52.8,
-    "projections": {
-      "season": 0,
-      "weekly": []
-    }
-  },
-  {
-    "name": "Travis Kelce",
-    "team": "KC",
-    "position": "TE",
-    "bye": 10,
-    "adp": {
-      "standard": 79.5,
-      "ppr": 95,
-      "hppr": 92
-    },
-    "tier": 3,
-    "vorp": 55.8,
-    "projections": {
-      "season": 0,
-      "weekly": []
-    }
-  },
-  {
-    "name": "Rome Odunze",
-    "team": "CHI",
-    "position": "WR",
-    "bye": 5,
-    "adp": {
-      "standard": 79.5,
-      "ppr": 64,
-      "hppr": 69
-    },
-    "tier": 5,
-    "vorp": 58.7,
-    "projections": {
-      "season": 0,
-      "weekly": []
-    }
-  },
-  {
-    "name": "T.J. Hockenson",
-    "team": "MIN",
-    "position": "TE",
-    "bye": 6,
-    "adp": {
-      "standard": 80,
-      "ppr": 88,
-      "hppr": 85
-    },
-    "tier": 3,
-    "vorp": 50.1,
-    "projections": {
-      "season": 0,
-      "weekly": []
-    }
-  },
-  {
-    "name": "Tyrone Tracy Jr.",
-    "team": "NYG",
-    "position": "RB",
-    "bye": 14,
-    "adp": {
-      "standard": 81,
-      "ppr": 109,
-      "hppr": 101.5
-    },
-    "tier": 6,
-    "vorp": 56.1,
-    "projections": {
-      "season": 0,
-      "weekly": []
-    }
-  },
-  {
-    "name": "Kyler Murray",
-    "team": "ARI",
-    "position": "QB",
-    "bye": 8,
-    "adp": {
-      "standard": 84,
-      "ppr": 95,
-      "hppr": 88.5
-    },
-    "tier": 3,
-    "vorp": 78.4,
-    "projections": {
-      "season": 0,
-      "weekly": []
-    }
-  },
-  {
-    "name": "Brian Robinson Jr.",
-    "team": "WAS",
-    "position": "RB",
-    "bye": 12,
-    "adp": {
-      "standard": 86,
-      "ppr": 87,
-      "hppr": 87.5
-    },
-    "tier": 6,
-    "vorp": 55.4,
-    "projections": {
-      "season": 0,
-      "weekly": []
-    }
-  },
-  {
-    "name": "Jaylen Warren",
-    "team": "PIT",
-    "position": "RB",
-    "bye": 5,
-    "adp": {
-      "standard": 88.5,
-      "ppr": 96,
-      "hppr": 91
-    },
-    "tier": 6,
-    "vorp": 54.3,
-    "projections": {
-      "season": 0,
-      "weekly": []
-    }
-  },
-  {
-    "name": "Caleb Williams",
-    "team": "CHI",
-    "position": "QB",
-    "bye": 5,
-    "adp": {
-      "standard": 88.5,
-      "ppr": 110.5,
-      "hppr": 99
-    },
-    "tier": 3,
-    "vorp": 76.2,
-    "projections": {
-      "season": 0,
-      "weekly": []
-    }
-  },
-  {
-    "name": "Jared Goff",
-    "team": "DET",
-    "position": "QB",
-    "bye": 8,
-    "adp": {
-      "standard": 89,
-      "ppr": 116,
-      "hppr": 101
-    },
-    "tier": 3,
-    "vorp": 77.1,
-    "projections": {
-      "season": 0,
-      "weekly": []
-    }
-  },
-  {
-    "name": "Cooper Kupp",
-    "team": "SEA",
-    "position": "WR",
-    "bye": 8,
-    "adp": {
-      "standard": 91,
-      "ppr": 90,
-      "hppr": 94
-    },
-    "tier": 7,
-    "vorp": 33.1,
-    "projections": {
-      "season": 0,
-      "weekly": []
-    }
-  },
-  {
-    "name": "Jonnu Smith",
-    "team": "MIA",
-    "position": "TE",
-    "bye": 12,
-    "adp": {
-      "standard": 93,
-      "ppr": 114,
-      "hppr": 107
-    },
-    "tier": 3,
-    "vorp": 45.3,
-    "projections": {
-      "season": 0,
-      "weekly": []
-    }
-  },
-  {
-    "name": "Khalil Shakir",
-    "team": "BUF",
-    "position": "WR",
-    "bye": 7,
-    "adp": {
-      "standard": 93,
-      "ppr": 77,
-      "hppr": 80
-    },
-    "tier": 6,
-    "vorp": 45.2,
-    "projections": {
-      "season": 0,
-      "weekly": []
-    }
-  },
-  {
-    "name": "Ricky Pearsall",
-    "team": "SF",
-    "position": "WR",
-    "bye": 14,
-    "adp": {
-      "standard": 94.5,
-      "ppr": 72.5,
-      "hppr": 79
-    },
-    "tier": 6,
-    "vorp": 48.7,
-    "projections": {
-      "season": 0,
-      "weekly": []
-    }
-  },
-  {
-    "name": "Najee Harris",
-    "team": "LAC",
-    "position": "RB",
-    "bye": 12,
-    "adp": {
-      "standard": 94.5,
-      "ppr": 110,
-      "hppr": 99.5
-    },
-    "tier": 6,
-    "vorp": 52.1,
-    "projections": {
-      "season": 0,
-      "weekly": []
-    }
-  },
-  {
-    "name": "Jakobi Meyers",
-    "team": "LV",
-    "position": "WR",
-    "bye": 8,
-    "adp": {
-      "standard": 95.5,
-      "ppr": 70,
-      "hppr": 76
-    },
-    "tier": 6,
-    "vorp": 50.1,
-    "projections": {
-      "season": 0,
-      "weekly": []
-    }
-  },
-  {
-    "name": "Jayden Reed",
-    "team": "GB",
-    "position": "WR",
-    "bye": 5,
-    "adp": {
-      "standard": 96,
-      "ppr": 80,
-      "hppr": 86
-    },
-    "tier": 6,
-    "vorp": 41.9,
-    "projections": {
-      "season": 0,
-      "weekly": []
-    }
-  },
-  {
-    "name": "Mark Andrews",
-    "team": "BAL",
-    "position": "TE",
-    "bye": 7,
-    "adp": {
-      "standard": 96.5,
-      "ppr": 107,
-      "hppr": 102.5
-    },
-    "tier": 3,
-    "vorp": 58.4,
-    "projections": {
-      "season": 0,
-      "weekly": []
-    }
-  },
-  {
-    "name": "Cam Skattebo",
-    "team": "NYG",
-    "position": "RB",
-    "bye": 14,
-    "adp": {
-      "standard": 97,
-      "ppr": 105,
-      "hppr": 107.5
-    },
-    "tier": 6,
-    "vorp": 49.3,
-    "projections": {
-      "season": 0,
-      "weekly": []
-    }
-  },
-  {
-    "name": "Minnesota Vikings",
-    "team": "DST",
-    "position": "DST",
-    "bye": 6,
-    "adp": {
-      "standard": 197.5,
-      "ppr": 226,
-      "hppr": 197
-    },
-    "tier": 2,
-    "vorp": 3,
-    "projections": {
-      "season": 0,
-      "weekly": []
-    }
-  },
-  {
-    "name": "Blake Corum",
-    "team": "LAR",
-    "position": "RB",
-    "bye": 8,
-    "adp": {
-      "standard": 197.5,
-      "ppr": 210,
-      "hppr": 211.5
-    },
-    "tier": 8,
-    "vorp": 17.8,
-    "projections": {
-      "season": 0,
-      "weekly": []
-    }
-  },
-  {
-    "name": "Daniel Jones",
-    "team": "IND",
-    "position": "QB",
-    "bye": 11,
-    "adp": {
-      "standard": 200,
-      "ppr": 190.5,
-      "hppr": 194.5
-    },
-    "tier": 5,
-    "vorp": 43.1,
-    "projections": {
-      "season": 0,
-      "weekly": []
-    }
-  },
-  {
-    "name": "Devin Neal",
-    "team": "NO",
-    "position": "RB",
-    "bye": 11,
-    "adp": {
-      "standard": 201,
-      "ppr": 232,
-      "hppr": 202.5
-    },
-    "tier": 8,
-    "vorp": 16.
+  }
+]
