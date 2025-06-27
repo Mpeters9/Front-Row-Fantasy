@@ -32,14 +32,57 @@ document.addEventListener('DOMContentLoaded', () => {
             if (document.getElementById('mock-draft-simulator')) this.initMockDraftSimulator();
             if (document.getElementById('stats-page')) this.initStatsPage();
             if (document.getElementById('players-page')) this.initPlayersPage();
-            // --- THIS IS THE FIX ---
-            // It now correctly looks for the trade-analyzer ID and runs the right function.
             if (document.getElementById('trade-analyzer')) this.initTradeAnalyzer();
+        },
+        
+        // --- TRADE ANALYZER (Updated Language) ---
+        analyzeTrade() {
+            const resultsContainer = document.getElementById('trade-results');
+            resultsContainer.classList.remove('hidden');
+            
+            const totalVorp1 = this.tradeState.team1.reduce((sum, p) => sum + (p.vorp || 0), 0);
+            const totalVorp2 = this.tradeState.team2.reduce((sum, p) => sum + (p.vorp || 0), 0);
+            
+            let verdict;
+            const diff = Math.abs(totalVorp1 - totalVorp2);
+            // Use the average value of the two sides to make the percentage more stable for lopsided trades
+            const avgVal = (totalVorp1 + totalVorp2) / 2 || 1; 
+
+            if (this.tradeState.team1.length === 0 || this.tradeState.team2.length === 0) {
+                verdict = `<h3 class="text-2xl font-bold text-red-400">Please add players to both sides of the trade.</h3>`;
+            } 
+            // If the difference is less than 10% of the average value, it's fair.
+            else if (diff / avgVal < 0.1) {
+                verdict = `<h3 class="text-2xl font-bold text-yellow-300">This is a very balanced trade.</h3><p class="text-gray-300 mt-1">It's a fair swap that comes down to which players you believe in more.</p>`;
+            } 
+            // If the assets you're SENDING have more value, you lose.
+            else if (totalVorp1 > totalVorp2) {
+                verdict = `<h3 class="text-2xl font-bold text-red-400">You might be giving up too much value.</h3><p class="text-gray-300 mt-1">The other team seems to be getting the better end of this deal.</p>`;
+            } 
+            // If the assets you're RECEIVING have more value, you win.
+            else {
+                verdict = `<h3 class="text-2xl font-bold text-green-400">This looks like a smash accept for you!</h3><p class="text-gray-300 mt-1">The players you're getting back are a significant upgrade.</p>`;
+            }
+            
+            resultsContainer.innerHTML = `
+                <div class="text-center">${verdict}</div>
+                <div id="ai-trade-analysis-container" class="popup-footer mt-4">
+                    <button id="get-ai-trade-btn" class="ai-analysis-btn">Get AI Opinion</button>
+                    <div id="ai-trade-loader" class="loader-small hidden"></div>
+                    <p id="ai-trade-text" class="text-sm text-gray-300 mt-2 text-left"></p>
+                </div>
+            `;
+
+            if(this.tradeState.team1.length > 0 && this.tradeState.team2.length > 0) {
+                document.getElementById('get-ai-trade-btn').addEventListener('click', () => this.getAITradeAnalysis());
+            } else {
+                document.getElementById('ai-trade-analysis-container').classList.add('hidden');
+            }
         },
         
         // --- ALL OTHER FUNCTIONS ---
         // Includes all working functions for Ticker, Data Loading, Popups,
-        // GOAT Tools, Mock Draft, Stats Page, Players Page, and the now-fixed Trade Analyzer.
+        // GOAT Tools, Mock Draft, Stats Page, Players Page, etc.
         
         initMobileMenu() {
             const mobileMenuButton = document.getElementById('mobile-menu-button');
@@ -142,13 +185,6 @@ document.addEventListener('DOMContentLoaded', () => {
             renderPlayerList(this.playerData);
             searchInput.addEventListener('input', (e) => { const searchTerm = e.target.value.toLowerCase(); renderPlayerList(this.playerData.filter(p => p.name.toLowerCase().includes(searchTerm))); });
         },
-        initTradeAnalyzer() {
-            const controls = { searchInput1: document.getElementById('trade-search-1'), autocomplete1: document.getElementById('trade-autocomplete-1'), teamContainer1: document.getElementById('trade-team-1'), searchInput2: document.getElementById('trade-search-2'), autocomplete2: document.getElementById('trade-autocomplete-2'), teamContainer2: document.getElementById('trade-team-2'), analyzeBtn: document.getElementById('analyze-trade-btn'), resultsContainer: document.getElementById('trade-results'), };
-            if (!controls.analyzeBtn) return;
-            controls.searchInput1.addEventListener('input', () => this.showTradeAutocomplete(controls.searchInput1, controls.autocomplete1, 1));
-            controls.searchInput2.addEventListener('input', () => this.showTradeAutocomplete(controls.searchInput2, controls.autocomplete2, 2));
-            controls.analyzeBtn.addEventListener('click', () => this.analyzeTrade());
-        },
         showTradeAutocomplete(input, listEl, teamNum) {
             const searchTerm = input.value.toLowerCase();
             listEl.innerHTML = ''; if (searchTerm.length < 2) return;
@@ -170,21 +206,6 @@ document.addEventListener('DOMContentLoaded', () => {
             this.addPlayerPopupListeners();
         },
         createTradePlayerPill(player, teamNum) { return ` <div class="trade-player-pill player-pos-${player.simplePosition.toLowerCase()}"><span class="player-name-link" data-player-name="${player.name}">${player.name}</span><span class="text-gray-400 ml-auto">${player.simplePosition}</span><button class="trade-remove-btn" data-player-name="${player.name}" data-team-num="${teamNum}">×</button></div> `; },
-        analyzeTrade() {
-            const resultsContainer = document.getElementById('trade-results'); resultsContainer.classList.remove('hidden');
-            const totalVorp1 = this.tradeState.team1.reduce((sum, p) => sum + (p.vorp || 0), 0); const totalVorp2 = this.tradeState.team2.reduce((sum, p) => sum + (p.vorp || 0), 0);
-            let verdict; const diff = Math.abs(totalVorp1 - totalVorp2); const higherVal = Math.max(totalVorp1, totalVorp2) || 1;
-            if(this.tradeState.team1.length === 0 || this.tradeState.team2.length === 0){ verdict = `<h3 class="text-2xl font-bold text-red-400">Please add players to both sides of the trade.</h3>`;}
-            else if (diff / higherVal < 0.1) { verdict = `<h3 class="text-2xl font-bold text-yellow-300">This trade is relatively fair.</h3>`; } 
-            else if (totalVorp1 > totalVorp2) { verdict = `<h3 class="text-2xl font-bold text-red-400">Team Receiving Your Assets Wins.</h3>`; } 
-            else { verdict = `<h3 class="text-2xl font-bold text-green-400">Team Receiving Their Assets Wins.</h3>`; }
-            resultsContainer.innerHTML = ` <div class="text-center">${verdict}</div> <div id="ai-trade-analysis-container" class="popup-footer mt-4"><button id="get-ai-trade-btn" class="ai-analysis-btn">Get AI Opinion</button><div id="ai-trade-loader" class="loader-small hidden"></div><p id="ai-trade-text" class="text-sm text-gray-300 mt-2 text-left"></p></div> `;
-            if(this.tradeState.team1.length > 0 && this.tradeState.team2.length > 0) {
-                document.getElementById('get-ai-trade-btn').addEventListener('click', () => this.getAITradeAnalysis());
-            } else {
-                document.getElementById('ai-trade-analysis-container').classList.add('hidden');
-            }
-        },
         async getAITradeAnalysis() {
             const container = document.getElementById('ai-trade-analysis-container'); const button = container.querySelector('#get-ai-trade-btn'); const loader = container.querySelector('#ai-trade-loader'); const textEl = container.querySelector('#ai-trade-text');
             button.classList.add('hidden'); loader.classList.remove('hidden');
