@@ -12,18 +12,17 @@
 <body class="min-h-screen flex flex-col font-poppins bg-gradient-to-br from-[#0f2027] to-[#2c5364]">
     <header class="sticky top-0 z-50 bg-opacity-98 bg-gray-900 shadow-lg border-b-2 border-teal-500">
         <div class="max-w-7xl mx-auto px-4 flex justify-between items-center py-3">
-            <a href="index.html" class="text-2xl font-bold text-yellow text-glow">Front Row Fantasy</a>
-            <nav class="hidden md:flex space-x-6">
-                <a href="index.html" class="nav-link">Home</a>
-                <a href="tools.html" class="nav-link">Expert Tools</a>
-                <a href="goat.html" class="nav-link">GOAT</a>
-                <a href="guides.html" class="nav-link">Guides</a>
-                <a href="community.html" class="nav-link">Community</a>
-                <a href="players.html" class="nav-link">Players</a>
-                <a href="stats.html" class="nav-link" aria-current="page">Stats</a>
+            <a href="index.html" class="text-2xl font-bold text-yellow-400 text-glow">Front Row Fantasy</a>
+            <nav class="hidden md:flex space-x-6 text-teal-200">
+                <a href="index.html" class="hover:text-yellow-400 transition-colors">Home</a>
+                <a href="tools.html" class="hover:text-yellow-400 transition-colors">Expert Tools</a>
+                <a href="goat.html" class="hover:text-yellow-400 transition-colors">GOAT</a>
+                <a href="guides.html" class="hover:text-yellow-400 transition-colors">Guides</a>
+                <a href="players.html" class="hover:text-yellow-400 transition-colors">Players</a>
+                <a href="stats.html" class="text-yellow-400 font-bold" aria-current="page">Stats</a>
             </nav>
             <div class="md:hidden">
-                <button id="mobile-menu-button" class="text-teal-400 hover:text-yellow focus:outline-none">
+                <button id="mobile-menu-button" class="text-teal-400 hover:text-yellow-400 focus:outline-none">
                     <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
                 </button>
             </div>
@@ -31,21 +30,18 @@
         <nav id="mobile-menu" class="md:hidden hidden px-4 pb-3 space-y-2"></nav>
     </header>
 
-    <section class="bg-gray-800 bg-opacity-80 p-3 rounded-lg shadow-lg my-4 mx-auto w-full max-w-7xl border border-teal-600">
-        <div class="flex items-center justify-center space-x-4 mb-3">
-            <h2 class="text-gray-300 text-lg font-semibold">Live Fantasy Points Leaders</h2>
-            <button id="pauseButton" class="cta-btn px-4 py-1">Pause</button>
-        </div>
-        <div class="overflow-hidden relative h-10 bg-gray-900 rounded-lg">
-            <div id="tickerContent" class="whitespace-nowrap absolute top-0 left-0 h-full flex items-center ticker-animation">
-                <span class="text-gray-400 px-4">Loading fantasy points...</span>
+    <!-- Ticker Section -->
+    <section class="bg-gray-800 bg-opacity-80 p-3 shadow-lg w-full border-y border-teal-800">
+        <div class="overflow-hidden relative h-8 bg-gray-900 rounded-lg">
+            <div id="tickerContent" class="whitespace-nowrap absolute top-0 left-0 h-full flex items-center ticker-animation text-gray-300">
+                <span class="text-gray-500 px-4">Loading news...</span>
             </div>
         </div>
     </section>
 
     <main class="flex-grow max-w-7xl mx-auto py-8 px-4 w-full">
         <section id="stats-page">
-            <h1 class="text-5xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-yellow-300 to-teal-300 mb-4 text-glow-gold text-center">Player Statistics</h1>
+            <h1 class="text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-yellow-300 to-teal-300 mb-4 text-glow-gold text-center">Player Statistics</h1>
             <p class="text-xl text-teal-200 max-w-3xl mx-auto text-center mb-8">
                 Dive into detailed player stats. Use the filters below to refine your search and uncover key insights.
             </p>
@@ -60,9 +56,6 @@
                             <option value="RB">RB</option>
                             <option value="WR">WR</option>
                             <option value="TE">TE</option>
-                            <option value="FLEX">Flex (RB/WR/TE)</option>
-                            <option value="K">K</option>
-                            <option value="DST">DST</option>
                         </select>
                     </div>
                     <div>
@@ -71,10 +64,6 @@
                             <option value="FantasyPoints">Fantasy Points</option>
                             <option value="Pass Yds">Passing Yards</option>
                             <option value="Rush Yds">Rushing Yards</option>
-                            <option value="Rec Yds">Receiving Yards</option>
-                            <option value="Pass TD">Passing TDs</option>
-                            <option value="Rush TD">Rushing TDs</option>
-                            <option value="Rec TD">Receiving TDs</option>
                         </select>
                     </div>
                     <div>
@@ -88,27 +77,36 @@
                 </div>
             </div>
 
-            <div id="statsLoader" class="text-center mb-4 hidden">
+            <div id="statsLoader" class="text-center mb-4">
                  <div class="loader"></div>
                  <p class="text-teal-300 mt-2">Loading Player Stats...</p>
             </div>
-            <div class="overflow-x-auto">
+            <div class="overflow-x-auto tool-card">
                 <table id="statsTable" class="w-full text-left whitespace-nowrap">
-                    <thead class="bg-gray-700 bg-opacity-80 text-teal-300 uppercase text-sm"></thead>
-                    <tbody class="bg-gray-900 bg-opacity-70 divide-y divide-gray-700"></tbody>
+                    <thead class="bg-gray-700 bg-opacity-80 text-teal-300 uppercase text-sm">
+                        <tr>
+                           <th class="p-3">Player</th>
+                           <th class="p-3">Pos</th>
+                           <th class="p-3">Team</th>
+                           <th class="p-3">VORP</th>
+                           <th class="p-3">ADP (PPR)</th>
+                        </tr>
+                    </thead>
+                    <tbody class="bg-gray-900 bg-opacity-70 divide-y divide-gray-700 text-white">
+                        <!-- Content will be injected by script.js -->
+                    </tbody>
                 </table>
             </div>
         </section>
     </main>
     <footer class="bg-gray-900 text-teal-400 py-6 border-t-2 border-teal-500 mt-12">
-        <div class="mb-2 flex flex-wrap justify-center gap-4">
-            <a href="index.html" class="hover:text-yellow">Home</a>
-            <a href="tools.html" class="hover:text-yellow">Expert Tools</a>
-            <a href="goat.html" class="hover:text-yellow">GOAT</a>
-            <a href="guides.html" class="hover:text-yellow">Guides</a>
-            <a href="community.html" class="hover:text-yellow">Community</a>
-            <a href="players.html" class="hover:text-yellow">Players</a>
-            <a href="stats.html" class="hover:text-yellow">Stats</a>
+        <div class="mb-2 flex flex-wrap justify-center gap-x-6 gap-y-2 text-teal-200">
+            <a href="index.html" class="hover:text-yellow-400 transition-colors">Home</a>
+            <a href="tools.html" class="hover:text-yellow-400 transition-colors">Expert Tools</a>
+            <a href="goat.html" class="hover:text-yellow-400 transition-colors">GOAT</a>
+            <a href="guides.html" class="hover:text-yellow-400 transition-colors">Guides</a>
+            <a href="players.html" class="hover:text-yellow-400 transition-colors">Players</a>
+            <a href="stats.html" class="text-yellow-400 font-bold" aria-current="page">Stats</a>
         </div>
         <div class="text-center text-sm">© 2025 Front Row Fantasy. All rights reserved.</div>
     </footer>
