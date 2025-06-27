@@ -1,0 +1,56 @@
+[
+    {
+        "name": "Jahleel Billingsley",
+        "team": "LV",
+        "position": "TE66",
+        "adp": { "ppr": 409, "hppr": null, "standard": null },
+        "tier": 8,
+        "vorp": 0,
+        "projections": {}
+    },
+    {
+        "name": "Austin Stogner",
+        "team": "ATL",
+        "position": "TE67",
+        "adp": { "ppr": 410, "hppr": null, "standard": null },
+        "tier": 8,
+        "vorp": 0,
+        "projections": {}
+    },
+    {
+        "name": "Ronnie Bell",
+        "team": "MIA",
+        "position": "WR169",
+        "adp": { "ppr": 411, "hppr": null, "standard": null },
+        "tier": 14,
+        "vorp": 0,
+        "projections": {}
+    },
+    {
+        "name": "E.J. Smith",
+        "team": "NYJ",
+        "position": "RB117",
+        "adp": { "ppr": 412, "hppr": null, "standard": null },
+        "tier": 11,
+        "vorp": 0,
+        "projections": {}
+    },
+    {
+        "name": "Ainias Smith",
+        "team": "PHI",
+        "position": "WR170",
+        "adp": { "ppr": 413, "hppr": null, "standard": null },
+        "tier": 14,
+        "vorp": 0,
+        "projections": {}
+    },
+    {
+        "name": "Tayvion Robinson",
+        "team": "BAL",
+        "position": "WR171",
+        "adp": { "ppr": 414, "half_ppr": null, "standard": null },
+        "tier": 14,
+        "vorp": 0,
+        "projections": {}
+    }
+]
