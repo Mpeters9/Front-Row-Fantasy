@@ -39,8 +39,9 @@
         </section>
 
         <div class="space-y-12">
+            <!-- Best Draft Builds -->
             <section id="goat-draft-builder" class="tool-card">
-                <h2 class="text-3xl font-bold text-center mb-6 text-transparent bg-clip-text bg-gradient-to-r from-yellow-300 to-teal-300 flex items-center justify-center gap-3">
+                 <h2 class="text-3xl font-bold text-center mb-6 text-transparent bg-clip-text bg-gradient-to-r from-yellow-300 to-teal-300 flex items-center justify-center gap-3">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
                     Best Draft Builds
                 </h2>
@@ -76,7 +77,6 @@
                              <option value="8">8</option>
                         </select>
                     </div>
-
                 </div>
                 
                 <div class="mb-6">
@@ -86,15 +86,14 @@
                 
                 <div class="mb-6">
                     <label class="block text-gray-300 font-semibold mb-2">Roster Construction</label>
-                    <div id="draft-roster-counts" class="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-4 text-center">
-                        </div>
+                    <div id="draft-roster-counts" class="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-4 text-center"></div>
                 </div>
 
                 <button id="generateDraftBuildButton" class="cta-btn w-full mt-4">Generate Draft Build</button>
                 
                 <div id="draft-loading-spinner" class="mt-6 text-center hidden">
                     <div class="loader"></div>
-                    <p class="text-teal-300 mt-2">Simulating a full league draft and building your optimal roster...</p>
+                    <p class="text-teal-300 mt-2">Simulating a full league draft...</p>
                 </div>
                 <div id="draft-results-wrapper" class="mt-8 hidden">
                     <h3 class="text-2xl font-bold text-yellow-300 mb-4 text-center">Your Drafted Roster</h3>
@@ -111,32 +110,70 @@
                 </div>
             </section>
 
-            <section id="lineup-builder" class="tool-card">
-                <h2 class="text-3xl font-bold text-center mb-6 text-transparent bg-clip-text bg-gradient-to-r from-yellow-300 to-teal-300 flex items-center justify-center gap-3">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" viewBox="0 0 20 20" fill="currentColor"><path d="M7 3a1 1 0 000 2h6a1 1 0 100-2H7zM4 7a1 1 0 011-1h10a1 1 0 110 2H5a1 1 0 01-1-1zM2 11a2 2 0 012-2h12a2 2 0 012 2v4a2 2 0 01-2 2H4a2 2 0 01-2-2v-4z" /></svg>
-                    Best Lineup Builds
-                </h2>
-                <div class="relative mb-4">
-                    <label for="lineup-player-search" class="block text-gray-300 font-semibold mb-2">Add Players to Your Roster</label>
-                    <input type="text" id="lineup-player-search" class="form-input w-full" placeholder="Search for players on your team..." autocomplete="off">
-                    <div id="lineup-player-autocomplete" class="autocomplete-list hidden"></div>
+            <!-- Best Lineup & Start/Sit Combined Tool -->
+            <section id="lineup-tools" class="tool-card">
+                 <h2 class="text-3xl font-bold text-center mb-8 text-transparent bg-clip-text bg-gradient-to-r from-yellow-300 to-teal-300">Lineup & Start/Sit Tools</h2>
+                
+                <!-- Tab Controls -->
+                <div class="flex justify-center border-b border-gray-700 mb-6">
+                    <button id="tab-lineup-builder" class="tab-btn active">Best Lineup</button>
+                    <button id="tab-start-sit" class="tab-btn">Start/Sit</button>
                 </div>
-                <div id="lineup-roster" class="flex flex-wrap gap-2 min-h-[80px] mb-4 p-2 bg-slate-900/50 rounded-lg border border-gray-700">
-                    <span class="text-gray-500 italic">Your added players will appear here...</span>
+
+                <!-- Best Lineup Builder Content -->
+                <div id="lineup-builder-content">
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                        <!-- Left Column: Roster Input -->
+                        <div>
+                             <h3 class="text-xl font-semibold text-white mb-3">1. Add Your Players</h3>
+                            <div class="relative mb-4">
+                                <input type="text" id="lineup-player-search" class="form-input w-full" placeholder="Search for players on your team..." autocomplete="off">
+                                <div id="lineup-player-autocomplete" class="autocomplete-list hidden"></div>
+                            </div>
+                            <div id="lineup-roster" class="space-y-2 min-h-[200px] max-h-[300px] overflow-y-auto p-2 bg-slate-900/50 rounded-lg border border-gray-700">
+                                <span class="text-gray-500 italic">Your added players will appear here...</span>
+                            </div>
+                        </div>
+                        <!-- Right Column: Settings and Results -->
+                        <div>
+                            <h3 class="text-xl font-semibold text-white mb-3">2. Set Lineup & Generate</h3>
+                             <div class="mb-4">
+                                <label for="lineupPreset" class="block text-gray-300 font-semibold mb-2">Lineup Preset</label>
+                                <select id="lineupPreset" class="form-select w-full"></select>
+                            </div>
+                            <button id="generateLineupButton" class="cta-btn w-full mb-4">Generate Optimal Lineup</button>
+                            
+                            <div id="lineup-results-wrapper" class="hidden">
+                                <h4 class="text-lg font-semibold text-teal-300 mb-2">Optimal Starters</h4>
+                                <div id="optimized-starters-list" class="space-y-2 p-2 bg-slate-900/50 rounded-lg border border-gray-700"></div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
                 
-                <div class="mb-6">
-                    <label for="lineupPreset" class="block text-gray-300 font-semibold mb-2">Lineup Preset</label>
-                    <select id="lineupPreset" class="form-select w-full"></select>
-                </div>
-
-                <button id="generateLineupButton" class="cta-btn w-full mt-4">Generate Lineup Build</button>
-
-                 <div id="lineup-results-wrapper" class="mt-8 hidden">
-                    <h3 class="text-2xl font-bold text-yellow-300 mb-4 text-center">Your Optimal Lineup</h3>
-                    <div id="lineup-results" class="grid grid-cols-1">
-                        <div id="optimized-starters-list" class="space-y-2"></div>
-                    </div>
+                <!-- Start/Sit Tool Content -->
+                <div id="start-sit-content" class="hidden">
+                     <p class="text-center text-gray-400 mb-4">Select two players to compare for your starting lineup.</p>
+                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
+                        <!-- Player 1 -->
+                        <div class="relative">
+                            <label for="start-sit-player1-search" class="block text-gray-300 font-semibold mb-2">Player 1</label>
+                            <input type="text" id="start-sit-player1-search" class="form-input w-full" placeholder="Search for a player..." autocomplete="off">
+                            <div id="start-sit-player1-autocomplete" class="autocomplete-list hidden"></div>
+                            <div id="start-sit-player1-card" class="mt-2"></div>
+                        </div>
+                        <!-- Player 2 -->
+                        <div class="relative">
+                             <label for="start-sit-player2-search" class="block text-gray-300 font-semibold mb-2">Player 2</label>
+                            <input type="text" id="start-sit-player2-search" class="form-input w-full" placeholder="Search for a player..." autocomplete="off">
+                            <div id="start-sit-player2-autocomplete" class="autocomplete-list hidden"></div>
+                            <div id="start-sit-player2-card" class="mt-2"></div>
+                        </div>
+                     </div>
+                     <div class="text-center mt-6">
+                        <button id="analyzeStartSit" class="cta-btn">Analyze Start/Sit</button>
+                     </div>
+                     <div id="start-sit-result" class="mt-6 text-center text-2xl font-bold hidden"></div>
                 </div>
             </section>
         </div>
