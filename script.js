@@ -36,39 +36,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (document.getElementById('trade-analyzer')) this.initTradeAnalyzer();
         },
         
-        // --- INTERACTIVE MOCK DRAFT (FIXED) ---
-        initMockDraftSimulator() {
-            const controls = {
-                startBtn: document.getElementById('start-draft-button'),
-                // Corrected IDs to match mock-draft.html
-                scoringSelect: document.getElementById('draftScoringType'),
-                sizeSelect: document.getElementById('leagueSize'),
-                pickSelect: document.getElementById('userPick'),
-                settingsContainer: document.getElementById('draft-settings-container'),
-                draftingContainer: document.getElementById('interactive-draft-container'),
-                completeContainer: document.getElementById('draft-complete-container'),
-                restartBtn: document.getElementById('restart-draft-button'),
-            };
-
-            if (!controls.startBtn) return;
-            
-            const updateUserPickOptions = () => {
-                const size = parseInt(controls.sizeSelect.value);
-                controls.pickSelect.innerHTML = '';
-                for (let i = 1; i <= size; i++) {
-                    controls.pickSelect.add(new Option(`Pick ${i}`, i));
-                }
-            };
-
-            controls.sizeSelect.addEventListener('change', updateUserPickOptions);
-            controls.startBtn.addEventListener('click', () => this.startInteractiveDraft(controls));
-            controls.restartBtn.addEventListener('click', () => this.resetDraftUI(controls));
-            
-            // This initial call populates the dropdown on page load
-            updateUserPickOptions();
-        },
-
-        // --- ALL OTHER FUNCTIONS ---
+        // --- CORE & UI FUNCTIONS ---
         
         initMobileMenu() {
             const mobileMenuButton = document.getElementById('mobile-menu-button');
@@ -88,9 +56,8 @@ document.addEventListener('DOMContentLoaded', () => {
         initPlaceholderTicker() {
             const tickerContainer = document.getElementById('tickerContent');
             if (!tickerContainer) return;
-            const newsItems = ["Ja'Marr Chase expected to sign record-breaking extension.", "Saquon Barkley feels 'explosive' in new Eagles offense.", "Rookie Marvin Harrison Jr. already turning heads in Arizona."];
-            const tickerContent = newsItems.map(item => `<span class="px-4">${item}</span>`).join('<span class="text-teal-500 font-bold px-2">|</span>');
-            tickerContainer.innerHTML = tickerContent.repeat(5);
+            // -- FIX: Removed the news headlines for a simple loading message --
+            tickerContainer.innerHTML = `<span class="text-gray-400 px-4">Loading player points...</span>`;
         },
         initLiveTicker() {
             const tickerContainer = document.getElementById('tickerContent');
@@ -248,7 +215,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         let score = p.vorp || 0;
                         const isStarterNeed = teamNeeds[p.simplePosition] > 0;
                         const isSuperflexNeed = config.superflexPositions.includes(p.simplePosition) && teamNeeds['SUPER_FLEX'] > 0;
-                        const isFlexNeed = config.positions.includes(p.simplePosition) && teamNeeds['FLEX'] > 0;
+                        const isFlexNeed = config.flexPositions.includes(p.simplePosition) && teamNeeds['FLEX'] > 0;
                         if (isStarterNeed) { score += 1000; }
                         else if (isSuperflexNeed) { score += 500; }
                         else if (isFlexNeed) { score += 100; }
@@ -265,7 +232,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         const needs = teams[teamIndex].needs; const pos = draftedPlayer.simplePosition;
                         if (needs[pos] > 0) needs[pos]--;
                         else if (config.superflexPositions.includes(pos) && needs['SUPER_FLEX'] > 0) needs['SUPER_FLEX']--;
-                        else if (config.positions.includes(pos) && needs['FLEX'] > 0) needs['FLEX']--;
+                        else if (config.flexPositions.includes(pos) && needs['FLEX'] > 0) needs['FLEX']--;
                         else if (needs.BENCH > 0) needs.BENCH--;
                     }
                 }
@@ -283,7 +250,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 const pos = player.simplePosition;
                 if (rosterSlots[pos] > 0) { player.displayPos = pos; starters.push(player); rosterSlots[pos]--; }
                 else if (config.superflexPositions.includes(pos) && rosterSlots['SUPER_FLEX'] > 0) { player.displayPos = 'S-FLEX'; starters.push(player); rosterSlots['SUPER_FLEX']--; }
-                else if (config.positions.includes(pos) && rosterSlots['FLEX'] > 0) { player.displayPos = 'FLEX'; starters.push(player); rosterSlots['FLEX']--; }
+                else if (config.flexPositions.includes(pos) && rosterSlots['FLEX'] > 0) { player.displayPos = 'FLEX'; starters.push(player); rosterSlots['FLEX']--; }
                 else { bench.push(player); }
             });
             const positionOrder = ['QB', 'RB', 'WR', 'TE', 'FLEX', 'S-FLEX', 'K', 'DST'];
@@ -301,6 +268,14 @@ document.addEventListener('DOMContentLoaded', () => {
             if(!tool.analyzeBtn) return;
             [tool.player1Input, tool.player2Input].forEach(input => { input.addEventListener('input', e => this.showAutocomplete(e.target)); });
             tool.analyzeBtn.addEventListener('click', () => { const player1 = this.playerData.find(p => p.name === tool.player1Input.value); const player2 = this.playerData.find(p => p.name === tool.player2Input.value); this.analyzeStartSit(player1, player2); });
+        },
+        showAutocomplete(inputElement) {
+            const listId = inputElement.id + '-autocomplete';
+            let list = document.getElementById(listId);
+            if (!list) { list = document.createElement('div'); list.id = listId; list.className = 'autocomplete-list'; inputElement.parentNode.appendChild(list); }
+            const searchTerm = inputElement.value.toLowerCase(); list.innerHTML = ''; if (searchTerm.length < 2) return;
+            const filtered = this.playerData.filter(p => p.name.toLowerCase().includes(searchTerm)).slice(0, 5);
+            filtered.forEach(player => { const item = document.createElement('li'); item.textContent = `${player.name} (${player.team})`; item.addEventListener('click', () => { inputElement.value = player.name; list.innerHTML = ''; }); list.appendChild(item); });
         },
         analyzeStartSit(p1, p2) {
             const resultsContainer = document.getElementById('start-sit-results');
