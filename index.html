@@ -33,7 +33,6 @@
         <nav id="mobile-menu" class="md:hidden hidden px-4 pb-3 space-y-2"></nav>
     </header>
 
-    <!-- Ticker Section -->
     <section class="bg-gray-800 bg-opacity-80 p-3 shadow-lg w-full border-y border-teal-800">
         <div class="overflow-hidden relative h-8 bg-gray-900 rounded-lg">
             <div id="tickerContent" class="whitespace-nowrap absolute top-0 left-0 h-full flex items-center ticker-animation text-gray-300">
@@ -48,6 +47,13 @@
             <p class="text-xl text-teal-200 mb-8 max-w-3xl mx-auto">Front Row Fantasy provides cutting-edge tools and insights for every fantasy football enthusiast. From draft prep to weekly management, we've got you covered.</p>
              <a href="goat.html" class="cta-btn text-lg">Access the GOAT Tools</a>
         </section>
+        
+        <section id="daily-briefing-section" class="tool-card mb-16">
+            <h2 class="text-3xl font-bold text-center mb-4 text-teal-300">The Front Row Daily Briefing</h2>
+            <div id="daily-briefing-content">
+                <div class="text-center p-8"><div class="loader"></div><p class="text-teal-300 mt-2">Generating today's fantasy analysis...</p></div>
+            </div>
+        </section>
 
         <section id="top-players-section">
             <h2 class="text-4xl font-bold text-center mb-10 text-teal-300">Top Players</h2>
@@ -57,7 +63,6 @@
         </section>
     </main>
     
-    <!-- This is the hidden popup card for player info -->
     <div id="player-popup-card" class="hidden"></div>
 
     <footer class="bg-gray-900 text-teal-400 py-6 border-t-2 border-teal-500 mt-12">
