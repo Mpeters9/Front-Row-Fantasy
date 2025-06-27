@@ -13,11 +13,13 @@ body {
 }
 
 .text-glow-gold {
-    text-shadow: 0 0 12px rgba(252, 211, 77, 0.7);
+    text-shadow: 0 0 12px rgba(252, 211, 77, 0.7), 0 0 20px rgba(250, 204, 21, 0.5);
 }
 
 /* --- Header & Navigation --- */
 .nav-link {
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.375rem;
     transition: all 0.2s ease-in-out;
 }
 
@@ -25,11 +27,13 @@ body {
     display: block;
     padding: 0.75rem 1rem;
     border-radius: 0.5rem;
-    transition: background-color 0.2s ease-in-out;
+    transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out;
+    color: #94a3b8;
 }
 
 .nav-link-mobile:hover, .nav-link-mobile[aria-current="page"] {
-    background-color: rgba(30, 41, 59, 0.5);
+    background-color: rgba(51, 65, 85, 0.7);
+    color: #facc15;
 }
 
 /* --- Buttons --- */
@@ -42,6 +46,7 @@ body {
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     transition: all 0.2s ease-in-out;
     border: none;
+    cursor: pointer;
 }
 .cta-btn:hover {
     transform: translateY(-2px);
@@ -59,7 +64,7 @@ body {
     background: rgba(30, 41, 59, 0.6);
     border-radius: 1rem;
     border: 1px solid rgba(56, 189, 248, 0.2);
-    padding: 2rem;
+    padding: 1.5rem;
     transition: all 0.3s ease-in-out;
     backdrop-filter: blur(5px);
 }
@@ -76,38 +81,17 @@ body {
     padding: 0;
 }
 
-.player-showcase-card li {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 0.75rem 0;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-    font-size: 1.1rem;
-}
-
-.player-showcase-card li:last-child {
-    border-bottom: none;
-}
-
-.player-name {
-    font-weight: 600;
-    color: #f0f9ff;
-}
-
-.player-points {
-    font-weight: bold;
-    color: #facc15;
-}
-
 /* --- Forms --- */
 .form-select, .form-input {
     width: 100%;
-    padding: 0.5rem 1rem;
+    padding: 0.65rem 1rem;
     background-color: #1f2937;
     color: white;
     border: 1px solid #0d9488;
     border-radius: 0.375rem;
     transition: all 0.2s ease-in-out;
+    -webkit-appearance: none;
+    appearance: none;
 }
 .form-select:focus, .form-input:focus {
     outline: none;
@@ -135,13 +119,12 @@ body {
 }
 
 /* --- Player Cards in Tools --- */
-.trade-player {
-    background-color: #374151;
-    padding: 0.5rem;
-    border-radius: 0.25rem;
+.player-card {
+    padding: 0.75rem;
+    border-radius: 0.5rem;
     display: flex;
-    justify-content: space-between;
     align-items: center;
+    font-size: 0.95rem;
 }
 .remove-btn {
     background-color: #ef4444;
@@ -155,23 +138,30 @@ body {
     text-align: center;
 }
 
-/* --- Dynamic Styles from JS (consolidated) --- */
-.ticker-animation { animation: marquee 60s linear infinite; }
-@keyframes marquee { 0% { transform: translateX(0%); } 100% { transform: translateX(-50%); } }
+/* --- Dynamic Styles from JS --- */
+.ticker-animation { 
+    animation: marquee 90s linear infinite; 
+}
+@keyframes marquee { 
+    0% { transform: translateX(50%); } 
+    100% { transform: translateX(-100%); } 
+}
 
 .loader { 
     border: 4px solid rgba(255,255,255,0.2); 
     border-left-color: #facc15; 
     border-radius: 50%; 
-    width: 32px; 
-    height: 32px; 
+    width: 40px; 
+    height: 40px; 
     animation: spin 1s linear infinite; 
     margin: 2rem auto; 
 }
-@keyframes spin { to { transform: rotate(360deg); } }
+@keyframes spin { 
+    to { transform: rotate(360deg); } 
+}
 
-.player-pos-qb { background-color: rgba(59, 130, 246, 0.2); color: #60a5fa; border: 1px solid #60a5fa; }
-.player-pos-rb { background-color: rgba(34, 197, 94, 0.2); color: #22c55e; border: 1px solid #22c55e;}
-.player-pos-wr { background-color: rgba(239, 68, 68, 0.2); color: #ef4444; border: 1px solid #ef4444;}
-.player-pos-te { background-color: rgba(249, 115, 22, 0.2); color: #f97316; border: 1px solid #f97316;}
-.player-pos-k, .player-pos-dst { background-color: rgba(107, 114, 128, 0.2); color: #9ca3af; border: 1px solid #9ca3af;}
+.player-pos-qb { background-color: rgba(59, 130, 246, 0.1); color: #93c5fd; border-left: 4px solid #60a5fa; }
+.player-pos-rb { background-color: rgba(34, 197, 94, 0.1); color: #86efac; border-left: 4px solid #22c55e;}
+.player-pos-wr { background-color: rgba(239, 68, 68, 0.1); color: #fca5a5; border-left: 4px solid #ef4444;}
+.player-pos-te { background-color: rgba(249, 115, 22, 0.1); color: #fdba74; border-left: 4px solid #f97316;}
+.player-pos-k, .player-pos-dst, .player-pos- { background-color: rgba(107, 114, 128, 0.1); color: #d1d5db; border-left: 4px solid #9ca3af;}
