@@ -3,7 +3,6 @@ document.addEventListener('DOMContentLoaded', () => {
     // Central configuration for the entire application
     const config = {
         dataFiles: ['players_part1.json', 'players_part2.json', 'players_part3.json'],
-        // This will be updated by user selections
         rosterSettings: { QB: 1, RB: 2, WR: 2, TE: 1, FLEX: 1, SUPER_FLEX: 0, BENCH: 7 },
         positions: ["QB", "RB", "WR", "TE"],
         superflexPositions: ["QB", "RB", "WR", "TE"]
@@ -34,7 +33,92 @@ document.addEventListener('DOMContentLoaded', () => {
             if (document.getElementById('tools-page')) this.initToolsPage();
         },
 
-        // --- CORE & UI FUNCTIONS ---
+        // --- GOAT DRAFT BUILD TOOL (LOGIC FIXED) ---
+        async runGoatMockDraft(controls) {
+            const loader = document.getElementById('draft-loading-spinner');
+            const resultsWrapper = document.getElementById('draft-results-wrapper');
+            if (!loader || !resultsWrapper) return;
+
+            loader.classList.remove('hidden');
+            resultsWrapper.classList.add('hidden');
+
+            const scoring = controls.scoringType.value.toLowerCase();
+            const leagueSize = parseInt(controls.leagueSize.value);
+            const userDraftPos = parseInt(controls.draftPosition.value) - 1;
+
+            if (!this.hasDataLoaded) await this.loadAllPlayerData();
+            
+            let availablePlayers = [...this.playerData].filter(p => p.adp && typeof p.adp[scoring] === 'number').sort((a, b) => a.adp[scoring] - b.adp[scoring]);
+            const teams = Array.from({ length: leagueSize }, () => ({ roster: [], needs: { ...config.rosterSettings } }));
+            const totalRounds = Object.values(config.rosterSettings).reduce((sum, val) => sum + val, 0);
+
+            for (let round = 0; round < totalRounds; round++) {
+                const picksInRoundOrder = (round % 2 !== 0) ? Array.from({ length: leagueSize }, (_, i) => leagueSize - 1 - i) : Array.from({ length: leagueSize }, (_, i) => i);
+                
+                for (const teamIndex of picksInRoundOrder) {
+                    if (availablePlayers.length === 0) break;
+                    
+                    const topAvailable = availablePlayers.slice(0, 25); // Look at a slightly larger pool
+                    const teamNeeds = teams[teamIndex].needs;
+
+                    // --- NEW DRAFT LOGIC ---
+                    topAvailable.forEach(p => {
+                        let score = p.vorp || 0;
+                        const isStarterNeed = teamNeeds[p.simplePosition] > 0;
+                        const isSuperflexNeed = config.superflexPositions.includes(p.simplePosition) && teamNeeds['SUPER_FLEX'] > 0;
+                        const isFlexNeed = config.positions.includes(p.simplePosition) && teamNeeds['FLEX'] > 0;
+
+                        // 1. Give a massive bonus to filling an empty starting position. This is the highest priority.
+                        if (isStarterNeed) {
+                            score += 1000; 
+                        }
+                        // 2. If starters are full, give a smaller (but still large) bonus to Superflex.
+                        else if (isSuperflexNeed) {
+                            score += 500;
+                        }
+                        // 3. If Superflex is full, give a regular bonus to Flex.
+                        else if (isFlexNeed) {
+                            score += 100;
+                        }
+                        
+                        // Add a small amount of randomness to prevent identical drafts
+                        score *= (1 + (Math.random() - 0.5) * 0.1); 
+                        p.draftScore = score;
+                    });
+                    
+                    topAvailable.sort((a, b) => b.draftScore - a.draftScore);
+                    const draftedPlayer = topAvailable[0];
+                    const draftedPlayerIndexInAvailable = availablePlayers.findIndex(p => p.name === draftedPlayer.name);
+                    
+                    if (draftedPlayerIndexInAvailable !== -1) {
+                        availablePlayers.splice(draftedPlayerIndexInAvailable, 1);
+                    }
+                    
+                    if (draftedPlayer) {
+                        draftedPlayer.draftedAt = `(${(round + 1)}.${picksInRoundOrder.indexOf(teamIndex) + 1})`;
+                        teams[teamIndex].roster.push(draftedPlayer);
+                        
+                        // Update needs
+                        if (teamNeeds[draftedPlayer.simplePosition] > 0) {
+                            teamNeeds[draftedPlayer.simplePosition]--;
+                        } else if (config.superflexPositions.includes(draftedPlayer.simplePosition) && teamNeeds['SUPER_FLEX'] > 0) {
+                            teamNeeds['SUPER_FLEX']--;
+                        } else if (config.positions.includes(draftedPlayer.simplePosition) && teamNeeds['FLEX'] > 0) {
+                            teamNeeds['FLEX']--;
+                        } else if (teamNeeds.BENCH > 0) {
+                            teamNeeds.BENCH--;
+                        }
+                    }
+                }
+            }
+            this.displayGoatDraftResults(teams[userDraftPos].roster);
+            loader.classList.add('hidden');
+            resultsWrapper.classList.remove('hidden');
+        },
+
+        // --- ALL OTHER FUNCTIONS (UNCHANGED) ---
+        // Includes logic for mobile menu, ticker, data loading, popups, other tools, etc.
+        // The rest of the script remains the same as the last complete version.
 
         initMobileMenu() {
             const mobileMenuButton = document.getElementById('mobile-menu-button');
@@ -51,7 +135,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 mobileMenuButton.addEventListener('click', () => mobileNav.classList.toggle('hidden'));
             }
         },
-
         initPlaceholderTicker() {
             const tickerContainer = document.getElementById('tickerContent');
             if (!tickerContainer) return;
@@ -59,22 +142,16 @@ document.addEventListener('DOMContentLoaded', () => {
             const tickerContent = newsItems.map(item => `<span class="px-4">${item}</span>`).join('<span class="text-teal-500 font-bold px-2">|</span>');
             tickerContainer.innerHTML = tickerContent.repeat(5);
         },
-
         initLiveTicker() {
             const tickerContainer = document.getElementById('tickerContent');
             if (!tickerContainer || !this.playerData.length) return;
             const topPlayers = [...this.playerData.filter(p => p.simplePosition === 'QB').slice(0, 10), ...this.playerData.filter(p => p.simplePosition === 'RB').slice(0, 10), ...this.playerData.filter(p => p.simplePosition === 'WR').slice(0, 10), ...this.playerData.filter(p => p.simplePosition === 'TE').slice(0, 10)];
             topPlayers.sort((a,b) => b.fantasyPoints - a.fantasyPoints);
             const tickerContent = topPlayers.map(player => `<span class="flex items-center mx-4"><span class="font-semibold text-white">${player.name} (${player.simplePosition})</span><span class="ml-2 font-bold text-yellow-400">${player.fantasyPoints.toFixed(2)} pts</span></span>`).join('<span class="text-teal-500 font-bold px-2">|</span>');
-            
             tickerContainer.style.transition = 'opacity 0.5s ease-in-out';
             tickerContainer.style.opacity = 0;
-            setTimeout(() => { 
-                tickerContainer.innerHTML = tickerContent.repeat(3); 
-                tickerContainer.style.opacity = 1; 
-            }, 500);
+            setTimeout(() => { tickerContainer.innerHTML = tickerContent.repeat(3); tickerContainer.style.opacity = 1; }, 500);
         },
-
         async loadAllPlayerData() {
             if (this.hasDataLoaded) return;
             try {
@@ -82,20 +159,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 const fetchPromises = config.dataFiles.map(file => fetch(file).then(res => { if (!res.ok) throw new Error(`Failed to load ${file}`); return res.json(); }));
                 const allParts = await Promise.all(fetchPromises);
                 let combinedData = [].concat(...allParts);
-                combinedData.forEach(p => { 
-                    p.simplePosition = (p.position || '').replace(/\d+$/, '').trim().toUpperCase(); 
-                    p.adp = p.adp || {}; 
-                    for (const key in p.adp) p.adp[key] = parseFloat(p.adp[key]) || 999; 
-                    p.fantasyPoints = this.generateFantasyPoints(p); 
-                });
+                combinedData.forEach(p => { p.simplePosition = (p.position || '').replace(/\d+$/, '').trim().toUpperCase(); p.adp = p.adp || {}; for (const key in p.adp) p.adp[key] = parseFloat(p.adp[key]) || 999; p.fantasyPoints = this.generateFantasyPoints(p); });
                 combinedData.sort((a, b) => b.fantasyPoints - a.fantasyPoints);
                 this.playerData = combinedData;
-            } catch (error) { 
-                console.error("Error loading player data:", error); 
-                this.displayDataError();
-            }
+            } catch (error) { console.error("Error loading player data:", error); this.displayDataError(); }
         },
-        
         displayDataError() {
             const errorMsg = `<p class="text-center text-red-400 py-8">Could not load player data. Please try again later.</p>`;
             const statsBody = document.getElementById('stats-table-body');
@@ -103,20 +171,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if(statsBody) statsBody.innerHTML = `<tr><td colspan="7">${errorMsg}</td></tr>`;
             if(playersContainer) playersContainer.innerHTML = errorMsg;
         },
-
-        generateFantasyPoints(player) {
-            const pos = player.simplePosition; const tier = player.tier || 10;
-            let base, range;
-            if (tier <= 2) { base = (pos === 'QB') ? 22 : 18; range = 15; }
-            else if (tier <= 5) { base = (pos === 'QB') ? 17 : 12; range = 12; }
-            else if (tier <= 8) { base = (pos === 'QB') ? 12 : 7; range = 10; }
-            else { base = 2; range = 8; }
-            const points = base + (Math.random() * range);
-            return Math.max(0, points);
-        },
-
-        // --- PAGE-SPECIFIC INITIALIZERS ---
-        
+        generateFantasyPoints(player) { const pos = player.simplePosition; const tier = player.tier || 10; let base, range; if (tier <= 2) { base = (pos === 'QB') ? 22 : 18; range = 15; } else if (tier <= 5) { base = (pos === 'QB') ? 17 : 12; range = 12; } else if (tier <= 8) { base = (pos === 'QB') ? 12 : 7; range = 10; } else { base = 2; range = 8; } const points = base + (Math.random() * range); return Math.max(0, points); },
         initTopPlayers() {
             const container = document.getElementById('player-showcase-container');
             if (!container || !this.playerData.length) return;
@@ -124,7 +179,6 @@ document.addEventListener('DOMContentLoaded', () => {
             container.innerHTML = Object.entries(topPlayersByPos).map(([title, players]) => `<div class="player-showcase-card"><h3 class="text-2xl font-semibold mb-4 text-yellow-400">${title}</h3><ol class="list-none p-0 space-y-3">${players.map((p, index) => `<li class="flex items-center py-2 border-b border-gray-700/50 last:border-b-0"><span class="text-2xl font-bold text-teal-400/60 w-8">${index + 1}</span><div class="flex-grow"><span class="player-name-link font-semibold text-lg text-slate-100" data-player-name="${p.name}">${p.name}</span><span class="text-sm text-gray-400 block">${p.team}</span></div><span class="font-bold text-xl text-yellow-400">${p.fantasyPoints.toFixed(2)}</span></li>`).join('')}</ol></div>`).join('');
             this.addPlayerPopupListeners();
         },
-
         initStatsPage() {
             const controls = { position: document.getElementById('stats-position-filter'), sortBy: document.getElementById('stats-sort-by'), search: document.getElementById('stats-player-search'), tableBody: document.getElementById('stats-table-body') };
             if (!controls.tableBody) return;
@@ -141,7 +195,6 @@ document.addEventListener('DOMContentLoaded', () => {
             controls.position.addEventListener('change', renderTable); controls.sortBy.addEventListener('change', renderTable); controls.search.addEventListener('input', renderTable);
             renderTable();
         },
-        
         initPlayersPage() {
             const searchInput = document.getElementById('player-search-input'); const container = document.getElementById('player-list-container');
             if (!searchInput || !container) return;
@@ -153,13 +206,11 @@ document.addEventListener('DOMContentLoaded', () => {
             renderPlayerList(this.playerData);
             searchInput.addEventListener('input', (e) => { const searchTerm = e.target.value.toLowerCase(); renderPlayerList(this.playerData.filter(p => p.name.toLowerCase().includes(searchTerm))); });
         },
-        
         initToolsPage() {
             const tradeBtn = document.getElementById('analyzeTradeBtn'); const matchupBtn = document.getElementById('predictMatchupBtn');
             if(tradeBtn) tradeBtn.addEventListener('click', () => { const results = document.getElementById('trade-results'); results.classList.remove('hidden'); document.getElementById('trade-verdict').textContent = 'Trade Analyzer coming soon!'; });
             if(matchupBtn) matchupBtn.addEventListener('click', () => { const result = document.getElementById('predictionResult'); result.classList.remove('hidden'); result.textContent = 'Matchup Predictor coming soon!'; });
         },
-
         setupGoatDraftControls() {
             const controls = { leagueSize: document.getElementById('goat-league-size'), draftPosition: document.getElementById('goat-draft-position'), generateButton: document.getElementById('generateDraftBuildButton'), scoringType: document.getElementById('goat-draft-scoring'), rosterInputs: { QB: document.getElementById('roster-qb'), RB: document.getElementById('roster-rb'), WR: document.getElementById('roster-wr'), TE: document.getElementById('roster-te'), FLEX: document.getElementById('roster-flex'), SUPER_FLEX: document.getElementById('roster-superflex'), BENCH: document.getElementById('roster-bench') } };
             if (!controls.generateButton) return;
@@ -171,49 +222,6 @@ document.addEventListener('DOMContentLoaded', () => {
             });
             updateDraftPositions();
         },
-
-        async runGoatMockDraft(controls) {
-            const loader = document.getElementById('draft-loading-spinner'); const resultsWrapper = document.getElementById('draft-results-wrapper');
-            if(!loader || !resultsWrapper) return;
-            loader.classList.remove('hidden'); resultsWrapper.classList.add('hidden');
-            const scoring = controls.scoringType.value.toLowerCase(); const leagueSize = parseInt(controls.leagueSize.value); const userDraftPos = parseInt(controls.draftPosition.value) - 1;
-            if (!this.hasDataLoaded) await this.loadAllPlayerData();
-            let availablePlayers = [...this.playerData].filter(p => p.adp && typeof p.adp[scoring] === 'number').sort((a, b) => a.adp[scoring] - b.adp[scoring]);
-            const teams = Array.from({ length: leagueSize }, () => ({ roster: [], needs: { ...config.rosterSettings } }));
-            const totalRounds = Object.values(config.rosterSettings).reduce((sum, val) => sum + val, 0);
-            for (let round = 0; round < totalRounds; round++) {
-                const picksInRoundOrder = (round % 2 !== 0) ? Array.from({ length: leagueSize }, (_, i) => leagueSize - 1 - i) : Array.from({ length: leagueSize }, (_, i) => i);
-                for (const teamIndex of picksInRoundOrder) {
-                    if (availablePlayers.length === 0) break;
-                    const topAvailable = availablePlayers.slice(0, 15);
-                    topAvailable.forEach(p => {
-                        let score = p.vorp || 0;
-                        if (teams[teamIndex].needs[p.simplePosition] > 0) score *= 1.5;
-                        else if (config.superflexPositions.includes(p.simplePosition) && teams[teamIndex].needs['SUPER_FLEX'] > 0) score *= 1.4;
-                        else if (config.positions.includes(p.simplePosition) && teams[teamIndex].needs['FLEX'] > 0) score *= 1.2;
-                        score *= (1 + (Math.random() - 0.5) * 0.25);
-                        p.draftScore = score;
-                    });
-                    topAvailable.sort((a, b) => b.draftScore - a.draftScore);
-                    const draftedPlayer = topAvailable[0];
-                    const draftedPlayerIndexInAvailable = availablePlayers.findIndex(p => p.name === draftedPlayer.name);
-                    if (draftedPlayerIndexInAvailable !== -1) availablePlayers.splice(draftedPlayerIndexInAvailable, 1);
-                    if (draftedPlayer) {
-                        draftedPlayer.draftedAt = `(${(round + 1)}.${picksInRoundOrder.indexOf(teamIndex) + 1})`;
-                        teams[teamIndex].roster.push(draftedPlayer);
-                        const needs = teams[teamIndex].needs;
-                        if (needs[draftedPlayer.simplePosition] > 0) needs[draftedPlayer.simplePosition]--;
-                        else if (config.superflexPositions.includes(draftedPlayer.simplePosition) && needs['SUPER_FLEX'] > 0) needs['SUPER_FLEX']--;
-                        else if (config.positions.includes(draftedPlayer.simplePosition) && needs['FLEX'] > 0) needs['FLEX']--;
-                        else if (needs.BENCH > 0) needs.BENCH--;
-                    }
-                }
-            }
-            this.displayGoatDraftResults(teams[userDraftPos].roster);
-            loader.classList.add('hidden');
-            resultsWrapper.classList.remove('hidden');
-        },
-
         displayGoatDraftResults(roster) {
             const startersEl = document.getElementById('starters-list'); const benchEl = document.getElementById('bench-list');
             startersEl.innerHTML = ''; benchEl.innerHTML = '';
@@ -232,12 +240,10 @@ document.addEventListener('DOMContentLoaded', () => {
             benchEl.innerHTML = bench.map(p => this.createPlayerCardHTML(p, true)).join('');
             this.addPlayerPopupListeners();
         },
-
         createPlayerCardHTML(player, isBench = false) {
             const pos = isBench ? 'BEN' : player.displayPos;
             return `<div class="player-card player-pos-${player.simplePosition.toLowerCase()}"><strong class="font-bold w-12">${pos}:</strong><span class="player-name-link" data-player-name="${player.name}">${player.name} (${player.team})</span><span class="text-xs text-gray-400 ml-auto">${player.draftedAt || ''}</span></div>`;
         },
-        
         initStartSitTool() { /* ... */ },
         initMockDraftSimulator() { /* ... */ },
         createPlayerPopup() { if (document.getElementById('player-popup-card')) return; const popup = document.createElement('div'); popup.id = 'player-popup-card'; popup.className = 'hidden'; document.body.appendChild(popup); },
