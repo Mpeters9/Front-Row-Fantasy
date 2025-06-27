@@ -1,0 +1,1638 @@
+[
+  {
+    "name": "Ja'Marr Chase", "team": "CIN", "position": "WR1", "bye": 10,
+    "adp": { "ppr": 1, "hppr": 1, "standard": 1 }, "tier": 1, "vorp": 185.5, "projections": {}
+  },
+  {
+    "name": "Justin Jefferson", "team": "MIN", "position": "WR2", "bye": 6,
+    "adp": { "ppr": 2.5, "hppr": 3, "standard": 4.5 }, "tier": 1, "vorp": 180.1, "projections": {}
+  },
+  {
+    "name": "Saquon Barkley", "team": "PHI", "position": "RB1", "bye": 9,
+    "adp": { "ppr": 3, "hppr": 3.5, "standard": 3 }, "tier": 1, "vorp": 160.2, "projections": {}
+  },
+  {
+    "name": "Bijan Robinson", "team": "ATL", "position": "RB2", "bye": 5,
+    "adp": { "ppr": 3.5, "hppr": 2.5, "standard": 2 }, "tier": 1, "vorp": 165.2, "projections": {}
+  },
+  {
+    "name": "CeeDee Lamb", "team": "DAL", "position": "WR3", "bye": 10,
+    "adp": { "ppr": 5, "hppr": 5.5, "standard": 6 }, "tier": 1, "vorp": 175, "projections": {}
+  },
+  {
+    "name": "Jahmyr Gibbs", "team": "DET", "position": "RB3", "bye": 8,
+    "adp": { "ppr": 6, "hppr": 5.5, "standard": 4.5 }, "tier": 1, "vorp": 155.8, "projections": {}
+  },
+  {
+    "name": "Puka Nacua", "team": "LAR", "position": "WR4", "bye": 8,
+    "adp": { "ppr": 7.5, "hppr": 8.5, "standard": 10.5 }, "tier": 2, "vorp": 145.5, "projections": {}
+  },
+  {
+    "name": "Malik Nabers", "team": "NYG", "position": "WR5", "bye": 14,
+    "adp": { "ppr": 8, "hppr": 7, "standard": 9 }, "tier": 2, "vorp": 142.1, "projections": {}
+  },
+  {
+    "name": "Christian McCaffrey", "team": "SF", "position": "RB4", "bye": 14,
+    "adp": { "ppr": 8.5, "hppr": 12, "standard": 11 }, "tier": 1, "vorp": 195, "projections": {}
+  },
+  {
+    "name": "Nico Collins", "team": "HOU", "position": "WR6", "bye": 6,
+    "adp": { "ppr": 11, "hppr": 11, "standard": 13.5 }, "tier": 2, "vorp": 128.4, "projections": {}
+  },
+  {
+    "name": "Ashton Jeanty", "team": "LV", "position": "RB5", "bye": 8,
+    "adp": { "ppr": 11, "hppr": 9.5, "standard": 7 }, "tier": 2, "vorp": 140.3, "projections": {}
+  },
+  {
+    "name": "Amon-Ra St. Brown", "team": "DET", "position": "WR7", "bye": 8,
+    "adp": { "ppr": 11, "hppr": 10, "standard": 9 }, "tier": 2, "vorp": 138.9, "projections": {}
+  },
+  {
+    "name": "Brian Thomas Jr.", "team": "JAC", "position": "WR8", "bye": 8,
+    "adp": { "ppr": 13, "hppr": 14, "standard": 13.5 }, "tier": 2, "vorp": 125.6, "projections": {}
+  },
+  {
+    "name": "Derrick Henry", "team": "BAL", "position": "RB6", "bye": 7,
+    "adp": { "ppr": 14.5, "hppr": 13, "standard": 11.5 }, "tier": 2, "vorp": 135.2, "projections": {}
+  },
+  {
+    "name": "Drake London", "team": "ATL", "position": "WR9", "bye": 5,
+    "adp": { "ppr": 14.5, "hppr": 15, "standard": 18 }, "tier": 3, "vorp": 110.3, "projections": {}
+  },
+  {
+    "name": "A.J. Brown", "team": "PHI", "position": "WR10", "bye": 9,
+    "adp": { "ppr": 16.5, "hppr": 17.5, "standard": 21.5 }, "tier": 1, "vorp": 150.1, "projections": {}
+  },
+  {
+    "name": "De'Von Achane", "team": "MIA", "position": "RB7", "bye": 12,
+    "adp": { "ppr": 16.5, "half_ppr": 15.5, "standard": 14 }, "tier": 2, "vorp": 120.7, "projections": {}
+  },
+  {
+    "name": "Brock Bowers", "team": "LV", "position": "TE1", "bye": 8,
+    "adp": { "ppr": 18.5, "half_ppr": 18, "standard": 16.5 }, "tier": 1, "vorp": 85.1, "projections": {}
+  },
+  {
+    "name": "Ladd McConkey", "team": "LAC", "position": "WR11", "bye": 12,
+    "adp": { "ppr": 18.5, "half_ppr": 19, "standard": 24.5 }, "tier": 3, "vorp": 108.2, "projections": {}
+  },
+  {
+    "name": "Jonathan Taylor", "team": "IND", "position": "RB8", "bye": 11,
+    "adp": { "ppr": 20.5, "half_ppr": 20, "standard": 19.5 }, "tier": 3, "vorp": 112.8, "projections": {}
+  },
+  {
+    "name": "Rashee Rice", "team": "KC", "position": "WR12", "bye": 10,
+    "adp": { "ppr": 21, "half_ppr": 30.5, "standard": 44.5 }, "tier": 3, "vorp": 98.4, "projections": {}
+  },
+  {
+    "name": "Bucky Irving", "team": "TB", "position": "RB9", "bye": 9,
+    "adp": { "ppr": 22.5, "half_ppr": 21, "standard": 20 }, "tier": 3, "vorp": 110.1, "projections": {}
+  },
+  {
+    "name": "Tee Higgins", "team": "CIN", "position": "WR13", "bye": 10,
+    "adp": { "ppr": 23, "half_ppr": 22, "standard": 32.5 }, "tier": 3, "vorp": 105.1, "projections": {}
+  },
+  {
+    "name": "Garrett Wilson", "team": "NYJ", "position": "WR14", "bye": 9,
+    "adp": { "ppr": 24.5, "half_ppr": 25.5, "standard": 31.5 }, "tier": 3, "vorp": 102.6, "projections": {}
+  },
+  {
+    "name": "Trey McBride", "team": "ARI", "position": "TE2", "bye": 8,
+    "adp": { "ppr": 25.5, "half_ppr": 24, "standard": 26 }, "tier": 2, "vorp": 75.3, "projections": {}
+  },
+  {
+    "name": "Josh Jacobs", "team": "GB", "position": "RB10", "bye": 5,
+    "adp": { "ppr": 26.5, "half_ppr": 23, "standard": 17 }, "tier": 3, "vorp": 115.4, "projections": {}
+  },
+  {
+    "name": "Marvin Harrison Jr.", "team": "ARI", "position": "WR15", "bye": 8,
+    "adp": { "ppr": 27, "half_ppr": 31.5, "standard": 37.5 }, "tier": 3, "vorp": 95.8, "projections": {}
+  },
+  {
+    "name": "Davante Adams", "team": "LAR", "position": "WR16", "bye": 8,
+    "adp": { "ppr": 27.5, "half_ppr": 32, "standard": 38.5 }, "tier": 3, "vorp": 94.7, "projections": {}
+  },
+  {
+    "name": "Chase Brown", "team": "CIN", "position": "RB11", "bye": 10,
+    "adp": { "ppr": 27.5, "half_ppr": 29, "standard": 27.5 }, "tier": 3, "vorp": 100.2, "projections": {}
+  },
+  {
+    "name": "Tyreek Hill", "team": "MIA", "position": "WR17", "bye": 12,
+    "adp": { "ppr": 30, "half_ppr": 34, "standard": 32 }, "tier": 1, "vorp": 168.3, "projections": {}
+  },
+  {
+    "name": "Jaxon Smith-Njigba", "team": "SEA", "position": "WR18", "bye": 8,
+    "adp": { "ppr": 31, "half_ppr": 26.5, "standard": 28 }, "tier": 3, "vorp": 100.8, "projections": {}
+  },
+  {
+    "name": "Terry McLaurin", "team": "WAS", "position": "WR19", "bye": 12,
+    "adp": { "ppr": 32.5, "half_ppr": 32.5, "standard": 34.5 }, "tier": 3, "vorp": 92.5, "projections": {}
+  },
+  {
+    "name": "Breece Hall", "team": "NYJ", "position": "RB12", "bye": 9,
+    "adp": { "ppr": 33.5, "half_ppr": 33, "standard": 30.5 }, "tier": 3, "vorp": 95.7, "projections": {}
+  },
+  {
+    "name": "Kyren Williams", "team": "LAR", "position": "RB13", "bye": 8,
+    "adp": { "ppr": 34, "half_ppr": 31.5, "standard": 25.5 }, "tier": 3, "vorp": 105.9, "projections": {}
+  },
+  {
+    "name": "Lamar Jackson", "team": "BAL", "position": "QB1", "bye": 7,
+    "adp": { "ppr": 35, "half_ppr": 27, "standard": 23.5 }, "tier": 1, "vorp": 102.3, "projections": {}
+  },
+  {
+    "name": "Josh Allen", "team": "BUF", "position": "QB2", "bye": 7,
+    "adp": { "ppr": 35, "half_ppr": 30, "standard": 22 }, "tier": 1, "vorp": 105.1, "projections": {}
+  },
+  {
+    "name": "Mike Evans", "team": "TB", "position": "WR20", "bye": 9,
+    "adp": { "ppr": 36.5, "half_ppr": 38, "standard": 41 }, "tier": 4, "vorp": 88.6, "projections": {}
+  },
+  {
+    "name": "Tetairoa McMillan", "team": "CAR", "position": "WR21", "bye": 14,
+    "adp": { "ppr": 38, "half_ppr": 46.5, "standard": 60 }, "tier": 4, "vorp": 85.1, "projections": {}
+  },
+  {
+    "name": "Jayden Daniels", "team": "WAS", "position": "QB3", "bye": 12,
+    "adp": { "ppr": 39.5, "half_ppr": 35.5, "standard": 29 }, "tier": 2, "vorp": 90.1, "projections": {}
+  },
+  {
+    "name": "DJ Moore", "team": "CHI", "position": "WR22", "bye": 5,
+    "adp": { "ppr": 40.5, "half_ppr": 40.5, "standard": 45 }, "tier": 4, "vorp": 80.5, "projections": {}
+  },
+  {
+    "name": "Xavier Worthy", "team": "KC", "position": "WR23", "bye": 10,
+    "adp": { "ppr": 41, "half_ppr": 43, "standard": 57.5 }, "tier": 4, "vorp": 82.3, "projections": {}
+  },
+  {
+    "name": "James Cook", "team": "BUF", "position": "RB14", "bye": 7,
+    "adp": { "ppr": 43, "half_ppr": 41.5, "standard": 34 }, "tier": 4, "vorp": 88.2, "projections": {}
+  },
+  {
+    "name": "Jameson Williams", "team": "DET", "position": "WR24", "bye": 8,
+    "adp": { "ppr": 43, "half_ppr": 42, "standard": 57.5 }, "tier": 4, "vorp": 78.9, "projections": {}
+  },
+  {
+    "name": "George Kittle", "team": "SF", "position": "TE3", "bye": 14,
+    "adp": { "ppr": 44, "half_ppr": 44, "standard": 43.5 }, "tier": 2, "vorp": 65.7, "projections": {}
+  },
+  {
+    "name": "DK Metcalf", "team": "PIT", "position": "WR25", "bye": 5,
+    "adp": { "ppr": 44, "half_ppr": 49, "standard": 53.5 }, "tier": 4, "vorp": 76.4, "projections": {}
+  },
+  {
+    "name": "DeVonta Smith", "team": "PHI", "position": "WR26", "bye": 9,
+    "adp": { "ppr": 46, "half_ppr": 46, "standard": 51 }, "tier": 4, "vorp": 75.1, "projections": {}
+  },
+  {
+    "name": "Omarion Hampton", "team": "LAC", "position": "RB15", "bye": 12,
+    "adp": { "ppr": 47.5, "half_ppr": 46, "standard": 46 }, "tier": 4, "vorp": 85.3, "projections": {}
+  },
+  {
+    "name": "Jalen Hurts", "team": "PHI", "position": "QB4", "bye": 9,
+    "adp": { "ppr": 48, "half_ppr": 43, "standard": 38 }, "tier": 2, "vorp": 98.7, "projections": {}
+  },
+  {
+    "name": "Courtland Sutton", "team": "DEN", "position": "WR27", "bye": 12,
+    "adp": { "ppr": 48, "half_ppr": 48.5, "standard": 51 }, "tier": 5, "vorp": 72.3, "projections": {}
+  },
+  {
+    "name": "George Pickens", "team": "DAL", "position": "WR28", "bye": 10,
+    "adp": { "ppr": 50.5, "half_ppr": 59.5, "standard": 73 }, "tier": 5, "vorp": 68.9, "projections": {}
+  },
+  {
+    "name": "Travis Hunter", "team": "JAC", "position": "WR29", "bye": 8,
+    "adp": { "ppr": 51, "half_ppr": 64.5, "standard": 72 }, "tier": 5, "vorp": 70.1, "projections": {}
+  },
+  {
+    "name": "Zay Flowers", "team": "BAL", "position": "WR30", "bye": 7,
+    "adp": { "ppr": 52, "half_ppr": 53, "standard": 58.5 }, "tier": 5, "vorp": 67.4, "projections": {}
+  },
+  {
+    "name": "Chuba Hubbard", "team": "CAR", "position": "RB16", "bye": 14,
+    "adp": { "ppr": 53.5, "half_ppr": 52.5, "standard": 47 }, "tier": 4, "vorp": 80.6, "projections": {}
+  },
+  {
+    "name": "Kenneth Walker III", "team": "SEA", "position": "RB17", "bye": 8,
+    "adp": { "ppr": 54, "half_ppr": 45, "standard": 42.5 }, "tier": 4, "vorp": 82.1, "projections": {}
+  },
+  {
+    "name": "Jaylen Waddle", "team": "MIA", "position": "WR31", "bye": 12,
+    "adp": { "ppr": 55.5, "half_ppr": 61, "standard": 73.5 }, "tier": 5, "vorp": 65.3, "projections": {}
+  },
+  {
+    "name": "Calvin Ridley", "team": "TEN", "position": "WR32", "bye": 10,
+    "adp": { "ppr": 55.5, "half_ppr": 66.5, "standard": 76 }, "tier": 5, "vorp": 63.8, "projections": {}
+  },
+  {
+    "name": "Alvin Kamara", "team": "NO", "position": "RB18", "bye": 11,
+    "adp": { "ppr": 56.5, "half_ppr": 49, "standard": 38.5 }, "tier": 4, "vorp": 78.4, "projections": {}
+  },
+  {
+    "name": "Joe Mixon", "team": "HOU", "position": "RB19", "bye": 6,
+    "adp": { "ppr": 58, "half_ppr": 54, "standard": 46.5 }, "tier": 4, "vorp": 79.2, "projections": {}
+  },
+  {
+    "name": "Joe Burrow", "team": "CIN", "position": "QB5", "bye": 10,
+    "adp": { "ppr": 59, "half_ppr": 49, "standard": 35.5 }, "tier": 1, "vorp": 94.2, "projections": {}
+  },
+  {
+    "name": "Jauan Jennings", "team": "SF", "position": "WR33", "bye": 14,
+    "adp": { "ppr": 60.5, "half_ppr": 63, "standard": 74.5 }, "tier": 5, "vorp": 60.1, "projections": {}
+  },
+  {
+    "name": "RJ Harvey", "team": "DEN", "position": "RB20", "bye": 12,
+    "adp": { "ppr": 61.5, "half_ppr": 62.5, "standard": 52.5 }, "tier": 5, "vorp": 72.8, "projections": {}
+  },
+  {
+    "name": "Chris Godwin", "team": "TB", "position": "WR34", "bye": 9,
+    "adp": { "ppr": 62.5, "half_ppr": 62.5, "standard": 64.5 }, "tier": 5, "vorp": 62.1, "projections": {}
+  },
+  {
+    "name": "Rome Odunze", "team": "CHI", "position": "WR35", "bye": 5,
+    "adp": { "ppr": 64, "half_ppr": 70, "standard": 79.5 }, "tier": 5, "vorp": 58.7, "projections": {}
+  },
+  {
+    "name": "James Conner", "team": "ARI", "position": "RB21", "bye": 8,
+    "adp": { "ppr": 64, "half_ppr": 53.5, "standard": 53.5 }, "tier": 5, "vorp": 75.6, "projections": {}
+  },
+  {
+    "name": "Chris Olave", "team": "NO", "position": "WR36", "bye": 11,
+    "adp": { "ppr": 65, "half_ppr": 67.5, "standard": 74.5 }, "tier": 5, "vorp": 57.3, "projections": {}
+  },
+  {
+    "name": "TreVeyon Henderson", "team": "NE", "position": "RB22", "bye": 14,
+    "adp": { "ppr": 65.5, "half_ppr": 62.5, "standard": 54.5 }, "tier": 5, "vorp": 70.1, "projections": {}
+  },
+  {
+    "name": "Jerry Jeudy", "team": "CLE", "position": "WR37", "bye": 9,
+    "adp": { "ppr": 66.5, "half_ppr": 63.5, "standard": 66.5 }, "tier": 6, "vorp": 54.2, "projections": {}
+  },
+  {
+    "name": "Jordan Addison", "team": "MIN", "position": "WR38", "bye": 6,
+    "adp": { "ppr": 67, "half_ppr": 68, "standard": 73.5 }, "tier": 5, "vorp": 56.9, "projections": {}
+  },
+  {
+    "name": "Deebo Samuel Sr.", "team": "WAS", "position": "WR39", "bye": 12,
+    "adp": { "ppr": 68.5, "half_ppr": 73.5, "standard": 79 }, "tier": 6, "vorp": 52.8, "projections": {}
+  },
+  {
+    "name": "Jakobi Meyers", "team": "LV", "position": "WR40", "bye": 8,
+    "adp": { "ppr": 70, "half_ppr": 76, "standard": 95.5 }, "tier": 6, "vorp": 50.1, "projections": {}
+  },
+  {
+    "name": "David Montgomery", "team": "DET", "position": "RB23", "bye": 8,
+    "adp": { "ppr": 71.5, "half_ppr": 67.5, "standard": 60 }, "tier": 5, "vorp": 68.3, "projections": {}
+  },
+  {
+    "name": "D'Andre Swift", "team": "CHI", "position": "RB24", "bye": 5,
+    "adp": { "ppr": 73, "half_ppr": 74, "standard": 65 }, "tier": 5, "vorp": 65.4, "projections": {}
+  },
+  {
+    "name": "Ricky Pearsall", "team": "SF", "position": "WR41", "bye": 14,
+    "adp": { "ppr": 73, "half_ppr": 80, "standard": 94.5 }, "tier": 6, "vorp": 48.7, "projections": {}
+  },
+  {
+    "name": "Sam LaPorta", "team": "DET", "position": "TE4", "bye": 8,
+    "adp": { "ppr": 73.5, "half_ppr": 61.5, "standard": 61.5 }, "tier": 2, "vorp": 60.5, "projections": {}
+  },
+  {
+    "name": "Quinshon Judkins", "team": "CLE", "position": "RB25", "bye": 9,
+    "adp": { "ppr": 75.5, "half_ppr": 73.5, "standard": 63 }, "tier": 5, "vorp": 66.8, "projections": {}
+  },
+  {
+    "name": "Kaleb Johnson", "team": "PIT", "position": "RB26", "bye": 5,
+    "adp": { "ppr": 76, "half_ppr": 74.5, "standard": 67 }, "tier": 5, "vorp": 65.9, "projections": {}
+  },
+  {
+    "name": "Khalil Shakir", "team": "BUF", "position": "WR42", "bye": 7,
+    "adp": { "ppr": 77, "half_ppr": 77, "standard": 91 }, "tier": 6, "vorp": 45.2, "projections": {}
+  },
+  {
+    "name": "Stefon Diggs", "team": "NE", "position": "WR43", "bye": 14,
+    "adp": { "ppr": 78, "half_ppr": 78.5, "standard": 102 }, "tier": 6, "vorp": 43.1, "projections": {}
+  },
+  {
+    "name": "Matthew Golden", "team": "GB", "position": "WR44", "bye": 5,
+    "adp": { "ppr": 78.5, "half_ppr": 78.5, "standard": 105 }, "tier": 6, "vorp": 42.8, "projections": {}
+  },
+  {
+    "name": "Jayden Reed", "team": "GB", "position": "WR45", "bye": 5,
+    "adp": { "ppr": 80, "half_ppr": 80, "standard": 96 }, "tier": 6, "vorp": 41.9, "projections": {}
+  },
+  {
+    "name": "Josh Downs", "team": "IND", "position": "WR46", "bye": 11,
+    "adp": { "ppr": 81.5, "half_ppr": 88, "standard": 108.5 }, "tier": 7, "vorp": 38.4, "projections": {}
+  },
+  {
+    "name": "Tony Pollard", "team": "TEN", "position": "RB27", "bye": 10,
+    "adp": { "ppr": 81.5, "half_ppr": 70.5, "standard": 70.5 }, "tier": 6, "vorp": 60.3, "projections": {}
+  },
+  {
+    "name": "Isiah Pacheco", "team": "KC", "position": "RB28", "bye": 10,
+    "adp": { "ppr": 83, "half_ppr": 81.5, "standard": 75 }, "tier": 6, "vorp": 58.7, "projections": {}
+  },
+  {
+    "name": "Aaron Jones Sr.", "team": "MIN", "position": "RB29", "bye": 6,
+    "adp": { "ppr": 83, "half_ppr": 75, "standard": 66 }, "tier": 6, "vorp": 62.1, "projections": {}
+  },
+  {
+    "name": "Patrick Mahomes II", "team": "KC", "position": "QB6", "bye": 10,
+    "adp": { "ppr": 84, "half_ppr": 85, "standard": 56 }, "tier": 2, "vorp": 88.5, "projections": {}
+  },
+  {
+    "name": "Darnell Mooney", "team": "ATL", "position": "WR47", "bye": 5,
+    "adp": { "ppr": 86.5, "half_ppr": 86, "standard": 118 }, "tier": 7, "vorp": 36.2, "projections": {}
+  },
+  {
+    "name": "Brian Robinson Jr.", "team": "WAS", "position": "RB30", "bye": 12,
+    "adp": { "ppr": 88, "half_ppr": 88, "standard": 85 }, "tier": 6, "vorp": 55.4, "projections": {}
+  },
+  {
+    "name": "T.J. Hockenson", "team": "MIN", "position": "TE5", "bye": 6,
+    "adp": { "ppr": 88, "half_ppr": 85.5, "standard": 82 }, "tier": 3, "vorp": 50.1, "projections": {}
+  },
+  {
+    "name": "Cooper Kupp", "team": "SEA", "position": "WR48", "bye": 8,
+    "adp": { "ppr": 90, "half_ppr": 90, "standard": 89 }, "tier": 7, "vorp": 33.1, "projections": {}
+  },
+  {
+    "name": "Baker Mayfield", "team": "TB", "position": "QB7", "bye": 9,
+    "adp": { "ppr": 91, "half_ppr": 60.5, "standard": 60.5 }, "tier": 3, "vorp": 80.3, "projections": {}
+  },
+  {
+    "name": "Brandon Aiyuk", "team": "SF", "position": "WR49", "bye": 14,
+    "adp": { "ppr": 92, "half_ppr": 90.5, "standard": 106 }, "tier": 7, "vorp": 32.8, "projections": {}
+  },
+  {
+    "name": "Michael Pittman Jr.", "team": "IND", "position": "WR50", "bye": 11,
+    "adp": { "ppr": 92, "half_ppr": 92, "standard": 114 }, "tier": 7, "vorp": 31.5, "projections": {}
+  },
+  {
+    "name": "Emeka Egbuka", "team": "TB", "position": "WR51", "bye": 9,
+    "adp": { "ppr": 93.5, "half_ppr": 95, "standard": 124 }, "tier": 7, "vorp": 29.3, "projections": {}
+  },
+  {
+    "name": "Travis Kelce", "team": "KC", "position": "TE6", "bye": 10,
+    "adp": { "ppr": 95, "half_ppr": 96, "standard": 80 }, "tier": 3, "vorp": 55.8, "projections": {}
+  },
+  {
+    "name": "Kyler Murray", "team": "ARI", "position": "QB8", "bye": 8,
+    "adp": { "ppr": 95, "half_ppr": 86.5, "standard": 84 }, "tier": 3, "vorp": 78.4, "projections": {}
+  },
+  {
+    "name": "Jordan Mason", "team": "MIN", "position": "RB31", "bye": 6,
+    "adp": { "ppr": 95, "half_ppr": 94.5, "standard": 113 }, "tier": 6, "vorp": 50.1, "projections": {}
+  },
+  {
+    "name": "Justin Fields", "team": "NYJ", "position": "QB9", "bye": 9,
+    "adp": { "ppr": 96, "half_ppr": 96, "standard": 103 }, "tier": 3, "vorp": 75.6, "projections": {}
+  },
+  {
+    "name": "Jaylen Warren", "team": "PIT", "position": "RB32", "bye": 5,
+    "adp": { "ppr": 96, "half_ppr": 97, "standard": 88 }, "tier": 6, "vorp": 54.3, "projections": {}
+  },
+  {
+    "name": "Jayden Higgins", "team": "HOU", "position": "WR52", "bye": 6,
+    "adp": { "ppr": 98.5, "half_ppr": 99, "standard": 135 }, "tier": 7, "vorp": 27.1, "projections": {}
+  },
+  {
+    "name": "Bo Nix", "team": "DEN", "position": "QB10", "bye": 12,
+    "adp": { "ppr": 98.5, "half_ppr": 98.5, "standard": 69 }, "tier": 3, "vorp": 79.2, "projections": {}
+  },
+  {
+    "name": "Keon Coleman", "team": "BUF", "position": "WR", "bye": 7,
+    "adp": { "standard": 128, "ppr": 101, "hppr": 112 }, "tier": 8, "vorp": 25.1, "projections": {}
+  },
+  {
+    "name": "Travis Etienne Jr.", "team": "JAC", "position": "RB", "bye": 8,
+    "adp": { "standard": 101.5, "ppr": 106, "hppr": 106 }, "tier": 6, "vorp": 48.2, "projections": {}
+  },
+  {
+    "name": "Brock Purdy", "team": "SF", "position": "QB", "bye": 14,
+    "adp": { "standard": 99.5, "ppr": 102, "hppr": 98 }, "tier": 3, "vorp": 72.1, "projections": {}
+  },
+  {
+    "name": "Evan Engram", "team": "DEN", "position": "TE", "bye": 12,
+    "adp": { "standard": 98.5, "ppr": 103, "hppr": 104.5 }, "tier": 3, "vorp": 52.8, "projections": {}
+  },
+  {
+    "name": "Tre Harris", "team": "LAC", "position": "WR", "bye": 12,
+    "adp": { "standard": 140.5, "ppr": 104, "hppr": 128 }, "tier": 8, "vorp": 23.5, "projections": {}
+  },
+  {
+    "name": "Mark Andrews", "team": "BAL", "position": "TE", "bye": 7,
+    "adp": { "standard": 96.5, "ppr": 107, "hppr": 102.5 }, "tier": 3, "vorp": 58.4, "projections": {}
+  },
+  {
+    "name": "Najee Harris", "team": "LAC", "position": "RB", "bye": 12,
+    "adp": { "standard": 94.5, "ppr": 110, "hppr": 99.5 }, "tier": 6, "vorp": 52.1, "projections": {}
+  },
+  {
+    "name": "Rashid Shaheed", "team": "NO", "position": "WR", "bye": 11,
+    "adp": { "standard": 145, "ppr": 108, "hppr": 115 }, "tier": 8, "vorp": 20.3, "projections": {}
+  },
+  {
+    "name": "Tyrone Tracy Jr.", "team": "NYG", "position": "RB", "bye": 14,
+    "adp": { "standard": 81, "ppr": 109, "hppr": 101.5 }, "tier": 6, "vorp": 56.1, "projections": {}
+  },
+  {
+    "name": "Cam Skattebo", "team": "NYG", "position": "RB", "bye": 14,
+    "adp": { "standard": 97, "ppr": 105, "hppr": 107.5 }, "tier": 6, "vorp": 49.3, "projections": {}
+  },
+  {
+    "name": "Rashod Bateman", "team": "BAL", "position": "WR", "bye": 7,
+    "adp": { "standard": 158, "ppr": 111, "hppr": 123 }, "tier": 9, "vorp": 18.2, "projections": {}
+  },
+  {
+    "name": "Caleb Williams", "team": "CHI", "position": "QB", "bye": 5,
+    "adp": { "standard": 88.5, "ppr": 110.5, "hppr": 99 }, "tier": 3, "vorp": 76.2, "projections": {}
+  },
+  {
+    "name": "Zach Charbonnet", "team": "SEA", "position": "RB", "bye": 8,
+    "adp": { "standard": 101.5, "ppr": 113, "hppr": 107.5 }, "tier": 6, "vorp": 49.1, "projections": {}
+  },
+  {
+    "name": "Jonnu Smith", "team": "MIA", "position": "TE", "bye": 12,
+    "adp": { "standard": 93, "ppr": 114, "hppr": 107 }, "tier": 3, "vorp": 45.3, "projections": {}
+  },
+  {
+    "name": "Dak Prescott", "team": "DAL", "position": "QB", "bye": 10,
+    "adp": { "standard": 98.5, "ppr": 115, "hppr": 106 }, "tier": 3, "vorp": 73.5, "projections": {}
+  },
+  {
+    "name": "Jared Goff", "team": "DET", "position": "QB", "bye": 8,
+    "adp": { "standard": 89, "ppr": 116, "hppr": 101 }, "tier": 3, "vorp": 77.1, "projections": {}
+  },
+  {
+    "name": "Drake Maye", "team": "NE", "position": "QB", "bye": 14,
+    "adp": { "standard": 116.5, "ppr": 117, "hppr": 115.5 }, "tier": 4, "vorp": 68.1, "projections": {}
+  },
+  {
+    "name": "Luther Burden III", "team": "CHI", "position": "WR", "bye": 5,
+    "adp": { "standard": 133, "ppr": 119, "hppr": 128 }, "tier": 8, "vorp": 24.3, "projections": {}
+  },
+  {
+    "name": "Javonte Williams", "team": "DAL", "position": "RB", "bye": 10,
+    "adp": { "standard": 105, "ppr": 118, "hppr": 120 }, "tier": 6, "vorp": 46.5, "projections": {}
+  },
+  {
+    "name": "Christian Kirk", "team": "HOU", "position": "WR", "bye": 6,
+    "adp": { "standard": 142.5, "ppr": 121.5, "hppr": 123.5 }, "tier": 8, "vorp": 21.9, "projections": {}
+  },
+  {
+    "name": "Rhamondre Stevenson", "team": "NE", "position": "RB", "bye": 14,
+    "adp": { "standard": 115.5, "ppr": 121.5, "hppr": 117 }, "tier": 6, "vorp": 45.1, "projections": {}
+  },
+  {
+    "name": "David Njoku", "team": "CLE", "position": "TE", "bye": 9,
+    "adp": { "standard": 112.5, "ppr": 120, "hppr": 115.5 }, "tier": 3, "vorp": 48.2, "projections": {}
+  },
+  {
+    "name": "Kyle Williams", "team": "NE", "position": "WR", "bye": 14,
+    "adp": { "standard": 166.5, "ppr": 122, "hppr": 144 }, "tier": 9, "vorp": 16.8, "projections": {}
+  },
+  {
+    "name": "J.K. Dobbins", "team": "DEN", "position": "RB", "bye": 12,
+    "adp": { "standard": 131.5, "ppr": 131, "hppr": 124 }, "tier": 7, "vorp": 37.5, "projections": {}
+  },
+  {
+    "name": "J.J. McCarthy", "team": "MIN", "position": "QB", "bye": 6,
+    "adp": { "standard": 125, "ppr": 124, "hppr": 121 }, "tier": 4, "vorp": 63.8, "projections": {}
+  },
+  {
+    "name": "Justin Herbert", "team": "LAC", "position": "QB", "bye": 12,
+    "adp": { "standard": 99.5, "ppr": 127, "hppr": 110.5 }, "tier": 3, "vorp": 74.8, "projections": {}
+  },
+  {
+    "name": "Tyler Warren", "team": "IND", "position": "TE", "bye": 11,
+    "adp": { "standard": 118.5, "ppr": 125, "hppr": 124.5 }, "tier": 4, "vorp": 40.5, "projections": {}
+  },
+  {
+    "name": "Tyjae Spears", "team": "TEN", "position": "RB", "bye": 10,
+    "adp": { "standard": 122, "ppr": 129, "hppr": 127 }, "tier": 7, "vorp": 42.1, "projections": {}
+  },
+  {
+    "name": "Marvin Mims Jr.", "team": "DEN", "position": "WR", "bye": 12,
+    "adp": { "standard": 141.5, "ppr": 126, "hppr": 132 }, "tier": 8, "vorp": 22.8, "projections": {}
+  },
+  {
+    "name": "Jordan Love", "team": "GB", "position": "QB", "bye": 5,
+    "adp": { "standard": 111, "ppr": 130, "hppr": 117 }, "tier": 3, "vorp": 70.3, "projections": {}
+  },
+  {
+    "name": "Bhayshul Tuten", "team": "JAC", "position": "RB", "bye": 8,
+    "adp": { "standard": 123, "ppr": 128, "hppr": 132 }, "tier": 7, "vorp": 41.5, "projections": {}
+  },
+  {
+    "name": "Trevor Lawrence", "team": "JAC", "position": "QB", "bye": 8,
+    "adp": { "standard": 120.5, "ppr": 132, "hppr": 122.5 }, "tier": 4, "vorp": 65.3, "projections": {}
+  },
+  {
+    "name": "Tucker Kraft", "team": "GB", "position": "TE", "bye": 5,
+    "adp": { "standard": 117, "ppr": 137, "hppr": 129 }, "tier": 4, "vorp": 43.1, "projections": {}
+  },
+  {
+    "name": "C.J. Stroud", "team": "HOU", "position": "QB", "bye": 6,
+    "adp": { "standard": 112, "ppr": 135, "hppr": 121 }, "tier": 4, "vorp": 67.2, "projections": {}
+  },
+  {
+    "name": "Marquise Brown", "team": "KC", "position": "WR", "bye": 10,
+    "adp": { "standard": 145, "ppr": 133, "hppr": 136.5 }, "tier": 8, "vorp": 21.1, "projections": {}
+  },
+  {
+    "name": "Ray Davis", "team": "BUF", "position": "RB", "bye": 7,
+    "adp": { "standard": 145.5, "ppr": 134, "hppr": 144 }, "tier": 7, "vorp": 34.6, "projections": {}
+  },
+  {
+    "name": "Colston Loveland", "team": "CHI", "position": "TE", "bye": 5,
+    "adp": { "standard": 120.5, "ppr": 136, "hppr": 141 }, "tier": 4, "vorp": 38.9, "projections": {}
+  },
+  {
+    "name": "Jaydon Blue", "team": "DAL", "position": "RB", "bye": 10,
+    "adp": { "standard": 127, "ppr": 138, "hppr": 137 }, "tier": 7, "vorp": 39.5, "projections": {}
+  },
+  {
+    "name": "Trey Benson", "team": "ARI", "position": "RB", "bye": 8,
+    "adp": { "standard": 138.5, "ppr": 139, "hppr": 141 }, "tier": 7, "vorp": 36.1, "projections": {}
+  },
+  {
+    "name": "Dalton Kincaid", "team": "BUF", "position": "TE", "bye": 7,
+    "adp": { "standard": 131, "ppr": 140, "hppr": 138.5 }, "tier": 4, "vorp": 35.8, "projections": {}
+  },
+  {
+    "name": "Rachaad White", "team": "TB", "position": "RB", "bye": 9,
+    "adp": { "standard": 126.5, "ppr": 141, "hppr": 138.5 }, "tier": 7, "vorp": 40.1, "projections": {}
+  },
+  {
+    "name": "Dallas Goedert", "team": "PHI", "position": "TE", "bye": 9,
+    "adp": { "standard": 140, "ppr": 141.5, "hppr": 142 }, "tier": 4, "vorp": 32.5, "projections": {}
+  },
+  {
+    "name": "Cedric Tillman", "team": "CLE", "position": "WR", "bye": 9,
+    "adp": { "standard": 144, "ppr": 143, "hppr": 148 }, "tier": 9, "vorp": 17.5, "projections": {}
+  },
+  {
+    "name": "Michael Penix Jr.", "team": "ATL", "position": "QB", "bye": 5,
+    "adp": { "standard": 144, "ppr": 145.5, "hppr": 135 }, "tier": 4, "vorp": 58.7, "projections": {}
+  },
+  {
+    "name": "Isaac Guerendo", "team": "SF", "position": "RB", "bye": 14,
+    "adp": { "standard": 145.5, "ppr": 145.5, "hppr": 149 }, "tier": 7, "vorp": 35.8, "projections": {}
+  },
+  {
+    "name": "Jack Bech", "team": "LV", "position": "WR", "bye": 8,
+    "adp": { "standard": 150.5, "ppr": 146, "hppr": 159 }, "tier": 8, "vorp": 19.5, "projections": {}
+  },
+  {
+    "name": "Isaiah Likely", "team": "BAL", "position": "TE", "bye": 7,
+    "adp": { "standard": 154, "ppr": 147, "hppr": 152.5 }, "tier": 4, "vorp": 28.7, "projections": {}
+  },
+  {
+    "name": "Jake Ferguson", "team": "DAL", "position": "TE", "bye": 10,
+    "adp": { "standard": 134, "ppr": 148.5, "hppr": 150 }, "tier": 4, "vorp": 29.8, "projections": {}
+  },
+  {
+    "name": "Tua Tagovailoa", "team": "MIA", "position": "QB", "bye": 12,
+    "adp": { "standard": 132.5, "ppr": 149, "hppr": 134 }, "tier": 4, "vorp": 62.1, "projections": {}
+  },
+  {
+    "name": "Quentin Johnston", "team": "LAC", "position": "WR", "bye": 12,
+    "adp": { "standard": 149, "ppr": 150, "hppr": 155.5 }, "tier": 9, "vorp": 14.2, "projections": {}
+  },
+  {
+    "name": "Austin Ekeler", "team": "WAS", "position": "RB", "bye": 12,
+    "adp": { "standard": 137, "ppr": 150, "hppr": 151 }, "tier": 7, "vorp": 35.2, "projections": {}
+  },
+  {
+    "name": "Bryce Young", "team": "CAR", "position": "QB", "bye": 14,
+    "adp": { "standard": 144, "ppr": 154, "hppr": 141.5 }, "tier": 4, "vorp": 57.1, "projections": {}
+  },
+  {
+    "name": "Tyler Allgeier", "team": "ATL", "position": "RB", "bye": 5,
+    "adp": { "standard": 160, "ppr": 153, "hppr": 161.5 }, "tier": 8, "vorp": 26.5, "projections": {}
+  },
+  {
+    "name": "Joshua Palmer", "team": "BUF", "position": "WR", "bye": 7,
+    "adp": { "standard": 157, "ppr": 154, "hppr": 171.5 }, "tier": 10, "vorp": 11.2, "projections": {}
+  },
+  {
+    "name": "Jalen McMillan", "team": "TB", "position": "WR", "bye": 9,
+    "adp": { "standard": 157, "ppr": 155, "hppr": 152.5 }, "tier": 9, "vorp": 15.1, "projections": {}
+  },
+  {
+    "name": "Tank Bigsby", "team": "JAC", "position": "RB", "bye": 8,
+    "adp": { "standard": 157, "ppr": 156, "hppr": 145 }, "tier": 7, "vorp": 38.2, "projections": {}
+  },
+  {
+    "name": "Adam Thielen", "team": "CAR", "position": "WR", "bye": 14,
+    "adp": { "standard": 157.5, "ppr": 157.5, "hppr": 154 }, "tier": 9, "vorp": 15.5, "projections": {}
+  },
+  {
+    "name": "Romeo Doubs", "team": "GB", "position": "WR", "bye": 5,
+    "adp": { "standard": 158, "ppr": 158.5, "hppr": 162 }, "tier": 9, "vorp": 16.8, "projections": {}
+  },
+  {
+    "name": "Xavier Legette", "team": "CAR", "position": "WR", "bye": 14,
+    "adp": { "standard": 159, "ppr": 159, "hppr": 170 }, "tier": 9, "vorp": 14.8, "projections": {}
+  },
+  {
+    "name": "Geno Smith", "team": "LV", "position": "QB", "bye": 8,
+    "adp": { "standard": 159.5, "ppr": 160, "hppr": 151 }, "tier": 5, "vorp": 55.2, "projections": {}
+  },
+  {
+    "name": "Kyle Pitts", "team": "ATL", "position": "TE", "bye": 5,
+    "adp": { "standard": 159.5, "ppr": 161, "hppr": 157.5 }, "tier": 4, "vorp": 31.8, "projections": {}
+  },
+  {
+    "name": "Matthew Stafford", "team": "LAR", "position": "QB", "bye": 8,
+    "adp": { "standard": 160, "ppr": 162, "hppr": 145 }, "tier": 4, "vorp": 60.5, "projections": {}
+  },
+  {
+    "name": "Pat Bryant", "team": "DEN", "position": "WR", "bye": 12,
+    "adp": { "standard": 161, "ppr": 163, "hppr": 183 }, "tier": 10, "vorp": 6.8, "projections": {}
+  },
+  {
+    "name": "Roschon Johnson", "team": "CHI", "position": "RB", "bye": 5,
+    "adp": { "standard": 161.5, "ppr": 164, "hppr": 173 }, "tier": 8, "vorp": 19.8, "projections": {}
+  },
+  {
+    "name": "Cameron Ward", "team": "TEN", "position": "QB", "bye": 10,
+    "adp": { "standard": 163.5, "ppr": 165, "hppr": 158.5 }, "tier": 5, "vorp": 52.8, "projections": {}
+  },
+  {
+    "name": "Brenton Strange", "team": "JAC", "position": "TE", "bye": 8,
+    "adp": { "standard": 164.5, "ppr": 166, "hppr": 171 }, "tier": 5, "vorp": 22.8, "projections": {}
+  },
+  {
+    "name": "Pat Freiermuth", "team": "PIT", "position": "TE", "bye": 5,
+    "adp": { "standard": 167, "ppr": 167, "hppr": 163.5 }, "tier": 4, "vorp": 30.1, "projections": {}
+  },
+  {
+    "name": "Wan'Dale Robinson", "team": "NYG", "position": "WR", "bye": 14,
+    "adp": { "standard": 168.5, "ppr": 168, "hppr": 164 }, "tier": 10, "vorp": 13.5, "projections": {}
+  },
+  {
+    "name": "Hunter Henry", "team": "NE", "position": "TE", "bye": 14,
+    "adp": { "standard": 168.5, "ppr": 169, "hppr": 169.5 }, "tier": 5, "vorp": 24.8, "projections": {}
+  },
+  {
+    "name": "Braelon Allen", "team": "NYJ", "position": "RB", "bye": 9,
+    "adp": { "standard": 168.5, "ppr": 170.5, "hppr": 169.5 }, "tier": 8, "vorp": 28.4, "projections": {}
+  },
+  {
+    "name": "Jaylen Wright", "team": "MIA", "position": "RB", "bye": 12,
+    "adp": { "standard": 169.5, "ppr": 171, "hppr": 165 }, "tier": 8, "vorp": 27.9, "projections": {}
+  },
+  {
+    "name": "Zach Ertz", "team": "WAS", "position": "TE", "bye": 12,
+    "adp": { "standard": 171.5, "ppr": 172, "hppr": 167 }, "tier": 5, "vorp": 25.1, "projections": {}
+  },
+  {
+    "name": "Rico Dowdle", "team": "CAR", "position": "RB", "bye": 14,
+    "adp": { "standard": 172, "ppr": 173, "hppr": 166 }, "tier": 8, "vorp": 30.8, "projections": {}
+  },
+  {
+    "name": "DeMario Douglas", "team": "NE", "position": "WR", "bye": 14,
+    "adp": { "standard": 175.5, "ppr": 174, "hppr": 177.5 }, "tier": 10, "vorp": 9.5, "projections": {}
+  },
+  {
+    "name": "Sam Darnold", "team": "SEA", "position": "QB", "bye": 8,
+    "adp": { "standard": 176, "ppr": 175.5, "hppr": 161.5 }, "tier": 5, "vorp": 53.1, "projections": {}
+  },
+  {
+    "name": "Mike Gesicki", "team": "CIN", "position": "TE", "bye": 10,
+    "adp": { "standard": 176.5, "ppr": 176.5, "hppr": 175.5 }, "tier": 5, "vorp": 21.8, "projections": {}
+  },
+  {
+    "name": "Alec Pierce", "team": "IND", "position": "WR", "bye": 11,
+    "adp": { "standard": 176.5, "ppr": 177, "hppr": 181.5 }, "tier": 10, "vorp": 10.8, "projections": {}
+  },
+  {
+    "name": "Will Shipley", "team": "PHI", "position": "RB", "bye": 9,
+    "adp": { "standard": 178, "ppr": 178.5, "hppr": 185.5 }, "tier": 9, "vorp": 11.2, "projections": {}
+  },
+  {
+    "name": "Jaylin Noel", "team": "HOU", "position": "WR", "bye": 6,
+    "adp": { "standard": 180, "ppr": 179, "hppr": 188 }, "tier": 10, "vorp": 7.5, "projections": {}
+  },
+  {
+    "name": "Nick Chubb", "team": "HOU", "position": "RB", "bye": 6,
+    "adp": { "standard": 180.5, "ppr": 180, "hppr": 182.5 }, "tier": 8, "vorp": 25.3, "projections": {}
+  },
+  {
+    "name": "Aaron Rodgers", "team": "PIT", "position": "QB", "bye": 5,
+    "adp": { "standard": 181, "ppr": 181, "hppr": 176 }, "tier": 5, "vorp": 50.2, "projections": {}
+  },
+  {
+    "name": "Justice Hill", "team": "BAL", "position": "RB", "bye": 7,
+    "adp": { "standard": 184, "ppr": 182, "hppr": 183 }, "tier": 8, "vorp": 23.5, "projections": {}
+  },
+  {
+    "name": "Cade Otton", "team": "TB", "position": "TE", "bye": 9,
+    "adp": { "standard": 184.5, "ppr": 183, "hppr": 180 }, "tier": 5, "vorp": 23.1, "projections": {}
+  },
+  {
+    "name": "Keenan Allen", "team": "", "position": "WR75", "bye": "",
+    "adp": { "standard": 185, "ppr": 184, "hppr": 175 }, "tier": 10, "vorp": 12.8, "projections": {}
+  },
+  {
+    "name": "Michael Wilson", "team": "ARI", "position": "WR76", "bye": 8,
+    "adp": { "standard": 185.5, "ppr": 185.5, "hppr": 193 }, "tier": 10, "vorp": 6.1, "projections": {}
+  },
+  {
+    "name": "Dyami Brown", "team": "JAC", "position": "WR77", "bye": 8,
+    "adp": { "standard": 185.5, "ppr": 186, "hppr": 194.5 }, "tier": 10, "vorp": 4.8, "projections": {}
+  },
+  {
+    "name": "Mason Taylor", "team": "NYJ", "position": "TE25", "bye": 9,
+    "adp": { "standard": 185.5, "ppr": 187, "hppr": 190 }, "tier": 5, "vorp": 20.5, "projections": {}
+  },
+  {
+    "name": "DeAndre Hopkins", "team": "BAL", "position": "WR78", "bye": 7,
+    "adp": { "standard": 187, "ppr": 188.5, "hppr": 195 }, "tier": 10, "vorp": 11.5, "projections": {}
+  },
+  {
+    "name": "Miles Sanders", "team": "DAL", "position": "RB58", "bye": 10,
+    "adp": { "standard": 187, "ppr": 189, "hppr": 206 }, "tier": 9, "vorp": 9.8, "projections": {}
+  },
+  {
+    "name": "Daniel Jones", "team": "IND", "position": "QB29", "bye": 11,
+    "adp": { "standard": 190.5, "ppr": 190.5, "hppr": 185 }, "tier": 5, "vorp": 43.1, "projections": {}
+  },
+  {
+    "name": "DJ Giddens", "team": "IND", "position": "RB59", "bye": 11,
+    "adp": { "standard": 191.5, "ppr": 191.5, "hppr": 199 }, "tier": 8, "vorp": 15.1, "projections": {}
+  },
+  {
+    "name": "Jarquez Hunter", "team": "LAR", "position": "RB60", "bye": 8,
+    "adp": { "standard": 192, "ppr": 192, "hppr": 198 }, "tier": 8, "vorp": 15.8, "projections": {}
+  },
+  {
+    "name": "Chig Okonkwo", "team": "TEN", "position": "TE26", "bye": 10,
+    "adp": { "standard": 192.5, "ppr": 193, "hppr": 191.5 }, "tier": 5, "vorp": 19.8, "projections": {}
+  },
+  {
+    "name": "Calvin Austin III", "team": "PIT", "position": "WR79", "bye": 5,
+    "adp": { "standard": 193.5, "ppr": 194, "hppr": 208 }, "tier": 11, "vorp": 1.2, "projections": {}
+  },
+  {
+    "name": "Darius Slayton", "team": "NYG", "position": "WR80", "bye": 14,
+    "adp": { "standard": 194, "ppr": 195, "hppr": 215 }, "tier": 10, "vorp": 5.5, "projections": {}
+  },
+  {
+    "name": "MarShawn Lloyd", "team": "GB", "position": "RB61", "bye": 5,
+    "adp": { "standard": 195, "ppr": 196.5, "hppr": 192 }, "tier": 8, "vorp": 18.5, "projections": {}
+  },
+  {
+    "name": "Dalton Schultz", "team": "HOU", "position": "TE27", "bye": 6,
+    "adp": { "standard": 197, "ppr": 197.5, "hppr": 201 }, "tier": 5, "vorp": 18.9, "projections": {}
+  },
+  {
+    "name": "Dont'e Thornton Jr.", "team": "LV", "position": "WR81", "bye": 8,
+    "adp": { "standard": 198, "ppr": 198, "hppr": 233.5 }, "tier": 13, "vorp": 0, "projections": {}
+  },
+  {
+    "name": "Andrei Iosivas", "team": "CIN", "position": "WR82", "bye": 10,
+    "adp": { "standard": 199, "ppr": 199.5, "hppr": 221 }, "tier": 11, "vorp": 3.1, "projections": {}
+  },
+  {
+    "name": "Juwan Johnson", "team": "NO", "position": "TE28", "bye": 11,
+    "adp": { "standard": 201.5, "ppr": 200, "hppr": 204.5 }, "tier": 5, "vorp": 17.8, "projections": {}
+  },
+  {
+    "name": "Dylan Sampson", "team": "CLE", "position": "RB62", "bye": 9,
+    "adp": { "standard": 202, "ppr": 201, "hppr": 181.5 }, "tier": 8, "vorp": 23.8, "projections": {}
+  },
+  {
+    "name": "Anthony Richardson Sr.", "team": "IND", "position": "QB30", "bye": 11,
+    "adp": { "standard": 202.5, "ppr": 202.5, "hppr": 196.5 }, "tier": 5, "vorp": 48.1, "projections": {}
+  },
+  {
+    "name": "Jalen Coker", "team": "CAR", "position": "WR83", "bye": 14,
+    "adp": { "standard": 203, "ppr": 203, "hppr": 208 }, "tier": 11, "vorp": 5.1, "projections": {}
+  },
+  {
+    "name": "Tyler Shough", "team": "NO", "position": "QB31", "bye": 11,
+    "adp": { "standard": 206.5, "ppr": 204, "hppr": 205 }, "tier": 6, "vorp": 40.2, "projections": {}
+  },
+  {
+    "name": "Brashard Smith", "team": "KC", "position": "RB63", "bye": 10,
+    "adp": { "standard": 206.5, "ppr": 205, "hppr": 213 }, "tier": 9, "vorp": 12.8, "projections": {}
+  },
+  {
+    "name": "Tutu Atwell", "team": "LAR", "position": "WR84", "bye": 8,
+    "adp": { "standard": 207.5, "ppr": 206, "hppr": 209 }, "tier": 11, "vorp": 0.2, "projections": {}
+  },
+  {
+    "name": "Jerome Ford", "team": "CLE", "position": "RB64", "bye": 9,
+    "adp": { "standard": 208, "ppr": 207, "hppr": 184 }, "tier": 8, "vorp": 24.1, "projections": {}
+  },
+  {
+    "name": "Ja'Tavion Sanders", "team": "CAR", "position": "TE29", "bye": 14,
+    "adp": { "standard": 208.5, "ppr": 208.5, "hppr": 232 }, "tier": 6, "vorp": 11.8, "projections": {}
+  },
+  {
+    "name": "Keaton Mitchell", "team": "BAL", "position": "RB65", "bye": 7,
+    "adp": { "standard": 208.5, "ppr": 209, "hppr": 290 }, "tier": 10, "vorp": 0, "projections": {}
+  },
+  {
+    "name": "Blake Corum", "team": "LAR", "position": "RB66", "bye": 8,
+    "adp": { "standard": 210, "ppr": 212, "hppr": 197 }, "tier": 8, "vorp": 17.8, "projections": {}
+  },
+  {
+    "name": "Kareem Hunt", "team": "KC", "position": "RB67", "bye": 10,
+    "adp": { "standard": 210.5, "ppr": 211, "hppr": 184 }, "tier": 8, "vorp": 20.1, "projections": {}
+  },
+  {
+    "name": "Tyler Lockett", "team": "TEN", "position": "WR85", "bye": 10,
+    "adp": { "standard": 212, "ppr": 212, "hppr": 232.5 }, "tier": 11, "vorp": 3.8, "projections": {}
+  },
+  {
+    "name": "Theo Johnson", "team": "NYG", "position": "TE30", "bye": 14,
+    "adp": { "standard": 212.5, "ppr": 213, "hppr": 235.5 }, "tier": 6, "vorp": 15.1, "projections": {}
+  },
+  {
+    "name": "Dontayvion Wicks", "team": "GB", "position": "WR86", "bye": 5,
+    "adp": { "standard": 213.5, "ppr": 214, "hppr": 256.5 }, "tier": 11, "vorp": 4.5, "projections": {}
+  },
+  {
+    "name": "Russell Wilson", "team": "NYG", "position": "QB32", "bye": 14,
+    "adp": { "standard": 214.5, "ppr": 215, "hppr": 202 }, "tier": 5, "vorp": 45.3, "projections": {}
+  },
+  {
+    "name": "Adonai Mitchell", "team": "IND", "position": "WR87", "bye": 11,
+    "adp": { "standard": 217, "ppr": 216, "hppr": 220 }, "tier": 12, "vorp": 0, "projections": {}
+  },
+  {
+    "name": "Jaxson Dart", "team": "NYG", "position": "QB33", "bye": 14,
+    "adp": { "standard": 217, "ppr": 217, "hppr": 231 }, "tier": 6, "vorp": 38.1, "projections": {}
+  },
+  {
+    "name": "Elic Ayomanor", "team": "TEN", "position": "WR88", "bye": 10,
+    "adp": { "standard": 218.5, "ppr": 218, "hppr": 228.5 }, "tier": 12, "vorp": 0, "projections": {}
+  },
+  {
+    "name": "Raheem Mostert", "team": "LV", "position": "RB68", "bye": 8,
+    "adp": { "standard": 219.5, "ppr": 219.5, "hppr": 235.5 }, "tier": 9, "vorp": 4.8, "projections": {}
+  },
+  {
+    "name": "Ray-Ray McCloud III", "team": "ATL", "position": "WR89", "bye": 5,
+    "adp": { "standard": 220, "ppr": 220, "hppr": 242 }, "tier": 12, "vorp": 0, "projections": {}
+  },
+  {
+    "name": "Roman Wilson", "team": "PIT", "position": "WR90", "bye": 5,
+    "adp": { "standard": 221.5, "ppr": 221.5, "hppr": 242 }, "tier": 11, "vorp": 0.5, "projections": {}
+  },
+  {
+    "name": "Amari Cooper", "team": "", "position": "WR91", "bye": "",
+    "adp": { "standard": 222.5, "ppr": 222.5, "hppr": 209 }, "tier": 10, "vorp": 8.1, "projections": {}
+  },
+  {
+    "name": "Tahj Brooks", "team": "CIN", "position": "RB69", "bye": 10,
+    "adp": { "standard": 222.5, "ppr": 223, "hppr": 242 }, "tier": 9, "vorp": 6.8, "projections": {}
+  },
+  {
+    "name": "Terrance Ferguson", "team": "LAR", "position": "TE31", "bye": 8,
+    "adp": { "standard": 223.5, "ppr": 224, "hppr": 243 }, "tier": 6, "vorp": 10.1, "projections": {}
+  },
+  {
+    "name": "Elijah Arroyo", "team": "SEA", "position": "TE32", "bye": 8,
+    "adp": { "standard": 226.5, "ppr": 225, "hppr": 236.5 }, "tier": 6, "vorp": 10.5, "projections": {}
+  },
+  {
+    "name": "Elijah Moore", "team": "BUF", "position": "WR92", "bye": 7,
+    "adp": { "standard": 229, "ppr": 226, "hppr": 235 }, "tier": 12, "vorp": 0, "projections": {}
+  },
+  {
+    "name": "Kyle Monangai", "team": "CHI", "position": "RB70", "bye": 5,
+    "adp": { "standard": 229.5, "ppr": 227, "hppr": 249 }, "tier": 9, "vorp": 10.5, "projections": {}
+  },
+  {
+    "name": "Diontae Johnson", "team": "CLE", "position": "WR93", "bye": 9,
+    "adp": { "standard": 231, "ppr": 228, "hppr": 241 }, "tier": 12, "vorp": 0, "projections": {}
+  },
+  {
+    "name": "Jalen Tolbert", "team": "DAL", "position": "WR94", "bye": 10,
+    "adp": { "standard": 232, "ppr": 229, "hppr": 274 }, "tier": 10, "vorp": 0, "projections": {}
+  },
+  {
+    "name": "Isaac TeSlaa", "team": "DET", "position": "WR95", "bye": 8,
+    "adp": { "standard": 232.5, "ppr": 230, "hppr": 268 }, "tier": 12, "vorp": 0, "projections": {}
+  },
+  {
+    "name": "Tyler Conklin", "team": "LAC", "position": "TE33", "bye": 12,
+    "adp": { "standard": 232.5, "ppr": 231, "hppr": 253 }, "tier": 6, "vorp": 13.5, "projections": {}
+  },
+  {
+    "name": "Devin Neal", "team": "NO", "position": "RB71", "bye": 11,
+    "adp": { "standard": 233.5, "ppr": 232, "hppr": 202.5 }, "tier": 8, "vorp": 16.5, "projections": {}
+  },
+  {
+    "name": "Tyler Higbee", "team": "LAR", "position": "TE34", "bye": 8,
+    "adp": { "standard": 235, "ppr": 233, "hppr": 244.5 }, "tier": 6, "vorp": 12.1, "projections": {}
+  },
+  {
+    "name": "Jalen Royals", "team": "KC", "position": "WR96", "bye": 10,
+    "adp": { "standard": 235.5, "ppr": 234, "hppr": 243.5 }, "tier": 10, "vorp": 3.5, "projections": {}
+  },
+  {
+    "name": "Shedeur Sanders", "team": "CLE", "position": "QB34", "bye": 9,
+    "adp": { "standard": 235.5, "ppr": 235.5, "hppr": 247.5 }, "tier": 6, "vorp": 35.2, "projections": {}
+  },
+  {
+    "name": "Noah Gray", "team": "KC", "position": "TE35", "bye": 10,
+    "adp": { "standard": 236, "ppr": 236, "hppr": 248 }, "tier": 6, "vorp": 14.8, "projections": {}
+  },
+  {
+    "name": "Taysom Hill", "team": "NO", "position": "TE36", "bye": 11,
+    "adp": { "standard": 239, "ppr": 237, "hppr": 280.5 }, "tier": 7, "vorp": 0, "projections": {}
+  },
+  {
+    "name": "Jacory Croskey-Merritt", "team": "WAS", "position": "RB72", "bye": 12,
+    "adp": { "standard": 239.5, "ppr": 238, "hppr": 294 }, "tier": 10, "vorp": 0, "projections": {}
+  },
+  {
+    "name": "Sean Tucker", "team": "TB", "position": "RB73", "bye": 9,
+    "adp": { "standard": 242.5, "ppr": 239, "hppr": 248 }, "tier": 10, "vorp": 0, "projections": {}
+  },
+  {
+    "name": "Joe Flacco", "team": "CLE", "position": "QB35", "bye": 9,
+    "adp": { "standard": 246, "ppr": 240, "hppr": 245.5 }, "tier": 6, "vorp": 33.1, "projections": {}
+  },
+  {
+    "name": "Jalen Milroe", "team": "SEA", "position": "QB36", "bye": 8,
+    "adp": { "standard": 247.5, "ppr": 241, "hppr": 267.5 }, "tier": 6, "vorp": 28.3, "projections": {}
+  },
+  {
+    "name": "Ben Sinnott", "team": "WAS", "position": "TE37", "bye": 12,
+    "adp": { "standard": 248, "ppr": 242, "hppr": 288.5 }, "tier": 7, "vorp": 0, "projections": {}
+  },
+  {
+    "name": "Cole Kmet", "team": "CHI", "position": "TE38", "bye": 5,
+    "adp": { "standard": 248, "ppr": 243, "hppr": 234 }, "tier": 6, "vorp": 18.2, "projections": {}
+  },
+  {
+    "name": "Devaughn Vele", "team": "DEN", "position": "WR97", "bye": 12,
+    "adp": { "standard": 248.5, "ppr": 244, "hppr": 265.5 }, "tier": 13, "vorp": 0, "projections": {}
+  },
+  {
+    "name": "Troy Franklin", "team": "DEN", "position": "WR98", "bye": 12,
+    "adp": { "standard": 251, "ppr": 245, "hppr": 288 }, "tier": 12, "vorp": 0, "projections": {}
+  },
+  {
+    "name": "Jordan James", "team": "SF", "position": "RB74", "bye": 14,
+    "adp": { "standard": 251, "ppr": 246, "hppr": 256 }, "tier": 9, "vorp": 6.1, "projections": {}
+  },
+  {
+    "name": "Malik Washington", "team": "MIA", "position": "WR99", "bye": 12,
+    "adp": { "standard": 251.5, "ppr": 247, "hppr": 282.5 }, "tier": 13, "vorp": 0, "projections": {}
+  },
+  {
+    "name": "Ty Johnson", "team": "BUF", "position": "RB75", "bye": 7,
+    "adp": { "standard": 252, "ppr": 248, "hppr": 264 }, "tier": 9, "vorp": 0, "projections": {}
+  },
+  {
+    "name": "Marquez Valdes-Scantling", "team": "SEA", "position": "WR100", "bye": 8,
+    "adp": { "standard": 252.5, "ppr": 249, "hppr": 294 }, "tier": 12, "vorp": 0, "projections": {}
+  },
+  {
+    "name": "Demarcus Robinson", "team": "SF", "position": "WR101", "bye": 14,
+    "adp": { "standard": 254.5, "ppr": 250, "hppr": 236 }, "tier": 11, "vorp": 0, "projections": {}
+  },
+  {
+    "name": "Josh Reynolds", "team": "NYJ", "position": "WR102", "bye": 9,
+    "adp": { "standard": 254.5, "ppr": 251, "hppr": 288 }, "tier": 11, "vorp": 0, "projections": {}
+  },
+  {
+    "name": "Mike Williams", "team": "LAC", "position": "WR103", "bye": 12,
+    "adp": { "standard": 254.5, "ppr": 252, "hppr": 238 }, "tier": 11, "vorp": 0.8, "projections": {}
+  },
+  {
+    "name": "Kayshon Boutte", "team": "NE", "position": "WR104", "bye": 14,
+    "adp": { "standard": 255, "ppr": 253, "hppr": 275.5 }, "tier": 12, "vorp": 0, "projections": {}
+  },
+  {
+    "name": "Zack Moss", "team": "CIN", "position": "RB76", "bye": 10,
+    "adp": { "standard": 255.5, "ppr": 254, "hppr": 280 }, "tier": 9, "vorp": 7.5, "projections": {}
+  },
+  {
+    "name": "Harold Fannin Jr.", "team": "CLE", "position": "TE39", "bye": 9,
+    "adp": { "standard": 256.5, "ppr": 255, "hppr": 286 }, "tier": 6, "vorp": 0, "projections": {}
+  },
+  {
+    "name": "Elijah Mitchell", "team": "KC", "position": "RB77", "bye": 10,
+    "adp": { "standard": 256.5, "ppr": 256.5, "hppr": 251 }, "tier": 9, "vorp": 8.5, "projections": {}
+  },
+  {
+    "name": "Kendre Miller", "team": "NO", "position": "RB78", "bye": 11,
+    "adp": { "standard": 257.5, "ppr": 257.5, "hppr": 259 }, "tier": 10, "vorp": 0, "projections": {}
+  },
+  {
+    "name": "Tre Tucker", "team": "LV", "position": "WR105", "bye": 8,
+    "adp": { "standard": 258, "ppr": 258, "hppr": 266.5 }, "tier": 12, "vorp": 0, "projections": {}
+  },
+  {
+    "name": "Oronde Gadsden II", "team": "LAC", "position": "TE40", "bye": 12,
+    "adp": { "standard": 258.5, "ppr": 259, "hppr": 259.5 }, "tier": 6, "vorp": 0, "projections": {}
+  },
+  {
+    "name": "Curtis Samuel", "team": "BUF", "position": "WR106", "bye": 7,
+    "adp": { "standard": 259, "ppr": 260, "hppr": 290 }, "tier": 12, "vorp": 0, "projections": {}
+  },
+  {
+    "name": "Jordan Whittington", "team": "LAR", "position": "WR107", "bye": 8,
+    "adp": { "standard": 260, "ppr": 261, "hppr": 296 }, "tier": 12, "vorp": 0, "projections": {}
+  },
+  {
+    "name": "Jermaine Burton", "team": "CIN", "position": "WR108", "bye": 10,
+    "adp": { "standard": 260.5, "ppr": 262, "hppr": 302.5 }, "tier": 12, "vorp": 0, "projections": {}
+  },
+  {
+    "name": "Jalen Nailor", "team": "MIN", "position": "WR109", "bye": 6,
+    "adp": { "standard": 261.5, "ppr": 263, "hppr": 280 }, "tier": 12, "vorp": 0, "projections": {}
+  },
+  {
+    "name": "Nick Westbrook-Ikhine", "team": "MIA", "position": "WR110", "bye": 12,
+    "adp": { "standard": 261.5, "ppr": 264, "hppr": 292 }, "tier": 12, "vorp": 0, "projections": {}
+  },
+  {
+    "name": "Woody Marks", "team": "HOU", "position": "RB79", "bye": 6,
+    "adp": { "standard": 262.5, "ppr": 265, "hppr": 265 }, "tier": 10, "vorp": 1.5, "projections": {}
+  },
+  {
+    "name": "Savion Williams", "team": "GB", "position": "WR111", "bye": 5,
+    "adp": { "standard": 263, "ppr": 266, "hppr": 287 }, "tier": 12, "vorp": 0, "projections": {}
+  },
+  {
+    "name": "Allen Lazard", "team": "NYJ", "position": "WR112", "bye": 9,
+    "adp": { "standard": 264, "ppr": 267, "hppr": 308 }, "tier": 12, "vorp": 0, "projections": {}
+  },
+  {
+    "name": "Michael Mayer", "team": "LV", "position": "TE41", "bye": 8,
+    "adp": { "standard": 269, "ppr": 268, "hppr": 264 }, "tier": 6, "vorp": 0, "projections": {}
+  },
+  {
+    "name": "Ollie Gordon II", "team": "MIA", "position": "RB80", "bye": 12,
+    "adp": { "standard": 265, "ppr": 269, "hppr": 231.5 }, "tier": 9, "vorp": 13.5, "projections": {}
+  },
+  {
+    "name": "Audric Estime", "team": "DEN", "position": "RB81", "bye": 12,
+    "adp": { "standard": 270, "ppr": 270, "hppr": 246.5 }, "tier": 9, "vorp": 8.1, "projections": {}
+  },
+  {
+    "name": "Noah Brown", "team": "WAS", "position": "WR113", "bye": 12,
+    "adp": { "standard": 268, "ppr": 271, "hppr": 271 }, "tier": 12, "vorp": 0, "projections": {}
+  },
+  {
+    "name": "Parker Washington", "team": "JAC", "position": "WR114", "bye": 8,
+    "adp": { "standard": 270, "ppr": 272, "hppr": 253 }, "tier": 12, "vorp": 0, "projections": {}
+  },
+  {
+    "name": "Isaiah Davis", "team": "NYJ", "position": "RB82", "bye": 9,
+    "adp": { "standard": 270.5, "ppr": 273, "hppr": 309 }, "tier": 10, "vorp": 0, "projections": {}
+  },
+  {
+    "name": "Mack Hollins", "team": "NE", "position": "WR115", "bye": 14,
+    "adp": { "standard": 280, "ppr": 274, "hppr": 273 }, "tier": 12, "vorp": 0, "projections": {}
+  },
+  {
+    "name": "Xavier Restrepo", "team": "TEN", "position": "WR116", "bye": 10,
+    "adp": { "standard": 272.5, "ppr": 275, "hppr": 277 }, "tier": 12, "vorp": 0, "projections": {}
+  },
+  {
+    "name": "Tory Horton", "team": "SEA", "position": "WR117", "bye": 8,
+    "adp": { "standard": 274, "ppr": 276, "hppr": 288 }, "tier": 12, "vorp": 0, "projections": {}
+  },
+  {
+    "name": "Tai Felton", "team": "MIN", "position": "WR118", "bye": 6,
+    "adp": { "standard": 274, "ppr": 277, "hppr": 283 }, "tier": 12, "vorp": 0, "projections": {}
+  },
+  {
+    "name": "Jaylin Lane", "team": "WAS", "position": "WR119", "bye": 12,
+    "adp": { "standard": 274, "ppr": 278, "hppr": 291 }, "tier": 12, "vorp": 0, "projections": {}
+  },
+  {
+    "name": "KaVontae Turpin", "team": "DAL", "position": "WR120", "bye": 10,
+    "adp": { "standard": 275, "ppr": 279, "hppr": 312 }, "tier": 12, "vorp": 0, "projections": {}
+  },
+  {
+    "name": "Emanuel Wilson", "team": "GB", "position": "RB83", "bye": 5,
+    "adp": { "standard": 276.5, "ppr": 280, "hppr": 292 }, "tier": 10, "vorp": 0, "projections": {}
+  },
+  {
+    "name": "Kirk Cousins", "team": "ATL", "position": "QB37", "bye": 5,
+    "adp": { "standard": 279.5, "ppr": 281, "hppr": 261 }, "tier": 6, "vorp": 30.5, "projections": {}
+  },
+  {
+    "name": "Noah Fant", "team": "SEA", "position": "TE42", "bye": 8,
+    "adp": { "standard": 277, "ppr": 282, "hppr": 321 }, "tier": 6, "vorp": 0, "projections": {}
+  },
+  {
+    "name": "Jaleel McLaughlin", "team": "DEN", "position": "RB84", "bye": 12,
+    "adp": { "standard": 267, "ppr": 283, "hppr": 254 }, "tier": 9, "vorp": 2.5, "projections": {}
+  },
+  {
+    "name": "Jimmy Horn Jr.", "team": "CAR", "position": "WR121", "bye": 14,
+    "adp": { "standard": 271, "ppr": 284, "hppr": null }, "tier": 12, "vorp": 0, "projections": {}
+  },
+  {
+    "name": "Trevor Etienne", "team": "CAR", "position": "RB85", "bye": 14,
+    "adp": { "standard": 280, "ppr": 285, "hppr": 265 }, "tier": 10, "vorp": 0.1, "projections": {}
+  },
+  {
+    "name": "Jahan Dotson", "team": "PHI", "position": "WR122", "bye": 9,
+    "adp": { "standard": 275, "ppr": 286, "hppr": null }, "tier": 12, "vorp": 0, "projections": {}
+  },
+  {
+    "name": "Brandin Cooks", "team": "NO", "position": "WR123", "bye": 11,
+    "adp": { "standard": 282, "ppr": 287, "hppr": 303 }, "tier": 12, "vorp": 0, "projections": {}
+  },
+  {
+    "name": "Will Dissly", "team": "LAC", "position": "TE43", "bye": 12,
+    "adp": { "standard": 283, "ppr": 288, "hppr": 314 }, "tier": 7, "vorp": 0, "projections": {}
+  },
+  {
+    "name": "Christian Watson", "team": "GB", "position": "WR124", "bye": 5,
+    "adp": { "standard": 279, "ppr": 289, "hppr": 317 }, "tier": 12, "vorp": 0, "projections": {}
+  },
+  {
+    "name": "A.J. Dillon", "team": "PHI", "position": "RB86", "bye": 9,
+    "adp": { "standard": 283, "ppr": 290, "hppr": 268 }, "tier": 9, "vorp": 0, "projections": {}
+  },
+  {
+    "name": "Devontez Walker", "team": "BAL", "position": "WR125", "bye": 7,
+    "adp": { "standard": 296, "ppr": 291, "hppr": 313 }, "tier": 13, "vorp": 0, "projections": {}
+  },
+  {
+    "name": "Arian Smith", "team": "NYJ", "position": "WR126", "bye": 9,
+    "adp": { "standard": 285, "ppr": 292, "hppr": null }, "tier": 13, "vorp": 0, "projections": {}
+  },
+  {
+    "name": "JuJu Smith-Schuster", "team": "KC", "position": "WR127", "bye": 10,
+    "adp": { "standard": 286, "ppr": 293, "hppr": 330 }, "tier": 13, "vorp": 0, "projections": {}
+  },
+  {
+    "name": "Cam Akers", "team": "NO", "position": "RB87", "bye": 11,
+    "adp": { "standard": 294, "ppr": 294, "hppr": 304 }, "tier": 10, "vorp": 0, "projections": {}
+  },
+  {
+    "name": "Jalin Hyatt", "team": "NYG", "position": "WR128", "bye": 14,
+    "adp": { "standard": 288, "ppr": 295, "hppr": null }, "tier": 13, "vorp": 0, "projections": {}
+  },
+  {
+    "name": "LaJohntay Wester", "team": "BAL", "position": "WR129", "bye": 7,
+    "adp": { "standard": 289, "ppr": 296, "hppr": null }, "tier": 13, "vorp": 0, "projections": {}
+  },
+  {
+    "name": "Luke McCaffrey", "team": "WAS", "position": "WR130", "bye": 12,
+    "adp": { "standard": 291, "ppr": 297, "hppr": null }, "tier": 13, "vorp": 0, "projections": {}
+  },
+  {
+    "name": "Efton Chism III", "team": "NE", "position": "WR131", "bye": 14,
+    "adp": { "standard": 292, "ppr": 298, "hppr": null }, "tier": 13, "vorp": 0, "projections": {}
+  },
+  {
+    "name": "Chimere Dike", "team": "TEN", "position": "WR132", "bye": 10,
+    "adp": { "standard": 293, "ppr": 299, "hppr": null }, "tier": 13, "vorp": 0, "projections": {}
+  },
+  {
+    "name": "Tim Patrick", "team": "DET", "position": "WR133", "bye": 8,
+    "adp": { "standard": 296, "ppr": 300, "hppr": 301 }, "tier": 13, "vorp": 0, "projections": {}
+  },
+  {
+    "name": "Tank Dell", "team": "HOU", "position": "WR134", "bye": 6,
+    "adp": { "standard": 298, "ppr": 301, "hppr": 327 }, "tier": 13, "vorp": 0, "projections": {}
+  },
+  {
+    "name": "Damien Martinez", "team": "SEA", "position": "RB88", "bye": 8,
+    "adp": { "standard": 299, "ppr": 302, "hppr": 317 }, "tier": 10, "vorp": 0, "projections": {}
+  },
+  {
+    "name": "Dawson Knox", "team": "BUF", "position": "TE44", "bye": 7,
+    "adp": { "standard": 300, "ppr": 303, "hppr": 323 }, "tier": 7, "vorp": 0, "projections": {}
+  },
+  {
+    "name": "Joe Milton III", "team": "DAL", "position": "QB38", "bye": 10,
+    "adp": { "standard": 302, "ppr": 304, "hppr": null }, "tier": 7, "vorp": 0, "projections": {}
+  },
+  {
+    "name": "Luke Musgrave", "team": "GB", "position": "TE45", "bye": 5,
+    "adp": { "standard": 303, "ppr": 305, "hppr": null }, "tier": 7, "vorp": 0, "projections": {}
+  },
+  {
+    "name": "Jacob Cowing", "team": "SF", "position": "WR135", "bye": 14,
+    "adp": { "standard": 304, "ppr": 306, "hppr": null }, "tier": 13, "vorp": 0, "projections": {}
+  },
+  {
+    "name": "Greg Dortch", "team": "ARI", "position": "WR136", "bye": 8,
+    "adp": { "standard": 305, "ppr": 307, "hppr": null }, "tier": 13, "vorp": 0, "projections": {}
+  },
+  {
+    "name": "Jameis Winston", "team": "NYG", "position": "QB39", "bye": 14,
+    "adp": { "standard": 307, "ppr": 308, "hppr": 316 }, "tier": 7, "vorp": 0, "projections": {}
+  },
+  {
+    "name": "Malachi Corley", "team": "NYJ", "position": "WR137", "bye": 9,
+    "adp": { "standard": 309, "ppr": 309, "hppr": null }, "tier": 13, "vorp": 0, "projections": {}
+  },
+  {
+    "name": "Khalil Herbert", "team": "IND", "position": "RB89", "bye": 11,
+    "adp": { "standard": 310, "ppr": 310, "hppr": 314 }, "tier": 10, "vorp": 0, "projections": {}
+  },
+  {
+    "name": "Tez Johnson", "team": "TB", "position": "WR138", "bye": 9,
+    "adp": { "standard": 311, "ppr": 311, "hppr": null }, "tier": 13, "vorp": 0, "projections": {}
+  },
+  {
+    "name": "Hunter Renfrow", "team": "CAR", "position": "WR139", "bye": 14,
+    "adp": { "standard": 312, "ppr": 312, "hppr": null }, "tier": 13, "vorp": 0, "projections": {}
+  },
+  {
+    "name": "Dillon Gabriel", "team": "CLE", "position": "QB40", "bye": 9,
+    "adp": { "standard": 313, "ppr": 313, "hppr": null }, "tier": 7, "vorp": 0, "projections": {}
+  },
+  {
+    "name": "Treylon Burks", "team": "TEN", "position": "WR140", "bye": 10,
+    "adp": { "standard": 314, "ppr": 314, "hppr": null }, "tier": 13, "vorp": 0, "projections": {}
+  },
+  {
+    "name": "Phil Mafah", "team": "DAL", "position": "RB90", "bye": 10,
+    "adp": { "standard": 315, "ppr": 315, "hppr": 286 }, "tier": 10, "vorp": 0, "projections": {}
+  },
+  {
+    "name": "Tyquan Thornton", "team": "KC", "position": "WR141", "bye": 10,
+    "adp": { "standard": 316, "ppr": 316, "hppr": null }, "tier": 13, "vorp": 0, "projections": {}
+  },
+  {
+    "name": "Latavius Murray", "team": "", "position": "RB91", "bye": "",
+    "adp": { "standard": 317, "ppr": 317, "hppr": null }, "tier": 10, "vorp": 0, "projections": {}
+  },
+  {
+    "name": "Tommy Mellott", "team": "LV", "position": "QB41", "bye": 8,
+    "adp": { "standard": 318, "ppr": 318, "hppr": null }, "tier": 7, "vorp": 0, "projections": {}
+  },
+  {
+    "name": "Spencer Rattler", "team": "NO", "position": "QB42", "bye": 11,
+    "adp": { "standard": 319, "ppr": 319, "hppr": null }, "tier": 7, "vorp": 0, "projections": {}
+  },
+  {
+    "name": "Samaje Perine", "team": "CIN", "position": "RB92", "bye": 10,
+    "adp": { "standard": 320, "ppr": 320, "hppr": 298 }, "tier": 10, "vorp": 0, "projections": {}
+  },
+  {
+    "name": "Austin Hooper", "team": "NE", "position": "TE46", "bye": 14,
+    "adp": { "standard": 321, "ppr": 321, "hppr": 326 }, "tier": 7, "vorp": 0, "projections": {}
+  },
+  {
+    "name": "Alexander Mattison", "team": "MIA", "position": "RB93", "bye": 12,
+    "adp": { "standard": 322, "ppr": 322, "hppr": 282 }, "tier": 9, "vorp": 0, "projections": {}
+  },
+  {
+    "name": "Cooper Rush", "team": "BAL", "position": "QB43", "bye": 7,
+    "adp": { "ppr": 323, "hppr": null, "standard": null }, "tier": 7, "vorp": 0, "projections": {}
+  },
+  {
+    "name": "KeAndre Lambert-Smith", "team": "LAC", "position": "WR142", "bye": 12,
+    "adp": { "ppr": 324, "hppr": null, "standard": null }, "tier": 13, "vorp": 0, "projections": {}
+  },
+  {
+    "name": "Jordan Watkins", "team": "SF", "position": "WR143", "bye": 14,
+    "adp": { "ppr": 325, "hppr": null, "standard": null }, "tier": 13, "vorp": 0, "projections": {}
+  },
+  {
+    "name": "Kendrick Bourne", "team": "NE", "position": "WR144", "bye": 14,
+    "adp": { "ppr": 326, "hppr": null, "standard": null }, "tier": 13, "vorp": 0, "projections": {}
+  },
+  {
+    "name": "Olamide Zaccheaus", "team": "CHI", "position": "WR145", "bye": 5,
+    "adp": { "ppr": 327, "hppr": null, "standard": null }, "tier": 13, "vorp": 0, "projections": {}
+  },
+  {
+    "name": "Darnell Washington", "team": "PIT", "position": "TE47", "bye": 5,
+    "adp": { "ppr": 328, "hppr": null, "standard": null }, "tier": 7, "vorp": 0, "projections": {}
+  },
+  {
+    "name": "Antonio Gibson", "team": "NE", "position": "RB94", "bye": 14,
+    "adp": { "ppr": 329, "hppr": 299, "standard": 318 }, "tier": 10, "vorp": 0, "projections": {}
+  },
+  {
+    "name": "Chris Rodriguez Jr.", "team": "WAS", "position": "RB95", "bye": 12,
+    "adp": { "ppr": 330, "hppr": null, "standard": null }, "tier": 10, "vorp": 0, "projections": {}
+  },
+  {
+    "name": "Kenneth Gainwell", "team": "PIT", "position": "RB96", "bye": 5,
+    "adp": { "ppr": 331, "hppr": 297, "standard": 254 }, "tier": 10, "vorp": 1.8, "projections": {}
+  },
+  {
+    "name": "Emari Demercado", "team": "ARI", "position": "RB97", "bye": 8,
+    "adp": { "ppr": 332, "hppr": null, "standard": null }, "tier": 10, "vorp": 0, "projections": {}
+  },
+  {
+    "name": "Gunnar Helm", "team": "TEN", "position": "TE48", "bye": 10,
+    "adp": { "ppr": 333, "hppr": null, "standard": null }, "tier": 7, "vorp": 0, "projections": {}
+  },
+  {
+    "name": "Kalif Raymond", "team": "DET", "position": "WR146", "bye": 8,
+    "adp": { "ppr": 334, "hppr": null, "standard": null }, "tier": 13, "vorp": 0, "projections": {}
+  },
+  {
+    "name": "Kenny McIntosh", "team": "SEA", "position": "RB98", "bye": 8,
+    "adp": { "ppr": 335, "hppr": null, "standard": null }, "tier": 10, "vorp": 0, "projections": {}
+  },
+  {
+    "name": "Ja'Lynn Polk", "team": "NE", "position": "WR147", "bye": 14,
+    "adp": { "ppr": 336, "hppr": 281, "standard": 305 }, "tier": 12, "vorp": 0, "projections": {}
+  },
+  {
+    "name": "Kyle Juszczyk", "team": "SF", "position": "RB99", "bye": 14,
+    "adp": { "ppr": 337, "hppr": null, "standard": null }, "tier": 10, "vorp": 0, "projections": {}
+  },
+  {
+    "name": "Mitchell Evans", "team": "CAR", "position": "TE49", "bye": 14,
+    "adp": { "ppr": 338, "hppr": null, "standard": null }, "tier": 7, "vorp": 0, "projections": {}
+  },
+  {
+    "name": "Josh Oliver", "team": "MIN", "position": "TE50", "bye": 6,
+    "adp": { "ppr": 339, "half_ppr": 322, "standard": 305 }, "tier": 7, "vorp": 0, "projections": {}
+  },
+  {
+    "name": "Grant Calcaterra", "team": "PHI", "position": "TE51", "bye": 9,
+    "adp": { "ppr": 340, "half_ppr": null, "standard": null }, "tier": 7, "vorp": 0, "projections": {}
+  },
+  {
+    "name": "Nick Mullens", "team": "JAC", "position": "QB44", "bye": 8,
+    "adp": { "ppr": 341, "half_ppr": null, "standard": null }, "tier": 7, "vorp": 0, "projections": {}
+  },
+  {
+    "name": "Jake Browning", "team": "CIN", "position": "QB45", "bye": 10,
+    "adp": { "ppr": 342, "half_ppr": null, "standard": null }, "tier": 7, "vorp": 0, "projections": {}
+  },
+  {
+    "name": "Zach Wilson", "team": "MIA", "position": "QB46", "bye": 12,
+    "adp": { "ppr": 343, "half_ppr": 407, "standard": 407 }, "tier": 7, "vorp": 0, "projections": {}
+  },
+  {
+    "name": "Michael Gallup", "team": "WAS", "position": "WR148", "bye": 12,
+    "adp": { "ppr": 344, "half_ppr": null, "standard": null }, "tier": 13, "vorp": 0, "projections": {}
+  },
+  {
+    "name": "Gabe Davis", "team": "", "position": "WR149", "bye": "",
+    "adp": { "ppr": 345, "half_ppr": 328, "standard": 309 }, "tier": 13, "vorp": 0, "projections": {}
+  },
+  {
+    "name": "Jonathon Brooks", "team": "CAR", "position": "RB100", "bye": 14,
+    "adp": { "ppr": 346, "half_ppr": null, "standard": null }, "tier": 10, "vorp": 0, "projections": {}
+  },
+  {
+    "name": "Dameon Pierce", "team": "HOU", "position": "RB101", "bye": 6,
+    "adp": { "ppr": 347, "half_ppr": 321, "standard": 295.5 }, "tier": 10, "vorp": 0, "projections": {}
+  },
+  {
+    "name": "Devin Singletary", "team": "NYG", "position": "RB102", "bye": 14,
+    "adp": { "ppr": 348, "half_ppr": 316, "standard": 280 }, "tier": 10, "vorp": 0, "projections": {}
+  },
+  {
+    "name": "Foster Moreau", "team": "NO", "position": "TE52", "bye": 11,
+    "adp": { "ppr": 349, "half_ppr": null, "standard": null }, "tier": 7, "vorp": 0, "projections": {}
+  },
+  {
+    "name": "Jeremy Ruckert", "team": "NYJ", "position": "TE53", "bye": 9,
+    "adp": { "ppr": 350, "half_ppr": null, "standard": null }, "tier": 7, "vorp": 0, "projections": {}
+  },
+  {
+    "name": "Luke Schoonmaker", "team": "DAL", "position": "TE54", "bye": 10,
+    "adp": { "ppr": 351, "half_ppr": null, "standard": null }, "tier": 7, "vorp": 0, "projections": {}
+  },
+  {
+    "name": "Kalel Mullings", "team": "TEN", "position": "RB103", "bye": 10,
+    "adp": { "ppr": 352, "half_ppr": null, "standard": null }, "tier": 10, "vorp": 0, "projections": {}
+  },
+  {
+    "name": "Cade Stover", "team": "HOU", "position": "TE55", "bye": 6,
+    "adp": { "ppr": 353, "half_ppr": null, "standard": null }, "tier": 7, "vorp": 0, "projections": {}
+  },
+  {
+    "name": "Tommy Tremble", "team": "CAR", "position": "TE56", "bye": 14,
+    "adp": { "ppr": 354, "half_ppr": null, "standard": null }, "tier": 7, "vorp": 0, "projections": {}
+  },
+  {
+    "name": "Cordarrelle Patterson", "team": "PIT", "position": "RB104", "bye": 5,
+    "adp": { "ppr": 355, "half_ppr": null, "standard": null }, "tier": 10, "vorp": 0, "projections": {}
+  },
+  {
+    "name": "AJ Barner", "team": "SEA", "position": "TE57", "bye": 8,
+    "adp": { "ppr": 356, "half_ppr": null, "standard": null }, "tier": 7, "vorp": 0, "projections": {}
+  },
+  {
+    "name": "Bub Means", "team": "NO", "position": "WR150", "bye": 11,
+    "adp": { "ppr": 357, "half_ppr": null, "standard": null }, "tier": 13, "vorp": 0, "projections": {}
+  },
+  {
+    "name": "Michael Carter", "team": "ARI", "position": "RB105", "bye": 8,
+    "adp": { "ppr": 358, "half_ppr": null, "standard": null }, "tier": 10, "vorp": 0, "projections": {}
+  },
+  {
+    "name": "Zay Jones", "team": "ARI", "position": "WR151", "bye": 8,
+    "adp": { "ppr": 359, "half_ppr": null, "standard": null }, "tier": 13, "vorp": 0, "projections": {}
+  },
+  {
+    "name": "Van Jefferson", "team": "TEN", "position": "WR152", "bye": 10,
+    "adp": { "ppr": 360, "half_ppr": 320, "standard": 326 }, "tier": 13, "vorp": 0, "projections": {}
+  },
+  {
+    "name": "Adam Trautman", "team": "DEN", "position": "TE58", "bye": 12,
+    "adp": { "ppr": 361, "half_ppr": null, "standard": null }, "tier": 7, "vorp": 0, "projections": {}
+  },
+  {
+    "name": "Tanner Hudson", "team": "CIN", "position": "TE59", "bye": 10,
+    "adp": { "ppr": 362, "half_ppr": null, "standard": null }, "tier": 7, "vorp": 0, "projections": {}
+  },
+  {
+    "name": "John Metchie III", "team": "HOU", "position": "WR153", "bye": 6,
+    "adp": { "ppr": 363, "half_ppr": null, "standard": null }, "tier": 13, "vorp": 0, "projections": {}
+  },
+  {
+    "name": "Justin Watson", "team": "HOU", "position": "WR154", "bye": 6,
+    "adp": { "ppr": 364, "half_ppr": null, "standard": null }, "tier": 13, "vorp": 0, "projections": {}
+  },
+  {
+    "name": "Chris Brooks", "team": "GB", "position": "RB106", "bye": 5,
+    "adp": { "ppr": 365, "half_ppr": null, "standard": null }, "tier": 10, "vorp": 0, "projections": {}
+  },
+  {
+    "name": "Mecole Hardman Jr.", "team": "GB", "position": "WR155", "bye": 5,
+    "adp": { "ppr": 366, "half_ppr": null, "standard": null }, "tier": 13, "vorp": 0, "projections": {}
+  },
+  {
+    "name": "Gardner Minshew II", "team": "KC", "position": "QB47", "bye": 10,
+    "adp": { "ppr": 367, "half_ppr": 384, "standard": 384 }, "tier": 7, "vorp": 0, "projections": {}
+  },
+  {
+    "name": "Tyrod Taylor", "team": "NYJ", "position": "QB48", "bye": 9,
+    "adp": { "ppr": 368, "half_ppr": null, "standard": null }, "tier": 7, "vorp": 0, "projections": {}
+  },
+  {
+    "name": "Mac Jones", "team": "SF", "position": "QB49", "bye": 14,
+    "adp": { "ppr": 369, "half_ppr": null, "standard": null }, "tier": 7, "vorp": 0, "projections": {}
+  },
+  {
+    "name": "Ashton Dulin", "team": "IND", "position": "WR156", "bye": 11,
+    "adp": { "ppr": 370, "half_ppr": null, "standard": null }, "tier": 13, "vorp": 0, "projections": {}
+  },
+  {
+    "name": "Jonathan Mingo", "team": "DAL", "position": "WR157", "bye": 10,
+    "adp": { "ppr": 371, "half_ppr": null, "standard": null }, "tier": 13, "vorp": 0, "projections": {}
+  },
+  {
+    "name": "Sione Vaki", "team": "DET", "position": "RB107", "bye": 8,
+    "adp": { "ppr": 372, "half_ppr": null, "standard": null }, "tier": 10, "vorp": 0, "projections": {}
+  },
+  {
+    "name": "Kaden Prather", "team": "BUF", "position": "WR158", "bye": 7,
+    "adp": { "ppr": 373, "half_ppr": null, "standard": null }, "tier": 13, "vorp": 0, "projections": {}
+  },
+  {
+    "name": "Michael Strachan", "team": "WAS", "position": "WR159", "bye": 12,
+    "adp": { "ppr": 374, "half_ppr": null, "standard": null }, "tier": 13, "vorp": 0, "projections": {}
+  },
+  {
+    "name": "Isaiah Bond", "team": "", "position": "WR160", "bye": "",
+    "adp": { "ppr": 375, "half_ppr": null, "standard": null }, "tier": 13, "vorp": 0, "projections": {}
+  },
+  {
+    "name": "Lan Larison", "team": "NE", "position": "RB108", "bye": 14,
+    "adp": { "ppr": 376, "half_ppr": null, "standard": null }, "tier": 10, "vorp": 0, "projections": {}
+  },
+  {
+    "name": "Jared Wiley", "team": "KC", "position": "TE60", "bye": 10,
+    "adp": { "ppr": 377, "half_ppr": null, "standard": null }, "tier": 7, "vorp": 0, "projections": {}
+  },
+  {
+    "name": "Luke Farrell", "team": "SF", "position": "TE61", "bye": 14,
+    "adp": { "ppr": 378, "half_ppr": null, "standard": null }, "tier": 7, "vorp": 0, "projections": {}
+  },
+  {
+    "name": "Joshua Simon", "team": "ATL", "position": "TE62", "bye": 5,
+    "adp": { "ppr": 379, "half_ppr": null, "standard": null }, "tier": 7, "vorp": 0, "projections": {}
+  },
+  {
+    "name": "Ja'Corey Brooks", "team": "WAS", "position": "WR161", "bye": 12,
+    "adp": { "ppr": 380, "half_ppr": null, "standard": null }, "tier": 13, "vorp": 0, "projections": {}
+  },
+  {
+    "name": "Sam Howell", "team": "MIN", "position": "QB50", "bye": 6,
+    "adp": { "ppr": 381, "half_ppr": null, "standard": null }, "tier": 7, "vorp": 0, "projections": {}
+  },
+  {
+    "name": "Jamari Thrash", "team": "CLE", "position": "WR162", "bye": 9,
+    "adp": { "ppr": 382, "half_ppr": null, "standard": null }, "tier": 13, "vorp": 0, "projections": {}
+  },
+  {
+    "name": "LeQuint Allen Jr.", "team": "JAC", "position": "RB109", "bye": 8,
+    "adp": { "ppr": 383, "half_ppr": null, "standard": null }, "tier": 10, "vorp": 0, "projections": {}
+  },
+  {
+    "name": "Nick Nash", "team": "ATL", "position": "WR163", "bye": 5,
+    "adp": { "ppr": 384, "half_ppr": null, "standard": null }, "tier": 13, "vorp": 0, "projections": {}
+  },
+  {
+    "name": "John Bates", "team": "WAS", "position": "TE62", "bye": 12,
+    "adp": { "ppr": 385, "half_ppr": null, "standard": null }, "tier": 8, "vorp": 0, "projections": {}
+  },
+  {
+    "name": "Marcus Mariota", "team": "WAS", "position": "QB54", "bye": 12,
+    "adp": { "ppr": 386, "half_ppr": 326, "standard": 298 }, "tier": 7, "vorp": 0, "projections": {}
+  },
+  {
+    "name": "Jake Browning", "team": "CIN", "position": "QB55", "bye": 10,
+    "adp": { "ppr": 387, "half_ppr": null, "standard": null }, "tier": 8, "vorp": 0, "projections": {}
+  },
+  {
+    "name": "Tyson Bagent", "team": "CHI", "position": "QB56", "bye": 5,
+    "adp": { "ppr": 388, "half_ppr": null, "standard": null }, "tier": 8, "vorp": 0, "projections": {}
+  },
+  {
+    "name": "Mitchell Trubisky", "team": "BUF", "position": "QB57", "bye": 7,
+    "adp": { "ppr": 389, "half_ppr": null, "standard": null }, "tier": 8, "vorp": 0, "projections": {}
+  },
+  {
+    "name": "Craig Reynolds", "team": "DET", "position": "RB111", "bye": 8,
+    "adp": { "ppr": 390, "half_ppr": null, "standard": null }, "tier": 11, "vorp": 0, "projections": {}
+  },
+  {
+    "name": "Tyler Badie", "team": "DEN", "position": "RB112", "bye": 12,
+    "adp": { "ppr": 391, "half_ppr": null, "standard": null }, "tier": 11, "vorp": 0, "projections": {}
+  },
+  {
+    "name": "Rondale Moore", "team": "MIN", "position": "WR161", "bye": 6,
+    "adp": { "ppr": 392, "half_ppr": null, "standard": null }, "tier": 14, "vorp": 0, "projections": {}
+  },
+  {
+    "name": "Ihmir Smith-Marsette", "team": "NYG", "position": "WR162", "bye": 14,
+    "adp": { "ppr": 393, "half_ppr": null, "standard": null }, "tier": 14, "vorp": 0, "projections": {}
+  },
+  {
+    "name": "Israel Abanikanda", "team": "SF", "position": "RB113", "bye": 14,
+    "adp": { "ppr": 395, "half_ppr": null, "standard": null }, "tier": 11, "vorp": 0, "projections": {}
+  },
+  {
+    "name": "Riley Leonard", "team": "IND", "position": "QB58", "bye": 11,
+    "adp": { "ppr": 396, "half_ppr": null, "standard": null }, "tier": 8, "vorp": 0, "projections": {}
+  },
+  {
+    "name": "Konata Mumpfield", "team": "LAR", "position": "WR164", "bye": 8,
+    "adp": { "ppr": 397, "half_ppr": null, "standard": null }, "tier": 14, "vorp": 0, "projections": {}
+  },
+  {
+    "name": "George Holani", "team": "SEA", "position": "RB114", "bye": 8,
+    "adp": { "ppr": 400, "half_ppr": null, "standard": null }, "tier": 11, "vorp": 0, "projections": {}
+  },
+  {
+    "name": "Junior Bergen", "team": "SF", "position": "WR167", "bye": 14,
+    "adp": { "ppr": 402, "half_ppr": null, "standard": null }, "tier": 14, "vorp": 0, "projections": {}
+  },
+  {
+    "name": "Caleb Lohner", "team": "DEN", "position": "TE64", "bye": 12,
+    "adp": { "ppr": 403, "half_ppr": null, "standard": null }, "tier": 8, "vorp": 0, "projections": {}
+  },
+  {
+    "name": "Sincere McCormick", "team": "LV", "position": "RB115", "bye": 8,
+    "adp": { "ppr": 404, "half_ppr": null, "standard": null }, "tier": 11, "vorp": 0, "projections": {}
+  },
+  {
+    "name": "Carlos Washington Jr.", "team": "ATL", "position": "RB116", "bye": 5,
+    "adp": { "ppr": 405, "half_ppr": null, "standard": null }, "tier": 11, "vorp": 0, "projections": {}
+  },
+  {
+    "name": "Brenden Rice", "team": "LAC", "position": "WR168", "bye": 12,
+    "adp": { "ppr": 406, "half_ppr": null, "standard": null }, "tier": 14, "vorp": 0, "projections": {}
+  },
+  {
+    "name": "Erick All Jr.", "team": "CIN", "position": "TE65", "bye": 10,
+    "adp": { "ppr": 408, "half_ppr": null, "standard": null }, "tier": 8, "vorp": 0, "projections": {}
+  },
+  {
+    "name": "Jahleel Billingsley", "team": "LV", "position": "TE66", "bye": 8,
+    "adp": { "ppr": 409, "hppr": null, "standard": null }, "tier": 8, "vorp": 0, "projections": {}
+  },
+  {
+    "name": "Austin Stogner", "team": "ATL", "position": "TE67", "bye": 5,
+    "adp": { "ppr": 410, "hppr": null, "standard": null }, "tier": 8, "vorp": 0, "projections": {}
+  },
+  {
+    "name": "Ronnie Bell", "team": "MIA", "position": "WR169", "bye": 12,
+    "adp": { "ppr": 411, "hppr": null, "standard": null }, "tier": 14, "vorp": 0, "projections": {}
+  },
+  {
+    "name": "E.J. Smith", "team": "NYJ", "position": "RB117", "bye": 9,
+    "adp": { "ppr": 412, "hppr": null, "standard": null }, "tier": 11, "vorp": 0, "projections": {}
+  },
+  {
+    "name": "Ainias Smith", "team": "PHI", "position": "WR170", "bye": 9,
+    "adp": { "ppr": 413, "hppr": null, "standard": null }, "tier": 14, "vorp": 0, "projections": {}
+  },
+  {
+    "name": "Tayvion Robinson", "team": "BAL", "position": "WR171", "bye": 7,
+    "adp": { "ppr": 414, "hppr": null, "standard": null }, "tier": 14, "vorp": 0, "projections": {}
+  }
+]
