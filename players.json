@@ -1634,5 +1634,257 @@
   {
     "name": "Tayvion Robinson", "team": "BAL", "position": "WR171", "bye": 7,
     "adp": { "ppr": 414, "hppr": null, "standard": null }, "tier": 14, "vorp": 0, "projections": {}
+  },
+  {
+    "name": "Baltimore Ravens", "team": "BAL", "position": "DST", "bye": 7,
+    "adp": { "ppr": 130, "hppr": 130, "standard": 130 }, "tier": 1, "vorp": 15, "projections": {}
+  },
+  {
+    "name": "Cleveland Browns", "team": "CLE", "position": "DST", "bye": 9,
+    "adp": { "ppr": 135, "hppr": 135, "standard": 135 }, "tier": 1, "vorp": 14, "projections": {}
+  },
+  {
+    "name": "Kansas City Chiefs", "team": "KC", "position": "DST", "bye": 10,
+    "adp": { "ppr": 140, "hppr": 140, "standard": 140 }, "tier": 1, "vorp": 13, "projections": {}
+  },
+  {
+    "name": "Buffalo Bills", "team": "BUF", "position": "DST", "bye": 7,
+    "adp": { "ppr": 145, "hppr": 145, "standard": 145 }, "tier": 2, "vorp": 12, "projections": {}
+  },
+  {
+    "name": "Dallas Cowboys", "team": "DAL", "position": "DST", "bye": 10,
+    "adp": { "ppr": 150, "hppr": 150, "standard": 150 }, "tier": 2, "vorp": 11, "projections": {}
+  },
+  {
+    "name": "New York Jets", "team": "NYJ", "position": "DST", "bye": 9,
+    "adp": { "ppr": 155, "hppr": 155, "standard": 155 }, "tier": 2, "vorp": 10, "projections": {}
+  },
+  {
+    "name": "San Francisco 49ers", "team": "SF", "position": "DST", "bye": 14,
+    "adp": { "ppr": 160, "hppr": 160, "standard": 160 }, "tier": 3, "vorp": 9, "projections": {}
+  },
+  {
+    "name": "Philadelphia Eagles", "team": "PHI", "position": "DST", "bye": 9,
+    "adp": { "ppr": 165, "hppr": 165, "standard": 165 }, "tier": 3, "vorp": 8, "projections": {}
+  },
+  {
+    "name": "Pittsburgh Steelers", "team": "PIT", "position": "DST", "bye": 5,
+    "adp": { "ppr": 170, "hppr": 170, "standard": 170 }, "tier": 3, "vorp": 7, "projections": {}
+  },
+  {
+    "name": "Houston Texans", "team": "HOU", "position": "DST", "bye": 6,
+    "adp": { "ppr": 175, "hppr": 175, "standard": 175 }, "tier": 4, "vorp": 6, "projections": {}
+  },
+  {
+    "name": "Miami Dolphins", "team": "MIA", "position": "DST", "bye": 12,
+    "adp": { "ppr": 180, "hppr": 180, "standard": 180 }, "tier": 4, "vorp": 5, "projections": {}
+  },
+  {
+    "name": "Indianapolis Colts", "team": "IND", "position": "DST", "bye": 11,
+    "adp": { "ppr": 185, "hppr": 185, "standard": 185 }, "tier": 4, "vorp": 4, "projections": {}
+  },
+  {
+    "name": "Las Vegas Raiders", "team": "LV", "position": "DST", "bye": 8,
+    "adp": { "ppr": 190, "hppr": 190, "standard": 190 }, "tier": 5, "vorp": 3, "projections": {}
+  },
+  {
+    "name": "New Orleans Saints", "team": "NO", "position": "DST", "bye": 11,
+    "adp": { "ppr": 195, "hppr": 195, "standard": 195 }, "tier": 5, "vorp": 3, "projections": {}
+  },
+  {
+    "name": "Jacksonville Jaguars", "team": "JAC", "position": "DST", "bye": 8,
+    "adp": { "ppr": 200, "hppr": 200, "standard": 200 }, "tier": 5, "vorp": 2, "projections": {}
+  },
+  {
+    "name": "Tampa Bay Buccaneers", "team": "TB", "position": "DST", "bye": 9,
+    "adp": { "ppr": 205, "hppr": 205, "standard": 205 }, "tier": 6, "vorp": 2, "projections": {}
+  },
+  {
+    "name": "Detroit Lions", "team": "DET", "position": "DST", "bye": 8,
+    "adp": { "ppr": 210, "hppr": 210, "standard": 210 }, "tier": 6, "vorp": 1, "projections": {}
+  },
+  {
+    "name": "Los Angeles Rams", "team": "LAR", "position": "DST", "bye": 8,
+    "adp": { "ppr": 215, "hppr": 215, "standard": 215 }, "tier": 6, "vorp": 1, "projections": {}
+  },
+  {
+    "name": "Green Bay Packers", "team": "GB", "position": "DST", "bye": 5,
+    "adp": { "ppr": 220, "hppr": 220, "standard": 220 }, "tier": 7, "vorp": 0, "projections": {}
+  },
+  {
+    "name": "Chicago Bears", "team": "CHI", "position": "DST", "bye": 5,
+    "adp": { "ppr": 225, "hppr": 225, "standard": 225 }, "tier": 7, "vorp": 0, "projections": {}
+  },
+  {
+    "name": "Minnesota Vikings", "team": "MIN", "position": "DST", "bye": 6,
+    "adp": { "ppr": 230, "hppr": 230, "standard": 230 }, "tier": 7, "vorp": 0, "projections": {}
+  },
+  {
+    "name": "Atlanta Falcons", "team": "ATL", "position": "DST", "bye": 5,
+    "adp": { "ppr": 235, "hppr": 235, "standard": 235 }, "tier": 8, "vorp": 0, "projections": {}
+  },
+  {
+    "name": "Seattle Seahawks", "team": "SEA", "position": "DST", "bye": 8,
+    "adp": { "ppr": 240, "hppr": 240, "standard": 240 }, "tier": 8, "vorp": 0, "projections": {}
+  },
+  {
+    "name": "Los Angeles Chargers", "team": "LAC", "position": "DST", "bye": 12,
+    "adp": { "ppr": 245, "hppr": 245, "standard": 245 }, "tier": 8, "vorp": 0, "projections": {}
+  },
+  {
+    "name": "Cincinnati Bengals", "team": "CIN", "position": "DST", "bye": 10,
+    "adp": { "ppr": 250, "hppr": 250, "standard": 250 }, "tier": 9, "vorp": 0, "projections": {}
+  },
+  {
+    "name": "Denver Broncos", "team": "DEN", "position": "DST", "bye": 12,
+    "adp": { "ppr": 255, "hppr": 255, "standard": 255 }, "tier": 9, "vorp": 0, "projections": {}
+  },
+  {
+    "name": "New England Patriots", "team": "NE", "position": "DST", "bye": 14,
+    "adp": { "ppr": 260, "hppr": 260, "standard": 260 }, "tier": 9, "vorp": 0, "projections": {}
+  },
+  {
+    "name": "New York Giants", "team": "NYG", "position": "DST", "bye": 14,
+    "adp": { "ppr": 265, "hppr": 265, "standard": 265 }, "tier": 10, "vorp": 0, "projections": {}
+  },
+  {
+    "name": "Arizona Cardinals", "team": "ARI", "position": "DST", "bye": 8,
+    "adp": { "ppr": 270, "hppr": 270, "standard": 270 }, "tier": 10, "vorp": 0, "projections": {}
+  },
+  {
+    "name": "Tennessee Titans", "team": "TEN", "position": "DST", "bye": 10,
+    "adp": { "ppr": 275, "hppr": 275, "standard": 275 }, "tier": 10, "vorp": 0, "projections": {}
+  },
+  {
+    "name": "Washington Commanders", "team": "WAS", "position": "DST", "bye": 12,
+    "adp": { "ppr": 280, "hppr": 280, "standard": 280 }, "tier": 11, "vorp": 0, "projections": {}
+  },
+  {
+    "name": "Carolina Panthers", "team": "CAR", "position": "DST", "bye": 14,
+    "adp": { "ppr": 285, "hppr": 285, "standard": 285 }, "tier": 11, "vorp": 0, "projections": {}
+  },
+  {
+    "name": "Justin Tucker", "team": "BAL", "position": "K", "bye": 7,
+    "adp": { "ppr": 142, "hppr": 142, "standard": 142 }, "tier": 1, "vorp": 10, "projections": {}
+  },
+  {
+    "name": "Jake Moody", "team": "SF", "position": "K", "bye": 14,
+    "adp": { "ppr": 148, "hppr": 148, "standard": 148 }, "tier": 1, "vorp": 9, "projections": {}
+  },
+  {
+    "name": "Evan McPherson", "team": "CIN", "position": "K", "bye": 10,
+    "adp": { "ppr": 152, "hppr": 152, "standard": 152 }, "tier": 2, "vorp": 8, "projections": {}
+  },
+  {
+    "name": "Jake Elliott", "team": "PHI", "position": "K", "bye": 9,
+    "adp": { "ppr": 158, "hppr": 158, "standard": 158 }, "tier": 2, "vorp": 8, "projections": {}
+  },
+  {
+    "name": "Harrison Butker", "team": "KC", "position": "K", "bye": 10,
+    "adp": { "ppr": 162, "hppr": 162, "standard": 162 }, "tier": 2, "vorp": 7, "projections": {}
+  },
+  {
+    "name": "Brandon Aubrey", "team": "DAL", "position": "K", "bye": 10,
+    "adp": { "ppr": 168, "hppr": 168, "standard": 168 }, "tier": 3, "vorp": 6, "projections": {}
+  },
+  {
+    "name": "Tyler Bass", "team": "BUF", "position": "K", "bye": 7,
+    "adp": { "ppr": 172, "hppr": 172, "standard": 172 }, "tier": 3, "vorp": 6, "projections": {}
+  },
+  {
+    "name": "Cameron Dicker", "team": "LAC", "position": "K", "bye": 12,
+    "adp": { "ppr": 178, "hppr": 178, "standard": 178 }, "tier": 4, "vorp": 5, "projections": {}
+  },
+  {
+    "name": "Dustin Hopkins", "team": "CLE", "position": "K", "bye": 9,
+    "adp": { "ppr": 182, "hppr": 182, "standard": 182 }, "tier": 4, "vorp": 5, "projections": {}
+  },
+  {
+    "name": "Ka'imi Fairbairn", "team": "HOU", "position": "K", "bye": 6,
+    "adp": { "ppr": 188, "hppr": 188, "standard": 188 }, "tier": 4, "vorp": 4, "projections": {}
+  },
+  {
+    "name": "Younghoe Koo", "team": "ATL", "position": "K", "bye": 5,
+    "adp": { "ppr": 192, "hppr": 192, "standard": 192 }, "tier": 5, "vorp": 4, "projections": {}
+  },
+  {
+    "name": "Matt Gay", "team": "IND", "position": "K", "bye": 11,
+    "adp": { "ppr": 198, "hppr": 198, "standard": 198 }, "tier": 5, "vorp": 3, "projections": {}
+  },
+  {
+    "name": "Jason Myers", "team": "SEA", "position": "K", "bye": 8,
+    "adp": { "ppr": 202, "hppr": 202, "standard": 202 }, "tier": 5, "vorp": 3, "projections": {}
+  },
+  {
+    "name": "Brandon McManus", "team": "WAS", "position": "K", "bye": 12,
+    "adp": { "ppr": 208, "hppr": 208, "standard": 208 }, "tier": 6, "vorp": 2, "projections": {}
+  },
+  {
+    "name": "Jason Sanders", "team": "MIA", "position": "K", "bye": 12,
+    "adp": { "ppr": 212, "hppr": 212, "standard": 212 }, "tier": 6, "vorp": 2, "projections": {}
+  },
+  {
+    "name": "Anders Carlson", "team": "GB", "position": "K", "bye": 5,
+    "adp": { "ppr": 218, "hppr": 218, "standard": 218 }, "tier": 6, "vorp": 1, "projections": {}
+  },
+  {
+    "name": "Wil Lutz", "team": "DEN", "position": "K", "bye": 12,
+    "adp": { "ppr": 222, "hppr": 222, "standard": 222 }, "tier": 7, "vorp": 1, "projections": {}
+  },
+  {
+    "name": "Daniel Carlson", "team": "LV", "position": "K", "bye": 8,
+    "adp": { "ppr": 228, "hppr": 228, "standard": 228 }, "tier": 7, "vorp": 0, "projections": {}
+  },
+  {
+    "name": "Michael Badgley", "team": "DET", "position": "K", "bye": 8,
+    "adp": { "ppr": 232, "hppr": 232, "standard": 232 }, "tier": 7, "vorp": 0, "projections": {}
+  },
+  {
+    "name": "Matt Prater", "team": "ARI", "position": "K", "bye": 8,
+    "adp": { "ppr": 238, "hppr": 238, "standard": 238 }, "tier": 8, "vorp": 0, "projections": {}
+  },
+  {
+    "name": "Chase McLaughlin", "team": "TB", "position": "K", "bye": 9,
+    "adp": { "ppr": 242, "hppr": 242, "standard": 242 }, "tier": 8, "vorp": 0, "projections": {}
+  },
+  {
+    "name": "Blake Grupe", "team": "NO", "position": "K", "bye": 11,
+    "adp": { "ppr": 248, "hppr": 248, "standard": 248 }, "tier": 8, "vorp": 0, "projections": {}
+  },
+  {
+    "name": "Eddy Pineiro", "team": "CAR", "position": "K", "bye": 14,
+    "adp": { "ppr": 252, "hppr": 252, "standard": 252 }, "tier": 9, "vorp": 0, "projections": {}
+  },
+  {
+    "name": "Greg Joseph", "team": "MIN", "position": "K", "bye": 6,
+    "adp": { "ppr": 258, "hppr": 258, "standard": 258 }, "tier": 9, "vorp": 0, "projections": {}
+  },
+  {
+    "name": "Chris Boswell", "team": "PIT", "position": "K", "bye": 5,
+    "adp": { "ppr": 262, "hppr": 262, "standard": 262 }, "tier": 9, "vorp": 0, "projections": {}
+  },
+  {
+    "name": "Nick Folk", "team": "TEN", "position": "K", "bye": 10,
+    "adp": { "ppr": 268, "hppr": 268, "standard": 268 }, "tier": 10, "vorp": 0, "projections": {}
+  },
+  {
+    "name": "Chad Ryland", "team": "NE", "position": "K", "bye": 14,
+    "adp": { "ppr": 272, "hppr": 272, "standard": 272 }, "tier": 10, "vorp": 0, "projections": {}
+  },
+  {
+    "name": "Cairo Santos", "team": "CHI", "position": "K", "bye": 5,
+    "adp": { "ppr": 278, "hppr": 278, "standard": 278 }, "tier": 10, "vorp": 0, "projections": {}
+  },
+  {
+    "name": "Graham Gano", "team": "NYG", "position": "K", "bye": 14,
+    "adp": { "ppr": 282, "hppr": 282, "standard": 282 }, "tier": 11, "vorp": 0, "projections": {}
+  },
+  {
+    "name": "Brett Maher", "team": "LAR", "position": "K", "bye": 8,
+    "adp": { "ppr": 288, "hppr": 288, "standard": 288 }, "tier": 11, "vorp": 0, "projections": {}
+  },
+  {
+    "name": "Greg Zuerlein", "team": "NYJ", "position": "K", "bye": 9,
+    "adp": { "ppr": 292, "hppr": 292, "standard": 292 }, "tier": 11, "vorp": 0, "projections": {}
   }
 ]
