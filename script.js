@@ -2,9 +2,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Central configuration for the entire application
     const config = {
-        dataFiles: ['players.json'], // Loads from the single, combined file
+        dataFiles: ['players.json'],
         rosterSettings: { QB: 1, RB: 2, WR: 2, TE: 1, FLEX: 1, SUPER_FLEX: 0, DST: 1, K: 1, BENCH: 6 },
-        positions: ["QB", "RB", "WR", "TE"],
+        positions: ["QB", "RB", "WR", "TE", "DST", "K"],
+        flexPositions: ["RB", "WR", "TE"],
         superflexPositions: ["QB", "RB", "WR", "TE"]
     };
 
@@ -20,12 +21,6 @@ document.addEventListener('DOMContentLoaded', () => {
             this.initMobileMenu();
             this.createPlayerPopup();
             this.initPlaceholderTicker(); 
-            
-            // This can run independently of player data for a faster feel
-            if (document.getElementById('daily-briefing-section')) {
-                this.generateDailyBriefing();
-            }
-            
             await this.loadAllPlayerData();
             this.initLiveTicker(); 
             this.initializePageFeatures();
@@ -41,53 +36,8 @@ document.addEventListener('DOMContentLoaded', () => {
             if (document.getElementById('trade-analyzer')) this.initTradeAnalyzer();
         },
         
-        // --- NEW: AI DAILY BRIEFING with REAL NEWS ---
-        async generateDailyBriefing() {
-            const container = document.getElementById('daily-briefing-content');
-            if (!container) return;
-
-            // Real, recent news headlines to feed the AI
-            const realNewsHeadlines = [
-                "Browns' Cedric Tillman is expected to have a full-time role this season.",
-                "Jets' OC says Justin Fields' 'workaholic' ethic is standing out.",
-                "Titans' coach praises Tyjae Spears, saying he's had an 'unbelievable offseason'.",
-                "Cardinals staff expects a 'substantial step forward' for Marvin Harrison Jr. in his second year."
-            ];
-            
-            const prompt = `Act as a fantasy football analyst for a website called 'Front Row Fantasy'. Write a short, insightful 'Daily Briefing' article (about 100-120 words) for fantasy players. Base the article on the following recent news items: ${realNewsHeadlines.join('; ')}. Synthesize these points into a cohesive analysis about risers or fallers. Give actionable advice. Format the output with a headline in bold, followed by the article paragraphs.`;
-            
-            try {
-                let chatHistory = [{ role: "user", parts: [{ text: prompt }] }];
-                const payload = { contents: chatHistory };
-                const apiKey = ""; // Your Gemini API Key
-                const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
-                
-                const response = await fetch(apiUrl, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(payload)
-                });
-                
-                const result = await response.json();
-                
-                if (result.candidates && result.candidates.length > 0) {
-                    let text = result.candidates[0].content.parts[0].text;
-                    text = text.replace(/\*\*(.*?)\*\*/g, '<h4 class="text-xl font-bold text-yellow-300 mb-2">$1</h4>');
-                    text = text.replace(/\n\n/g, '</p><p class="text-gray-300 mb-4">');
-                    container.innerHTML = `<p class="text-gray-300 mb-4">${text}</p>`;
-                } else {
-                    throw new Error('No content returned from AI.');
-                }
-            } catch (error) {
-                console.error("Gemini API error:", error);
-                container.innerHTML = `<p class="text-red-400 text-center">Could not generate today's briefing. Please check back later.</p>`;
-            }
-        },
+        // --- CORE & UI FUNCTIONS ---
         
-        // --- ALL OTHER FUNCTIONS ---
-        // Includes logic for mobile menu, ticker, data loading, popups, tools, etc.
-        // These are the complete and correct versions.
-
         initMobileMenu() {
             const mobileMenuButton = document.getElementById('mobile-menu-button');
             const mainNav = document.querySelector('header nav.hidden.md\\:flex');
@@ -155,6 +105,9 @@ document.addEventListener('DOMContentLoaded', () => {
             const points = base + (Math.random() * range);
             return Math.max(0, points); 
         },
+
+        // --- PAGE-SPECIFIC INITIALIZERS ---
+        
         initTopPlayers() {
             const container = document.getElementById('player-showcase-container');
             if (!container || !this.playerData.length) return;
@@ -314,8 +267,113 @@ document.addEventListener('DOMContentLoaded', () => {
             const pos = isBench ? 'BEN' : player.displayPos;
             return `<div class="player-card player-pos-${player.simplePosition.toLowerCase()}"><strong class="font-bold w-12">${pos}:</strong><span class="player-name-link" data-player-name="${player.name}">${player.name} (${player.team})</span><span class="text-xs text-gray-400 ml-auto">${player.draftedAt || ''}</span></div>`;
         },
-        initStartSitTool() { /* ... */ },
-        initMockDraftSimulator() { /* ... */ },
+        initStartSitTool() {
+            const tool = { player1Input: document.getElementById('start-sit-player1'), player2Input: document.getElementById('start-sit-player2'), analyzeBtn: document.getElementById('start-sit-analyze'), resultsContainer: document.getElementById('start-sit-results') };
+            if(!tool.analyzeBtn) return;
+            [tool.player1Input, tool.player2Input].forEach(input => { input.addEventListener('input', e => this.showAutocomplete(e.target)); });
+            tool.analyzeBtn.addEventListener('click', () => { const player1 = this.playerData.find(p => p.name === tool.player1Input.value); const player2 = this.playerData.find(p => p.name === tool.player2Input.value); this.analyzeStartSit(player1, player2); });
+        },
+        showAutocomplete(inputElement) {
+            const listId = inputElement.id + '-autocomplete';
+            let list = document.getElementById(listId);
+            if (!list) { list = document.createElement('div'); list.id = listId; list.className = 'autocomplete-list'; inputElement.parentNode.appendChild(list); }
+            const searchTerm = inputElement.value.toLowerCase(); list.innerHTML = ''; if (searchTerm.length < 2) return;
+            const filtered = this.playerData.filter(p => p.name.toLowerCase().includes(searchTerm)).slice(0, 5);
+            filtered.forEach(player => { const item = document.createElement('li'); item.textContent = `${player.name} (${player.team})`; item.addEventListener('click', () => { inputElement.value = player.name; list.innerHTML = ''; }); list.appendChild(item); });
+        },
+        analyzeStartSit(p1, p2) {
+            const resultsContainer = document.getElementById('start-sit-results');
+            if (!p1 || !p2) { resultsContainer.innerHTML = `<p class="text-red-400">Please select two valid players.</p>`; resultsContainer.classList.remove('hidden'); return; }
+            const score1 = (p1.vorp * 2) + ((10 - p1.tier) * 5) + p1.fantasyPoints; const score2 = (p2.vorp * 2) + ((10 - p2.tier) * 5) + p2.fantasyPoints;
+            const winner = score1 > score2 ? p1 : p2; const loser = score1 > score2 ? p2 : p1;
+            const advice = this.generateStartSitAdvice(winner, loser);
+            resultsContainer.innerHTML = ` <h3 class="text-2xl font-bold text-yellow-300 mb-4">The Verdict</h3> <div class="verdict-card start"><p class="decision-text">START</p><p class="player-name">${winner.name}</p><p class="player-details">${winner.simplePosition} | ${winner.team}</p></div> <div class="verdict-card sit"><p class="decision-text">SIT</p><p class="player-name">${loser.name}</p><p class="player-details">${loser.simplePosition} | ${loser.team}</p></div> <div class="analysis-section"><h4 class="font-semibold text-teal-300">Analysis</h4><p class="text-gray-300">${advice}</p></div> `;
+            resultsContainer.classList.remove('hidden');
+        },
+        generateStartSitAdvice(winner, loser) {
+            const reasons = [`has a significantly higher Value Over Replacement Player (VORP), indicating greater potential impact.`,`is in a higher tier, suggesting more reliable week-to-week production.`,`has a better recent performance trend, making them the safer bet this week.`,`simply projects for more points based on our latest data models.`,`has a more favorable matchup, increasing their scoring ceiling.`];
+            const randomReason = reasons[Math.floor(Math.random() * reasons.length)];
+            return `While both are viable options, **${winner.name}** gets the edge. Our model indicates that ${winner.name} ${randomReason} Consider starting ${loser.name} only in deeper leagues or as a bye-week replacement.`;
+        },
+        initMockDraftSimulator() {
+             const controls = { startBtn: document.getElementById('start-draft-button'), scoringSelect: document.getElementById('draft-scoring'), sizeSelect: document.getElementById('draft-league-size'), pickSelect: document.getElementById('draft-user-pick'), settingsContainer: document.getElementById('draft-settings-container'), draftingContainer: document.getElementById('interactive-draft-container'), completeContainer: document.getElementById('draft-complete-container'), restartBtn: document.getElementById('restart-draft-button'), };
+            if (!controls.startBtn) return;
+            const updateUserPickOptions = () => { const size = parseInt(controls.sizeSelect.value); controls.pickSelect.innerHTML = ''; for (let i = 1; i <= size; i++) { controls.pickSelect.add(new Option(`Pick ${i}`, i)); } };
+            controls.sizeSelect.addEventListener('change', updateUserPickOptions);
+            controls.startBtn.addEventListener('click', () => this.startInteractiveDraft(controls));
+            controls.restartBtn.addEventListener('click', () => this.resetDraftUI(controls));
+            updateUserPickOptions();
+        },
+        startInteractiveDraft(controls) {
+            controls.settingsContainer.classList.add('hidden'); controls.draftingContainer.classList.remove('hidden'); controls.completeContainer.classList.add('hidden');
+            const leagueSize = parseInt(controls.sizeSelect.value); const userPickNum = parseInt(controls.pickSelect.value); const scoring = controls.scoringSelect.value.toLowerCase(); const totalRounds = 15;
+            this.draftState = { controls, leagueSize, userPickNum, scoring, totalRounds, currentRound: 1, currentPickInRound: 1, teams: Array.from({ length: leagueSize }, (v, i) => ({ teamNumber: i + 1, roster: [] })), availablePlayers: [...this.playerData].filter(p => p.adp && typeof p.adp[scoring] === 'number').sort((a, b) => a.adp[scoring] - b.adp[scoring]), draftPicks: [], isUserTurn: false, };
+            this.updateDraftBoard(); this.updateMyTeam(); this.runDraftTurn();
+        },
+        runDraftTurn() {
+            if (this.draftState.currentRound > this.draftState.totalRounds) { this.endInteractiveDraft(); return; }
+            const { currentRound, leagueSize } = this.draftState; const isSnake = currentRound % 2 === 0; const pickInRound = this.draftState.currentPickInRound; const teamIndex = isSnake ? leagueSize - pickInRound : pickInRound - 1;
+            const isUserTurn = (teamIndex + 1) === this.draftState.userPickNum; this.draftState.isUserTurn = isUserTurn;
+            this.updateDraftStatus();
+            if (isUserTurn) { this.updateBestAvailable(true); } 
+            else { this.updateBestAvailable(false); setTimeout(() => { this.makeAiPick(teamIndex); this.runDraftTurn(); }, 500); }
+        },
+        makeAiPick(teamIndex) {
+            const { availablePlayers } = this.draftState; const topAvailable = availablePlayers.slice(0, 15);
+            topAvailable.forEach(p => { let score = p.vorp || 0; score *= (1 + (Math.random() - 0.5) * 0.4); p.draftScore = score; });
+            topAvailable.sort((a, b) => b.draftScore - a.draftScore);
+            const draftedPlayer = topAvailable[0]; this.makePick(draftedPlayer, teamIndex);
+        },
+        makeUserPick(playerName) { const player = this.draftState.availablePlayers.find(p => p.name === playerName); const teamIndex = this.draftState.userPickNum - 1; if (player) { this.makePick(player, teamIndex); this.runDraftTurn(); } },
+        makePick(player, teamIndex) {
+            this.draftState.availablePlayers = this.draftState.availablePlayers.filter(p => p.name !== player.name);
+            this.draftState.teams[teamIndex].roster.push(player);
+            this.draftState.draftPicks.push({ round: this.draftState.currentRound, pick: this.draftState.currentPickInRound, player: player, teamNumber: teamIndex + 1, });
+            this.updateDraftBoard(); if ((teamIndex + 1) === this.draftState.userPickNum) { this.updateMyTeam(); }
+            this.draftState.currentPickInRound++;
+            if (this.draftState.currentPickInRound > this.draftState.leagueSize) { this.draftState.currentPickInRound = 1; this.draftState.currentRound++; }
+        },
+        updateDraftStatus() {
+            const { currentRound, currentPickInRound, leagueSize, totalRounds, isUserTurn } = this.draftState;
+            const overallPick = (currentRound - 1) * leagueSize + currentPickInRound; const statusCard = document.getElementById('draft-status-card');
+            let statusHTML = `<p class="text-gray-400">Round ${currentRound}/${totalRounds} | Pick ${overallPick}</p>`;
+            if(isUserTurn) { statusHTML += `<p class="text-2xl font-bold text-yellow-300 text-glow-gold animate-pulse">YOU ARE ON THE CLOCK</p>`; } 
+            else { const isSnake = currentRound % 2 === 0; const teamNumber = isSnake ? leagueSize - currentPickInRound + 1 : currentPickInRound; statusHTML += `<p class="text-xl font-semibold text-white">Team ${teamNumber} is picking...</p>`; }
+            statusCard.innerHTML = statusHTML;
+        },
+        updateBestAvailable(isUserTurn) {
+            const listEl = document.getElementById('best-available-list'); listEl.innerHTML = '';
+            const topPlayers = this.draftState.availablePlayers.slice(0, 20);
+            topPlayers.forEach(player => { const playerEl = document.createElement('div'); playerEl.className = 'best-available-player'; playerEl.innerHTML = ` <div class="flex-grow"><p class="player-name-link font-semibold text-white" data-player-name="${player.name}">${player.name}</p><p class="text-sm text-gray-400">${player.team} - ${player.simplePosition}</p></div> ${isUserTurn ? `<button class="draft-button" data-player-name="${player.name}">Draft</button>` : ''} `; listEl.appendChild(playerEl); });
+            if(isUserTurn) { document.querySelectorAll('.draft-button').forEach(btn => { btn.onclick = (e) => this.makeUserPick(e.target.dataset.playerName); }); }
+            this.addPlayerPopupListeners();
+        },
+        updateMyTeam() {
+            const listEl = document.getElementById('my-team-list'); listEl.innerHTML = '';
+            const myTeam = this.draftState.teams[this.draftState.userPickNum - 1];
+            myTeam.roster.forEach(player => { listEl.innerHTML += ` <div class="my-team-player player-pos-${player.simplePosition.toLowerCase()}"><strong class="w-10">${player.simplePosition}</strong><span class="player-name-link" data-player-name="${player.name}">${player.name}</span></div> `; });
+            this.addPlayerPopupListeners();
+        },
+        updateDraftBoard() {
+            const gridEl = document.getElementById('draft-board-grid'); const { leagueSize, draftPicks, userPickNum } = this.draftState; gridEl.innerHTML = '';
+            let headerHtml = '<div class="draft-board-header">'; for (let i = 1; i <= leagueSize; i++) { headerHtml += `<div class="draft-board-team-header ${userPickNum === i ? 'user-team-header' : ''}">Team ${i}</div>`; } headerHtml += '</div>'; gridEl.innerHTML += headerHtml;
+            const bodyEl = document.createElement('div'); bodyEl.className = 'draft-board-body'; bodyEl.style.gridTemplateColumns = `repeat(${leagueSize}, minmax(0, 1fr))`;
+            draftPicks.forEach(p => { const pickEl = document.createElement('div'); pickEl.className = `draft-pick ${p.teamNumber === userPickNum ? 'user-pick' : ''}`; pickEl.innerHTML = ` <span class="pick-number">${p.round}.${p.pick}</span><p class="player-name-link pick-player-name" data-player-name="${p.player.name}">${p.player.name}</p><p class="pick-player-info">${p.player.team} - ${p.player.simplePosition}</p> `; bodyEl.appendChild(pickEl); });
+            gridEl.appendChild(bodyEl); this.addPlayerPopupListeners();
+        },
+        endInteractiveDraft() {
+            this.draftState.controls.draftingContainer.classList.add('hidden'); this.draftState.controls.completeContainer.classList.remove('hidden');
+            const rosterEl = document.getElementById('final-roster-display'); rosterEl.innerHTML = '';
+            const myRoster = this.draftState.teams[this.draftState.userPickNum - 1].roster;
+            const starters = []; const bench = []; const rosterSlots = { ...config.rosterSettings };
+            myRoster.forEach(player => { const pos = player.simplePosition; if (rosterSlots[pos] > 0) { starters.push(player); rosterSlots[pos]--; } else if (config.positions.includes(pos) && rosterSlots['FLEX'] > 0) { starters.push(player); rosterSlots['FLEX']--; } else { bench.push(player); } });
+            rosterEl.innerHTML = ` <div><h4 class="text-xl font-semibold text-teal-300 mb-2 border-b border-gray-700 pb-1">Starters</h4><div class="space-y-2">${starters.map(p => this.createPlayerCardHTML(p)).join('')}</div></div> <div><h4 class="text-xl font-semibold text-teal-300 mb-2 border-b border-gray-700 pb-1">Bench</h4><div class="space-y-2">${bench.map(p => this.createPlayerCardHTML(p, true)).join('')}</div></div> `;
+            this.addPlayerPopupListeners();
+        },
+        resetDraftUI(controls) {
+            controls.settingsContainer.classList.remove('hidden'); controls.draftingContainer.classList.add('hidden'); controls.completeContainer.classList.add('hidden');
+            this.draftState = {};
+        },
         createPlayerPopup() { if (document.getElementById('player-popup-card')) return; const popup = document.createElement('div'); popup.id = 'player-popup-card'; popup.className = 'hidden'; document.body.appendChild(popup); },
         addPlayerPopupListeners() { const popup = document.getElementById('player-popup-card'); popup.addEventListener('mouseenter', () => clearTimeout(this.popupHideTimeout)); popup.addEventListener('mouseleave', () => { this.popupHideTimeout = setTimeout(() => popup.classList.add('hidden'), 300); }); document.querySelectorAll('.player-name-link').forEach(el => { el.addEventListener('mouseenter', (e) => { clearTimeout(this.popupHideTimeout); const playerName = e.target.dataset.playerName; const player = this.playerData.find(p => p.name === playerName); if (player) { this.updateAndShowPopup(player, e); } }); el.addEventListener('mouseleave', () => { this.popupHideTimeout = setTimeout(() => popup.classList.add('hidden'), 300); }); el.addEventListener('mousemove', (e) => { popup.style.left = `${e.pageX + 15}px`; popup.style.top = `${e.pageY + 15}px`; }); }); },
         updateAndShowPopup(player, event) { const popup = document.getElementById('player-popup-card'); popup.innerHTML = `<div class="popup-header"><p class="font-bold text-lg text-white">${player.name}</p><p class="text-sm text-teal-300">${player.team} - ${player.simplePosition}</p></div><div class="popup-body"><p><strong>ADP (PPR):</strong> ${player.adp.ppr || 'N/A'}</p><p><strong>Tier:</strong> ${player.tier || 'N/A'}</p><p><strong>VORP:</strong> ${player.vorp ? player.vorp.toFixed(2) : 'N/A'}</p><p><strong>Bye Week:</strong> ${player.bye || 'N/A'}</p></div><div id="ai-analysis-container" class="popup-footer"><button id="get-ai-analysis-btn" class="ai-analysis-btn" data-player-name="${player.name}">Get AI Analysis</button><div id="ai-analysis-loader" class="loader-small hidden"></div><p id="ai-analysis-text" class="text-sm text-gray-300"></p></div>`; popup.classList.remove('hidden'); popup.querySelector('#get-ai-analysis-btn').addEventListener('click', (e) => { this.getAiPlayerAnalysis(e.target.dataset.playerName); }); },
