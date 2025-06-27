@@ -105,7 +105,7 @@ document.addEventListener('DOMContentLoaded', () => {
             return Math.max(0, points); 
         },
 
-        // --- PAGE-SPECIFIC INITIALIZERS ---
+        // --- PAGE INITIALIZERS ---
         
         initTopPlayers() {
             const container = document.getElementById('player-showcase-container');
