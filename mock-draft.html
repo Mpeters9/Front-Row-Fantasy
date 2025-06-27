@@ -35,29 +35,30 @@
         <section id="mock-draft-simulator">
             <!-- Settings Section -->
             <div id="draft-settings-container" class="tool-card">
-                <h1 class="text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-yellow-300 to-teal-300 mb-6 text-glow-gold text-center">Interactive Mock Draft</h1>
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+                <h1 class="text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-yellow-300 to-teal-300 mb-2 text-glow-gold text-center">Interactive Mock Draft</h1>
+                <p class="text-center text-teal-200 mb-6">Practice drafting against smart AI opponents to hone your strategy.</p>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6 p-4 border border-teal-800 rounded-lg">
                     <div>
-                        <label for="draftScoringType" class="block text-gray-300 font-semibold mb-2">Scoring</label>
-                        <select id="draftScoringType" class="form-select w-full"><option value="ppr" selected>PPR</option><option value="hppr">Half-PPR</option><option value="standard">Standard</option></select>
+                        <label for="draft-scoring" class="block text-gray-300 font-semibold mb-2">Scoring</label>
+                        <select id="draft-scoring" class="form-select w-full"><option value="ppr" selected>PPR</option><option value="hppr">Half-PPR</option><option value="standard">Standard</option></select>
                     </div>
                     <div>
-                        <label for="leagueSize" class="block text-gray-300 font-semibold mb-2">League Size</label>
-                        <select id="leagueSize" class="form-select w-full"><option value="12" selected>12 Teams</option><option value="10">10 Teams</option><option value="14">14 Teams</option></select>
+                        <label for="draft-league-size" class="block text-gray-300 font-semibold mb-2">League Size</label>
+                        <select id="draft-league-size" class="form-select w-full"><option value="12" selected>12 Teams</option><option value="10">10 Teams</option><option value="14">14 Teams</option></select>
                     </div>
                     <div>
-                        <label for="userPick" class="block text-gray-300 font-semibold mb-2">Your Draft Pick</label>
-                        <select id="userPick" class="form-select w-full"></select>
+                        <label for="draft-user-pick" class="block text-gray-300 font-semibold mb-2">Your Draft Pick</label>
+                        <select id="draft-user-pick" class="form-select w-full"></select>
                     </div>
                 </div>
-                <button id="start-draft-button" class="cta-btn w-full mt-2">Start Your Draft</button>
+                <button id="start-draft-button" class="cta-btn w-full mt-2 text-lg">Start Your Draft</button>
             </div>
 
             <!-- Interactive Draft Interface (Initially Hidden) -->
             <div id="interactive-draft-container" class="hidden mt-8 grid grid-cols-1 lg:grid-cols-3 gap-6">
                 <!-- Left Column: Best Available & Your Team -->
                 <div class="lg:col-span-1 space-y-6">
-                    <div id="draft-status-card" class="tool-card text-center">
+                    <div id="draft-status-card" class="tool-card text-center p-4">
                          <!-- Status will be updated here -->
                     </div>
                     <div id="best-available-container" class="tool-card">
@@ -87,7 +88,6 @@
         </section>
     </main>
 
-    <!-- This is the hidden popup card for player info -->
     <div id="player-popup-card" class="hidden"></div>
 
     <footer class="bg-gray-900 text-teal-400 py-6 border-t-2 border-teal-500 mt-12">
