@@ -2,9 +2,9 @@
   {
     "name": "Keon Coleman",
     "team": "BUF",
-    "position": "WR53",
+    "position": "WR",
     "bye": 7,
-    "adp": { "ppr": 101.5, "half_ppr": 101.5, "standard": 128 },
+    "adp": { "standard": 128, "ppr": 101, "hppr": 112 },
     "tier": 8,
     "vorp": 25.1,
     "projections": {}
@@ -12,9 +12,9 @@
   {
     "name": "Travis Etienne Jr.",
     "team": "JAC",
-    "position": "RB33",
+    "position": "RB",
     "bye": 8,
-    "adp": { "ppr": 103.5, "half_ppr": 106, "standard": 101.5 },
+    "adp": { "standard": 101.5, "ppr": 106, "hppr": 106 },
     "tier": 6,
     "vorp": 48.2,
     "projections": {}
@@ -22,9 +22,9 @@
   {
     "name": "Brock Purdy",
     "team": "SF",
-    "position": "QB11",
+    "position": "QB",
     "bye": 14,
-    "adp": { "ppr": 103.5, "half_ppr": 103, "standard": 99.5 },
+    "adp": { "standard": 99.5, "ppr": 102, "hppr": 98 },
     "tier": 3,
     "vorp": 72.1,
     "projections": {}
@@ -32,9 +32,9 @@
   {
     "name": "Evan Engram",
     "team": "DEN",
-    "position": "TE7",
+    "position": "TE",
     "bye": 12,
-    "adp": { "ppr": 104, "half_ppr": 103, "standard": 98.5 },
+    "adp": { "standard": 98.5, "ppr": 103, "hppr": 104.5 },
     "tier": 3,
     "vorp": 52.8,
     "projections": {}
@@ -42,9 +42,9 @@
   {
     "name": "Tre Harris",
     "team": "LAC",
-    "position": "WR54",
+    "position": "WR",
     "bye": 12,
-    "adp": { "ppr": 106.5, "half_ppr": 125.5, "standard": 140.5 },
+    "adp": { "standard": 140.5, "ppr": 104, "hppr": 128 },
     "tier": 8,
     "vorp": 23.5,
     "projections": {}
@@ -52,9 +52,9 @@
   {
     "name": "Mark Andrews",
     "team": "BAL",
-    "position": "TE8",
+    "position": "TE",
     "bye": 7,
-    "adp": { "ppr": 106.5, "half_ppr": 103, "standard": 96.5 },
+    "adp": { "standard": 96.5, "ppr": 107, "hppr": 102.5 },
     "tier": 3,
     "vorp": 58.4,
     "projections": {}
@@ -62,9 +62,9 @@
   {
     "name": "Najee Harris",
     "team": "LAC",
-    "position": "RB34",
+    "position": "RB",
     "bye": 12,
-    "adp": { "ppr": 107, "half_ppr": 99.5, "standard": 94.5 },
+    "adp": { "standard": 94.5, "ppr": 110, "hppr": 99.5 },
     "tier": 6,
     "vorp": 52.1,
     "projections": {}
@@ -72,9 +72,9 @@
   {
     "name": "Rashid Shaheed",
     "team": "NO",
-    "position": "WR55",
+    "position": "WR",
     "bye": 11,
-    "adp": { "ppr": 107.5, "half_ppr": 117, "standard": 145 },
+    "adp": { "standard": 145, "ppr": 108, "hppr": 115 },
     "tier": 8,
     "vorp": 20.3,
     "projections": {}
@@ -82,9 +82,9 @@
   {
     "name": "Tyrone Tracy Jr.",
     "team": "NYG",
-    "position": "RB35",
+    "position": "RB",
     "bye": 14,
-    "adp": { "ppr": 109, "half_ppr": 101.5, "standard": 81 },
+    "adp": { "standard": 81, "ppr": 109, "hppr": 101.5 },
     "tier": 6,
     "vorp": 56.1,
     "projections": {}
@@ -92,9 +92,9 @@
   {
     "name": "Cam Skattebo",
     "team": "NYG",
-    "position": "RB36",
+    "position": "RB",
     "bye": 14,
-    "adp": { "ppr": 110, "half_ppr": 107.5, "standard": 97 },
+    "adp": { "standard": 97, "ppr": 105, "hppr": 107.5 },
     "tier": 6,
     "vorp": 49.3,
     "projections": {}
@@ -102,9 +102,9 @@
   {
     "name": "Rashod Bateman",
     "team": "BAL",
-    "position": "WR56",
+    "position": "WR",
     "bye": 7,
-    "adp": { "ppr": 110.5, "half_ppr": 123.5, "standard": 158 },
+    "adp": { "standard": 158, "ppr": 111, "hppr": 123 },
     "tier": 9,
     "vorp": 18.2,
     "projections": {}
@@ -112,9 +112,9 @@
   {
     "name": "Caleb Williams",
     "team": "CHI",
-    "position": "QB12",
+    "position": "QB",
     "bye": 5,
-    "adp": { "ppr": 110.5, "half_ppr": 88.5, "standard": 88.5 },
+    "adp": { "standard": 88.5, "ppr": 110.5, "hppr": 99 },
     "tier": 3,
     "vorp": 76.2,
     "projections": {}
@@ -122,9 +122,9 @@
   {
     "name": "Zach Charbonnet",
     "team": "SEA",
-    "position": "RB37",
+    "position": "RB",
     "bye": 8,
-    "adp": { "ppr": 111.5, "half_ppr": 109.5, "standard": 101.5 },
+    "adp": { "standard": 101.5, "ppr": 113, "hppr": 107.5 },
     "tier": 6,
     "vorp": 49.1,
     "projections": {}
@@ -132,9 +132,9 @@
   {
     "name": "Jonnu Smith",
     "team": "MIA",
-    "position": "TE9",
+    "position": "TE",
     "bye": 12,
-    "adp": { "ppr": 114.5, "half_ppr": 93, "standard": 93 },
+    "adp": { "standard": 93, "ppr": 114, "hppr": 107 },
     "tier": 3,
     "vorp": 45.3,
     "projections": {}
@@ -142,9 +142,9 @@
   {
     "name": "Dak Prescott",
     "team": "DAL",
-    "position": "QB13",
+    "position": "QB",
     "bye": 10,
-    "adp": { "ppr": 115, "half_ppr": 105.5, "standard": 98.5 },
+    "adp": { "standard": 98.5, "ppr": 115, "hppr": 106 },
     "tier": 3,
     "vorp": 73.5,
     "projections": {}
@@ -152,9 +152,9 @@
   {
     "name": "Jared Goff",
     "team": "DET",
-    "position": "QB14",
+    "position": "QB",
     "bye": 8,
-    "adp": { "ppr": 117.5, "half_ppr": 101, "standard": 89 },
+    "adp": { "standard": 89, "ppr": 116, "hppr": 101 },
     "tier": 3,
     "vorp": 77.1,
     "projections": {}
@@ -162,9 +162,9 @@
   {
     "name": "Drake Maye",
     "team": "NE",
-    "position": "QB15",
+    "position": "QB",
     "bye": 14,
-    "adp": { "ppr": 118.5, "half_ppr": 119, "standard": 116.5 },
+    "adp": { "standard": 116.5, "ppr": 117, "hppr": 115.5 },
     "tier": 4,
     "vorp": 68.1,
     "projections": {}
@@ -172,9 +172,9 @@
   {
     "name": "Luther Burden III",
     "team": "CHI",
-    "position": "WR57",
+    "position": "WR",
     "bye": 5,
-    "adp": { "ppr": 120.5, "half_ppr": 126, "standard": 133 },
+    "adp": { "standard": 133, "ppr": 119, "hppr": 128 },
     "tier": 8,
     "vorp": 24.3,
     "projections": {}
@@ -182,9 +182,9 @@
   {
     "name": "Javonte Williams",
     "team": "DAL",
-    "position": "RB38",
+    "position": "RB",
     "bye": 10,
-    "adp": { "ppr": 120.5, "half_ppr": 105, "standard": 105 },
+    "adp": { "standard": 105, "ppr": 118, "hppr": 120 },
     "tier": 6,
     "vorp": 46.5,
     "projections": {}
@@ -192,9 +192,9 @@
   {
     "name": "Christian Kirk",
     "team": "HOU",
-    "position": "WR58",
+    "position": "WR",
     "bye": 6,
-    "adp": { "ppr": 121.5, "half_ppr": 123.5, "standard": 142.5 },
+    "adp": { "standard": 142.5, "ppr": 121.5, "hppr": 123.5 },
     "tier": 8,
     "vorp": 21.9,
     "projections": {}
@@ -202,9 +202,9 @@
   {
     "name": "Rhamondre Stevenson",
     "team": "NE",
-    "position": "RB39",
+    "position": "RB",
     "bye": 14,
-    "adp": { "ppr": 121.5, "half_ppr": 117, "standard": 115.5 },
+    "adp": { "standard": 115.5, "ppr": 121.5, "hppr": 117 },
     "tier": 6,
     "vorp": 45.1,
     "projections": {}
@@ -212,9 +212,9 @@
   {
     "name": "David Njoku",
     "team": "CLE",
-    "position": "TE10",
+    "position": "TE",
     "bye": 9,
-    "adp": { "ppr": 122, "half_ppr": 112.5, "standard": 110 },
+    "adp": { "standard": 112.5, "ppr": 120, "hppr": 115.5 },
     "tier": 3,
     "vorp": 48.2,
     "projections": {}
@@ -222,9 +222,9 @@
   {
     "name": "Kyle Williams",
     "team": "NE",
-    "position": "WR59",
+    "position": "WR",
     "bye": 14,
-    "adp": { "ppr": 123, "half_ppr": 144, "standard": 166.5 },
+    "adp": { "standard": 166.5, "ppr": 122, "hppr": 144 },
     "tier": 9,
     "vorp": 16.8,
     "projections": {}
@@ -232,9 +232,9 @@
   {
     "name": "J.K. Dobbins",
     "team": "DEN",
-    "position": "RB40",
+    "position": "RB",
     "bye": 12,
-    "adp": { "ppr": 124.5, "half_ppr": 126, "standard": 131.5 },
+    "adp": { "standard": 131.5, "ppr": 131, "hppr": 124 },
     "tier": 7,
     "vorp": 37.5,
     "projections": {}
@@ -242,9 +242,9 @@
   {
     "name": "J.J. McCarthy",
     "team": "MIN",
-    "position": "QB16",
+    "position": "QB",
     "bye": 6,
-    "adp": { "ppr": 125, "half_ppr": 121, "standard": 125 },
+    "adp": { "standard": 125, "ppr": 124, "hppr": 121 },
     "tier": 4,
     "vorp": 63.8,
     "projections": {}
@@ -252,9 +252,9 @@
   {
     "name": "Justin Herbert",
     "team": "LAC",
-    "position": "QB17",
+    "position": "QB",
     "bye": 12,
-    "adp": { "ppr": 125, "half_ppr": 110.5, "standard": 99.5 },
+    "adp": { "standard": 99.5, "ppr": 127, "hppr": 110.5 },
     "tier": 3,
     "vorp": 74.8,
     "projections": {}
@@ -262,9 +262,9 @@
   {
     "name": "Tyler Warren",
     "team": "IND",
-    "position": "TE11",
+    "position": "TE",
     "bye": 11,
-    "adp": { "ppr": 126, "half_ppr": 118.5, "standard": 118.5 },
+    "adp": { "standard": 118.5, "ppr": 125, "hppr": 124.5 },
     "tier": 4,
     "vorp": 40.5,
     "projections": {}
@@ -272,9 +272,9 @@
   {
     "name": "Tyjae Spears",
     "team": "TEN",
-    "position": "RB41",
+    "position": "RB",
     "bye": 10,
-    "adp": { "ppr": 127, "half_ppr": 121.5, "standard": 122 },
+    "adp": { "standard": 122, "ppr": 129, "hppr": 127 },
     "tier": 7,
     "vorp": 42.1,
     "projections": {}
@@ -282,9 +282,9 @@
   {
     "name": "Marvin Mims Jr.",
     "team": "DEN",
-    "position": "WR60",
+    "position": "WR",
     "bye": 12,
-    "adp": { "ppr": 127, "half_ppr": 132, "standard": 141.5 },
+    "adp": { "standard": 141.5, "ppr": 126, "hppr": 132 },
     "tier": 8,
     "vorp": 22.8,
     "projections": {}
@@ -292,9 +292,9 @@
   {
     "name": "Jordan Love",
     "team": "GB",
-    "position": "QB18",
+    "position": "QB",
     "bye": 5,
-    "adp": { "ppr": 127, "half_ppr": 115.5, "standard": 111 },
+    "adp": { "standard": 111, "ppr": 130, "hppr": 117 },
     "tier": 3,
     "vorp": 70.3,
     "projections": {}
@@ -302,9 +302,9 @@
   {
     "name": "Bhayshul Tuten",
     "team": "JAC",
-    "position": "RB42",
+    "position": "RB",
     "bye": 8,
-    "adp": { "ppr": 129.5, "half_ppr": 125.5, "standard": 123 },
+    "adp": { "standard": 123, "ppr": 128, "hppr": 132 },
     "tier": 7,
     "vorp": 41.5,
     "projections": {}
@@ -312,9 +312,9 @@
   {
     "name": "Trevor Lawrence",
     "team": "JAC",
-    "position": "QB19",
+    "position": "QB",
     "bye": 8,
-    "adp": { "ppr": 133, "half_ppr": 123.5, "standard": 120.5 },
+    "adp": { "standard": 120.5, "ppr": 132, "hppr": 122.5 },
     "tier": 4,
     "vorp": 65.3,
     "projections": {}
@@ -322,9 +322,9 @@
   {
     "name": "Tucker Kraft",
     "team": "GB",
-    "position": "TE12",
+    "position": "TE",
     "bye": 5,
-    "adp": { "ppr": 134, "half_ppr": 129, "standard": 117 },
+    "adp": { "standard": 117, "ppr": 137, "hppr": 129 },
     "tier": 4,
     "vorp": 43.1,
     "projections": {}
@@ -332,59 +332,49 @@
   {
     "name": "C.J. Stroud",
     "team": "HOU",
-    "position": "QB20",
+    "position": "QB",
     "bye": 6,
-    "adp": { "ppr": 135, "half_ppr": 116, "standard": 112 },
+    "adp": { "standard": 112, "ppr": 135, "hppr": 121 },
     "tier": 4,
     "vorp": 67.2,
     "projections": {}
   },
   {
-    "name": "Jayden Higgins",
-    "team": "HOU",
-    "position": "WR54",
-    "bye": 6,
-    "adp": { "ppr": 135.5, "half_ppr": 134, "standard": 135 },
-    "tier": 7,
-    "vorp": 27.1,
+    "name": "Marquise Brown",
+    "team": "KC",
+    "position": "WR",
+    "bye": 10,
+    "adp": { "standard": 145, "ppr": 133, "hppr": 136.5 },
+    "tier": 8,
+    "vorp": 21.1,
     "projections": {}
   },
   {
-    "name": "Dallas Goedert",
-    "team": "PHI",
-    "position": "TE13",
-    "bye": 9,
-    "adp": { "ppr": 138.5, "half_ppr": 140.5, "standard": 140 },
-    "tier": 4,
-    "vorp": 32.5,
-    "projections": {}
-  },
-  {
-    "name": "Dalton Kincaid",
+    "name": "Ray Davis",
     "team": "BUF",
-    "position": "TE14",
+    "position": "RB",
     "bye": 7,
-    "adp": { "ppr": 138.5, "half_ppr": 140, "standard": 131 },
-    "tier": 4,
-    "vorp": 35.8,
+    "adp": { "standard": 145.5, "ppr": 134, "hppr": 144 },
+    "tier": 7,
+    "vorp": 34.6,
     "projections": {}
   },
   {
-    "name": "Rachaad White",
-    "team": "TB",
-    "position": "RB43",
-    "bye": 9,
-    "adp": { "ppr": 138.5, "half_ppr": 138.5, "standard": 126.5 },
-    "tier": 7,
-    "vorp": 40.1,
+    "name": "Colston Loveland",
+    "team": "CHI",
+    "position": "TE",
+    "bye": 5,
+    "adp": { "standard": 120.5, "ppr": 136, "hppr": 141 },
+    "tier": 4,
+    "vorp": 38.9,
     "projections": {}
   },
   {
     "name": "Jaydon Blue",
     "team": "DAL",
-    "position": "RB44",
+    "position": "RB",
     "bye": 10,
-    "adp": { "ppr": 139, "half_ppr": 131, "standard": 127 },
+    "adp": { "standard": 127, "ppr": 138, "hppr": 137 },
     "tier": 7,
     "vorp": 39.5,
     "projections": {}
@@ -392,89 +382,99 @@
   {
     "name": "Trey Benson",
     "team": "ARI",
-    "position": "RB45",
+    "position": "RB",
     "bye": 8,
-    "adp": { "ppr": 140, "half_ppr": 139, "standard": 138.5 },
+    "adp": { "standard": 138.5, "ppr": 139, "hppr": 141 },
     "tier": 7,
     "vorp": 36.1,
     "projections": {}
   },
   {
-    "name": "Colston Loveland",
-    "team": "CHI",
-    "position": "TE15",
-    "bye": 5,
-    "adp": { "ppr": 141, "half_ppr": 122.5, "standard": 120.5 },
-    "tier": 4,
-    "vorp": 38.9,
-    "projections": {}
-  },
-  {
-    "name": "Ray Davis",
+    "name": "Dalton Kincaid",
     "team": "BUF",
-    "position": "RB46",
+    "position": "TE",
     "bye": 7,
-    "adp": { "ppr": 142, "half_ppr": 136.5, "standard": 145.5 },
+    "adp": { "standard": 131, "ppr": 140, "hppr": 138.5 },
+    "tier": 4,
+    "vorp": 35.8,
+    "projections": {}
+  },
+  {
+    "name": "Rachaad White",
+    "team": "TB",
+    "position": "RB",
+    "bye": 9,
+    "adp": { "standard": 126.5, "ppr": 141, "hppr": 138.5 },
     "tier": 7,
-    "vorp": 34.6,
+    "vorp": 40.1,
     "projections": {}
   },
   {
-    "name": "Bryce Young",
-    "team": "CAR",
-    "position": "QB23",
-    "bye": 14,
-    "adp": { "ppr": 143, "half_ppr": 143, "standard": 142.5 },
+    "name": "Dallas Goedert",
+    "team": "PHI",
+    "position": "TE",
+    "bye": 9,
+    "adp": { "standard": 140, "ppr": 141.5, "hppr": 142 },
     "tier": 4,
-    "vorp": 57.1,
-    "projections": {}
-  },
-  {
-    "name": "Matthew Stafford",
-    "team": "LAR",
-    "position": "QB24",
-    "bye": 8,
-    "adp": { "ppr": 143.5, "half_ppr": 138, "standard": 136 },
-    "tier": 4,
-    "vorp": 60.5,
-    "projections": {}
-  },
-  {
-    "name": "Michael Penix Jr.",
-    "team": "ATL",
-    "position": "QB21",
-    "bye": 5,
-    "adp": { "ppr": 144, "half_ppr": 140.5, "standard": 139.5 },
-    "tier": 4,
-    "vorp": 58.7,
+    "vorp": 32.5,
     "projections": {}
   },
   {
     "name": "Cedric Tillman",
     "team": "CLE",
-    "position": "WR62",
+    "position": "WR",
     "bye": 9,
-    "adp": { "ppr": 144, "half_ppr": 160, "standard": 161.5 },
+    "adp": { "standard": 144, "ppr": 143, "hppr": 148 },
     "tier": 9,
     "vorp": 17.5,
     "projections": {}
   },
   {
+    "name": "Michael Penix Jr.",
+    "team": "ATL",
+    "position": "QB",
+    "bye": 5,
+    "adp": { "standard": 144, "ppr": 145.5, "hppr": 135 },
+    "tier": 4,
+    "vorp": 58.7,
+    "projections": {}
+  },
+  {
     "name": "Isaac Guerendo",
     "team": "SF",
-    "position": "RB47",
+    "position": "RB",
     "bye": 14,
-    "adp": { "ppr": 145, "half_ppr": 149, "standard": 139 },
+    "adp": { "standard": 145.5, "ppr": 145.5, "hppr": 149 },
     "tier": 7,
     "vorp": 35.8,
     "projections": {}
   },
   {
+    "name": "Jack Bech",
+    "team": "LV",
+    "position": "WR",
+    "bye": 8,
+    "adp": { "standard": 150.5, "ppr": 146, "hppr": 159 },
+    "tier": 8,
+    "vorp": 19.5,
+    "projections": {}
+  },
+  {
+    "name": "Isaiah Likely",
+    "team": "BAL",
+    "position": "TE",
+    "bye": 7,
+    "adp": { "standard": 154, "ppr": 147, "hppr": 152.5 },
+    "tier": 4,
+    "vorp": 28.7,
+    "projections": {}
+  },
+  {
     "name": "Jake Ferguson",
     "team": "DAL",
-    "position": "TE16",
+    "position": "TE",
     "bye": 10,
-    "adp": { "ppr": 148, "half_ppr": 148.5, "standard": 136.5 },
+    "adp": { "standard": 134, "ppr": 148.5, "hppr": 150 },
     "tier": 4,
     "vorp": 29.8,
     "projections": {}
@@ -482,78 +482,69 @@
   {
     "name": "Tua Tagovailoa",
     "team": "MIA",
-    "position": "QB22",
+    "position": "QB",
     "bye": 12,
-    "adp": { "ppr": 148.5, "half_ppr": 130, "standard": 130 },
+    "adp": { "standard": 132.5, "ppr": 149, "hppr": 134 },
     "tier": 4,
     "vorp": 62.1,
     "projections": {}
   },
   {
-    "name": "Austin Ekeler",
-    "team": "WAS",
-    "position": "RB48",
-    "bye": 12,
-    "adp": { "ppr": 148.5, "half_ppr": 150, "standard": 138 },
-    "tier": 7,
-    "vorp": 35.2,
-    "projections": {}
-  },
-  {
-    "name": "Jack Bech",
-    "team": "LV",
-    "position": "WR64",
-    "bye": 8,
-    "adp": { "ppr": 150.5, "half_ppr": 163, "standard": 153 },
-    "tier": 8,
-    "vorp": 19.5,
-    "projections": {}
-  },
-  {
-    "name": "Geno Smith",
-    "team": "LV",
-    "position": "QB25",
-    "bye": 8,
-    "adp": { "ppr": 151.5, "half_ppr": 158, "standard": 151.5 },
-    "tier": 5,
-    "vorp": 55.2,
-    "projections": {}
-  },
-  {
-    "name": "Isaiah Likely",
-    "team": "TE17",
-    "bye": 7,
-    "adp": { "ppr": 152.5, "half_ppr": 154, "standard": 154 },
-    "tier": 4,
-    "vorp": 28.7,
-    "projections": {}
-  },
-  {
-    "name": "Rico Dowdle",
-    "team": "CAR",
-    "position": "RB50",
-    "bye": 14,
-    "adp": { "ppr": 153, "half_ppr": 164, "standard": 153 },
-    "tier": 8,
-    "vorp": 30.8,
-    "projections": {}
-  },
-  {
     "name": "Quentin Johnston",
     "team": "LAC",
-    "position": "WR63",
+    "position": "WR",
     "bye": 12,
-    "adp": { "ppr": 154.5, "half_ppr": 149.5, "standard": 184.5 },
+    "adp": { "standard": 149, "ppr": 150, "hppr": 155.5 },
     "tier": 9,
     "vorp": 14.2,
     "projections": {}
   },
   {
+    "name": "Austin Ekeler",
+    "team": "WAS",
+    "position": "RB",
+    "bye": 12,
+    "adp": { "standard": 137, "ppr": 150, "hppr": 151 },
+    "tier": 7,
+    "vorp": 35.2,
+    "projections": {}
+  },
+  {
+    "name": "Bryce Young",
+    "team": "CAR",
+    "position": "QB",
+    "bye": 14,
+    "adp": { "standard": 144, "ppr": 154, "hppr": 141.5 },
+    "tier": 4,
+    "vorp": 57.1,
+    "projections": {}
+  },
+  {
+    "name": "Tyler Allgeier",
+    "team": "ATL",
+    "position": "RB",
+    "bye": 5,
+    "adp": { "standard": 160, "ppr": 153, "hppr": 161.5 },
+    "tier": 8,
+    "vorp": 26.5,
+    "projections": {}
+  },
+  {
+    "name": "Joshua Palmer",
+    "team": "BUF",
+    "position": "WR",
+    "bye": 7,
+    "adp": { "standard": 157, "ppr": 154, "hppr": 171.5 },
+    "tier": 10,
+    "vorp": 11.2,
+    "projections": {}
+  },
+  {
     "name": "Jalen McMillan",
     "team": "TB",
-    "position": "WR65",
+    "position": "WR",
     "bye": 9,
-    "adp": { "ppr": 154.5, "half_ppr": 165.5, "standard": 161 },
+    "adp": { "standard": 157, "ppr": 155, "hppr": 152.5 },
     "tier": 9,
     "vorp": 15.1,
     "projections": {}
@@ -561,9 +552,9 @@
   {
     "name": "Tank Bigsby",
     "team": "JAC",
-    "position": "RB50",
+    "position": "RB",
     "bye": 8,
-    "adp": { "ppr": 157, "half_ppr": 157, "standard": 129.5 },
+    "adp": { "standard": 157, "ppr": 156, "hppr": 145 },
     "tier": 7,
     "vorp": 38.2,
     "projections": {}
@@ -571,149 +562,129 @@
   {
     "name": "Adam Thielen",
     "team": "CAR",
-    "position": "WR66",
+    "position": "WR",
     "bye": 14,
-    "adp": { "ppr": 157.5, "half_ppr": 157, "standard": 169.5 },
+    "adp": { "standard": 157.5, "ppr": 157.5, "hppr": 154 },
     "tier": 9,
     "vorp": 15.5,
     "projections": {}
   },
   {
-    "name": "Cameron Ward",
-    "team": "TEN",
-    "position": "QB26",
-    "bye": 10,
-    "adp": { "ppr": 158, "half_ppr": 157.5, "standard": 157 },
-    "tier": 5,
-    "vorp": 52.8,
-    "projections": {}
-  },
-  {
-    "name": "Kyle Pitts",
-    "team": "ATL",
-    "position": "TE18",
-    "bye": 5,
-    "adp": { "ppr": 159.5, "half_ppr": 148, "standard": 145.5 },
-    "tier": 4,
-    "vorp": 31.8,
-    "projections": {}
-  },
-  {
-    "name": "Xavier Legette",
-    "team": "CAR",
-    "position": "WR69",
-    "bye": 14,
-    "adp": { "ppr": 159.5, "half_ppr": 170, "standard": 171 },
-    "tier": 9,
-    "vorp": 14.8,
-    "projections": {}
-  },
-  {
     "name": "Romeo Doubs",
     "team": "GB",
-    "position": "WR69",
+    "position": "WR",
     "bye": 5,
-    "adp": { "ppr": 158.5, "half_ppr": 158.5, "standard": 182 },
+    "adp": { "standard": 158, "ppr": 158.5, "hppr": 162 },
     "tier": 9,
     "vorp": 16.8,
     "projections": {}
   },
   {
+    "name": "Xavier Legette",
+    "team": "CAR",
+    "position": "WR",
+    "bye": 14,
+    "adp": { "standard": 159, "ppr": 159, "hppr": 170 },
+    "tier": 9,
+    "vorp": 14.8,
+    "projections": {}
+  },
+  {
+    "name": "Geno Smith",
+    "team": "LV",
+    "position": "QB",
+    "bye": 8,
+    "adp": { "standard": 159.5, "ppr": 160, "hppr": 151 },
+    "tier": 5,
+    "vorp": 55.2,
+    "projections": {}
+  },
+  {
+    "name": "Kyle Pitts",
+    "team": "ATL",
+    "position": "TE",
+    "bye": 5,
+    "adp": { "standard": 159.5, "ppr": 161, "hppr": 157.5 },
+    "tier": 4,
+    "vorp": 31.8,
+    "projections": {}
+  },
+  {
     "name": "Matthew Stafford",
     "team": "LAR",
-    "position": "QB25",
+    "position": "QB",
     "bye": 8,
-    "adp": { "ppr": 160, "half_ppr": 142.5, "standard": 136 },
+    "adp": { "standard": 160, "ppr": 162, "hppr": 145 },
     "tier": 4,
     "vorp": 60.5,
     "projections": {}
   },
   {
-    "name": "Sam Darnold",
-    "team": "SEA",
-    "position": "QB27",
-    "bye": 8,
-    "adp": { "ppr": 161.5, "half_ppr": 176, "standard": 157.5 },
-    "tier": 5,
-    "vorp": 53.1,
-    "projections": {}
-  },
-  {
-    "name": "Pat Freiermuth",
-    "team": "PIT",
-    "position": "TE19",
-    "bye": 5,
-    "adp": { "ppr": 164, "half_ppr": 163.5, "standard": 146.5 },
-    "tier": 4,
-    "vorp": 30.1,
-    "projections": {}
-  },
-  {
     "name": "Pat Bryant",
     "team": "DEN",
-    "position": "WR70",
+    "position": "WR",
     "bye": 12,
-    "adp": { "ppr": 164.5, "half_ppr": 161, "standard": 215 },
+    "adp": { "standard": 161, "ppr": 163, "hppr": 183 },
     "tier": 10,
     "vorp": 6.8,
     "projections": {}
   },
   {
-    "name": "Wan'Dale Robinson",
-    "team": "NYG",
-    "position": "WR71",
-    "bye": 14,
-    "adp": { "ppr": 164, "half_ppr": 166.5, "standard": 174 },
-    "tier": 10,
-    "vorp": 13.5,
-    "projections": {}
-  },
-  {
-    "name": "Jaylen Wright",
-    "team": "MIA",
-    "position": "RB51",
-    "bye": 12,
-    "adp": { "ppr": 165, "half_ppr": 168, "standard": 159 },
-    "tier": 8,
-    "vorp": 27.9,
-    "projections": {}
-  },
-  {
     "name": "Roschon Johnson",
     "team": "CHI",
-    "position": "RB51",
+    "position": "RB",
     "bye": 5,
-    "adp": { "ppr": 162.5, "half_ppr": 161.5, "standard": 189.5 },
+    "adp": { "standard": 161.5, "ppr": 164, "hppr": 173 },
     "tier": 8,
     "vorp": 19.8,
     "projections": {}
   },
   {
+    "name": "Cameron Ward",
+    "team": "TEN",
+    "position": "QB",
+    "bye": 10,
+    "adp": { "standard": 163.5, "ppr": 165, "hppr": 158.5 },
+    "tier": 5,
+    "vorp": 52.8,
+    "projections": {}
+  },
+  {
     "name": "Brenton Strange",
     "team": "JAC",
-    "position": "TE19",
+    "position": "TE",
     "bye": 8,
-    "adp": { "ppr": 165, "half_ppr": 166, "standard": 171.5 },
+    "adp": { "standard": 164.5, "ppr": 166, "hppr": 171 },
     "tier": 5,
     "vorp": 22.8,
     "projections": {}
   },
   {
-    "name": "Rico Dowdle",
-    "team": "CAR",
-    "position": "RB52",
+    "name": "Pat Freiermuth",
+    "team": "PIT",
+    "position": "TE",
+    "bye": 5,
+    "adp": { "standard": 167, "ppr": 167, "hppr": 163.5 },
+    "tier": 4,
+    "vorp": 30.1,
+    "projections": {}
+  },
+  {
+    "name": "Wan'Dale Robinson",
+    "team": "NYG",
+    "position": "WR",
     "bye": 14,
-    "adp": { "ppr": 166, "half_ppr": 172.5, "standard": 153 },
-    "tier": 8,
-    "vorp": 30.8,
+    "adp": { "standard": 168.5, "ppr": 168, "hppr": 164 },
+    "tier": 10,
+    "vorp": 13.5,
     "projections": {}
   },
   {
     "name": "Hunter Henry",
     "team": "NE",
-    "position": "TE21",
+    "position": "TE",
     "bye": 14,
-    "adp": { "ppr": 168.5, "half_ppr": 168.5, "standard": 162.5 },
+    "adp": { "standard": 168.5, "ppr": 169, "hppr": 169.5 },
     "tier": 5,
     "vorp": 24.8,
     "projections": {}
@@ -721,79 +692,79 @@
   {
     "name": "Braelon Allen",
     "team": "NYJ",
-    "position": "RB53",
+    "position": "RB",
     "bye": 9,
-    "adp": { "ppr": 170.5, "half_ppr": 169.5, "standard": 158.5 },
+    "adp": { "standard": 168.5, "ppr": 170.5, "hppr": 169.5 },
     "tier": 8,
     "vorp": 28.4,
     "projections": {}
   },
   {
+    "name": "Jaylen Wright",
+    "team": "MIA",
+    "position": "RB",
+    "bye": 12,
+    "adp": { "standard": 169.5, "ppr": 171, "hppr": 165 },
+    "tier": 8,
+    "vorp": 27.9,
+    "projections": {}
+  },
+  {
     "name": "Zach Ertz",
     "team": "WAS",
-    "position": "TE22",
+    "position": "TE",
     "bye": 12,
-    "adp": { "ppr": 171.5, "half_ppr": 167, "standard": 162 },
+    "adp": { "standard": 171.5, "ppr": 172, "hppr": 167 },
     "tier": 5,
     "vorp": 25.1,
     "projections": {}
   },
   {
-    "name": "Joshua Palmer",
-    "team": "BUF",
-    "position": "WR70",
-    "bye": 7,
-    "adp": { "ppr": 172.5, "half_ppr": 157, "standard": 194 },
-    "tier": 10,
-    "vorp": 11.2,
+    "name": "Rico Dowdle",
+    "team": "CAR",
+    "position": "RB",
+    "bye": 14,
+    "adp": { "standard": 172, "ppr": 173, "hppr": 166 },
+    "tier": 8,
+    "vorp": 30.8,
     "projections": {}
   },
   {
     "name": "DeMario Douglas",
     "team": "NE",
-    "position": "WR72",
+    "position": "WR",
     "bye": 14,
-    "adp": { "ppr": 175, "half_ppr": 175.5, "standard": 201 },
+    "adp": { "standard": 175.5, "ppr": 174, "hppr": 177.5 },
     "tier": 10,
     "vorp": 9.5,
     "projections": {}
   },
   {
+    "name": "Sam Darnold",
+    "team": "SEA",
+    "position": "QB",
+    "bye": 8,
+    "adp": { "standard": 176, "ppr": 175.5, "hppr": 161.5 },
+    "tier": 5,
+    "vorp": 53.1,
+    "projections": {}
+  },
+  {
     "name": "Mike Gesicki",
     "team": "CIN",
-    "position": "TE23",
+    "position": "TE",
     "bye": 10,
-    "adp": { "ppr": 175.5, "half_ppr": 174, "standard": 177 },
+    "adp": { "standard": 176.5, "ppr": 176.5, "hppr": 175.5 },
     "tier": 5,
     "vorp": 21.8,
     "projections": {}
   },
   {
-    "name": "Keenan Allen",
-    "team": "",
-    "position": "WR71",
-    "bye": "",
-    "adp": { "ppr": 177.5, "half_ppr": 185, "standard": 178 },
-    "tier": 10,
-    "vorp": 12.8,
-    "projections": {}
-  },
-  {
-    "name": "Aaron Rodgers",
-    "team": "PIT",
-    "position": "QB28",
-    "bye": 5,
-    "adp": { "ppr": 177.5, "half_ppr": 176, "standard": 173 },
-    "tier": 5,
-    "vorp": 50.2,
-    "projections": {}
-  },
-  {
     "name": "Alec Pierce",
     "team": "IND",
-    "position": "WR73",
+    "position": "WR",
     "bye": 11,
-    "adp": { "ppr": 177, "half_ppr": 181.5, "standard": 195 },
+    "adp": { "standard": 176.5, "ppr": 177, "hppr": 181.5 },
     "tier": 10,
     "vorp": 10.8,
     "projections": {}
@@ -801,9 +772,9 @@
   {
     "name": "Will Shipley",
     "team": "PHI",
-    "position": "RB55",
+    "position": "RB",
     "bye": 9,
-    "adp": { "ppr": 178.5, "half_ppr": 185.5, "standard": 210 },
+    "adp": { "standard": 178, "ppr": 178.5, "hppr": 185.5 },
     "tier": 9,
     "vorp": 11.2,
     "projections": {}
@@ -811,9 +782,9 @@
   {
     "name": "Jaylin Noel",
     "team": "HOU",
-    "position": "WR74",
+    "position": "WR",
     "bye": 6,
-    "adp": { "ppr": 180, "half_ppr": 188, "standard": 211 },
+    "adp": { "standard": 180, "ppr": 179, "hppr": 188 },
     "tier": 10,
     "vorp": 7.5,
     "projections": {}
@@ -821,19 +792,29 @@
   {
     "name": "Nick Chubb",
     "team": "HOU",
-    "position": "RB56",
+    "position": "RB",
     "bye": 6,
-    "adp": { "ppr": 180.5, "half_ppr": 180.5, "standard": 165 },
+    "adp": { "standard": 180.5, "ppr": 180, "hppr": 182.5 },
     "tier": 8,
     "vorp": 25.3,
     "projections": {}
   },
   {
+    "name": "Aaron Rodgers",
+    "team": "PIT",
+    "position": "QB",
+    "bye": 5,
+    "adp": { "standard": 181, "ppr": 181, "hppr": 176 },
+    "tier": 5,
+    "vorp": 50.2,
+    "projections": {}
+  },
+  {
     "name": "Justice Hill",
     "team": "BAL",
-    "position": "RB57",
+    "position": "RB",
     "bye": 7,
-    "adp": { "ppr": 184, "half_ppr": 183, "standard": 176.5 },
+    "adp": { "standard": 184, "ppr": 182, "hppr": 183 },
     "tier": 8,
     "vorp": 23.5,
     "projections": {}
@@ -841,11 +822,21 @@
   {
     "name": "Cade Otton",
     "team": "TB",
-    "position": "TE24",
+    "position": "TE",
     "bye": 9,
-    "adp": { "ppr": 184.5, "half_ppr": 180, "standard": 169 },
+    "adp": { "standard": 184.5, "ppr": 183, "hppr": 180 },
     "tier": 5,
     "vorp": 23.1,
+    "projections": {}
+  },
+  {
+    "name": "Keenan Allen",
+    "team": "",
+    "position": "WR75",
+    "bye": "",
+    "adp": { "standard": 185, "ppr": 184, "hppr": 175 },
+    "tier": 10,
+    "vorp": 12.8,
     "projections": {}
   },
   {
@@ -853,7 +844,7 @@
     "team": "ARI",
     "position": "WR76",
     "bye": 8,
-    "adp": { "ppr": 185.5, "half_ppr": 193, "standard": 216 },
+    "adp": { "standard": 185.5, "ppr": 185.5, "hppr": 193 },
     "tier": 10,
     "vorp": 6.1,
     "projections": {}
@@ -863,7 +854,7 @@
     "team": "JAC",
     "position": "WR77",
     "bye": 8,
-    "adp": { "ppr": 185.5, "half_ppr": 194.5, "standard": 226 },
+    "adp": { "standard": 185.5, "ppr": 186, "hppr": 194.5 },
     "tier": 10,
     "vorp": 4.8,
     "projections": {}
@@ -873,7 +864,7 @@
     "team": "NYJ",
     "position": "TE25",
     "bye": 9,
-    "adp": { "ppr": 185.5, "half_ppr": 190, "standard": 186 },
+    "adp": { "standard": 185.5, "ppr": 187, "hppr": 190 },
     "tier": 5,
     "vorp": 20.5,
     "projections": {}
@@ -883,7 +874,7 @@
     "team": "BAL",
     "position": "WR78",
     "bye": 7,
-    "adp": { "ppr": 187, "half_ppr": 189, "standard": 181.5 },
+    "adp": { "standard": 187, "ppr": 188.5, "hppr": 195 },
     "tier": 10,
     "vorp": 11.5,
     "projections": {}
@@ -893,7 +884,7 @@
     "team": "DAL",
     "position": "RB58",
     "bye": 10,
-    "adp": { "ppr": 187, "half_ppr": 206, "standard": 221 },
+    "adp": { "standard": 187, "ppr": 189, "hppr": 206 },
     "tier": 9,
     "vorp": 9.8,
     "projections": {}
@@ -903,7 +894,7 @@
     "team": "IND",
     "position": "QB29",
     "bye": 11,
-    "adp": { "ppr": 190.5, "half_ppr": 192, "standard": 198 },
+    "adp": { "standard": 190.5, "ppr": 190.5, "hppr": 185 },
     "tier": 5,
     "vorp": 43.1,
     "projections": {}
@@ -913,7 +904,7 @@
     "team": "IND",
     "position": "RB59",
     "bye": 11,
-    "adp": { "ppr": 191.5, "half_ppr": 199, "standard": 203 },
+    "adp": { "standard": 191.5, "ppr": 191.5, "hppr": 199 },
     "tier": 8,
     "vorp": 15.1,
     "projections": {}
@@ -923,7 +914,7 @@
     "team": "LAR",
     "position": "RB60",
     "bye": 8,
-    "adp": { "ppr": 192, "half_ppr": 198, "standard": 202 },
+    "adp": { "standard": 192, "ppr": 192, "hppr": 198 },
     "tier": 8,
     "vorp": 15.8,
     "projections": {}
@@ -933,7 +924,7 @@
     "team": "TEN",
     "position": "TE26",
     "bye": 10,
-    "adp": { "ppr": 192.5, "half_ppr": 191, "standard": 191 },
+    "adp": { "standard": 192.5, "ppr": 193, "hppr": 191.5 },
     "tier": 5,
     "vorp": 19.8,
     "projections": {}
@@ -943,7 +934,7 @@
     "team": "PIT",
     "position": "WR79",
     "bye": 5,
-    "adp": { "ppr": 193.5, "half_ppr": 208, "standard": 257 },
+    "adp": { "standard": 193.5, "ppr": 194, "hppr": 208 },
     "tier": 11,
     "vorp": 1.2,
     "projections": {}
@@ -953,7 +944,7 @@
     "team": "NYG",
     "position": "WR80",
     "bye": 14,
-    "adp": { "ppr": 194, "half_ppr": 215, "standard": 224 },
+    "adp": { "standard": 194, "ppr": 195, "hppr": 215 },
     "tier": 10,
     "vorp": 5.5,
     "projections": {}
@@ -963,7 +954,7 @@
     "team": "GB",
     "position": "RB61",
     "bye": 5,
-    "adp": { "ppr": 195, "half_ppr": 194, "standard": 189 },
+    "adp": { "standard": 195, "ppr": 196.5, "hppr": 192 },
     "tier": 8,
     "vorp": 18.5,
     "projections": {}
@@ -973,7 +964,7 @@
     "team": "HOU",
     "position": "TE27",
     "bye": 6,
-    "adp": { "ppr": 197, "half_ppr": 203, "standard": 200 },
+    "adp": { "standard": 197, "ppr": 197.5, "hppr": 201 },
     "tier": 5,
     "vorp": 18.9,
     "projections": {}
@@ -983,7 +974,7 @@
     "team": "LV",
     "position": "WR81",
     "bye": 8,
-    "adp": { "ppr": 198, "half_ppr": 239, "standard": 299 },
+    "adp": { "standard": 198, "ppr": 198, "hppr": 233.5 },
     "tier": 13,
     "vorp": 0,
     "projections": {}
@@ -993,7 +984,7 @@
     "team": "CIN",
     "position": "WR82",
     "bye": 10,
-    "adp": { "ppr": 199.5, "half_ppr": 211, "standard": 251 },
+    "adp": { "standard": 199, "ppr": 199.5, "hppr": 221 },
     "tier": 11,
     "vorp": 3.1,
     "projections": {}
@@ -1003,7 +994,7 @@
     "team": "NO",
     "position": "TE28",
     "bye": 11,
-    "adp": { "ppr": 201.5, "half_ppr": 204.5, "standard": 205 },
+    "adp": { "standard": 201.5, "ppr": 200, "hppr": 204.5 },
     "tier": 5,
     "vorp": 17.8,
     "projections": {}
@@ -1013,7 +1004,7 @@
     "team": "CLE",
     "position": "RB62",
     "bye": 9,
-    "adp": { "ppr": 202, "half_ppr": 179.5, "standard": 175 },
+    "adp": { "standard": 202, "ppr": 201, "hppr": 181.5 },
     "tier": 8,
     "vorp": 23.8,
     "projections": {}
@@ -1023,7 +1014,7 @@
     "team": "IND",
     "position": "QB30",
     "bye": 11,
-    "adp": { "ppr": 202.5, "half_ppr": 187, "standard": 179 },
+    "adp": { "standard": 202.5, "ppr": 202.5, "hppr": 196.5 },
     "tier": 5,
     "vorp": 48.1,
     "projections": {}
@@ -1033,7 +1024,7 @@
     "team": "CAR",
     "position": "WR83",
     "bye": 14,
-    "adp": { "ppr": 203, "half_ppr": 207, "standard": 246 },
+    "adp": { "standard": 203, "ppr": 203, "hppr": 208 },
     "tier": 11,
     "vorp": 5.1,
     "projections": {}
@@ -1043,7 +1034,7 @@
     "team": "NO",
     "position": "QB31",
     "bye": 11,
-    "adp": { "ppr": 206.5, "half_ppr": 212.5, "standard": 204 },
+    "adp": { "standard": 206.5, "ppr": 204, "hppr": 205 },
     "tier": 6,
     "vorp": 40.2,
     "projections": {}
@@ -1053,7 +1044,7 @@
     "team": "KC",
     "position": "RB63",
     "bye": 10,
-    "adp": { "ppr": 206.5, "half_ppr": 213, "standard": 209 },
+    "adp": { "standard": 206.5, "ppr": 205, "hppr": 213 },
     "tier": 9,
     "vorp": 12.8,
     "projections": {}
@@ -1063,7 +1054,7 @@
     "team": "LAR",
     "position": "WR84",
     "bye": 8,
-    "adp": { "ppr": 207.5, "half_ppr": 209, "standard": 266 },
+    "adp": { "standard": 207.5, "ppr": 206, "hppr": 209 },
     "tier": 11,
     "vorp": 0.2,
     "projections": {}
@@ -1073,7 +1064,7 @@
     "team": "CLE",
     "position": "RB64",
     "bye": 9,
-    "adp": { "ppr": 208, "half_ppr": 184, "standard": 172 },
+    "adp": { "standard": 208, "ppr": 207, "hppr": 184 },
     "tier": 8,
     "vorp": 24.1,
     "projections": {}
@@ -1083,7 +1074,7 @@
     "team": "CAR",
     "position": "TE29",
     "bye": 14,
-    "adp": { "ppr": 208.5, "half_ppr": 232, "standard": 243 },
+    "adp": { "standard": 208.5, "ppr": 208.5, "hppr": 232 },
     "tier": 6,
     "vorp": 11.8,
     "projections": {}
@@ -1093,7 +1084,7 @@
     "team": "BAL",
     "position": "RB65",
     "bye": 7,
-    "adp": { "ppr": 208.5, "half_ppr": 240, "standard": 287.5 },
+    "adp": { "standard": 208.5, "ppr": 209, "hppr": 290 },
     "tier": 10,
     "vorp": 0,
     "projections": {}
@@ -1103,7 +1094,7 @@
     "team": "LAR",
     "position": "RB66",
     "bye": 8,
-    "adp": { "ppr": 210, "half_ppr": 196, "standard": 197 },
+    "adp": { "standard": 210, "ppr": 212, "hppr": 197 },
     "tier": 8,
     "vorp": 17.8,
     "projections": {}
@@ -1113,7 +1104,7 @@
     "team": "KC",
     "position": "RB67",
     "bye": 10,
-    "adp": { "ppr": 210.5, "half_ppr": 204.5, "standard": 184 },
+    "adp": { "standard": 210.5, "ppr": 211, "hppr": 184 },
     "tier": 8,
     "vorp": 20.1,
     "projections": {}
@@ -1123,7 +1114,7 @@
     "team": "TEN",
     "position": "WR85",
     "bye": 10,
-    "adp": { "ppr": 212, "half_ppr": 218, "standard": 250 },
+    "adp": { "standard": 212, "ppr": 212, "hppr": 232.5 },
     "tier": 11,
     "vorp": 3.8,
     "projections": {}
@@ -1133,7 +1124,7 @@
     "team": "NYG",
     "position": "TE30",
     "bye": 14,
-    "adp": { "ppr": 212.5, "half_ppr": 219.5, "standard": 230 },
+    "adp": { "standard": 212.5, "ppr": 213, "hppr": 235.5 },
     "tier": 6,
     "vorp": 15.1,
     "projections": {}
@@ -1143,7 +1134,7 @@
     "team": "GB",
     "position": "WR86",
     "bye": 5,
-    "adp": { "ppr": 213.5, "half_ppr": 218.5, "standard": 249 },
+    "adp": { "standard": 213.5, "ppr": 214, "hppr": 256.5 },
     "tier": 11,
     "vorp": 4.5,
     "projections": {}
@@ -1153,7 +1144,7 @@
     "team": "NYG",
     "position": "QB32",
     "bye": 14,
-    "adp": { "ppr": 214.5, "half_ppr": 202, "standard": 187 },
+    "adp": { "standard": 214.5, "ppr": 215, "hppr": 202 },
     "tier": 5,
     "vorp": 45.3,
     "projections": {}
@@ -1163,7 +1154,7 @@
     "team": "IND",
     "position": "WR87",
     "bye": 11,
-    "adp": { "ppr": 216, "half_ppr": 220, "standard": 270 },
+    "adp": { "standard": 217, "ppr": 216, "hppr": 220 },
     "tier": 12,
     "vorp": 0,
     "projections": {}
@@ -1173,7 +1164,7 @@
     "team": "NYG",
     "position": "QB33",
     "bye": 14,
-    "adp": { "ppr": 217, "half_ppr": 224.5, "standard": 213 },
+    "adp": { "standard": 217, "ppr": 217, "hppr": 231 },
     "tier": 6,
     "vorp": 38.1,
     "projections": {}
@@ -1183,7 +1174,7 @@
     "team": "TEN",
     "position": "WR88",
     "bye": 10,
-    "adp": { "ppr": 218.5, "half_ppr": 216, "standard": 281 },
+    "adp": { "standard": 218.5, "ppr": 218, "hppr": 228.5 },
     "tier": 12,
     "vorp": 0,
     "projections": {}
@@ -1193,7 +1184,7 @@
     "team": "LV",
     "position": "RB68",
     "bye": 8,
-    "adp": { "ppr": 219.5, "half_ppr": 234, "standard": 247 },
+    "adp": { "standard": 219.5, "ppr": 219.5, "hppr": 235.5 },
     "tier": 9,
     "vorp": 4.8,
     "projections": {}
@@ -1203,7 +1194,7 @@
     "team": "ATL",
     "position": "WR89",
     "bye": 5,
-    "adp": { "ppr": 220, "half_ppr": 249, "standard": 291 },
+    "adp": { "standard": 220, "ppr": 220, "hppr": 242 },
     "tier": 12,
     "vorp": 0,
     "projections": {}
@@ -1213,7 +1204,7 @@
     "team": "PIT",
     "position": "WR90",
     "bye": 5,
-    "adp": { "ppr": 221.5, "half_ppr": 242, "standard": 264 },
+    "adp": { "standard": 221.5, "ppr": 221.5, "hppr": 242 },
     "tier": 11,
     "vorp": 0.5,
     "projections": {}
@@ -1223,7 +1214,7 @@
     "team": "",
     "position": "WR91",
     "bye": "",
-    "adp": { "ppr": 222.5, "half_ppr": 201, "standard": 206 },
+    "adp": { "standard": 222.5, "ppr": 222.5, "hppr": 209 },
     "tier": 10,
     "vorp": 8.1,
     "projections": {}
@@ -1233,7 +1224,7 @@
     "team": "CIN",
     "position": "RB69",
     "bye": 10,
-    "adp": { "ppr": 222.5, "half_ppr": 244, "standard": 240 },
+    "adp": { "standard": 222.5, "ppr": 223, "hppr": 242 },
     "tier": 9,
     "vorp": 6.8,
     "projections": {}
@@ -1243,7 +1234,7 @@
     "team": "LAR",
     "position": "TE31",
     "bye": 8,
-    "adp": { "ppr": 223.5, "half_ppr": 236, "standard": 261 },
+    "adp": { "standard": 223.5, "ppr": 224, "hppr": 243 },
     "tier": 6,
     "vorp": 10.1,
     "projections": {}
@@ -1253,7 +1244,7 @@
     "team": "SEA",
     "position": "TE32",
     "bye": 8,
-    "adp": { "ppr": 226.5, "half_ppr": 227, "standard": 244 },
+    "adp": { "standard": 226.5, "ppr": 225, "hppr": 236.5 },
     "tier": 6,
     "vorp": 10.5,
     "projections": {}
@@ -1263,7 +1254,7 @@
     "team": "BUF",
     "position": "WR92",
     "bye": 7,
-    "adp": { "ppr": 229, "half_ppr": 235, "standard": 284 },
+    "adp": { "standard": 229, "ppr": 226, "hppr": 235 },
     "tier": 12,
     "vorp": 0,
     "projections": {}
@@ -1273,7 +1264,7 @@
     "team": "CHI",
     "position": "RB70",
     "bye": 5,
-    "adp": { "ppr": 229.5, "half_ppr": 250, "standard": 226 },
+    "adp": { "standard": 229.5, "ppr": 227, "hppr": 249 },
     "tier": 9,
     "vorp": 10.5,
     "projections": {}
@@ -1283,7 +1274,7 @@
     "team": "CLE",
     "position": "WR93",
     "bye": 9,
-    "adp": { "ppr": 231, "half_ppr": 246, "standard": 285.5 },
+    "adp": { "standard": 231, "ppr": 228, "hppr": 241 },
     "tier": 12,
     "vorp": 0,
     "projections": {}
@@ -1293,7 +1284,7 @@
     "team": "DAL",
     "position": "WR94",
     "bye": 10,
-    "adp": { "ppr": 232, "half_ppr": 217, "standard": 274 },
+    "adp": { "standard": 232, "ppr": 229, "hppr": 274 },
     "tier": 10,
     "vorp": 0,
     "projections": {}
@@ -1303,7 +1294,7 @@
     "team": "DET",
     "position": "WR95",
     "bye": 8,
-    "adp": { "ppr": 232.5, "half_ppr": 264, "standard": 293 },
+    "adp": { "standard": 232.5, "ppr": 230, "hppr": 268 },
     "tier": 12,
     "vorp": 0,
     "projections": {}
@@ -1313,7 +1304,7 @@
     "team": "LAC",
     "position": "TE33",
     "bye": 12,
-    "adp": { "ppr": 232.5, "half_ppr": 253.5, "standard": 237 },
+    "adp": { "standard": 232.5, "ppr": 231, "hppr": 253 },
     "tier": 6,
     "vorp": 13.5,
     "projections": {}
@@ -1323,7 +1314,7 @@
     "team": "NO",
     "position": "RB71",
     "bye": 11,
-    "adp": { "ppr": 233.5, "half_ppr": 204, "standard": 199 },
+    "adp": { "standard": 233.5, "ppr": 232, "hppr": 202.5 },
     "tier": 8,
     "vorp": 16.5,
     "projections": {}
@@ -1333,7 +1324,7 @@
     "team": "LAR",
     "position": "TE34",
     "bye": 8,
-    "adp": { "ppr": 235, "half_ppr": 241, "standard": 242 },
+    "adp": { "standard": 235, "ppr": 233, "hppr": 244.5 },
     "tier": 6,
     "vorp": 12.1,
     "projections": {}
@@ -1343,7 +1334,7 @@
     "team": "KC",
     "position": "WR96",
     "bye": 10,
-    "adp": { "ppr": 235.5, "half_ppr": 243.5, "standard": 227 },
+    "adp": { "standard": 235.5, "ppr": 234, "hppr": 243.5 },
     "tier": 10,
     "vorp": 3.5,
     "projections": {}
@@ -1353,7 +1344,7 @@
     "team": "CLE",
     "position": "QB34",
     "bye": 9,
-    "adp": { "ppr": 235.5, "half_ppr": 240, "standard": 230.5 },
+    "adp": { "standard": 235.5, "ppr": 235.5, "hppr": 247.5 },
     "tier": 6,
     "vorp": 35.2,
     "projections": {}
@@ -1363,7 +1354,7 @@
     "team": "KC",
     "position": "TE35",
     "bye": 10,
-    "adp": { "ppr": 236, "half_ppr": 226, "standard": 236 },
+    "adp": { "standard": 236, "ppr": 236, "hppr": 248 },
     "tier": 6,
     "vorp": 14.8,
     "projections": {}
@@ -1373,7 +1364,7 @@
     "team": "NO",
     "position": "TE36",
     "bye": 11,
-    "adp": { "ppr": 239, "half_ppr": 266.5, "standard": 291.5 },
+    "adp": { "standard": 239, "ppr": 237, "hppr": 280.5 },
     "tier": 7,
     "vorp": 0,
     "projections": {}
@@ -1383,7 +1374,7 @@
     "team": "WAS",
     "position": "RB72",
     "bye": 12,
-    "adp": { "ppr": 239.5, "half_ppr": 262, "standard": 282 },
+    "adp": { "standard": 239.5, "ppr": 238, "hppr": 294 },
     "tier": 10,
     "vorp": 0,
     "projections": {}
@@ -1393,7 +1384,7 @@
     "team": "TB",
     "position": "RB73",
     "bye": 9,
-    "adp": { "ppr": 242.5, "half_ppr": 248, "standard": 271 },
+    "adp": { "standard": 242.5, "ppr": 239, "hppr": 248 },
     "tier": 10,
     "vorp": 0,
     "projections": {}
@@ -1403,7 +1394,7 @@
     "team": "CLE",
     "position": "QB35",
     "bye": 9,
-    "adp": { "ppr": 246, "half_ppr": 245.5, "standard": 225 },
+    "adp": { "standard": 246, "ppr": 240, "hppr": 245.5 },
     "tier": 6,
     "vorp": 33.1,
     "projections": {}
@@ -1413,7 +1404,7 @@
     "team": "SEA",
     "position": "QB36",
     "bye": 8,
-    "adp": { "ppr": 247.5, "half_ppr": 250, "standard": 235 },
+    "adp": { "standard": 247.5, "ppr": 241, "hppr": 267.5 },
     "tier": 6,
     "vorp": 28.3,
     "projections": {}
@@ -1423,7 +1414,7 @@
     "team": "WAS",
     "position": "TE37",
     "bye": 12,
-    "adp": { "ppr": 248, "half_ppr": 288.5, "standard": 312 },
+    "adp": { "standard": 248, "ppr": 242, "hppr": 288.5 },
     "tier": 7,
     "vorp": 0,
     "projections": {}
@@ -1433,7 +1424,7 @@
     "team": "CHI",
     "position": "TE38",
     "bye": 5,
-    "adp": { "ppr": 248, "half_ppr": 223, "standard": 219 },
+    "adp": { "standard": 248, "ppr": 243, "hppr": 234 },
     "tier": 6,
     "vorp": 18.2,
     "projections": {}
@@ -1443,7 +1434,7 @@
     "team": "DEN",
     "position": "WR97",
     "bye": 12,
-    "adp": { "ppr": 248.5, "half_ppr": 265.5, "standard": 295 },
+    "adp": { "standard": 248.5, "ppr": 244, "hppr": 265.5 },
     "tier": 13,
     "vorp": 0,
     "projections": {}
@@ -1453,7 +1444,7 @@
     "team": "DEN",
     "position": "WR98",
     "bye": 12,
-    "adp": { "ppr": 251, "half_ppr": 277, "standard": 278.5 },
+    "adp": { "standard": 251, "ppr": 245, "hppr": 288 },
     "tier": 12,
     "vorp": 0,
     "projections": {}
@@ -1463,7 +1454,7 @@
     "team": "SF",
     "position": "RB74",
     "bye": 14,
-    "adp": { "ppr": 251, "half_ppr": 257, "standard": 245 },
+    "adp": { "standard": 251, "ppr": 246, "hppr": 256 },
     "tier": 9,
     "vorp": 6.1,
     "projections": {}
@@ -1473,7 +1464,7 @@
     "team": "MIA",
     "position": "WR99",
     "bye": 12,
-    "adp": { "ppr": 251.5, "half_ppr": 287.5, "standard": 290.5 },
+    "adp": { "standard": 251.5, "ppr": 247, "hppr": 282.5 },
     "tier": 13,
     "vorp": 0,
     "projections": {}
@@ -1483,7 +1474,7 @@
     "team": "BUF",
     "position": "RB75",
     "bye": 7,
-    "adp": { "ppr": 252, "half_ppr": 264, "standard": 313 },
+    "adp": { "standard": 252, "ppr": 248, "hppr": 264 },
     "tier": 9,
     "vorp": 0,
     "projections": {}
@@ -1493,7 +1484,7 @@
     "team": "SEA",
     "position": "WR100",
     "bye": 8,
-    "adp": { "ppr": 252.5, "half_ppr": 294, "standard": 299 },
+    "adp": { "standard": 252.5, "ppr": 249, "hppr": 294 },
     "tier": 12,
     "vorp": 0,
     "projections": {}
@@ -1503,7 +1494,7 @@
     "team": "SF",
     "position": "WR101",
     "bye": 14,
-    "adp": { "ppr": 254.5, "half_ppr": 236, "standard": 273 },
+    "adp": { "standard": 254.5, "ppr": 250, "hppr": 236 },
     "tier": 11,
     "vorp": 0,
     "projections": {}
@@ -1513,7 +1504,7 @@
     "team": "NYJ",
     "position": "WR102",
     "bye": 9,
-    "adp": { "ppr": 254.5, "half_ppr": 288, "standard": 315 },
+    "adp": { "standard": 254.5, "ppr": 251, "hppr": 288 },
     "tier": 11,
     "vorp": 0,
     "projections": {}
@@ -1523,7 +1514,7 @@
     "team": "LAC",
     "position": "WR103",
     "bye": 12,
-    "adp": { "ppr": 254.5, "half_ppr": 238, "standard": 260 },
+    "adp": { "standard": 254.5, "ppr": 252, "hppr": 238 },
     "tier": 11,
     "vorp": 0.8,
     "projections": {}
@@ -1533,7 +1524,7 @@
     "team": "NE",
     "position": "WR104",
     "bye": 14,
-    "adp": { "ppr": 255, "half_ppr": 275.5, "standard": 284 },
+    "adp": { "standard": 255, "ppr": 253, "hppr": 275.5 },
     "tier": 12,
     "vorp": 0,
     "projections": {}
@@ -1543,7 +1534,7 @@
     "team": "CIN",
     "position": "RB76",
     "bye": 10,
-    "adp": { "ppr": 255.5, "half_ppr": 267, "standard": 239 },
+    "adp": { "standard": 255.5, "ppr": 254, "hppr": 280 },
     "tier": 9,
     "vorp": 7.5,
     "projections": {}
@@ -1553,7 +1544,7 @@
     "team": "CLE",
     "position": "TE39",
     "bye": 9,
-    "adp": { "ppr": 256.5, "half_ppr": 286, "standard": 278.5 },
+    "adp": { "standard": 256.5, "ppr": 255, "hppr": 286 },
     "tier": 6,
     "vorp": 0,
     "projections": {}
@@ -1563,7 +1554,7 @@
     "team": "KC",
     "position": "RB77",
     "bye": 10,
-    "adp": { "ppr": 256.5, "half_ppr": 251, "standard": 222 },
+    "adp": { "standard": 256.5, "ppr": 256.5, "hppr": 251 },
     "tier": 9,
     "vorp": 8.5,
     "projections": {}
@@ -1573,7 +1564,7 @@
     "team": "NO",
     "position": "RB78",
     "bye": 11,
-    "adp": { "ppr": 257.5, "half_ppr": 259, "standard": 282 },
+    "adp": { "standard": 257.5, "ppr": 257.5, "hppr": 259 },
     "tier": 10,
     "vorp": 0,
     "projections": {}
@@ -1583,7 +1574,7 @@
     "team": "LV",
     "position": "WR105",
     "bye": 8,
-    "adp": { "ppr": 258, "half_ppr": 266.5, "standard": 284 },
+    "adp": { "standard": 258, "ppr": 258, "hppr": 266.5 },
     "tier": 12,
     "vorp": 0,
     "projections": {}
@@ -1593,7 +1584,7 @@
     "team": "LAC",
     "position": "TE40",
     "bye": 12,
-    "adp": { "ppr": 258.5, "half_ppr": 259.5, "standard": 228 },
+    "adp": { "standard": 258.5, "ppr": 259, "hppr": 259.5 },
     "tier": 6,
     "vorp": 0,
     "projections": {}
@@ -1603,7 +1594,7 @@
     "team": "BUF",
     "position": "WR106",
     "bye": 7,
-    "adp": { "ppr": 259, "half_ppr": 290, "standard": 311 },
+    "adp": { "standard": 259, "ppr": 260, "hppr": 290 },
     "tier": 12,
     "vorp": 0,
     "projections": {}
@@ -1613,7 +1604,7 @@
     "team": "LAR",
     "position": "WR107",
     "bye": 8,
-    "adp": { "ppr": 260, "half_ppr": 296, "standard": 310 },
+    "adp": { "standard": 260, "ppr": 261, "hppr": 296 },
     "tier": 12,
     "vorp": 0,
     "projections": {}
@@ -1623,7 +1614,7 @@
     "team": "CIN",
     "position": "WR108",
     "bye": 10,
-    "adp": { "ppr": 260.5, "half_ppr": 302.5, "standard": 329 },
+    "adp": { "standard": 260.5, "ppr": 262, "hppr": 302.5 },
     "tier": 12,
     "vorp": 0,
     "projections": {}
@@ -1633,7 +1624,7 @@
     "team": "MIN",
     "position": "WR109",
     "bye": 6,
-    "adp": { "ppr": 261.5, "half_ppr": 280, "standard": 305 },
+    "adp": { "standard": 261.5, "ppr": 263, "hppr": 280 },
     "tier": 12,
     "vorp": 0,
     "projections": {}
@@ -1643,7 +1634,7 @@
     "team": "MIA",
     "position": "WR110",
     "bye": 12,
-    "adp": { "ppr": 261.5, "half_ppr": 295, "standard": 291 },
+    "adp": { "standard": 261.5, "ppr": 264, "hppr": 292 },
     "tier": 12,
     "vorp": 0,
     "projections": {}
@@ -1653,7 +1644,7 @@
     "team": "HOU",
     "position": "RB79",
     "bye": 6,
-    "adp": { "ppr": 262.5, "half_ppr": 265, "standard": 258.5 },
+    "adp": { "standard": 262.5, "ppr": 265, "hppr": 265 },
     "tier": 10,
     "vorp": 1.5,
     "projections": {}
@@ -1663,7 +1654,7 @@
     "team": "GB",
     "position": "WR111",
     "bye": 5,
-    "adp": { "ppr": 263, "half_ppr": 287, "standard": 304 },
+    "adp": { "standard": 263, "ppr": 266, "hppr": 287 },
     "tier": 12,
     "vorp": 0,
     "projections": {}
@@ -1673,7 +1664,7 @@
     "team": "NYJ",
     "position": "WR112",
     "bye": 9,
-    "adp": { "ppr": 264, "half_ppr": 281, "standard": 307 },
+    "adp": { "standard": 264, "ppr": 267, "hppr": 308 },
     "tier": 12,
     "vorp": 0,
     "projections": {}
@@ -1683,7 +1674,7 @@
     "team": "LV",
     "position": "TE41",
     "bye": 8,
-    "adp": { "ppr": 268, "half_ppr": 264, "standard": 276 },
+    "adp": { "standard": 269, "ppr": 268, "hppr": 264 },
     "tier": 6,
     "vorp": 0,
     "projections": {}
@@ -1693,7 +1684,7 @@
     "team": "MIA",
     "position": "RB80",
     "bye": 12,
-    "adp": { "ppr": 265, "half_ppr": 231.5, "standard": 208 },
+    "adp": { "standard": 265, "ppr": 269, "hppr": 231.5 },
     "tier": 9,
     "vorp": 13.5,
     "projections": {}
@@ -1703,7 +1694,7 @@
     "team": "DEN",
     "position": "RB81",
     "bye": 12,
-    "adp": { "ppr": 270, "half_ppr": 251, "standard": 234 },
+    "adp": { "standard": 270, "ppr": 270, "hppr": 246.5 },
     "tier": 9,
     "vorp": 8.1,
     "projections": {}
@@ -1713,7 +1704,7 @@
     "team": "WAS",
     "position": "WR113",
     "bye": 12,
-    "adp": { "ppr": 268, "half_ppr": 271, "standard": 299 },
+    "adp": { "standard": 268, "ppr": 271, "hppr": 271 },
     "tier": 12,
     "vorp": 0,
     "projections": {}
@@ -1723,7 +1714,7 @@
     "team": "JAC",
     "position": "WR114",
     "bye": 8,
-    "adp": { "ppr": 270, "half_ppr": 253, "standard": 286 },
+    "adp": { "standard": 270, "ppr": 272, "hppr": 253 },
     "tier": 12,
     "vorp": 0,
     "projections": {}
@@ -1733,7 +1724,7 @@
     "team": "NYJ",
     "position": "RB82",
     "bye": 9,
-    "adp": { "ppr": 270.5, "half_ppr": 289, "standard": 332 },
+    "adp": { "standard": 270.5, "ppr": 273, "hppr": 309 },
     "tier": 10,
     "vorp": 0,
     "projections": {}
@@ -1743,7 +1734,7 @@
     "team": "NE",
     "position": "WR115",
     "bye": 14,
-    "adp": { "ppr": 280, "half_ppr": 287, "standard": 287 },
+    "adp": { "standard": 280, "ppr": 274, "hppr": 273 },
     "tier": 12,
     "vorp": 0,
     "projections": {}
@@ -1753,7 +1744,7 @@
     "team": "TEN",
     "position": "WR116",
     "bye": 10,
-    "adp": { "ppr": 272.5, "half_ppr": 280.5, "standard": 272.5 },
+    "adp": { "standard": 272.5, "ppr": 275, "hppr": 277 },
     "tier": 12,
     "vorp": 0,
     "projections": {}
@@ -1763,7 +1754,7 @@
     "team": "SEA",
     "position": "WR117",
     "bye": 8,
-    "adp": { "ppr": 274, "half_ppr": 288, "standard": 283.5 },
+    "adp": { "standard": 274, "ppr": 276, "hppr": 288 },
     "tier": 12,
     "vorp": 0,
     "projections": {}
@@ -1773,7 +1764,7 @@
     "team": "MIN",
     "position": "WR118",
     "bye": 6,
-    "adp": { "ppr": 274, "half_ppr": 312, "standard": 285 },
+    "adp": { "standard": 274, "ppr": 277, "hppr": 283 },
     "tier": 12,
     "vorp": 0,
     "projections": {}
@@ -1783,7 +1774,7 @@
     "team": "WAS",
     "position": "WR119",
     "bye": 12,
-    "adp": { "ppr": 274, "half_ppr": 287.5, "standard": 297 },
+    "adp": { "standard": 274, "ppr": 278, "hppr": 291 },
     "tier": 12,
     "vorp": 0,
     "projections": {}
@@ -1793,7 +1784,7 @@
     "team": "DAL",
     "position": "WR120",
     "bye": 10,
-    "adp": { "ppr": 275, "half_ppr": 310, "standard": 342 },
+    "adp": { "standard": 275, "ppr": 279, "hppr": 312 },
     "tier": 12,
     "vorp": 0,
     "projections": {}
@@ -1803,7 +1794,7 @@
     "team": "GB",
     "position": "RB83",
     "bye": 5,
-    "adp": { "ppr": 276.5, "half_ppr": 263, "standard": 298 },
+    "adp": { "standard": 276.5, "ppr": 280, "hppr": 292 },
     "tier": 10,
     "vorp": 0,
     "projections": {}
@@ -1813,7 +1804,7 @@
     "team": "ATL",
     "position": "QB37",
     "bye": 5,
-    "adp": { "ppr": 279.5, "half_ppr": 270, "standard": 242 },
+    "adp": { "standard": 279.5, "ppr": 281, "hppr": 261 },
     "tier": 6,
     "vorp": 30.5,
     "projections": {}
@@ -1823,7 +1814,7 @@
     "team": "SEA",
     "position": "TE42",
     "bye": 8,
-    "adp": { "ppr": 277, "half_ppr": 302.5, "standard": 289 },
+    "adp": { "standard": 277, "ppr": 282, "hppr": 321 },
     "tier": 6,
     "vorp": 0,
     "projections": {}
@@ -1833,7 +1824,7 @@
     "team": "DEN",
     "position": "RB84",
     "bye": 12,
-    "adp": { "ppr": 267, "half_ppr": 274, "standard": 252 },
+    "adp": { "standard": 267, "ppr": 283, "hppr": 254 },
     "tier": 9,
     "vorp": 2.5,
     "projections": {}
@@ -1843,7 +1834,7 @@
     "team": "CAR",
     "position": "WR121",
     "bye": 14,
-    "adp": { "ppr": 271, "half_ppr": null, "standard": null },
+    "adp": { "standard": 271, "ppr": 284, "hppr": null },
     "tier": 12,
     "vorp": 0,
     "projections": {}
@@ -1853,7 +1844,7 @@
     "team": "CAR",
     "position": "RB85",
     "bye": 14,
-    "adp": { "ppr": 280, "half_ppr": 309, "standard": 267 },
+    "adp": { "standard": 280, "ppr": 285, "hppr": 265 },
     "tier": 10,
     "vorp": 0.1,
     "projections": {}
@@ -1863,7 +1854,7 @@
     "team": "PHI",
     "position": "WR122",
     "bye": 9,
-    "adp": { "ppr": 275, "half_ppr": null, "standard": null },
+    "adp": { "standard": 275, "ppr": 286, "hppr": null },
     "tier": 12,
     "vorp": 0,
     "projections": {}
@@ -1873,7 +1864,7 @@
     "team": "NO",
     "position": "WR123",
     "bye": 11,
-    "adp": { "ppr": 282, "half_ppr": 303, "standard": 311 },
+    "adp": { "standard": 282, "ppr": 287, "hppr": 303 },
     "tier": 12,
     "vorp": 0,
     "projections": {}
@@ -1883,7 +1874,7 @@
     "team": "LAC",
     "position": "TE43",
     "bye": 12,
-    "adp": { "ppr": 283, "half_ppr": 314, "standard": 256 },
+    "adp": { "standard": 283, "ppr": 288, "hppr": 314 },
     "tier": 7,
     "vorp": 0,
     "projections": {}
@@ -1893,7 +1884,7 @@
     "team": "GB",
     "position": "WR124",
     "bye": 5,
-    "adp": { "ppr": 279, "half_ppr": 335, "standard": 322 },
+    "adp": { "standard": 279, "ppr": 289, "hppr": 317 },
     "tier": 12,
     "vorp": 0,
     "projections": {}
@@ -1903,7 +1894,7 @@
     "team": "PHI",
     "position": "RB86",
     "bye": 9,
-    "adp": { "ppr": 283, "half_ppr": 268, "standard": 268 },
+    "adp": { "standard": 283, "ppr": 290, "hppr": 268 },
     "tier": 9,
     "vorp": 0,
     "projections": {}
@@ -1913,7 +1904,7 @@
     "team": "BAL",
     "position": "WR125",
     "bye": 7,
-    "adp": { "ppr": 296, "half_ppr": 313, "standard": 291 },
+    "adp": { "standard": 296, "ppr": 291, "hppr": 313 },
     "tier": 13,
     "vorp": 0,
     "projections": {}
@@ -1923,7 +1914,7 @@
     "team": "NYJ",
     "position": "WR126",
     "bye": 9,
-    "adp": { "ppr": 285, "half_ppr": null, "standard": null },
+    "adp": { "standard": 285, "ppr": 292, "hppr": null },
     "tier": 13,
     "vorp": 0,
     "projections": {}
@@ -1933,7 +1924,7 @@
     "team": "KC",
     "position": "WR127",
     "bye": 10,
-    "adp": { "ppr": 286, "half_ppr": 330, "standard": 293 },
+    "adp": { "standard": 286, "ppr": 293, "hppr": 330 },
     "tier": 13,
     "vorp": 0,
     "projections": {}
@@ -1943,7 +1934,7 @@
     "team": "NO",
     "position": "RB87",
     "bye": 11,
-    "adp": { "ppr": 294, "half_ppr": 318, "standard": 304 },
+    "adp": { "standard": 294, "ppr": 294, "hppr": 304 },
     "tier": 10,
     "vorp": 0,
     "projections": {}
@@ -1953,7 +1944,7 @@
     "team": "NYG",
     "position": "WR128",
     "bye": 14,
-    "adp": { "ppr": 288, "half_ppr": null, "standard": null },
+    "adp": { "standard": 288, "ppr": 295, "hppr": null },
     "tier": 13,
     "vorp": 0,
     "projections": {}
@@ -1963,7 +1954,7 @@
     "team": "BAL",
     "position": "WR129",
     "bye": 7,
-    "adp": { "ppr": 289, "half_ppr": null, "standard": null },
+    "adp": { "standard": 289, "ppr": 296, "hppr": null },
     "tier": 13,
     "vorp": 0,
     "projections": {}
@@ -1973,7 +1964,7 @@
     "team": "WAS",
     "position": "WR130",
     "bye": 12,
-    "adp": { "ppr": 291, "half_ppr": null, "standard": null },
+    "adp": { "standard": 291, "ppr": 297, "hppr": null },
     "tier": 13,
     "vorp": 0,
     "projections": {}
@@ -1983,7 +1974,7 @@
     "team": "NE",
     "position": "WR131",
     "bye": 14,
-    "adp": { "ppr": 292, "half_ppr": null, "standard": null },
+    "adp": { "standard": 292, "ppr": 298, "hppr": null },
     "tier": 13,
     "vorp": 0,
     "projections": {}
@@ -1993,7 +1984,7 @@
     "team": "TEN",
     "position": "WR132",
     "bye": 10,
-    "adp": { "ppr": 293, "half_ppr": null, "standard": null },
+    "adp": { "standard": 293, "ppr": 299, "hppr": null },
     "tier": 13,
     "vorp": 0,
     "projections": {}
@@ -2003,7 +1994,7 @@
     "team": "DET",
     "position": "WR133",
     "bye": 8,
-    "adp": { "ppr": 296, "half_ppr": 301, "standard": 331 },
+    "adp": { "standard": 296, "ppr": 300, "hppr": 301 },
     "tier": 13,
     "vorp": 0,
     "projections": {}
@@ -2013,7 +2004,7 @@
     "team": "HOU",
     "position": "WR134",
     "bye": 6,
-    "adp": { "ppr": 298, "half_ppr": 327, "standard": 353 },
+    "adp": { "standard": 298, "ppr": 301, "hppr": 327 },
     "tier": 13,
     "vorp": 0,
     "projections": {}
@@ -2023,7 +2014,7 @@
     "team": "SEA",
     "position": "RB88",
     "bye": 8,
-    "adp": { "ppr": 299, "half_ppr": 302, "standard": 329 },
+    "adp": { "standard": 299, "ppr": 302, "hppr": 317 },
     "tier": 10,
     "vorp": 0,
     "projections": {}
@@ -2033,7 +2024,7 @@
     "team": "BUF",
     "position": "TE44",
     "bye": 7,
-    "adp": { "ppr": 300, "half_ppr": 332, "standard": 323 },
+    "adp": { "standard": 300, "ppr": 303, "hppr": 323 },
     "tier": 7,
     "vorp": 0,
     "projections": {}
@@ -2043,7 +2034,7 @@
     "team": "DAL",
     "position": "QB38",
     "bye": 10,
-    "adp": { "ppr": 302, "half_ppr": null, "standard": null },
+    "adp": { "standard": 302, "ppr": 304, "hppr": null },
     "tier": 7,
     "vorp": 0,
     "projections": {}
@@ -2053,7 +2044,7 @@
     "team": "GB",
     "position": "TE45",
     "bye": 5,
-    "adp": { "ppr": 303, "half_ppr": null, "standard": null },
+    "adp": { "standard": 303, "ppr": 305, "hppr": null },
     "tier": 7,
     "vorp": 0,
     "projections": {}
@@ -2063,7 +2054,7 @@
     "team": "SF",
     "position": "WR135",
     "bye": 14,
-    "adp": { "ppr": 304, "half_ppr": null, "standard": null },
+    "adp": { "standard": 304, "ppr": 306, "hppr": null },
     "tier": 13,
     "vorp": 0,
     "projections": {}
@@ -2073,7 +2064,7 @@
     "team": "ARI",
     "position": "WR136",
     "bye": 8,
-    "adp": { "ppr": 305, "half_ppr": null, "standard": null },
+    "adp": { "standard": 305, "ppr": 307, "hppr": null },
     "tier": 13,
     "vorp": 0,
     "projections": {}
@@ -2083,7 +2074,7 @@
     "team": "NYG",
     "position": "QB39",
     "bye": 14,
-    "adp": { "ppr": 307, "half_ppr": 308, "standard": 349 },
+    "adp": { "standard": 307, "ppr": 308, "hppr": 316 },
     "tier": 7,
     "vorp": 0,
     "projections": {}
@@ -2093,7 +2084,7 @@
     "team": "NYJ",
     "position": "WR137",
     "bye": 9,
-    "adp": { "ppr": 309, "half_ppr": null, "standard": null },
+    "adp": { "standard": 309, "ppr": 309, "hppr": null },
     "tier": 13,
     "vorp": 0,
     "projections": {}
@@ -2103,7 +2094,7 @@
     "team": "IND",
     "position": "RB89",
     "bye": 11,
-    "adp": { "ppr": 310, "half_ppr": 320, "standard": 324 },
+    "adp": { "standard": 310, "ppr": 310, "hppr": 314 },
     "tier": 10,
     "vorp": 0,
     "projections": {}
@@ -2113,7 +2104,7 @@
     "team": "TB",
     "position": "WR138",
     "bye": 9,
-    "adp": { "ppr": 311, "half_ppr": null, "standard": null },
+    "adp": { "standard": 311, "ppr": 311, "hppr": null },
     "tier": 13,
     "vorp": 0,
     "projections": {}
@@ -2123,7 +2114,7 @@
     "team": "CAR",
     "position": "WR139",
     "bye": 14,
-    "adp": { "ppr": 312, "half_ppr": null, "standard": null },
+    "adp": { "standard": 312, "ppr": 312, "hppr": null },
     "tier": 13,
     "vorp": 0,
     "projections": {}
@@ -2133,7 +2124,7 @@
     "team": "CLE",
     "position": "QB40",
     "bye": 9,
-    "adp": { "ppr": 313, "half_ppr": null, "standard": null },
+    "adp": { "standard": 313, "ppr": 313, "hppr": null },
     "tier": 7,
     "vorp": 0,
     "projections": {}
@@ -2143,7 +2134,7 @@
     "team": "TEN",
     "position": "WR140",
     "bye": 10,
-    "adp": { "ppr": 314, "half_ppr": null, "standard": null },
+    "adp": { "standard": 314, "ppr": 314, "hppr": null },
     "tier": 13,
     "vorp": 0,
     "projections": {}
@@ -2153,7 +2144,7 @@
     "team": "DAL",
     "position": "RB90",
     "bye": 10,
-    "adp": { "ppr": 315, "half_ppr": 298, "standard": 315 },
+    "adp": { "standard": 315, "ppr": 315, "hppr": 286 },
     "tier": 10,
     "vorp": 0,
     "projections": {}
@@ -2163,7 +2154,7 @@
     "team": "KC",
     "position": "WR141",
     "bye": 10,
-    "adp": { "ppr": 316, "half_ppr": null, "standard": null },
+    "adp": { "standard": 316, "ppr": 316, "hppr": null },
     "tier": 13,
     "vorp": 0,
     "projections": {}
@@ -2173,7 +2164,7 @@
     "team": "",
     "position": "RB91",
     "bye": "",
-    "adp": { "ppr": 317, "half_ppr": null, "standard": null },
+    "adp": { "standard": 317, "ppr": 317, "hppr": null },
     "tier": 10,
     "vorp": 0,
     "projections": {}
@@ -2183,7 +2174,7 @@
     "team": "LV",
     "position": "QB41",
     "bye": 8,
-    "adp": { "ppr": 318, "half_ppr": null, "standard": null },
+    "adp": { "standard": 318, "ppr": 318, "hppr": null },
     "tier": 7,
     "vorp": 0,
     "projections": {}
@@ -2193,7 +2184,7 @@
     "team": "NO",
     "position": "QB42",
     "bye": 11,
-    "adp": { "ppr": 319, "half_ppr": null, "standard": null },
+    "adp": { "standard": 319, "ppr": 319, "hppr": null },
     "tier": 7,
     "vorp": 0,
     "projections": {}
@@ -2203,7 +2194,7 @@
     "team": "CIN",
     "position": "RB92",
     "bye": 10,
-    "adp": { "ppr": 320, "half_ppr": 324, "standard": 330 },
+    "adp": { "standard": 320, "ppr": 320, "hppr": 298 },
     "tier": 10,
     "vorp": 0,
     "projections": {}
@@ -2213,7 +2204,7 @@
     "team": "NE",
     "position": "TE46",
     "bye": 14,
-    "adp": { "ppr": 321, "half_ppr": 326, "standard": 333 },
+    "adp": { "standard": 321, "ppr": 321, "hppr": 326 },
     "tier": 7,
     "vorp": 0,
     "projections": {}
@@ -2223,8 +2214,8 @@
     "team": "MIA",
     "position": "RB93",
     "bye": 12,
-    "adp": { "ppr": 322, "half_ppr": 282, "standard": 277 },
-    "tier": 10,
+    "adp": { "standard": 322, "ppr": 322, "hppr": 282 },
+    "tier": 9,
     "vorp": 0,
     "projections": {}
   },
@@ -2233,7 +2224,7 @@
     "team": "BAL",
     "position": "QB43",
     "bye": 7,
-    "adp": { "ppr": 323, "half_ppr": null, "standard": null },
+    "adp": { "ppr": 323, "hppr": null, "standard": null },
     "tier": 7,
     "vorp": 0,
     "projections": {}
@@ -2243,7 +2234,7 @@
     "team": "LAC",
     "position": "WR142",
     "bye": 12,
-    "adp": { "ppr": 324, "half_ppr": null, "standard": null },
+    "adp": { "ppr": 324, "hppr": null, "standard": null },
     "tier": 13,
     "vorp": 0,
     "projections": {}
@@ -2253,7 +2244,7 @@
     "team": "SF",
     "position": "WR143",
     "bye": 14,
-    "adp": { "ppr": 325, "half_ppr": null, "standard": null },
+    "adp": { "ppr": 325, "hppr": null, "standard": null },
     "tier": 13,
     "vorp": 0,
     "projections": {}
@@ -2263,7 +2254,7 @@
     "team": "NE",
     "position": "WR144",
     "bye": 14,
-    "adp": { "ppr": 326, "half_ppr": null, "standard": null },
+    "adp": { "ppr": 326, "hppr": null, "standard": null },
     "tier": 13,
     "vorp": 0,
     "projections": {}
@@ -2273,7 +2264,7 @@
     "team": "CHI",
     "position": "WR145",
     "bye": 5,
-    "adp": { "ppr": 327, "half_ppr": null, "standard": null },
+    "adp": { "ppr": 327, "hppr": null, "standard": null },
     "tier": 13,
     "vorp": 0,
     "projections": {}
@@ -2283,7 +2274,7 @@
     "team": "PIT",
     "position": "TE47",
     "bye": 5,
-    "adp": { "ppr": 328, "half_ppr": null, "standard": null },
+    "adp": { "ppr": 328, "hppr": null, "standard": null },
     "tier": 7,
     "vorp": 0,
     "projections": {}
@@ -2293,7 +2284,7 @@
     "team": "NE",
     "position": "RB94",
     "bye": 14,
-    "adp": { "ppr": 329, "half_ppr": 299, "standard": 318 },
+    "adp": { "ppr": 329, "hppr": 299, "standard": 318 },
     "tier": 10,
     "vorp": 0,
     "projections": {}
@@ -2303,7 +2294,7 @@
     "team": "WAS",
     "position": "RB95",
     "bye": 12,
-    "adp": { "ppr": 330, "half_ppr": null, "standard": null },
+    "adp": { "ppr": 330, "hppr": null, "standard": null },
     "tier": 10,
     "vorp": 0,
     "projections": {}
@@ -2313,7 +2304,7 @@
     "team": "PIT",
     "position": "RB96",
     "bye": 5,
-    "adp": { "ppr": 331, "half_ppr": 297, "standard": 254 },
+    "adp": { "ppr": 331, "hppr": 297, "standard": 254 },
     "tier": 10,
     "vorp": 1.8,
     "projections": {}
@@ -2323,7 +2314,7 @@
     "team": "ARI",
     "position": "RB97",
     "bye": 8,
-    "adp": { "ppr": 332, "half_ppr": null, "standard": null },
+    "adp": { "ppr": 332, "hppr": null, "standard": null },
     "tier": 10,
     "vorp": 0,
     "projections": {}
@@ -2333,7 +2324,7 @@
     "team": "TEN",
     "position": "TE48",
     "bye": 10,
-    "adp": { "ppr": 333, "half_ppr": null, "standard": null },
+    "adp": { "ppr": 333, "hppr": null, "standard": null },
     "tier": 7,
     "vorp": 0,
     "projections": {}
@@ -2343,7 +2334,7 @@
     "team": "DET",
     "position": "WR146",
     "bye": 8,
-    "adp": { "ppr": 334, "half_ppr": null, "standard": null },
+    "adp": { "ppr": 334, "hppr": null, "standard": null },
     "tier": 13,
     "vorp": 0,
     "projections": {}
@@ -2353,7 +2344,7 @@
     "team": "SEA",
     "position": "RB98",
     "bye": 8,
-    "adp": { "ppr": 335, "half_ppr": null, "standard": null },
+    "adp": { "ppr": 335, "hppr": null, "standard": null },
     "tier": 10,
     "vorp": 0,
     "projections": {}
@@ -2363,7 +2354,7 @@
     "team": "NE",
     "position": "WR147",
     "bye": 14,
-    "adp": { "ppr": 336, "half_ppr": 305, "standard": 314 },
+    "adp": { "ppr": 336, "hppr": 281, "standard": 305 },
     "tier": 12,
     "vorp": 0,
     "projections": {}
@@ -2373,7 +2364,7 @@
     "team": "SF",
     "position": "RB99",
     "bye": 14,
-    "adp": { "ppr": 337, "half_ppr": null, "standard": null },
+    "adp": { "ppr": 337, "hppr": null, "standard": null },
     "tier": 10,
     "vorp": 0,
     "projections": {}
@@ -2383,7 +2374,7 @@
     "team": "CAR",
     "position": "TE49",
     "bye": 14,
-    "adp": { "ppr": 338, "half_ppr": null, "standard": null },
+    "adp": { "ppr": 338, "hppr": null, "standard": null },
     "tier": 7,
     "vorp": 0,
     "projections": {}
@@ -2393,7 +2384,7 @@
     "team": "MIN",
     "position": "TE50",
     "bye": 6,
-    "adp": { "ppr": 339, "half_ppr": 305, "standard": 322 },
+    "adp": { "ppr": 339, "half_ppr": 322, "standard": 305 },
     "tier": 7,
     "vorp": 0,
     "projections": {}
@@ -2453,7 +2444,7 @@
     "team": "",
     "position": "WR149",
     "bye": "",
-    "adp": { "ppr": 345, "half_ppr": 309, "standard": 337 },
+    "adp": { "ppr": 345, "half_ppr": 328, "standard": 309 },
     "tier": 13,
     "vorp": 0,
     "projections": {}
@@ -2473,7 +2464,7 @@
     "team": "HOU",
     "position": "RB101",
     "bye": 6,
-    "adp": { "ppr": 347, "half_ppr": 336, "standard": 312 },
+    "adp": { "ppr": 347, "half_ppr": 321, "standard": 295.5 },
     "tier": 10,
     "vorp": 0,
     "projections": {}
@@ -2483,7 +2474,7 @@
     "team": "NYG",
     "position": "RB102",
     "bye": 14,
-    "adp": { "ppr": 348, "half_ppr": 280, "standard": 280 },
+    "adp": { "ppr": 348, "half_ppr": 316, "standard": 280 },
     "tier": 10,
     "vorp": 0,
     "projections": {}
@@ -2603,7 +2594,7 @@
     "team": "TEN",
     "position": "WR152",
     "bye": 10,
-    "adp": { "ppr": 360, "half_ppr": 338, "standard": 326 },
+    "adp": { "ppr": 360, "half_ppr": 320, "standard": 326 },
     "tier": 13,
     "vorp": 0,
     "projections": {}
@@ -2845,6 +2836,196 @@
     "bye": 5,
     "adp": { "ppr": 384, "half_ppr": null, "standard": null },
     "tier": 13,
+    "vorp": 0,
+    "projections": {}
+  },
+  {
+    "name": "John Bates",
+    "team": "WAS",
+    "position": "TE62",
+    "bye": 12,
+    "adp": { "ppr": 385, "half_ppr": null, "standard": null },
+    "tier": 8,
+    "vorp": 0,
+    "projections": {}
+  },
+  {
+    "name": "Marcus Mariota",
+    "team": "WAS",
+    "position": "QB54",
+    "bye": 12,
+    "adp": { "ppr": 386, "half_ppr": 326, "standard": 298 },
+    "tier": 7,
+    "vorp": 0,
+    "projections": {}
+  },
+  {
+    "name": "Jake Browning",
+    "team": "CIN",
+    "position": "QB55",
+    "bye": 10,
+    "adp": { "ppr": 387, "half_ppr": null, "standard": null },
+    "tier": 8,
+    "vorp": 0,
+    "projections": {}
+  },
+  {
+    "name": "Tyson Bagent",
+    "team": "CHI",
+    "position": "QB56",
+    "bye": 5,
+    "adp": { "ppr": 388, "half_ppr": null, "standard": null },
+    "tier": 8,
+    "vorp": 0,
+    "projections": {}
+  },
+  {
+    "name": "Mitchell Trubisky",
+    "team": "BUF",
+    "position": "QB57",
+    "bye": 7,
+    "adp": { "ppr": 389, "half_ppr": null, "standard": null },
+    "tier": 8,
+    "vorp": 0,
+    "projections": {}
+  },
+  {
+    "name": "Craig Reynolds",
+    "team": "DET",
+    "position": "RB111",
+    "bye": 8,
+    "adp": { "ppr": 390, "half_ppr": null, "standard": null },
+    "tier": 11,
+    "vorp": 0,
+    "projections": {}
+  },
+  {
+    "name": "Tyler Badie",
+    "team": "DEN",
+    "position": "RB112",
+    "bye": 12,
+    "adp": { "ppr": 391, "half_ppr": null, "standard": null },
+    "tier": 11,
+    "vorp": 0,
+    "projections": {}
+  },
+  {
+    "name": "Rondale Moore",
+    "team": "MIN",
+    "position": "WR161",
+    "bye": 6,
+    "adp": { "ppr": 392, "half_ppr": null, "standard": null },
+    "tier": 14,
+    "vorp": 0,
+    "projections": {}
+  },
+  {
+    "name": "Ihmir Smith-Marsette",
+    "team": "NYG",
+    "position": "WR162",
+    "bye": 14,
+    "adp": { "ppr": 393, "half_ppr": null, "standard": null },
+    "tier": 14,
+    "vorp": 0,
+    "projections": {}
+  },
+  {
+    "name": "Israel Abanikanda",
+    "team": "SF",
+    "position": "RB113",
+    "bye": 14,
+    "adp": { "ppr": 395, "half_ppr": null, "standard": null },
+    "tier": 11,
+    "vorp": 0,
+    "projections": {}
+  },
+  {
+    "name": "Riley Leonard",
+    "team": "IND",
+    "position": "QB58",
+    "bye": 11,
+    "adp": { "ppr": 396, "half_ppr": null, "standard": null },
+    "tier": 8,
+    "vorp": 0,
+    "projections": {}
+  },
+  {
+    "name": "Konata Mumpfield",
+    "team": "LAR",
+    "position": "WR164",
+    "bye": 8,
+    "adp": { "ppr": 397, "half_ppr": null, "standard": null },
+    "tier": 14,
+    "vorp": 0,
+    "projections": {}
+  },
+  {
+    "name": "George Holani",
+    "team": "SEA",
+    "position": "RB114",
+    "bye": 8,
+    "adp": { "ppr": 400, "half_ppr": null, "standard": null },
+    "tier": 11,
+    "vorp": 0,
+    "projections": {}
+  },
+  {
+    "name": "Junior Bergen",
+    "team": "SF",
+    "position": "WR167",
+    "bye": 14,
+    "adp": { "ppr": 402, "half_ppr": null, "standard": null },
+    "tier": 14,
+    "vorp": 0,
+    "projections": {}
+  },
+  {
+    "name": "Caleb Lohner",
+    "team": "DEN",
+    "position": "TE64",
+    "bye": 12,
+    "adp": { "ppr": 403, "half_ppr": null, "standard": null },
+    "tier": 8,
+    "vorp": 0,
+    "projections": {}
+  },
+  {
+    "name": "Sincere McCormick",
+    "team": "LV",
+    "position": "RB115",
+    "bye": 8,
+    "adp": { "ppr": 404, "half_ppr": null, "standard": null },
+    "tier": 11,
+    "vorp": 0,
+    "projections": {}
+  },
+  {
+    "name": "Carlos Washington Jr.",
+    "team": "ATL",
+    "position": "RB116",
+    "bye": 5,
+    "adp": { "ppr": 405, "half_ppr": null, "standard": null },
+    "tier": 11,
+    "vorp": 0,
+    "projections": {}
+  },
+  {
+    "name": "Brenden Rice",
+    "team": "LAC",
+    "position": "WR168",
+    "bye": 12,
+    "adp": { "ppr": 406, "half_ppr": null, "standard": null },
+    "tier": 14,
+    "vorp": 0,
+    "projections": {}
+  },
+  {
+    "name": "Erick All Jr.",
+    "team": "CIN",
+    "position": "TE65",
+    "bye": 10,
+    "adp": { "ppr": 408, "half_ppr": null, "standard": null },
+    "tier": 8,
     "vorp": 0,
     "projections": {}
   }
