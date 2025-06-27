@@ -48,10 +48,10 @@
             </p>
 
             <div class="p-6 bg-gray-800 bg-opacity-80 rounded-xl shadow-lg border border-teal-600 mb-8">
-                <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4 items-end">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 items-end">
                     <div>
-                        <label for="positionFilter" class="block text-sm font-medium text-gray-300 mb-1">Position</label>
-                        <select id="positionFilter" class="form-select">
+                        <label for="stats-position-filter" class="block text-sm font-medium text-gray-300 mb-1">Position</label>
+                        <select id="stats-position-filter" class="form-select">
                             <option value="ALL">All Positions</option>
                             <option value="QB">QB</option>
                             <option value="RB">RB</option>
@@ -60,46 +60,44 @@
                         </select>
                     </div>
                     <div>
-                        <label for="statSort" class="block text-sm font-medium text-gray-300 mb-1">Sort By</label>
-                        <select id="statSort" class="form-select">
-                            <option value="FantasyPoints">Fantasy Points</option>
-                            <option value="Pass Yds">Passing Yards</option>
-                            <option value="Rush Yds">Rushing Yards</option>
+                        <label for="stats-sort-by" class="block text-sm font-medium text-gray-300 mb-1">Sort By</label>
+                        <select id="stats-sort-by" class="form-select">
+                            <option value="fantasyPoints">Fantasy Points</option>
+                            <option value="vorp">VORP</option>
+                            <option value="adp_ppr">ADP (PPR)</option>
+                            <option value="name">Name (A-Z)</option>
                         </select>
                     </div>
                     <div>
-                        <label for="playerSearch" class="block text-sm font-medium text-gray-300 mb-1">Player Name</label>
-                        <input type="text" id="playerSearch" class="form-input" placeholder="Search by name...">
-                    </div>
-                    <div class="flex items-center justify-start pt-6">
-                         <input type="checkbox" id="advancedStatsCheckbox" class="h-5 w-5 rounded bg-gray-700 border-teal-500 text-teal-600 focus:ring-teal-500">
-                         <label for="advancedStatsCheckbox" class="ml-2 text-gray-200">Show Advanced Stats</label>
+                        <label for="stats-player-search" class="block text-sm font-medium text-gray-300 mb-1">Player Name</label>
+                        <input type="text" id="stats-player-search" class="form-input" placeholder="Search by name...">
                     </div>
                 </div>
             </div>
-
-            <div id="statsLoader" class="text-center mb-4">
-                 <div class="loader"></div>
-                 <p class="text-teal-300 mt-2">Loading Player Stats...</p>
-            </div>
-            <div class="overflow-x-auto tool-card">
-                <table id="statsTable" class="w-full text-left whitespace-nowrap">
+            
+            <div class="overflow-x-auto tool-card p-0">
+                <table class="w-full text-left whitespace-nowrap">
                     <thead class="bg-gray-700 bg-opacity-80 text-teal-300 uppercase text-sm">
                         <tr>
-                           <th class="p-3">Player</th>
-                           <th class="p-3">Pos</th>
-                           <th class="p-3">Team</th>
-                           <th class="p-3">VORP</th>
-                           <th class="p-3">ADP (PPR)</th>
+                           <th class="p-4">Player</th>
+                           <th class="p-4 text-center">Pos</th>
+                           <th class="p-4 text-center">Team</th>
+                           <th class="p-4 text-center">Bye</th>
+                           <th class="p-4 text-center">Fantasy Pts</th>
+                           <th class="p-4 text-center">VORP</th>
+                           <th class="p-4 text-center">ADP (PPR)</th>
                         </tr>
                     </thead>
-                    <tbody class="bg-gray-900 bg-opacity-70 divide-y divide-gray-700 text-white">
-                        <!-- Content will be injected by script.js -->
+                    <tbody id="stats-table-body" class="bg-gray-900 bg-opacity-70 divide-y divide-gray-700 text-white">
+                        <tr><td colspan="7"><div class="loader my-8"></div></td></tr>
                     </tbody>
                 </table>
             </div>
         </section>
     </main>
+    
+    <div id="player-popup-card" class="hidden"></div>
+    
     <footer class="bg-gray-900 text-teal-400 py-6 border-t-2 border-teal-500 mt-12">
         <div class="mb-2 flex flex-wrap justify-center gap-x-6 gap-y-2 text-teal-200">
             <a href="index.html" class="hover:text-yellow-400 transition-colors">Home</a>
