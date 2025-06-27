@@ -1,15 +1,13 @@
 document.addEventListener('DOMContentLoaded', () => {
 
-    // Central configuration for the entire application
     const config = {
-        dataFiles: ['players.json'], // Now loads from the single, combined file
+        dataFiles: ['players.json'],
         rosterSettings: { QB: 1, RB: 2, WR: 2, TE: 1, FLEX: 1, SUPER_FLEX: 0, DST: 1, K: 1, BENCH: 6 },
         positions: ["QB", "RB", "WR", "TE", "DST", "K"],
         flexPositions: ["RB", "WR", "TE"],
         superflexPositions: ["QB", "RB", "WR", "TE"]
     };
 
-    // Main application object
     const App = {
         playerData: [],
         hasDataLoaded: false,
@@ -27,6 +25,7 @@ document.addEventListener('DOMContentLoaded', () => {
         },
 
         initializePageFeatures() {
+            if (document.getElementById('daily-briefing-section')) this.generateDailyBriefing();
             if (document.getElementById('top-players-section')) this.initTopPlayers();
             if (document.getElementById('goat-draft-builder')) this.setupGoatDraftControls();
             if (document.getElementById('start-sit-tool')) this.initStartSitTool();
@@ -36,37 +35,23 @@ document.addEventListener('DOMContentLoaded', () => {
             if (document.getElementById('trade-analyzer')) this.initTradeAnalyzer();
         },
         
-        // --- CORE & UI FUNCTIONS ---
-        
         initMobileMenu() {
-            const mobileMenuButton = document.getElementById('mobile-menu-button');
-            const mainNav = document.querySelector('header nav.hidden.md\\:flex');
-            const mobileNav = document.getElementById('mobile-menu');
-            if (mobileMenuButton && mainNav && mobileNav) {
-                if (mobileNav.innerHTML.trim() === '') {
-                    const clonedNav = mainNav.cloneNode(true);
-                    clonedNav.classList.remove('hidden', 'md:flex', 'space-x-6');
-                    clonedNav.classList.add('flex', 'flex-col', 'space-y-2');
-                    Array.from(clonedNav.children).forEach(link => link.classList.add('nav-link-mobile'));
-                    mobileNav.appendChild(clonedNav);
-                }
-                mobileMenuButton.addEventListener('click', () => mobileNav.classList.toggle('hidden'));
-            }
+            const btn = document.getElementById('mobile-menu-button');
+            const menu = document.getElementById('mobile-menu');
+            if(btn && menu) btn.addEventListener('click', () => menu.classList.toggle('hidden'));
         },
         initPlaceholderTicker() {
-            const tickerContainer = document.getElementById('tickerContent');
-            if (!tickerContainer) return;
-            tickerContainer.innerHTML = `<span class="text-gray-400 px-4">Loading player points...</span>`;
+            const container = document.getElementById('tickerContent');
+            if (container) container.innerHTML = `<span class="text-gray-400 px-4">Loading player points...</span>`;
         },
         initLiveTicker() {
-            const tickerContainer = document.getElementById('tickerContent');
-            if (!tickerContainer || !this.playerData.length) return;
-            const topPlayers = [...this.playerData.filter(p => p.simplePosition === 'QB').slice(0, 10), ...this.playerData.filter(p => p.simplePosition === 'RB').slice(0, 10), ...this.playerData.filter(p => p.simplePosition === 'WR').slice(0, 10), ...this.playerData.filter(p => p.simplePosition === 'TE').slice(0, 10)];
-            topPlayers.sort((a,b) => b.fantasyPoints - a.fantasyPoints);
-            const tickerContent = topPlayers.map(player => `<span class="flex items-center mx-4"><span class="font-semibold text-white">${player.name} (${player.simplePosition})</span><span class="ml-2 font-bold text-yellow-400">${player.fantasyPoints.toFixed(2)} pts</span></span>`).join('<span class="text-teal-500 font-bold px-2">|</span>');
-            tickerContainer.style.transition = 'opacity 0.5s ease-in-out';
-            tickerContainer.style.opacity = 0;
-            setTimeout(() => { tickerContainer.innerHTML = tickerContent.repeat(3); tickerContainer.style.opacity = 1; }, 500);
+            const container = document.getElementById('tickerContent');
+            if (!container || !this.playerData.length) return;
+            const topPlayers = [...this.playerData.filter(p=>p.simplePosition==='QB'), ...this.playerData.filter(p=>p.simplePosition==='RB'), ...this.playerData.filter(p=>p.simplePosition==='WR')].slice(0,15).sort((a,b)=>b.fantasyPoints-a.fantasyPoints);
+            const content = topPlayers.map(p => `<span class="flex items-center mx-4"><span class="font-semibold text-white">${p.name} (${p.simplePosition})</span><span class="ml-2 font-bold text-yellow-400">${p.fantasyPoints.toFixed(1)} pts</span></span>`).join('<span class="text-teal-500 font-bold px-2">|</span>');
+            container.style.transition = 'opacity 0.5s';
+            container.style.opacity = 0;
+            setTimeout(() => { container.innerHTML = content.repeat(3); container.style.opacity = 1; }, 300);
         },
         async loadAllPlayerData() {
             if (this.hasDataLoaded) return;
@@ -74,38 +59,25 @@ document.addEventListener('DOMContentLoaded', () => {
                 this.hasDataLoaded = true;
                 const response = await fetch(config.dataFiles[0]);
                 if (!response.ok) throw new Error(`Failed to load ${config.dataFiles[0]}`);
-                let combinedData = await response.json();
-                combinedData.forEach(p => { 
-                    p.simplePosition = (p.position || 'N/A').replace(/\d+$/, '').trim().toUpperCase(); 
-                    p.adp = p.adp || {}; 
-                    for (const key in p.adp) p.adp[key] = parseFloat(p.adp[key]) || 999; 
-                    p.fantasyPoints = this.generateFantasyPoints(p); 
-                });
-                combinedData.sort((a, b) => b.fantasyPoints - a.fantasyPoints);
-                this.playerData = combinedData;
+                let data = await response.json();
+                this.playerData = data.map(p => ({...p, simplePosition: (p.position||'N/A').replace(/\d+$/,'').trim().toUpperCase(), fantasyPoints: this.generateFantasyPoints(p) })).sort((a,b)=>b.fantasyPoints-a.fantasyPoints);
             } catch (error) { console.error("Error loading player data:", error); this.displayDataError(); }
         },
         displayDataError() {
-            const errorMsg = `<p class="text-center text-red-400 py-8">Could not load player data. Please try again later.</p>`;
-            const statsBody = document.getElementById('stats-table-body');
-            const playersContainer = document.getElementById('player-list-container');
-            if(statsBody) statsBody.innerHTML = `<tr><td colspan="7">${errorMsg}</td></tr>`;
-            if(playersContainer) playersContainer.innerHTML = errorMsg;
+            const msg = `<p class="text-center text-red-400 py-8">Could not load player data. Please try again later.</p>`;
+            document.querySelectorAll('#stats-table-body, #player-list-container').forEach(el => el.innerHTML = msg);
         },
-        generateFantasyPoints(player) { 
-            const pos = player.simplePosition; const tier = player.tier || 10;
+        generateFantasyPoints(player) {
+            const pos = (player.position||'').replace(/\d+$/, '').trim().toUpperCase();
+            const tier = player.tier || 10;
             let base, range;
             if (pos === 'DST' || pos === 'K') { base = 5; range = 8; }
             else if (tier <= 2) { base = (pos === 'QB') ? 22 : 18; range = 15; } 
             else if (tier <= 5) { base = (pos === 'QB') ? 17 : 12; range = 12; } 
             else if (tier <= 8) { base = (pos === 'QB') ? 12 : 7; range = 10; } 
             else { base = 2; range = 8; }
-            const points = base + (Math.random() * range);
-            return Math.max(0, points); 
+            return Math.max(0, base + (Math.random() * range)); 
         },
-
-        // --- PAGE INITIALIZERS ---
-        
         initTopPlayers() {
             const container = document.getElementById('player-showcase-container');
             if (!container || !this.playerData.length) return;
@@ -121,24 +93,58 @@ document.addEventListener('DOMContentLoaded', () => {
                 const pos = controls.position.value; if (pos !== 'ALL') { filteredPlayers = filteredPlayers.filter(p => p.simplePosition === pos); }
                 const searchTerm = controls.search.value.toLowerCase(); if (searchTerm) { filteredPlayers = filteredPlayers.filter(p => p.name.toLowerCase().includes(searchTerm)); }
                 const sortKey = controls.sortBy.value;
-                filteredPlayers.sort((a, b) => { if (sortKey === 'name') { return a.name.localeCompare(b.name); } if (sortKey === 'adp_ppr') { return (a.adp.ppr || 999) - (b.adp.ppr || 999); } return (b[sortKey] || 0) - (a[sortKey] || 0); });
+                filteredPlayers.sort((a, b) => { if (sortKey === 'name') return a.name.localeCompare(b.name); if (sortKey === 'adp_ppr') return (a.adp.ppr || 999) - (b.adp.ppr || 999); return (b[sortKey] || 0) - (a[sortKey] || 0); });
                 controls.tableBody.innerHTML = filteredPlayers.map(p => `<tr class="hover:bg-gray-800"><td class="p-4 font-semibold"><span class="player-name-link" data-player-name="${p.name}">${p.name}</span></td><td class="p-4 text-center">${p.simplePosition}</td><td class="p-4 text-center">${p.team}</td><td class="p-4 text-center">${p.bye || 'N/A'}</td><td class="p-4 text-center font-mono">${p.fantasyPoints.toFixed(2)}</td><td class="p-4 text-center font-mono">${(p.vorp || 0).toFixed(2)}</td><td class="p-4 text-center font-mono">${p.adp.ppr || 'N/A'}</td></tr>`).join('');
                 if (filteredPlayers.length === 0) { controls.tableBody.innerHTML = `<tr><td colspan="7" class="text-center text-gray-400 py-8">No players match the current filters.</td></tr>`; }
                 this.addPlayerPopupListeners();
             };
-            controls.position.addEventListener('change', renderTable); controls.sortBy.addEventListener('change', renderTable); controls.search.addEventListener('input', renderTable);
+            [controls.position, controls.sortBy, controls.search].forEach(el => el.addEventListener('input', renderTable));
             renderTable();
         },
         initPlayersPage() {
-            const searchInput = document.getElementById('player-search-input'); const container = document.getElementById('player-list-container');
-            if (!searchInput || !container) return;
-            const renderPlayerList = (players) => {
-                players.sort((a,b) => (a.adp.ppr || 999) - (b.adp.ppr || 999));
-                container.innerHTML = players.map(player => `<div class="tool-card p-4 flex items-center gap-4"><span class="font-bold text-lg w-12 text-center player-pos-${player.simplePosition.toLowerCase()}">${player.simplePosition}</span><div><p class="font-bold text-white text-lg player-name-link" data-player-name="${player.name}">${player.name}</p><p class="text-teal-300 text-sm">${player.team} | Bye: ${player.bye || 'N/A'}</p></div><div class="ml-auto text-right"><p class="text-white font-semibold">ADP</p><p class="text-yellow-400 text-sm font-bold">${player.adp.ppr || 'N/A'}</p></div></div>`).join('');
+            const controls = { searchInput: document.getElementById('player-search-input'), positionFilter: document.getElementById('position-filter'), tierFilter: document.getElementById('tier-filter'), teamFilter: document.getElementById('team-filter'), tableBody: document.getElementById('player-table-body'), sortHeaders: document.querySelectorAll('.sortable-header') };
+            if (!controls.tableBody) return;
+            let currentSort = { key: 'adp_ppr', order: 'asc' };
+            this.populateFilterOptions(controls);
+            const renderTable = () => {
+                let filteredPlayers = [...this.playerData];
+                const pos = controls.positionFilter.value;
+                if (pos !== 'ALL') { if (pos === 'FLEX') { filteredPlayers = filteredPlayers.filter(p => config.flexPositions.includes(p.simplePosition)); } else { filteredPlayers = filteredPlayers.filter(p => p.simplePosition === pos); } }
+                const tier = controls.tierFilter.value; if (tier !== 'ALL') { filteredPlayers = filteredPlayers.filter(p => p.tier == tier); }
+                const team = controls.teamFilter.value; if (team !== 'ALL') { filteredPlayers = filteredPlayers.filter(p => p.team === team); }
+                const searchTerm = controls.searchInput.value.toLowerCase(); if (searchTerm) { filteredPlayers = filteredPlayers.filter(p => p.name.toLowerCase().includes(searchTerm)); }
+                filteredPlayers.sort((a, b) => {
+                    let valA = (currentSort.key === 'adp_ppr') ? (a.adp.ppr || 999) : (a[currentSort.key] || 0);
+                    let valB = (currentSort.key === 'adp_ppr') ? (b.adp.ppr || 999) : (b[currentSort.key] || 0);
+                    if (typeof valA === 'string') return currentSort.order === 'asc' ? valA.localeCompare(valB) : valB.localeCompare(valA);
+                    return currentSort.order === 'asc' ? valA - valB : valB - valA;
+                });
+                controls.tableBody.innerHTML = filteredPlayers.map(p => this.createPlayerTableRow(p)).join('');
+                if (filteredPlayers.length === 0) { controls.tableBody.innerHTML = `<tr><td colspan="6" class="text-center text-gray-400 py-8">No players match the current filters.</td></tr>`; }
                 this.addPlayerPopupListeners();
             };
-            renderPlayerList(this.playerData);
-            searchInput.addEventListener('input', (e) => { const searchTerm = e.target.value.toLowerCase(); renderPlayerList(this.playerData.filter(p => p.name.toLowerCase().includes(searchTerm))); });
+            controls.sortHeaders.forEach(header => {
+                header.addEventListener('click', () => {
+                    const sortKey = header.dataset.sort;
+                    if (currentSort.key === sortKey) { currentSort.order = currentSort.order === 'asc' ? 'desc' : 'asc'; } else { currentSort.key = sortKey; currentSort.order = 'asc'; }
+                    controls.sortHeaders.forEach(h => h.classList.remove('sorted-asc', 'sorted-desc'));
+                    header.classList.add(`sorted-${currentSort.order}`);
+                    renderTable();
+                });
+            });
+            [controls.searchInput, controls.positionFilter, controls.tierFilter, controls.teamFilter].forEach(el => el.addEventListener('input', renderTable));
+            renderTable();
+        },
+        populateFilterOptions(controls) {
+            const tiers = [...new Set(this.playerData.map(p => p.tier).filter(t => t))].sort((a, b) => a - b);
+            const teams = [...new Set(this.playerData.map(p => p.team).filter(t => t))].sort();
+            tiers.forEach(tier => controls.tierFilter.add(new Option(`Tier ${tier}`, tier)));
+            teams.forEach(team => controls.teamFilter.add(new Option(team, team)));
+        },
+        createPlayerTableRow(player) {
+            const tierColorClasses = { 1: 'bg-yellow-500/20 text-yellow-300', 2: 'bg-blue-500/20 text-blue-300', 3: 'bg-green-500/20 text-green-300', 4: 'bg-indigo-500/20 text-indigo-300', 5: 'bg-purple-500/20 text-purple-300', default: 'bg-gray-500/20 text-gray-300' };
+            const tierClass = tierColorClasses[player.tier] || tierColorClasses.default;
+            return `<tr class="hover:bg-gray-800/50"><td class="p-4 font-semibold"><span class="player-name-link" data-player-name="${player.name}">${player.name}</span></td><td class="p-4 text-center font-bold text-sm">${player.simplePosition}</td><td class="p-4 text-center text-gray-400">${player.team || 'N/A'}</td><td class="p-4 text-center"><span class="tier-badge ${tierClass}">Tier ${player.tier || 'N/A'}</span></td><td class="p-4 text-center font-mono">${player.adp.ppr || '--'}</td><td class="p-4 text-center font-mono">${(player.vorp || 0).toFixed(2)}</td></tr>`;
         },
         initTradeAnalyzer() {
             const controls = { searchInput1: document.getElementById('trade-search-1'), autocomplete1: document.getElementById('trade-autocomplete-1'), teamContainer1: document.getElementById('trade-team-1'), searchInput2: document.getElementById('trade-search-2'), autocomplete2: document.getElementById('trade-autocomplete-2'), teamContainer2: document.getElementById('trade-team-2'), analyzeBtn: document.getElementById('analyze-trade-btn'), resultsContainer: document.getElementById('trade-results'), };
@@ -287,6 +293,15 @@ document.addEventListener('DOMContentLoaded', () => {
             const reasons = [`has a significantly higher Value Over Replacement Player (VORP), indicating greater potential impact.`,`is in a higher tier, suggesting more reliable week-to-week production.`,`has a better recent performance trend, making them the safer bet this week.`,`simply projects for more points based on our latest data models.`,`has a more favorable matchup, increasing their scoring ceiling.`];
             const randomReason = reasons[Math.floor(Math.random() * reasons.length)];
             return `While both are viable options, **${winner.name}** gets the edge. Our model indicates that ${winner.name} ${randomReason} Consider starting ${loser.name} only in deeper leagues or as a bye-week replacement.`;
+        },
+        initMockDraftSimulator() {
+             const controls = { startBtn: document.getElementById('start-draft-button'), scoringSelect: document.getElementById('draftScoringType'), sizeSelect: document.getElementById('leagueSize'), pickSelect: document.getElementById('userPick'), settingsContainer: document.getElementById('draft-settings-container'), draftingContainer: document.getElementById('interactive-draft-container'), completeContainer: document.getElementById('draft-complete-container'), restartBtn: document.getElementById('restart-draft-button'), };
+            if (!controls.startBtn) return;
+            const updateUserPickOptions = () => { const size = parseInt(controls.sizeSelect.value); controls.pickSelect.innerHTML = ''; for (let i = 1; i <= size; i++) { controls.pickSelect.add(new Option(`Pick ${i}`, i)); } };
+            controls.sizeSelect.addEventListener('change', updateUserPickOptions);
+            controls.startBtn.addEventListener('click', () => this.startInteractiveDraft(controls));
+            controls.restartBtn.addEventListener('click', () => this.resetDraftUI(controls));
+            updateUserPickOptions();
         },
         startInteractiveDraft(controls) {
             controls.settingsContainer.classList.add('hidden'); controls.draftingContainer.classList.remove('hidden'); controls.completeContainer.classList.add('hidden');
