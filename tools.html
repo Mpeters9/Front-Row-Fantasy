@@ -31,57 +31,48 @@
         <nav id="mobile-menu" class="md:hidden hidden px-4 pb-3 space-y-2"></nav>
     </header>
 
-    <!-- Ticker Section -->
-    <section class="bg-gray-800 bg-opacity-80 p-3 shadow-lg w-full border-y border-teal-800">
-        <div class="overflow-hidden relative h-8 bg-gray-900 rounded-lg">
-            <div id="tickerContent" class="whitespace-nowrap absolute top-0 left-0 h-full flex items-center ticker-animation text-gray-300">
-                <span class="text-gray-500 px-4">Loading player points...</span>
-            </div>
-        </div>
-    </section>
-
-    <main class="max-w-7xl mx-auto px-4 py-8 flex-grow">
-        <section id="tools-page" class="grid grid-cols-1 md:grid-cols-2 gap-8">
+    <main class="max-w-7xl mx-auto px-4 py-8 flex-grow w-full">
+        <section id="tools-page" class="space-y-12">
             <div id="trade-analyzer" class="tool-card">
                 <h2 class="text-3xl font-bold text-center mb-6 text-transparent bg-clip-text bg-gradient-to-r from-yellow-300 to-teal-300 flex items-center justify-center gap-3">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" /></svg>
-                    Trade Analyzer
+                    AI Trade Analyzer
                 </h2>
-                <div class="grid grid-cols-2 gap-4 items-start">
-                    <div>
-                        <h4 class="font-semibold mb-2 text-center text-lg text-white">Your Assets</h4>
-                        <input type="text" id="player1-search" class="form-input w-full" placeholder="Search player to add..." autocomplete="off">
-                        <div id="player1-autocomplete" class="autocomplete-list"></div>
-                        <div id="team1-players" class="flex flex-col gap-2 min-h-[100px] mt-2 p-2 bg-gray-900 rounded-lg"></div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
+                    <!-- Team 1 -->
+                    <div class="space-y-3">
+                        <h4 class="font-semibold text-center text-lg text-white">Your Assets to Send</h4>
+                        <div class="relative">
+                            <input type="text" id="trade-search-1" class="form-input w-full" placeholder="Search player to add..." autocomplete="off">
+                            <div id="trade-autocomplete-1" class="autocomplete-list"></div>
+                        </div>
+                        <div id="trade-team-1" class="trade-asset-container">
+                            <p class="text-gray-500 text-center p-4">Add players to this side of the trade.</p>
+                        </div>
                     </div>
-                    <div>
-                        <h4 class="font-semibold mb-2 text-center text-lg text-white">Their Assets</h4>
-                        <input type="text" id="player2-search" class="form-input w-full" placeholder="Search player to add..." autocomplete="off">
-                        <div id="player2-autocomplete" class="autocomplete-list"></div>
-                        <div id="team2-players" class="flex flex-col gap-2 min-h-[100px] mt-2 p-2 bg-gray-900 rounded-lg"></div>
+                    <!-- Team 2 -->
+                    <div class="space-y-3">
+                        <h4 class="font-semibold text-center text-lg text-white">Assets to Receive</h4>
+                         <div class="relative">
+                            <input type="text" id="trade-search-2" class="form-input w-full" placeholder="Search player to add..." autocomplete="off">
+                            <div id="trade-autocomplete-2" class="autocomplete-list"></div>
+                        </div>
+                        <div id="trade-team-2" class="trade-asset-container">
+                             <p class="text-gray-500 text-center p-4">Add players to this side of the trade.</p>
+                        </div>
                     </div>
                 </div>
-                <button id="analyzeTradeBtn" class="cta-btn w-full mt-6">Analyze Trade</button>
-                <div id="trade-results" class="mt-4 text-center hidden">
-                    <h3 class="text-2xl font-bold text-yellow-300">Trade Analysis</h3>
-                    <p id="trade-verdict" class="text-xl font-semibold mt-2"></p>
+                <button id="analyze-trade-btn" class="cta-btn w-full mt-6">Analyze Trade</button>
+                <div id="trade-results" class="mt-6 hidden">
+                    <!-- Results will be injected by script.js -->
                 </div>
             </div>
-            <div id="matchup-predictor" class="tool-card">
-                <h2 class="text-3xl font-bold text-center mb-6 text-transparent bg-clip-text bg-gradient-to-r from-yellow-300 to-teal-300 flex items-center justify-center gap-3">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
-                    Matchup Predictor
-                </h2>
-                <div class="grid grid-cols-2 gap-4 items-center">
-                    <select id="matchupTeam1Select" class="form-select"><option value="">Select Team 1</option></select>
-                    <select id="matchupTeam2Select" class="form-select"><option value="">Select Team 2</option></select>
-                </div>
-                <button id="predictMatchupBtn" class="cta-btn w-full mt-6">Predict Matchup</button>
-                <div id="predictionResult" class="mt-4 text-center text-xl hidden"></div>
-            </div>
+            
         </section>
     </main>
 
+    <div id="player-popup-card" class="hidden"></div>
+    
     <footer class="bg-gray-900 text-teal-400 py-6 border-t-2 border-teal-500 mt-12">
         <div class="mb-2 flex flex-wrap justify-center gap-x-6 gap-y-2 text-teal-200">
             <a href="index.html" class="hover:text-yellow-400 transition-colors">Home</a>
@@ -94,6 +85,7 @@
         </div>
         <div class="text-center text-sm">© 2025 Front Row Fantasy. All rights reserved.</div>
     </footer>
+
     <script src="script.js"></script>
 </body>
 </html>
