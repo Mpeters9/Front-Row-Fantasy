@@ -59,15 +59,7 @@
                         <label for="draftPosition" class="block text-gray-300 font-semibold mb-2">Your Draft Pick</label>
                         <select id="draftPosition" class="form-select w-full"></select>
                     </div>
-                    <div>
-                        <label for="draftScoringType" class="block text-gray-300 font-semibold mb-2">Scoring</label>
-                        <select id="draftScoringType" class="form-select w-full">
-                            <option value="ppr" selected>PPR</option>
-                            <option value="half">Half-PPR</option>
-                            <option value="standard">Standard</option>
-                        </select>
-                    </div>
-                     <div class="lg:col-start-2">
+                     <div class="md:col-span-2 lg:col-span-1">
                         <label for="benchCount" class="block text-gray-300 font-semibold mb-2">Bench Size</label>
                         <select id="benchCount" class="form-select w-full">
                             <option value="4">4</option>
@@ -80,7 +72,7 @@
                 </div>
                 
                 <div class="mb-6">
-                    <label for="draftLineupPreset" class="block text-gray-300 font-semibold mb-2">Draft Lineup Preset</label>
+                    <label for="draftLineupPreset" class="block text-gray-300 font-semibold mb-2">Draft Lineup Preset (determines scoring)</label>
                     <select id="draftLineupPreset" class="form-select w-full"></select>
                 </div>
                 
@@ -114,16 +106,13 @@
             <section id="lineup-tools" class="tool-card">
                  <h2 class="text-3xl font-bold text-center mb-8 text-transparent bg-clip-text bg-gradient-to-r from-yellow-300 to-teal-300">Lineup & Start/Sit Tools</h2>
                 
-                <!-- Tab Controls -->
                 <div class="flex justify-center border-b border-gray-700 mb-6">
                     <button id="tab-lineup-builder" class="tab-btn active">Best Lineup</button>
                     <button id="tab-start-sit" class="tab-btn">Start/Sit</button>
                 </div>
 
-                <!-- Best Lineup Builder Content -->
                 <div id="lineup-builder-content">
                     <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                        <!-- Left Column: Roster Input -->
                         <div>
                              <h3 class="text-xl font-semibold text-white mb-3">1. Add Your Players</h3>
                             <div class="relative mb-4">
@@ -134,12 +123,19 @@
                                 <span class="text-gray-500 italic">Your added players will appear here...</span>
                             </div>
                         </div>
-                        <!-- Right Column: Settings and Results -->
                         <div>
                             <h3 class="text-xl font-semibold text-white mb-3">2. Set Lineup & Generate</h3>
                              <div class="mb-4">
                                 <label for="lineupPreset" class="block text-gray-300 font-semibold mb-2">Lineup Preset</label>
                                 <select id="lineupPreset" class="form-select w-full"></select>
+                            </div>
+                             <div class="mb-4">
+                                <label for="lineupWeek" class="block text-gray-300 font-semibold mb-2">Week</label>
+                                <select id="lineupWeek" class="form-select w-full">
+                                    <option value="1">Week 1</option>
+                                    <option value="2">Week 2</option>
+                                    <option value="3">Week 3</option>
+                                </select>
                             </div>
                             <button id="generateLineupButton" class="cta-btn w-full mb-4">Generate Optimal Lineup</button>
                             
@@ -151,18 +147,15 @@
                     </div>
                 </div>
                 
-                <!-- Start/Sit Tool Content -->
                 <div id="start-sit-content" class="hidden">
                      <p class="text-center text-gray-400 mb-4">Select two players to compare for your starting lineup.</p>
                      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
-                        <!-- Player 1 -->
                         <div class="relative">
                             <label for="start-sit-player1-search" class="block text-gray-300 font-semibold mb-2">Player 1</label>
                             <input type="text" id="start-sit-player1-search" class="form-input w-full" placeholder="Search for a player..." autocomplete="off">
                             <div id="start-sit-player1-autocomplete" class="autocomplete-list hidden"></div>
                             <div id="start-sit-player1-card" class="mt-2"></div>
                         </div>
-                        <!-- Player 2 -->
                         <div class="relative">
                              <label for="start-sit-player2-search" class="block text-gray-300 font-semibold mb-2">Player 2</label>
                             <input type="text" id="start-sit-player2-search" class="form-input w-full" placeholder="Search for a player..." autocomplete="off">
@@ -170,6 +163,14 @@
                             <div id="start-sit-player2-card" class="mt-2"></div>
                         </div>
                      </div>
+                      <div class="text-center mt-4">
+                        <label for="startSitWeek" class="block text-gray-300 font-semibold mb-2">Comparison Week</label>
+                        <select id="startSitWeek" class="form-select max-w-xs mx-auto">
+                            <option value="1">Week 1</option>
+                            <option value="2">Week 2</option>
+                            <option value="3">Week 3</option>
+                        </select>
+                    </div>
                      <div class="text-center mt-6">
                         <button id="analyzeStartSit" class="cta-btn">Analyze Start/Sit</button>
                      </div>
