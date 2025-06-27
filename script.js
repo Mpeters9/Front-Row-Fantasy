@@ -2,7 +2,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Central configuration for the entire application
     const config = {
-        dataFiles: ['players.json'],
+        dataFiles: ['players.json'], // Now loads from the single, combined file
         rosterSettings: { QB: 1, RB: 2, WR: 2, TE: 1, FLEX: 1, SUPER_FLEX: 0, DST: 1, K: 1, BENCH: 6 },
         positions: ["QB", "RB", "WR", "TE"],
         superflexPositions: ["QB", "RB", "WR", "TE"]
@@ -35,50 +35,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (document.getElementById('trade-analyzer')) this.initTradeAnalyzer();
         },
         
-        // --- TRADE ANALYZER (Updated Language) ---
-        analyzeTrade() {
-            const resultsContainer = document.getElementById('trade-results');
-            resultsContainer.classList.remove('hidden');
-            
-            const totalVorp1 = this.tradeState.team1.reduce((sum, p) => sum + (p.vorp || 0), 0);
-            const totalVorp2 = this.tradeState.team2.reduce((sum, p) => sum + (p.vorp || 0), 0);
-            
-            let verdict;
-            const diff = Math.abs(totalVorp1 - totalVorp2);
-            const avgVal = (totalVorp1 + totalVorp2) / 2 || 1; 
-
-            if (this.tradeState.team1.length === 0 || this.tradeState.team2.length === 0) {
-                verdict = `<h3 class="text-2xl font-bold text-red-400">Please add players to both sides of the trade.</h3>`;
-            } 
-            else if (diff / avgVal < 0.1) {
-                verdict = `<h3 class="text-2xl font-bold text-yellow-300">This is a very balanced trade.</h3><p class="text-gray-300 mt-1">It's a fair swap that comes down to which players you believe in more.</p>`;
-            } 
-            else if (totalVorp1 > totalVorp2) {
-                verdict = `<h3 class="text-2xl font-bold text-red-400">You might be giving up too much value.</h3><p class="text-gray-300 mt-1">The other team seems to be getting the better end of this deal.</p>`;
-            } 
-            else {
-                verdict = `<h3 class="text-2xl font-bold text-green-400">This looks like a smash accept for you!</h3><p class="text-gray-300 mt-1">The players you're getting back are a significant upgrade.</p>`;
-            }
-            
-            resultsContainer.innerHTML = `
-                <div class="text-center">${verdict}</div>
-                <div id="ai-trade-analysis-container" class="popup-footer mt-4">
-                    <button id="get-ai-trade-btn" class="ai-analysis-btn">Get AI Opinion</button>
-                    <div id="ai-trade-loader" class="loader-small hidden"></div>
-                    <p id="ai-trade-text" class="text-sm text-gray-300 mt-2 text-left"></p>
-                </div>
-            `;
-
-            if(this.tradeState.team1.length > 0 && this.tradeState.team2.length > 0) {
-                document.getElementById('get-ai-trade-btn').addEventListener('click', () => this.getAITradeAnalysis());
-            } else {
-                document.getElementById('ai-trade-analysis-container').classList.add('hidden');
-            }
-        },
-        
-        // --- ALL OTHER FUNCTIONS ---
-        // Includes all working functions for Ticker, Data Loading, Popups,
-        // GOAT Tools, Mock Draft, Stats Page, Players Page, etc.
+        // --- CORE & UI FUNCTIONS ---
         
         initMobileMenu() {
             const mobileMenuButton = document.getElementById('mobile-menu-button');
@@ -147,6 +104,9 @@ document.addEventListener('DOMContentLoaded', () => {
             const points = base + (Math.random() * range);
             return Math.max(0, points); 
         },
+
+        // --- PAGE-SPECIFIC INITIALIZERS ---
+        
         initTopPlayers() {
             const container = document.getElementById('player-showcase-container');
             if (!container || !this.playerData.length) return;
@@ -209,6 +169,18 @@ document.addEventListener('DOMContentLoaded', () => {
             this.addPlayerPopupListeners();
         },
         createTradePlayerPill(player, teamNum) { return ` <div class="trade-player-pill player-pos-${player.simplePosition.toLowerCase()}"><span class="player-name-link" data-player-name="${player.name}">${player.name}</span><span class="text-gray-400 ml-auto">${player.simplePosition}</span><button class="trade-remove-btn" data-player-name="${player.name}" data-team-num="${teamNum}">×</button></div> `; },
+        analyzeTrade() {
+            const resultsContainer = document.getElementById('trade-results'); resultsContainer.classList.remove('hidden');
+            const totalVorp1 = this.tradeState.team1.reduce((sum, p) => sum + (p.vorp || 0), 0); const totalVorp2 = this.tradeState.team2.reduce((sum, p) => sum + (p.vorp || 0), 0);
+            let verdict; const diff = Math.abs(totalVorp1 - totalVorp2); const avgVal = (totalVorp1 + totalVorp2) / 2 || 1;
+            if (this.tradeState.team1.length === 0 || this.tradeState.team2.length === 0) { verdict = `<h3 class="text-2xl font-bold text-red-400">Please add players to both sides of the trade.</h3>`; } 
+            else if (diff / avgVal < 0.1) { verdict = `<h3 class="text-2xl font-bold text-yellow-300">This is a very balanced trade.</h3><p class="text-gray-300 mt-1">It's a fair swap that comes down to which players you believe in more.</p>`; } 
+            else if (totalVorp1 > totalVorp2) { verdict = `<h3 class="text-2xl font-bold text-red-400">You might be giving up too much value.</h3><p class="text-gray-300 mt-1">The other team seems to be getting the better end of this deal.</p>`; } 
+            else { verdict = `<h3 class="text-2xl font-bold text-green-400">This looks like a smash accept for you!</h3><p class="text-gray-300 mt-1">The players you're getting back are a significant upgrade.</p>`; }
+            resultsContainer.innerHTML = ` <div class="text-center">${verdict}</div> <div id="ai-trade-analysis-container" class="popup-footer mt-4"><button id="get-ai-trade-btn" class="ai-analysis-btn">Get AI Opinion</button><div id="ai-trade-loader" class="loader-small hidden"></div><p id="ai-trade-text" class="text-sm text-gray-300 mt-2 text-left"></p></div> `;
+            if(this.tradeState.team1.length > 0 && this.tradeState.team2.length > 0) { document.getElementById('get-ai-trade-btn').addEventListener('click', () => this.getAITradeAnalysis()); } 
+            else { document.getElementById('ai-trade-analysis-container').classList.add('hidden'); }
+        },
         async getAITradeAnalysis() {
             const container = document.getElementById('ai-trade-analysis-container'); const button = container.querySelector('#get-ai-trade-btn'); const loader = container.querySelector('#ai-trade-loader'); const textEl = container.querySelector('#ai-trade-text');
             button.classList.add('hidden'); loader.classList.remove('hidden');
@@ -227,9 +199,73 @@ document.addEventListener('DOMContentLoaded', () => {
             });
             updateDraftPositions();
         },
-        async runGoatMockDraft(controls) { /* ... */ },
-        displayGoatDraftResults(roster) { /* ... */ },
-        createPlayerCardHTML(player, isBench = false) { /* ... */ },
+        async runGoatMockDraft(controls) {
+            const loader = document.getElementById('draft-loading-spinner'); const resultsWrapper = document.getElementById('draft-results-wrapper');
+            if (!loader || !resultsWrapper) return;
+            loader.classList.remove('hidden'); resultsWrapper.classList.add('hidden');
+            const scoring = controls.scoringType.value.toLowerCase(); const leagueSize = parseInt(controls.leagueSize.value); const userDraftPos = parseInt(controls.draftPosition.value) - 1;
+            if (!this.hasDataLoaded) await this.loadAllPlayerData();
+            let availablePlayers = [...this.playerData].filter(p => p.adp && typeof p.adp[scoring] === 'number').sort((a, b) => a.adp[scoring] - b.adp[scoring]);
+            const teams = Array.from({ length: leagueSize }, () => ({ roster: [], needs: { ...config.rosterSettings } }));
+            const totalRounds = Object.values(config.rosterSettings).reduce((sum, val) => sum + val, 0);
+            for (let round = 0; round < totalRounds; round++) {
+                const picksInRoundOrder = (round % 2 !== 0) ? Array.from({ length: leagueSize }, (_, i) => leagueSize - 1 - i) : Array.from({ length: leagueSize }, (_, i) => i);
+                for (const teamIndex of picksInRoundOrder) {
+                    if (availablePlayers.length === 0) break;
+                    const topAvailable = availablePlayers.slice(0, 25);
+                    const teamNeeds = teams[teamIndex].needs;
+                    topAvailable.forEach(p => {
+                        let score = p.vorp || 0;
+                        const isStarterNeed = teamNeeds[p.simplePosition] > 0;
+                        const isSuperflexNeed = config.superflexPositions.includes(p.simplePosition) && teamNeeds['SUPER_FLEX'] > 0;
+                        const isFlexNeed = config.positions.includes(p.simplePosition) && teamNeeds['FLEX'] > 0;
+                        if (isStarterNeed) { score += 1000; }
+                        else if (isSuperflexNeed) { score += 500; }
+                        else if (isFlexNeed) { score += 100; }
+                        score *= (1 + (Math.random() - 0.5) * 0.1); 
+                        p.draftScore = score;
+                    });
+                    topAvailable.sort((a, b) => b.draftScore - a.draftScore);
+                    const draftedPlayer = topAvailable[0];
+                    const draftedPlayerIndexInAvailable = availablePlayers.findIndex(p => p.name === draftedPlayer.name);
+                    if (draftedPlayerIndexInAvailable !== -1) { availablePlayers.splice(draftedPlayerIndexInAvailable, 1); }
+                    if (draftedPlayer) {
+                        draftedPlayer.draftedAt = `(${(round + 1)}.${picksInRoundOrder.indexOf(teamIndex) + 1})`;
+                        teams[teamIndex].roster.push(draftedPlayer);
+                        const needs = teams[teamIndex].needs; const pos = draftedPlayer.simplePosition;
+                        if (needs[pos] > 0) needs[pos]--;
+                        else if (config.superflexPositions.includes(pos) && needs['SUPER_FLEX'] > 0) needs['SUPER_FLEX']--;
+                        else if (config.positions.includes(pos) && needs['FLEX'] > 0) needs['FLEX']--;
+                        else if (needs.BENCH > 0) needs.BENCH--;
+                    }
+                }
+            }
+            this.displayGoatDraftResults(teams[userDraftPos].roster);
+            loader.classList.add('hidden');
+            resultsWrapper.classList.remove('hidden');
+        },
+        displayGoatDraftResults(roster) {
+            const startersEl = document.getElementById('starters-list'); const benchEl = document.getElementById('bench-list');
+            startersEl.innerHTML = ''; benchEl.innerHTML = '';
+            const starters = []; const bench = []; const rosterSlots = { ...config.rosterSettings };
+            roster.sort((a, b) => (a.adp.ppr || 999) - (b.adp.ppr || 999));
+            roster.forEach(player => {
+                const pos = player.simplePosition;
+                if (rosterSlots[pos] > 0) { player.displayPos = pos; starters.push(player); rosterSlots[pos]--; }
+                else if (config.superflexPositions.includes(pos) && rosterSlots['SUPER_FLEX'] > 0) { player.displayPos = 'S-FLEX'; starters.push(player); rosterSlots['SUPER_FLEX']--; }
+                else if (config.positions.includes(pos) && rosterSlots['FLEX'] > 0) { player.displayPos = 'FLEX'; starters.push(player); rosterSlots['FLEX']--; }
+                else { bench.push(player); }
+            });
+            const positionOrder = ['QB', 'RB', 'WR', 'TE', 'FLEX', 'S-FLEX', 'K', 'DST'];
+            starters.sort((a, b) => positionOrder.indexOf(a.displayPos) - positionOrder.indexOf(b.displayPos));
+            startersEl.innerHTML = starters.map(p => this.createPlayerCardHTML(p)).join('');
+            benchEl.innerHTML = bench.map(p => this.createPlayerCardHTML(p, true)).join('');
+            this.addPlayerPopupListeners();
+        },
+        createPlayerCardHTML(player, isBench = false) {
+            const pos = isBench ? 'BEN' : player.displayPos;
+            return `<div class="player-card player-pos-${player.simplePosition.toLowerCase()}"><strong class="font-bold w-12">${pos}:</strong><span class="player-name-link" data-player-name="${player.name}">${player.name} (${player.team})</span><span class="text-xs text-gray-400 ml-auto">${player.draftedAt || ''}</span></div>`;
+        },
         initStartSitTool() { /* ... */ },
         initMockDraftSimulator() { /* ... */ },
         createPlayerPopup() { if (document.getElementById('player-popup-card')) return; const popup = document.createElement('div'); popup.id = 'player-popup-card'; popup.className = 'hidden'; document.body.appendChild(popup); },
