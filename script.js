@@ -1,217 +1,373 @@
+/**
+ * Front Row Fantasy - Main Application Script
+ */
+
 document.addEventListener('DOMContentLoaded', () => {
-    // --- App State & Config ---
-    const state = { adp: {}, stats: [], isTickerPaused: false };
-    const scoringFiles = { standard: 'Standard ADP.json', ppr: 'PPR.json', half: 'Half PPR.json' };
 
-    // --- Data Loading ---
-    const loadAdpData = async (scoring = 'ppr') => {
-        if (state.adp[scoring]?.length > 0) return state.adp[scoring];
-        try {
-            const res = await fetch(scoringFiles[scoring]);
-            if (!res.ok) throw new Error('ADP data not found');
-            const data = await res.json();
-            state.adp[scoring] = data.map(p => ({ ...p, simplePosition: p.POS.replace(/\d+/, '') }));
-            return state.adp[scoring];
-        } catch (e) { console.error(`Failed to load ${scoring} ADP data:`, e); return []; }
-    };
-    const loadStatsData = async () => {
-        if (state.stats.length > 0) return state.stats;
-        try {
-            const res = await fetch('players_2025 Stats.json');
-            if (!res.ok) throw new Error('Stats data not found');
-            const data = await res.json();
-            data.forEach(p => {
-                p.FantasyPoints = (p['Pass Yds'] * 0.04) + (p['Pass TD'] * 4) - (p['Int'] * 2) +
-                                  (p['Rush Yds'] * 0.1) + (p['Rush TD'] * 6) + (p.Rec * 1) + 
-                                  (p['Rec Yds'] * 0.1) + (p['Rec TD'] * 6);
-            });
-            state.stats = data;
-            return data;
-        } catch (e) { console.error('Failed to load stats data:', e); return []; }
+    // --- CONFIGURATION ---
+    const config = {
+        dataFiles: {
+            standard: 'Standard ADP.json',
+            ppr: 'PPR.json',
+            half: 'Half PPR.json',
+            stats: 'players_2025 Stats.json'
+        },
+        lineupPresets: {
+            'PPR: 1QB, 2RB, 2WR, 1TE, 1FLX, 1DST, 1K': { QB: 1, RB: 2, WR: 2, TE: 1, FLEX: 1, DST: 1, K: 1 },
+            'Standard: 1QB, 2RB, 2WR, 1TE, 1FLX, 1DST, 1K': { QB: 1, RB: 2, WR: 2, TE: 1, FLEX: 1, DST: 1, K: 1 },
+            'SuperFlex Redraft: 1QB, 1SF, 2RB, 2WR, 1TE, 1FLX, 1DST, 1K': { QB: 1, RB: 2, WR: 2, TE: 1, FLEX: 1, 'SUPER_FLEX': 1, DST: 1, K: 1 },
+            'SuperFlex Dynasty: 1QB, 1SF, 2RB, 2WR, 1TE, 2FLX, 1DST, 1K': { QB: 1, RB: 2, WR: 2, TE: 1, FLEX: 2, 'SUPER_FLEX': 1, DST: 1, K: 1 },
+            'Half-PPR: 1QB, 2RB, 2WR, 1TE, 2FLX, 1DST, 1K': { QB: 1, RB: 2, WR: 2, TE: 1, FLEX: 2, DST: 1, K: 1 },
+            '2QB: 2QB, 2RB, 3WR, 1TE, 1FLX, 1DST, 1K': { QB: 2, RB: 2, WR: 3, TE: 1, FLEX: 1, DST: 1, K: 1 },
+            '3WR: 1QB, 2RB, 3WR, 1TE, 1FLX, 1DST, 1K': { QB: 1, RB: 2, WR: 3, TE: 1, FLEX: 1, DST: 1, K: 1 },
+            '2TE: 1QB, 2RB, 2WR, 2TE, 1FLX, 1DST, 1K': { QB: 1, RB: 2, WR: 2, TE: 2, FLEX: 1, DST: 1, K: 1 },
+            'Deep FLEX: 1QB, 2RB, 2WR, 1TE, 3FLX, 1DST, 1K': { QB: 1, RB: 2, WR: 2, TE: 1, FLEX: 3, DST: 1, K: 1 },
+        }
     };
 
-    // --- Universal Components ---
-    const initUniversal = () => {
-        // Mobile Menu
-        const mobileMenuButton = document.getElementById('mobile-menu-button');
-        if (mobileMenuButton) {
-            const nav = document.querySelector('header nav');
+    // --- DATA MODULE ---
+    const Data = (() => {
+        const state = { adp: {} };
+        const loadAdpData = async (scoring = 'ppr') => {
+            if (state.adp[scoring]) return state.adp[scoring];
+            try {
+                const res = await fetch(config.dataFiles[scoring]);
+                if (!res.ok) throw new Error(`ADP data not found for ${scoring}`);
+                let data = await res.json();
+                state.adp[scoring] = data.map(p => ({
+                    ...p,
+                    simplePosition: p.POS.replace(/\d+/g, ''),
+                    value: 1000 / Math.sqrt(p.Rank || 200),
+                }));
+                return state.adp[scoring];
+            } catch (e) {
+                console.error(`Failed to load ${scoring} ADP data:`, e);
+                return [];
+            }
+        };
+        return { getAdp: loadAdpData };
+    })();
+
+    // --- UI MODULE ---
+    const UI = (() => {
+        const initMobileMenu = () => {
+            const mobileMenuButton = document.getElementById('mobile-menu-button');
             const mobileNav = document.getElementById('mobile-menu');
-            mobileNav.innerHTML = nav.innerHTML; // Sync nav links
-            mobileMenuButton.addEventListener('click', () => mobileNav.classList.toggle('hidden'));
-        }
-        // Footer
-        const footer = document.querySelector('footer');
-        if(footer && !footer.innerHTML){
-             footer.innerHTML = `<div class="mb-2 flex flex-wrap justify-center gap-4"><a href="index.html" class="hover:text-yellow">Home</a><a href="tools.html" class="hover:text-yellow">Expert Tools</a><a href="goat.html" class="hover:text-yellow">GOAT</a><a href="guides.html" class="hover:text-yellow">Guides</a><a href="community.html" class="hover:text-yellow">Community</a><a href="players.html" class="hover:text-yellow">Players</a><a href="stats.html" class="hover:text-yellow">Stats</a></div><div class="text-center text-sm">© 2025 Front Row Fantasy. All rights reserved.</div>`;
-        }
-        initTicker();
-    };
-
-    const initTicker = async () => {
-        const tickerEl = document.getElementById('tickerContent');
-        if (!tickerEl) return;
-        const pauseBtn = document.getElementById('pauseButton');
-        try {
-            const stats = await loadStatsData();
-            if (!stats.length) throw new Error('No stats for ticker');
-            let tickerData = [];
-            ['QB', 'RB', 'WR', 'TE'].forEach(pos => {
-                tickerData.push(...stats.filter(p => p.Pos === pos).sort((a,b) => b.FantasyPoints-a.FantasyPoints).slice(0, 10));
-            });
-            updateTickerUI(tickerData, tickerEl);
-            pauseBtn.addEventListener('click', () => {
-                state.isTickerPaused = !state.isTickerPaused;
-                tickerEl.style.animationPlayState = state.isTickerPaused ? 'paused' : 'running';
-                pauseBtn.textContent = state.isTickerPaused ? 'Resume' : 'Pause';
-            });
-        } catch (e) { tickerEl.innerHTML = `<span class="text-red-400 px-4">Could not load ticker data.</span>`; }
-    };
-
-    const updateTickerUI = (players, el) => {
-        if (!players.length) return;
-        const items = [...players, ...players];
-        el.innerHTML = items.map(p => `
-            <div class="flex items-center mx-4 flex-shrink-0">
-                <span class="font-bold text-lg text-white mr-2">${p.Player}</span>
-                <span class="player-pos-${p.Pos.toLowerCase()} font-semibold px-2 py-1 rounded-full text-xs">${p.Pos}</span>
-                <span class="text-yellow-400 ml-2">FP: ${p.FantasyPoints.toFixed(1)}</span>
-            </div>
-        `).join('');
-        if (!state.isTickerPaused) {
-            el.style.animation = 'none';
-            void el.offsetWidth;
-            el.style.animation = 'marquee 60s linear infinite';
-        }
-    };
-
-    // --- Page Specific Initializers ---
-    const initHomePage = async () => {
-        const stats = await loadStatsData();
-        if (!stats.length) return;
-        const populate = (pos, listId) => {
-            const el = document.getElementById(listId);
-            if (!el) return;
-            const top5 = stats.filter(p => p.Pos === pos).sort((a,b) => b.FantasyPoints-a.FantasyPoints).slice(0, 5);
-            el.innerHTML = top5.map((p, i) => `<li><span class="player-name">${i + 1}. ${p.Player}</span><span class="player-points">${p.FantasyPoints.toFixed(1)} pts</span></li>`).join('');
+            const mainNav = document.querySelector('header nav.hidden');
+            if (mobileMenuButton && mobileNav && mainNav) {
+                mobileNav.innerHTML = mainNav.innerHTML;
+                mobileMenuButton.addEventListener('click', () => mobileNav.classList.toggle('hidden'));
+            }
         };
-        populate('QB', 'top-qb-list');
-        populate('RB', 'top-rb-list');
-        populate('WR', 'top-wr-list');
-    };
+        const showLoading = (spinnerId, show = true) => {
+            const spinner = document.getElementById(spinnerId);
+            if(spinner) spinner.style.display = show ? 'block' : 'none';
+        }
+        return { initMobileMenu, showLoading };
+    })();
 
-    const initStatsPage = async () => {
-        const filters = ['positionFilter', 'statSort', 'playerSearch', 'advancedStatsCheckbox'];
-        filters.forEach(id => document.getElementById(id)?.addEventListener('input', renderStatsTable));
-        renderStatsTable();
-    };
-    
-    const initToolsPage = async () => {
-        const stats = await loadStatsData();
-        const teams = [...new Set(stats.map(p => p.Tm))].sort();
-        const t1Select = document.getElementById('matchupTeam1Select');
-        const t2Select = document.getElementById('matchupTeam2Select');
-        teams.forEach(t => { t1Select.add(new Option(t, t)); t2Select.add(new Option(t, t)); });
-        document.getElementById('predictMatchupBtn').addEventListener('click', () => predictMatchup(stats));
-        initTradeAnalyzer(stats);
-    };
-    
-    const initPlayersPage = async () => {
-        const players = await loadAdpData('ppr');
-        const container = document.getElementById('player-list-container');
-        const searchInput = document.getElementById('player-search-input');
+    // --- GOAT TOOLS MODULE (Draft & Lineup) ---
+    const GoatTools = (() => {
+        let draftSettings = {};
+        let lineupRoster = [];
+        let allPlayers = [];
         
-        const render = (pList) => {
-            container.innerHTML = pList.map(p => `<div class="tool-card">${p.Player} (${p.POS}, ${p.Team}) - ADP: ${p.AVG.toFixed(1)}</div>`).join('');
+        const init = async () => {
+            if (!document.getElementById('goat-draft-builder')) return;
+            allPlayers = await Data.getAdp('ppr');
+
+            // Init Draft Builder
+            setupDraftControls();
+            
+            // Init Lineup Builder
+            setupLineupBuilder();
         };
         
-        searchInput.addEventListener('input', () => {
-            const query = searchInput.value.toLowerCase();
-            render(players.filter(p => p.Player.toLowerCase().includes(query)));
-        });
+        // --- DRAFT BUILDER ---
+        const setupDraftControls = () => {
+            const presetSelect = document.getElementById('draftLineupPreset');
+            presetSelect.innerHTML = Object.keys(config.lineupPresets).map(p => `<option value="${p}">${p}</option>`).join('');
+            
+            document.getElementById('generateDraftBuildButton').addEventListener('click', runMockDraft);
+            document.getElementById('leagueSize').addEventListener('change', updateDraftPositions);
+            presetSelect.addEventListener('change', () => updateRosterCounts('draft'));
+
+            updateDraftPositions();
+            updateRosterCounts('draft');
+        };
+
+        const updateDraftPositions = () => {
+            const leagueSize = parseInt(document.getElementById('leagueSize').value, 10);
+            const positionSelect = document.getElementById('draftPosition');
+            positionSelect.innerHTML = '';
+            for (let i = 1; i <= leagueSize; i++) positionSelect.add(new Option(i, i));
+        };
+
+        const updateRosterCounts = (toolPrefix) => {
+            const presetKey = document.getElementById(`${toolPrefix}LineupPreset`).value;
+            const roster = config.lineupPresets[presetKey];
+            const container = document.getElementById(`${toolPrefix}-roster-counts`);
+            if (!container) return; // Guard clause
+            container.innerHTML = Object.entries(roster).map(([pos, count]) => `
+                <div class="p-2 bg-gray-700/50 rounded-lg">
+                    <div class="text-sm text-teal-300">${pos.replace('_', ' ')}</div>
+                    <div class="text-xl font-bold text-white">${count}</div>
+                </div>
+            `).join('');
+        };
+
+        const runMockDraft = async () => {
+            // ... (Existing runMockDraft logic remains the same)
+            UI.showLoading('draft-loading-spinner', true);
+            document.getElementById('draft-results-wrapper').classList.add('hidden');
+
+            draftSettings = {
+                scoring: document.getElementById('draftScoringType').value,
+                leagueSize: parseInt(document.getElementById('leagueSize').value, 10),
+                userDraftPos: parseInt(document.getElementById('draftPosition').value, 10) - 1,
+                benchSize: parseInt(document.getElementById('benchCount').value, 10),
+                rosterPreset: config.lineupPresets[document.getElementById('draftLineupPreset').value]
+            };
+
+            const totalRounds = Object.values(draftSettings.rosterPreset).reduce((a, b) => a + b, 0) + draftSettings.benchSize;
+            const players = await Data.getAdp(draftSettings.scoring);
+            const availablePlayers = [...players];
+            const teams = Array.from({ length: draftSettings.leagueSize }, () => ({ roster: [], needs: { ...draftSettings.rosterPreset } }));
+            
+            for (let round = 0; round < totalRounds; round++) {
+                const picksInRound = (round % 2 !== 0) ? 
+                    Array.from({ length: draftSettings.leagueSize }, (_, i) => draftSettings.leagueSize - 1 - i) :
+                    Array.from({ length: draftSettings.leagueSize }, (_, i) => i);
+                
+                for (const teamIndex of picksInRound) {
+                    const team = teams[teamIndex];
+                    let draftedPlayer = null;
+                    
+                    for (const pos of ['QB', 'RB', 'WR', 'TE', 'SUPER_FLEX', 'FLEX', 'DST', 'K']) {
+                         if (!team.needs[pos] || team.needs[pos] <= 0) continue;
+                         const playerToDraft = availablePlayers.find(p => {
+                            if (pos === 'FLEX') return ['RB', 'WR', 'TE'].includes(p.simplePosition);
+                            if (pos === 'SUPER_FLEX') return ['QB', 'RB', 'WR', 'TE'].includes(p.simplePosition);
+                            return p.simplePosition === pos;
+                         });
+                         if(playerToDraft) {
+                             draftedPlayer = playerToDraft;
+                             team.needs[pos]--;
+                             break;
+                         }
+                    }
+
+                    if (!draftedPlayer) draftedPlayer = availablePlayers[0];
+                    
+                    team.roster.push(draftedPlayer);
+                    const indexToRemove = availablePlayers.findIndex(p => p.Player === draftedPlayer.Player);
+                    if(indexToRemove > -1) availablePlayers.splice(indexToRemove, 1);
+                }
+            }
+            displayDraftResults(teams[draftSettings.userDraftPos].roster);
+        };
         
-        render(players);
-    };
-    
-    const initGoatPage = () => { /* Logic for GOAT page exists in the global scope */ };
+        const displayDraftResults = (myRoster) => {
+             // ... (Existing displayDraftResults logic remains the same)
+            const startersEl = document.getElementById('starters-list');
+            const benchEl = document.getElementById('bench-list');
+            startersEl.innerHTML = '';
+            benchEl.innerHTML = '';
+            const rosterNeeds = { ...draftSettings.rosterPreset };
+            const starters = {};
+            Object.keys(rosterNeeds).forEach(p => starters[p] = []);
+            
+            myRoster.sort((a, b) => b.value - a.value);
+            const filledPlayers = new Set();
+            
+            for (const pos in rosterNeeds) {
+                 for (const player of myRoster) {
+                    if (filledPlayers.has(player.Player) || starters[pos].length >= rosterNeeds[pos]) continue;
+                    const isFlex = ['RB', 'WR', 'TE'].includes(player.simplePosition);
+                    const isSuperFlex = ['QB', 'RB', 'WR', 'TE'].includes(player.simplePosition);
 
-    // --- Main Logic for Pages ---
-    
-    // Stats Page
-    const renderStatsTable = async () => {
-        const data = await loadStatsData();
-        const pos = document.getElementById('positionFilter').value;
-        const sort = document.getElementById('statSort').value;
-        const search = document.getElementById('playerSearch').value.toLowerCase();
-        const advanced = document.getElementById('advancedStatsCheckbox').checked;
-
-        let filtered = data.filter(p => (pos === 'ALL' || p.Pos === pos || (pos === 'FLEX' && ['RB','WR','TE'].includes(p.Pos))) && p.Player.toLowerCase().includes(search));
-        filtered.sort((a, b) => (b[sort] || 0) - (a[sort] || 0));
-
-        const table = document.getElementById('statsTable');
-        let headers = ['Player', 'Pos', 'Team', 'Games', 'FP/GM', 'FantasyPoints'];
-        if (advanced) headers.push('Pass Yds', 'Pass TD', 'Rush Yds', 'Rush TD', 'Rec', 'Rec Yds', 'Rec TD');
-        table.querySelector('thead').innerHTML = `<tr>${headers.map(h => `<th class="p-3">${h}</th>`).join('')}</tr>`;
-        table.querySelector('tbody').innerHTML = filtered.map(p => `
-            <tr class="hover:bg-gray-800">
-                <td class="p-3 font-semibold text-white">${p.Player}</td><td>${p.Pos}</td><td>${p.Tm}</td><td>${p.G}</td><td>${p['FantasyPoints/GM'].toFixed(1)}</td><td class="text-yellow-400 font-bold">${p.FantasyPoints.toFixed(1)}</td>
-                ${advanced ? `<td>${p['Pass Yds']}</td><td>${p['Pass TD']}</td><td>${p['Rush Yds']}</td><td>${p['Rush TD']}</td><td>${p.Rec}</td><td>${p['Rec Yds']}</td><td>${p['Rec TD']}</td>` : ''}
-            </tr>`).join('');
-    };
-
-    // Tools Page
-    const predictMatchup = (stats) => {
-        const t1 = document.getElementById('matchupTeam1Select').value, t2 = document.getElementById('matchupTeam2Select').value;
-        const resultEl = document.getElementById('predictionResult');
-        if (!t1 || !t2 || t1 === t2) { resultEl.textContent = 'Please select two different teams.'; resultEl.classList.remove('hidden'); return; }
-        const score1 = stats.filter(p => p.Tm === t1).reduce((sum, p) => sum + (p['FantasyPoints/GM'] || 0), 0);
-        const score2 = stats.filter(p => p.Tm === t2).reduce((sum, p) => sum + (p['FantasyPoints/GM'] || 0), 0);
-        resultEl.innerHTML = `<span class="font-bold text-white">${t1}:</span> <span class="text-yellow-300">${score1.toFixed(1)} pts</span><br><span class="font-bold text-white">${t2}:</span> <span class="text-yellow-300">${score2.toFixed(1)} pts</span>`;
-        resultEl.classList.remove('hidden');
-    };
-
-    const initTradeAnalyzer = (stats) => {
-        let team1 = [], team2 = [];
-        const setup = (inputId, listId, team) => {
-            const input = document.getElementById(inputId), list = document.getElementById(listId);
-            input.addEventListener('input', () => {
-                const q = input.value.toLowerCase();
-                if (q.length < 2) { list.innerHTML = ''; return; }
-                list.innerHTML = stats.filter(p => p.Player.toLowerCase().includes(q)).slice(0,5).map(p => `<li data-player='${JSON.stringify(p)}'>${p.Player}</li>`).join('');
+                    if ((pos === 'FLEX' && isFlex) || (pos === 'SUPER_FLEX' && isSuperFlex) || (player.simplePosition === pos)) {
+                         starters[pos].push(player);
+                         filledPlayers.add(player.Player);
+                    }
+                 }
+            }
+            
+            Object.entries(starters).forEach(([pos, players]) => {
+                players.forEach(p => startersEl.innerHTML += `<div class="player-card player-pos-${p.simplePosition.toLowerCase()}"><strong>${pos.replace('_', ' ')}:</strong> ${p.Player} (${p.Team})</div>`);
             });
-            list.addEventListener('click', e => {
-                if (e.target.tagName !== 'LI') return;
-                team.push(JSON.parse(e.target.dataset.player));
-                input.value = ''; list.innerHTML = '';
+            myRoster.forEach(p => {
+                if (!filledPlayers.has(p.Player)) benchEl.innerHTML += `<div class="player-card player-pos-${p.simplePosition.toLowerCase()}">${p.Player} (${p.Team})</div>`;
+            });
+
+            UI.showLoading('draft-loading-spinner', false);
+            document.getElementById('draft-results-wrapper').classList.remove('hidden');
+        };
+
+        // --- LINEUP BUILDER ---
+        const setupLineupBuilder = () => {
+            if (!document.getElementById('lineup-builder')) return;
+            const searchInput = document.getElementById('lineup-player-search');
+            const autocompleteEl = document.getElementById('lineup-player-autocomplete');
+            const presetSelect = document.getElementById('lineupPreset');
+            
+            presetSelect.innerHTML = Object.keys(config.lineupPresets).map(p => `<option value="${p}">${p}</option>`).join('');
+
+            searchInput.addEventListener('input', () => {
+                const query = searchInput.value.toLowerCase();
+                if (query.length < 2) {
+                    autocompleteEl.classList.add('hidden');
+                    return;
+                }
+                const filtered = allPlayers.filter(p => p.Player.toLowerCase().includes(query)).slice(0, 5);
+                autocompleteEl.innerHTML = filtered.map(p => `<li data-player='${JSON.stringify(p)}'>${p.Player} (${p.Team} - ${p.POS})</li>`).join('');
+                autocompleteEl.classList.remove('hidden');
+            });
+            
+            autocompleteEl.addEventListener('click', (e) => {
+                if(e.target.tagName === 'LI'){
+                    const playerData = JSON.parse(e.target.dataset.player);
+                    if(!lineupRoster.find(p => p.Player === playerData.Player)){
+                        lineupRoster.push(playerData);
+                        renderLineupRoster();
+                    }
+                    searchInput.value = '';
+                    autocompleteEl.classList.add('hidden');
+                }
+            });
+            
+            document.getElementById('lineup-roster').addEventListener('click', (e) => {
+                if(e.target.classList.contains('remove-btn')){
+                    const playerName = e.target.dataset.player;
+                    lineupRoster = lineupRoster.filter(p => p.Player !== playerName);
+                    renderLineupRoster();
+                }
+            });
+
+            document.getElementById('generateLineupButton').addEventListener('click', generateOptimalLineup);
+        };
+        
+        const renderLineupRoster = () => {
+            const rosterEl = document.getElementById('lineup-roster');
+            if(lineupRoster.length === 0){
+                 rosterEl.innerHTML = `<span class="text-gray-500 italic">Your added players will appear here...</span>`;
+                 return;
+            }
+            rosterEl.innerHTML = lineupRoster.map(p => `
+                <div class="trade-player items-center">
+                    <span>${p.Player} (${p.POS})</span>
+                    <button class="remove-btn" data-player="${p.Player}">×</button>
+                </div>
+            `).join('');
+        };
+        
+        const generateOptimalLineup = () => {
+             const presetKey = document.getElementById('lineupPreset').value;
+             const rosterNeeds = { ...config.lineupPresets[presetKey] };
+             const resultsWrapper = document.getElementById('lineup-results-wrapper');
+             const startersEl = document.getElementById('optimized-starters-list');
+             
+             if(lineupRoster.length === 0) {
+                 startersEl.innerHTML = `<p class="text-red-400 text-center">Please add players to your roster first.</p>`;
+                 resultsWrapper.classList.remove('hidden');
+                 return;
+             }
+             
+             let availableForLineup = [...lineupRoster].sort((a,b) => b.value - a.value);
+             const starters = {};
+             Object.keys(rosterNeeds).forEach(p => starters[p] = []);
+             const filledPlayers = new Set();
+             
+             for(const pos in rosterNeeds){
+                 for(const player of availableForLineup){
+                    if (filledPlayers.has(player.Player) || starters[pos].length >= rosterNeeds[pos]) continue;
+                     
+                    const isFlex = ['RB', 'WR', 'TE'].includes(player.simplePosition);
+                    const isSuperFlex = ['QB', 'RB', 'WR', 'TE'].includes(player.simplePosition);
+                     
+                    if ((pos === 'FLEX' && isFlex) || (pos === 'SUPER_FLEX' && isSuperFlex) || (player.simplePosition === pos)) {
+                         starters[pos].push(player);
+                         filledPlayers.add(player.Player);
+                    }
+                 }
+             }
+             
+             startersEl.innerHTML = '';
+             Object.entries(starters).forEach(([pos, players]) => {
+                 players.forEach(p => {
+                      startersEl.innerHTML += `<div class="player-card player-pos-${p.simplePosition.toLowerCase()}"><strong>${pos.replace('_', ' ')}:</strong> ${p.Player} (${p.Team}) - Val: ${p.value.toFixed(1)}</div>`;
+                 });
+             });
+             
+             resultsWrapper.classList.remove('hidden');
+        };
+
+        return { init };
+    })();
+
+    // --- EXPERT TOOLS MODULE (Trade Analyzer) ---
+    const ExpertTools = (() => {
+        let tradeTeam1 = [], tradeTeam2 = [], allPlayers = [];
+
+        const init = async () => {
+            if (!document.getElementById('trade-analyzer')) return;
+            allPlayers = await Data.getAdp('ppr');
+            setupTradeAnalyzer();
+        };
+
+        const setupTradeAnalyzer = () => {
+            const setupSide = (inputId, listId, team) => {
+                const input = document.getElementById(inputId), list = document.getElementById(listId);
+                input.addEventListener('input', () => {
+                    const q = input.value.toLowerCase();
+                    if (q.length < 2) { list.classList.add('hidden'); return; }
+                    list.innerHTML = allPlayers.filter(p => p.Player.toLowerCase().includes(q)).slice(0,5).map(p => `<li data-player='${JSON.stringify(p)}'>${p.Player}</li>`).join('');
+                    list.classList.remove('hidden');
+                });
+                list.addEventListener('click', e => {
+                    if (e.target.tagName !== 'LI') return;
+                    team.push(JSON.parse(e.target.dataset.player));
+                    input.value = ''; list.classList.add('hidden');
+                    renderTrade();
+                });
+            };
+            const renderTrade = () => {
+                document.getElementById('team1-players').innerHTML = tradeTeam1.map((p,i) => `<div class="trade-player" data-idx="${i}" data-team="1">${p.Player}<button class="remove-btn" data-player="${p.Player}">×</button></div>`).join('');
+                document.getElementById('team2-players').innerHTML = tradeTeam2.map((p,i) => `<div class="trade-player" data-idx="${i}" data-team="2">${p.Player}<button class="remove-btn" data-player="${p.Player}">×</button></div>`).join('');
+            };
+            document.getElementById('trade-analyzer').addEventListener('click', e => {
+                if (!e.target.classList.contains('remove-btn')) return;
+                const playerName = e.target.dataset.player;
+                tradeTeam1 = tradeTeam1.filter(p => p.Player !== playerName);
+                tradeTeam2 = tradeTeam2.filter(p => p.Player !== playerName);
                 renderTrade();
             });
-        };
-        const renderTrade = () => {
-            const t1Div = document.getElementById('team1-players'), t2Div = document.getElementById('team2-players');
-            t1Div.innerHTML = team1.map((p,i) => `<div class="trade-player" data-idx="${i}" data-team="1">${p.Player}<button class="remove-btn">x</button></div>`).join('');
-            t2Div.innerHTML = team2.map((p,i) => `<div class="trade-player" data-idx="${i}" data-team="2">${p.Player}<button class="remove-btn">x</button></div>`).join('');
-        };
-        document.getElementById('trade-analyzer').addEventListener('click', e => {
-            if (!e.target.classList.contains('remove-btn')) return;
-            const p = e.target.parentElement;
-            (p.dataset.team === '1' ? team1 : team2).splice(parseInt(p.dataset.idx), 1);
-            renderTrade();
-        });
-        document.getElementById('analyzeTradeBtn').addEventListener('click', () => {
-            const v1 = team1.reduce((s,p)=>s+p.FantasyPoints,0), v2 = team2.reduce((s,p)=>s+p.FantasyPoints,0);
-            const verdict = document.getElementById('trade-verdict');
-            document.getElementById('trade-results').classList.remove('hidden');
-            verdict.textContent = Math.abs(v1-v2)<5 ? 'This trade is fair.' : (v1>v2 ? 'Side 1 wins.' : 'Side 2 wins.');
-        });
-        setup('player1-search', 'player1-autocomplete', team1);
-        setup('player2-search', 'player2-autocomplete', team2);
-    };
+            document.getElementById('analyzeTradeBtn').addEventListener('click', () => {
+                const v1 = tradeTeam1.reduce((s,p)=>s+p.value,0), v2 = tradeTeam2.reduce((s,p)=>s+p.value,0);
+                const verdict = document.getElementById('trade-verdict');
+                const diff = Math.abs(v1-v2);
+                const totalValue = v1 + v2;
+                document.getElementById('trade-results').classList.remove('hidden');
+                
+                if(diff / totalValue < 0.1) verdict.textContent = 'This trade is fair.'; // Fair if within 10%
+                else verdict.textContent = v1 > v2 ? 'The side receiving your assets wins.' : 'The side receiving their assets wins.';
+            });
+            setupSide('player1-search', 'player1-autocomplete', tradeTeam1);
+            setupSide('player2-search', 'player2-autocomplete', tradeTeam2);
+        }
 
-    // --- App Initialization ---
-    initUniversal();
-    if (document.getElementById('top-players-section')) initHomePage();
-    if (document.getElementById('goat-draft-builder')) initGoatPage();
-    if (document.getElementById('tools-page')) initToolsPage();
-    if (document.getElementById('stats-page')) initStatsPage();
-    if (document.getElementById('players-page')) initPlayersPage();
+        return { init };
+    })();
+    
+    // --- APP INITIALIZER ---
+    const App = (() => {
+        const init = () => {
+            UI.initMobileMenu();
+            GoatTools.init();
+            ExpertTools.init();
+        };
+        return { init };
+    })();
+
+    App.init();
 });
