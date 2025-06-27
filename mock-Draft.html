@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Front Row Fantasy - Interactive Mock Draft</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="icon" href="favicon.ico" type="image/x-icon">
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="min-h-screen flex flex-col font-poppins bg-gradient-to-br from-[#0f2027] to-[#2c5364]">
+    <header class="sticky top-0 z-50 bg-opacity-98 bg-gray-900 shadow-lg border-b-2 border-teal-500">
+        <div class="max-w-7xl mx-auto px-4 flex justify-between items-center py-3">
+            <a href="index.html" class="text-2xl font-bold text-yellow-400 text-glow">Front Row Fantasy</a>
+            <nav class="hidden md:flex space-x-6 text-teal-200">
+                <a href="index.html" class="hover:text-yellow-400 transition-colors">Home</a>
+                <a href="tools.html" class="hover:text-yellow-400 transition-colors">Expert Tools</a>
+                <a href="goat.html" class="hover:text-yellow-400 transition-colors">GOAT</a>
+                <a href="mock-draft.html" class="text-yellow-400 font-bold" aria-current="page">Mock Draft</a>
+                <a href="guides.html" class="hover:text-yellow-400 transition-colors">Guides</a>
+                <a href="players.html" class="hover:text-yellow-400 transition-colors">Players</a>
+                <a href="stats.html" class="hover:text-yellow-400 transition-colors">Stats</a>
+            </nav>
+            <div class="md:hidden">
+                <button id="mobile-menu-button" class="text-teal-400 hover:text-yellow-400 focus:outline-none">
+                    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
+                </button>
+            </div>
+        </div>
+        <nav id="mobile-menu" class="md:hidden hidden px-4 pb-3 space-y-2"></nav>
+    </header>
+
+    <main class="flex-grow max-w-screen-xl mx-auto py-8 px-4 w-full">
+        <section id="mock-draft-simulator">
+            <!-- Settings Section -->
+            <div id="draft-settings-container" class="tool-card">
+                <h1 class="text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-yellow-300 to-teal-300 mb-6 text-glow-gold text-center">Interactive Mock Draft</h1>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+                    <div>
+                        <label for="draftScoringType" class="block text-gray-300 font-semibold mb-2">Scoring</label>
+                        <select id="draftScoringType" class="form-select w-full"><option value="ppr" selected>PPR</option><option value="hppr">Half-PPR</option><option value="standard">Standard</option></select>
+                    </div>
+                    <div>
+                        <label for="leagueSize" class="block text-gray-300 font-semibold mb-2">League Size</label>
+                        <select id="leagueSize" class="form-select w-full"><option value="12" selected>12 Teams</option><option value="10">10 Teams</option><option value="14">14 Teams</option></select>
+                    </div>
+                    <div>
+                        <label for="userPick" class="block text-gray-300 font-semibold mb-2">Your Draft Pick</label>
+                        <select id="userPick" class="form-select w-full"></select>
+                    </div>
+                </div>
+                <button id="start-draft-button" class="cta-btn w-full mt-2">Start Your Draft</button>
+            </div>
+
+            <!-- Interactive Draft Interface (Initially Hidden) -->
+            <div id="interactive-draft-container" class="hidden mt-8 grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <!-- Left Column: Best Available & Your Team -->
+                <div class="lg:col-span-1 space-y-6">
+                    <div id="draft-status-card" class="tool-card text-center">
+                         <!-- Status will be updated here -->
+                    </div>
+                    <div id="best-available-container" class="tool-card">
+                        <h3 class="text-2xl font-bold text-center mb-4 text-teal-300">Best Available</h3>
+                        <div id="best-available-list" class="space-y-2"></div>
+                    </div>
+                    <div id="my-team-container" class="tool-card">
+                         <h3 class="text-2xl font-bold text-center mb-4 text-teal-300">My Team</h3>
+                         <div id="my-team-list" class="space-y-1"></div>
+                    </div>
+                </div>
+
+                <!-- Right Column: Draft Board -->
+                <div class="lg:col-span-2 tool-card">
+                    <h3 class="text-2xl font-bold text-center mb-4 text-teal-300">Live Draft Board</h3>
+                    <div id="draft-board-grid" class="overflow-x-auto"></div>
+                </div>
+            </div>
+
+             <!-- Draft Complete Section -->
+            <div id="draft-complete-container" class="hidden mt-8 tool-card text-center">
+                <h2 class="text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-yellow-300 to-teal-300 mb-4 text-glow-gold">Draft Complete!</h2>
+                <p class="text-xl text-teal-200 mb-6">Here is your final roster. Good luck this season!</p>
+                <div id="final-roster-display" class="grid grid-cols-1 md:grid-cols-2 gap-x-8 text-left max-w-4xl mx-auto"></div>
+                <button id="restart-draft-button" class="cta-btn mt-8">Start a New Draft</button>
+            </div>
+        </section>
+    </main>
+
+    <!-- This is the hidden popup card for player info -->
+    <div id="player-popup-card" class="hidden"></div>
+
+    <footer class="bg-gray-900 text-teal-400 py-6 border-t-2 border-teal-500 mt-12">
+        <div class="mb-2 flex flex-wrap justify-center gap-x-6 gap-y-2 text-teal-200">
+           <a href="index.html" class="hover:text-yellow-400 transition-colors">Home</a>
+           <a href="tools.html" class="hover:text-yellow-400 transition-colors">Expert Tools</a>
+           <a href="goat.html" class="hover:text-yellow-400 transition-colors">GOAT</a>
+           <a href="mock-draft.html" class="text-yellow-400 font-bold" aria-current="page">Mock Draft</a>
+           <a href="guides.html" class="hover:text-yellow-400 transition-colors">Guides</a>
+           <a href="players.html" class="hover:text-yellow-400 transition-colors">Players</a>
+           <a href="stats.html" class="hover:text-yellow-400 transition-colors">Stats</a>
+        </div>
+        <div class="text-center text-sm">© 2025 Front Row Fantasy. All rights reserved.</div>
+    </footer>
+    <script src="script.js"></script>
+</body>
+</html>
