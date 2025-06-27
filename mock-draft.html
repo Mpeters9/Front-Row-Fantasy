@@ -31,15 +31,6 @@
         <nav id="mobile-menu" class="md:hidden hidden px-4 pb-3 space-y-2"></nav>
     </header>
 
-    <!-- Ticker Section -->
-    <section class="bg-gray-800 bg-opacity-80 p-3 shadow-lg w-full border-y border-teal-800">
-        <div class="overflow-hidden relative h-8 bg-gray-900 rounded-lg">
-            <div id="tickerContent" class="whitespace-nowrap absolute top-0 left-0 h-full flex items-center ticker-animation text-gray-300">
-                <span class="text-gray-500 px-4">Loading player points...</span>
-            </div>
-        </div>
-    </section>
-
     <main class="flex-grow max-w-screen-xl mx-auto py-8 px-4 w-full">
         <section id="mock-draft-simulator">
             <!-- Settings Section -->
@@ -64,15 +55,15 @@
             </div>
 
             <!-- Interactive Draft Interface (Initially Hidden) -->
-            <div id="interactive-draft-container" class="hidden mt-8 grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <div id="interactive-draft-container" class="hidden mt-8 grid grid-cols-1 lg:grid-cols-4 gap-6">
                 <!-- Left Column: Best Available & Your Team -->
                 <div class="lg:col-span-1 space-y-6">
                     <div id="draft-status-card" class="tool-card text-center p-4">
                          <!-- Status will be updated here -->
                     </div>
-                    <div id="best-available-container" class="tool-card">
-                        <h3 class="text-2xl font-bold text-center mb-4 text-teal-300">Best Available</h3>
-                        <div id="best-available-list" class="space-y-2"></div>
+                    <div id="best-available-container" class="tool-card p-0">
+                        <h3 class="text-2xl font-bold text-center mb-4 text-teal-300 p-4">Best Available</h3>
+                        <div id="best-available-list" class="space-y-1 px-4 pb-4 max-h-[60vh] overflow-y-auto"></div>
                     </div>
                     <div id="my-team-container" class="tool-card">
                          <h3 class="text-2xl font-bold text-center mb-4 text-teal-300">My Team</h3>
@@ -81,7 +72,7 @@
                 </div>
 
                 <!-- Right Column: Draft Board -->
-                <div class="lg:col-span-2 tool-card">
+                <div class="lg:col-span-3 tool-card">
                     <h3 class="text-2xl font-bold text-center mb-4 text-teal-300">Live Draft Board</h3>
                     <div id="draft-board-grid" class="overflow-x-auto"></div>
                 </div>
