@@ -2,7 +2,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Central configuration for the entire application
     const config = {
-        dataFiles: ['players.json'], // Now loads from the single, combined file
+        dataFiles: ['players.json'], // Loads from the single, combined file
         rosterSettings: { QB: 1, RB: 2, WR: 2, TE: 1, FLEX: 1, SUPER_FLEX: 0, DST: 1, K: 1, BENCH: 6 },
         positions: ["QB", "RB", "WR", "TE"],
         superflexPositions: ["QB", "RB", "WR", "TE"]
@@ -105,7 +105,7 @@ document.addEventListener('DOMContentLoaded', () => {
             return Math.max(0, points); 
         },
 
-        // --- PAGE INITIALIZERS ---
+        // --- PAGE-SPECIFIC INITIALIZERS ---
         
         initTopPlayers() {
             const container = document.getElementById('player-showcase-container');
