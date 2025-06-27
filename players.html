@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Front Row Fantasy - Players</title>
+    <title>Front Row Fantasy - Player Rankings</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&display=swap" rel="stylesheet">
     <link rel="icon" href="favicon.ico" type="image/x-icon">
     <link rel="stylesheet" href="styles.css">
@@ -43,10 +43,64 @@
     <main class="flex-grow max-w-7xl mx-auto py-8 px-4 w-full">
         <section id="players-page">
             <h1 class="text-5xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-yellow-300 to-teal-300 mb-4 text-glow-gold text-center">Player Rankings</h1>
-            <input type="text" id="player-search-input" class="form-input w-full max-w-lg mx-auto mb-8 block" placeholder="Search for a player by name...">
-            <div id="player-list-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                 <div class="text-center p-8 md:col-span-3"><div class="loader"></div><p class="text-teal-300 mt-2">Loading players...</p></div>
+            <p class="text-xl text-teal-200 max-w-3xl mx-auto text-center mb-8">
+                Search, sort, and filter through all players to find your next league winner.
+            </p>
+            
+            <!-- Filter Controls -->
+            <div class="p-6 bg-gray-800 bg-opacity-80 rounded-xl shadow-lg border border-teal-600 mb-8">
+                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 items-end">
+                    <div>
+                        <label for="player-search-input" class="block text-sm font-medium text-gray-300 mb-1">Player Name</label>
+                        <input type="text" id="player-search-input" class="form-input" placeholder="e.g. Ja'Marr Chase">
+                    </div>
+                     <div>
+                        <label for="position-filter" class="block text-sm font-medium text-gray-300 mb-1">Position</label>
+                        <select id="position-filter" class="form-select">
+                            <option value="ALL">All Positions</option>
+                            <option value="QB">QB</option>
+                            <option value="RB">RB</option>
+                            <option value="WR">WR</option>
+                            <option value="TE">TE</option>
+                            <option value="FLEX">FLEX (RB/WR/TE)</option>
+                            <option value="K">K</option>
+                            <option value="DST">DST</option>
+                        </select>
+                    </div>
+                     <div>
+                        <label for="tier-filter" class="block text-sm font-medium text-gray-300 mb-1">Tier</label>
+                        <select id="tier-filter" class="form-select">
+                            <option value="ALL">All Tiers</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="team-filter" class="block text-sm font-medium text-gray-300 mb-1">NFL Team</label>
+                        <select id="team-filter" class="form-select">
+                            <option value="ALL">All Teams</option>
+                        </select>
+                    </div>
+                </div>
             </div>
+
+            <!-- Player Table -->
+            <div class="overflow-x-auto tool-card p-0">
+                <table class="w-full text-left whitespace-nowrap">
+                    <thead class="bg-gray-700 bg-opacity-80 text-teal-300 uppercase text-sm">
+                        <tr>
+                           <th class="p-4 sortable-header" data-sort="name">Player</th>
+                           <th class="p-4 text-center sortable-header" data-sort="simplePosition">Pos</th>
+                           <th class="p-4 text-center sortable-header" data-sort="team">Team</th>
+                           <th class="p-4 text-center sortable-header" data-sort="tier">Tier</th>
+                           <th class="p-4 text-center sortable-header" data-sort="adp_ppr">ADP (PPR)</th>
+                           <th class="p-4 text-center sortable-header" data-sort="vorp">VORP</th>
+                        </tr>
+                    </thead>
+                    <tbody id="player-table-body" class="bg-gray-900 bg-opacity-70 divide-y divide-gray-700 text-white">
+                        <tr><td colspan="6"><div class="loader my-8"></div></td></tr>
+                    </tbody>
+                </table>
+            </div>
+
         </section>
     </main>
     <div id="player-popup-card" class="hidden"></div>
