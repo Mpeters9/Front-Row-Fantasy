@@ -2,7 +2,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Central configuration for the entire application
     const config = {
-        dataFiles: ['players.json'],
+        dataFiles: ['players.json'], // Now loads from the single, combined file
         rosterSettings: { QB: 1, RB: 2, WR: 2, TE: 1, FLEX: 1, SUPER_FLEX: 0, DST: 1, K: 1, BENCH: 6 },
         positions: ["QB", "RB", "WR", "TE", "DST", "K"],
         flexPositions: ["RB", "WR", "TE"],
@@ -36,84 +36,39 @@ document.addEventListener('DOMContentLoaded', () => {
             if (document.getElementById('trade-analyzer')) this.initTradeAnalyzer();
         },
         
-        // --- GOAT DRAFT BUILD TOOL (LOGIC FIXED) ---
-        async runGoatMockDraft(controls) {
-            const loader = document.getElementById('draft-loading-spinner');
-            const resultsWrapper = document.getElementById('draft-results-wrapper');
-            if (!loader || !resultsWrapper) return;
+        // --- INTERACTIVE MOCK DRAFT (FIXED) ---
+        initMockDraftSimulator() {
+            const controls = {
+                startBtn: document.getElementById('start-draft-button'),
+                // Corrected IDs to match mock-draft.html
+                scoringSelect: document.getElementById('draftScoringType'),
+                sizeSelect: document.getElementById('leagueSize'),
+                pickSelect: document.getElementById('userPick'),
+                settingsContainer: document.getElementById('draft-settings-container'),
+                draftingContainer: document.getElementById('interactive-draft-container'),
+                completeContainer: document.getElementById('draft-complete-container'),
+                restartBtn: document.getElementById('restart-draft-button'),
+            };
 
-            loader.classList.remove('hidden');
-            resultsWrapper.classList.add('hidden');
-
-            const scoring = controls.scoringType.value.toLowerCase();
-            const leagueSize = parseInt(controls.leagueSize.value);
-            const userDraftPos = parseInt(controls.draftPosition.value) - 1;
-
-            if (!this.hasDataLoaded) await this.loadAllPlayerData();
+            if (!controls.startBtn) return;
             
-            let availablePlayers = [...this.playerData].filter(p => p.adp && typeof p.adp[scoring] === 'number').sort((a, b) => a.adp[scoring] - b.adp[scoring]);
-            const teams = Array.from({ length: leagueSize }, () => ({ roster: [], needs: { ...config.rosterSettings } }));
-            const totalRounds = Object.values(config.rosterSettings).reduce((sum, val) => sum + val, 0);
-
-            for (let round = 0; round < totalRounds; round++) {
-                const picksInRoundOrder = (round % 2 !== 0) ? Array.from({ length: leagueSize }, (_, i) => leagueSize - 1 - i) : Array.from({ length: leagueSize }, (_, i) => i);
-                
-                for (const teamIndex of picksInRoundOrder) {
-                    if (availablePlayers.length === 0) break;
-                    
-                    const topAvailable = availablePlayers.slice(0, 25);
-                    const teamNeeds = teams[teamIndex].needs;
-                    const qbsOnRoster = teams[teamIndex].roster.filter(p => p.simplePosition === 'QB').length;
-
-                    topAvailable.forEach(p => {
-                        let score = p.vorp || 0;
-                        const pos = p.simplePosition;
-                        const isStarterNeed = teamNeeds[pos] > 0;
-                        const isSuperflexNeed = config.superflexPositions.includes(pos) && teamNeeds['SUPER_FLEX'] > 0;
-                        const isFlexNeed = config.flexPositions.includes(pos) && teamNeeds['FLEX'] > 0;
-                        
-                        // --- NEW DRAFT LOGIC ---
-                        // 1. If it's a 1-QB league and the team already has 2 QBs, make picking another QB impossible.
-                        if (config.rosterSettings.QB === 1 && pos === 'QB' && qbsOnRoster >= 2) {
-                            score = -9999; // Heavily penalize to prevent selection
-                        }
-                        // 2. Otherwise, use the weighted scoring based on need.
-                        else if (isStarterNeed) { score += 1000; }
-                        else if (isSuperflexNeed) { score += 500; }
-                        else if (isFlexNeed) { score += 100; }
-                        
-                        // 3. Increased randomness for unique drafts every time.
-                        score *= (1 + (Math.random() - 0.5) * 0.4); 
-                        p.draftScore = score;
-                    });
-                    
-                    topAvailable.sort((a, b) => b.draftScore - a.draftScore);
-                    const draftedPlayer = topAvailable[0];
-                    const draftedPlayerIndexInAvailable = availablePlayers.findIndex(p => p.name === draftedPlayer.name);
-                    
-                    if (draftedPlayerIndexInAvailable !== -1) {
-                        availablePlayers.splice(draftedPlayerIndexInAvailable, 1);
-                    }
-                    
-                    if (draftedPlayer) {
-                        draftedPlayer.draftedAt = `(${(round + 1)}.${picksInRoundOrder.indexOf(teamIndex) + 1})`;
-                        teams[teamIndex].roster.push(draftedPlayer);
-                        
-                        const needs = teams[teamIndex].needs;
-                        const pos = draftedPlayer.simplePosition;
-                        if (needs[pos] > 0) { needs[pos]--; }
-                        else if (config.superflexPositions.includes(pos) && needs['SUPER_FLEX'] > 0) { needs['SUPER_FLEX']--; }
-                        else if (config.flexPositions.includes(pos) && needs['FLEX'] > 0) { needs['FLEX']--; }
-                        else if (needs.BENCH > 0) { needs.BENCH--; }
-                    }
+            const updateUserPickOptions = () => {
+                const size = parseInt(controls.sizeSelect.value);
+                controls.pickSelect.innerHTML = '';
+                for (let i = 1; i <= size; i++) {
+                    controls.pickSelect.add(new Option(`Pick ${i}`, i));
                 }
-            }
-            this.displayGoatDraftResults(teams[userDraftPos].roster);
-            loader.classList.add('hidden');
-            resultsWrapper.classList.remove('hidden');
-        },
+            };
 
-        // --- ALL OTHER FUNCTIONS (UNCHANGED BUT INCLUDED FOR COMPLETENESS) ---
+            controls.sizeSelect.addEventListener('change', updateUserPickOptions);
+            controls.startBtn.addEventListener('click', () => this.startInteractiveDraft(controls));
+            controls.restartBtn.addEventListener('click', () => this.resetDraftUI(controls));
+            
+            // This initial call populates the dropdown on page load
+            updateUserPickOptions();
+        },
+        
+        // --- ALL OTHER FUNCTIONS ---
         
         initMobileMenu() {
             const mobileMenuButton = document.getElementById('mobile-menu-button');
@@ -272,6 +227,53 @@ document.addEventListener('DOMContentLoaded', () => {
             });
             updateDraftPositions();
         },
+        async runGoatMockDraft(controls) {
+            const loader = document.getElementById('draft-loading-spinner'); const resultsWrapper = document.getElementById('draft-results-wrapper');
+            if (!loader || !resultsWrapper) return;
+            loader.classList.remove('hidden'); resultsWrapper.classList.add('hidden');
+            const scoring = controls.scoringType.value.toLowerCase(); const leagueSize = parseInt(controls.leagueSize.value); const userDraftPos = parseInt(controls.draftPosition.value) - 1;
+            if (!this.hasDataLoaded) await this.loadAllPlayerData();
+            let availablePlayers = [...this.playerData].filter(p => p.adp && typeof p.adp[scoring] === 'number').sort((a, b) => a.adp[scoring] - b.adp[scoring]);
+            const teams = Array.from({ length: leagueSize }, () => ({ roster: [], needs: { ...config.rosterSettings } }));
+            const totalRounds = Object.values(config.rosterSettings).reduce((sum, val) => sum + val, 0);
+            for (let round = 0; round < totalRounds; round++) {
+                const picksInRoundOrder = (round % 2 !== 0) ? Array.from({ length: leagueSize }, (_, i) => leagueSize - 1 - i) : Array.from({ length: leagueSize }, (_, i) => i);
+                for (const teamIndex of picksInRoundOrder) {
+                    if (availablePlayers.length === 0) break;
+                    const topAvailable = availablePlayers.slice(0, 25);
+                    const teamNeeds = teams[teamIndex].needs;
+                    const qbsOnRoster = teams[teamIndex].roster.filter(p => p.simplePosition === 'QB').length;
+                    topAvailable.forEach(p => {
+                        let score = p.vorp || 0;
+                        const isStarterNeed = teamNeeds[p.simplePosition] > 0;
+                        const isSuperflexNeed = config.superflexPositions.includes(p.simplePosition) && teamNeeds['SUPER_FLEX'] > 0;
+                        const isFlexNeed = config.flexPositions.includes(p.simplePosition) && teamNeeds['FLEX'] > 0;
+                        if (config.rosterSettings.QB === 1 && p.simplePosition === 'QB' && qbsOnRoster >= 2) { score = -9999; }
+                        else if (isStarterNeed) { score += 1000; }
+                        else if (isSuperflexNeed) { score += 500; }
+                        else if (isFlexNeed) { score += 100; }
+                        score *= (1 + (Math.random() - 0.5) * 0.4); 
+                        p.draftScore = score;
+                    });
+                    topAvailable.sort((a, b) => b.draftScore - a.draftScore);
+                    const draftedPlayer = topAvailable[0];
+                    const draftedPlayerIndexInAvailable = availablePlayers.findIndex(p => p.name === draftedPlayer.name);
+                    if (draftedPlayerIndexInAvailable !== -1) { availablePlayers.splice(draftedPlayerIndexInAvailable, 1); }
+                    if (draftedPlayer) {
+                        draftedPlayer.draftedAt = `(${(round + 1)}.${picksInRoundOrder.indexOf(teamIndex) + 1})`;
+                        teams[teamIndex].roster.push(draftedPlayer);
+                        const needs = teams[teamIndex].needs; const pos = draftedPlayer.simplePosition;
+                        if (needs[pos] > 0) needs[pos]--;
+                        else if (config.superflexPositions.includes(pos) && needs['SUPER_FLEX'] > 0) needs['SUPER_FLEX']--;
+                        else if (config.flexPositions.includes(pos) && needs['FLEX'] > 0) needs['FLEX']--;
+                        else if (needs.BENCH > 0) needs.BENCH--;
+                    }
+                }
+            }
+            this.displayGoatDraftResults(teams[userDraftPos].roster);
+            loader.classList.add('hidden');
+            resultsWrapper.classList.remove('hidden');
+        },
         displayGoatDraftResults(roster) {
             const startersEl = document.getElementById('starters-list'); const benchEl = document.getElementById('bench-list');
             startersEl.innerHTML = ''; benchEl.innerHTML = '';
@@ -313,15 +315,6 @@ document.addEventListener('DOMContentLoaded', () => {
             const reasons = [`has a significantly higher Value Over Replacement Player (VORP), indicating greater potential impact.`,`is in a higher tier, suggesting more reliable week-to-week production.`,`has a better recent performance trend, making them the safer bet this week.`,`simply projects for more points based on our latest data models.`,`has a more favorable matchup, increasing their scoring ceiling.`];
             const randomReason = reasons[Math.floor(Math.random() * reasons.length)];
             return `While both are viable options, **${winner.name}** gets the edge. Our model indicates that ${winner.name} ${randomReason} Consider starting ${loser.name} only in deeper leagues or as a bye-week replacement.`;
-        },
-        initMockDraftSimulator() {
-             const controls = { startBtn: document.getElementById('start-draft-button'), scoringSelect: document.getElementById('draftScoringType'), sizeSelect: document.getElementById('leagueSize'), pickSelect: document.getElementById('userPick'), settingsContainer: document.getElementById('draft-settings-container'), draftingContainer: document.getElementById('interactive-draft-container'), completeContainer: document.getElementById('draft-complete-container'), restartBtn: document.getElementById('restart-draft-button'), };
-            if (!controls.startBtn) return;
-            const updateUserPickOptions = () => { const size = parseInt(controls.sizeSelect.value); controls.pickSelect.innerHTML = ''; for (let i = 1; i <= size; i++) { controls.pickSelect.add(new Option(`Pick ${i}`, i)); } };
-            controls.sizeSelect.addEventListener('change', updateUserPickOptions);
-            controls.startBtn.addEventListener('click', () => this.startInteractiveDraft(controls));
-            controls.restartBtn.addEventListener('click', () => this.resetDraftUI(controls));
-            updateUserPickOptions();
         },
         startInteractiveDraft(controls) {
             controls.settingsContainer.classList.add('hidden'); controls.draftingContainer.classList.remove('hidden'); controls.completeContainer.classList.add('hidden');
