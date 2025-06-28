@@ -1,13 +1,15 @@
 document.addEventListener('DOMContentLoaded', () => {
 
+    // Central configuration for the entire application
     const config = {
-        dataFiles: ['players.json'],
+        dataFiles: ['players.json'], // Now loads from the single, combined file
         rosterSettings: { QB: 1, RB: 2, WR: 2, TE: 1, FLEX: 1, SUPER_FLEX: 0, DST: 1, K: 1, BENCH: 6 },
         positions: ["QB", "RB", "WR", "TE", "DST", "K"],
         flexPositions: ["RB", "WR", "TE"],
         superflexPositions: ["QB", "RB", "WR", "TE"]
     };
 
+    // Main application object
     const App = {
         playerData: [],
         hasDataLoaded: false,
@@ -25,7 +27,6 @@ document.addEventListener('DOMContentLoaded', () => {
         },
 
         initializePageFeatures() {
-            if (document.getElementById('daily-briefing-section')) this.generateDailyBriefing();
             if (document.getElementById('top-players-section')) this.initTopPlayers();
             if (document.getElementById('goat-draft-builder')) this.setupGoatDraftControls();
             if (document.getElementById('start-sit-tool')) this.initStartSitTool();
@@ -387,6 +388,13 @@ document.addEventListener('DOMContentLoaded', () => {
         addPlayerPopupListeners() { const popup = document.getElementById('player-popup-card'); popup.addEventListener('mouseenter', () => clearTimeout(this.popupHideTimeout)); popup.addEventListener('mouseleave', () => { this.popupHideTimeout = setTimeout(() => popup.classList.add('hidden'), 300); }); document.querySelectorAll('.player-name-link').forEach(el => { el.addEventListener('mouseenter', (e) => { clearTimeout(this.popupHideTimeout); const playerName = e.target.dataset.playerName; const player = this.playerData.find(p => p.name === playerName); if (player) { this.updateAndShowPopup(player, e); } }); el.addEventListener('mouseleave', () => { this.popupHideTimeout = setTimeout(() => popup.classList.add('hidden'), 300); }); el.addEventListener('mousemove', (e) => { popup.style.left = `${e.pageX + 15}px`; popup.style.top = `${e.pageY + 15}px`; }); }); },
         updateAndShowPopup(player, event) { const popup = document.getElementById('player-popup-card'); popup.innerHTML = `<div class="popup-header"><p class="font-bold text-lg text-white">${player.name}</p><p class="text-sm text-teal-300">${player.team} - ${player.simplePosition}</p></div><div class="popup-body"><p><strong>ADP (PPR):</strong> ${player.adp.ppr || 'N/A'}</p><p><strong>Tier:</strong> ${player.tier || 'N/A'}</p><p><strong>VORP:</strong> ${player.vorp ? player.vorp.toFixed(2) : 'N/A'}</p><p><strong>Bye Week:</strong> ${player.bye || 'N/A'}</p></div><div id="ai-analysis-container" class="popup-footer"><button id="get-ai-analysis-btn" class="ai-analysis-btn" data-player-name="${player.name}">Get AI Analysis</button><div id="ai-analysis-loader" class="loader-small hidden"></div><p id="ai-analysis-text" class="text-sm text-gray-300"></p></div>`; popup.classList.remove('hidden'); popup.querySelector('#get-ai-analysis-btn').addEventListener('click', (e) => { this.getAiPlayerAnalysis(e.target.dataset.playerName); }); },
         async getAiPlayerAnalysis(playerName) { const container = document.getElementById('ai-analysis-container'); const button = container.querySelector('#get-ai-analysis-btn'); const loader = container.querySelector('#ai-analysis-loader'); const textEl = container.querySelector('#ai-analysis-text'); button.classList.add('hidden'); loader.classList.remove('hidden'); textEl.textContent = ''; const prompt = `Provide a short, optimistic fantasy football outlook for the 2024-2025 season for player ${playerName}. Focus on their potential strengths, situation, and upside. Keep it under 50 words.`; try { let chatHistory = [{ role: "user", parts: [{ text: prompt }] }]; const payload = { contents: chatHistory }; const apiKey = ""; const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`; const response = await fetch(apiUrl, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) }); const result = await response.json(); if (result.candidates && result.candidates.length > 0) { textEl.textContent = result.candidates[0].content.parts[0].text; } else { throw new Error('No content returned'); } } catch (error) { console.error("Gemini API error:", error); textEl.textContent = "Could not retrieve AI analysis."; } finally { loader.classList.add('hidden'); } },
+        async generateDailyBriefing() {
+            const container = document.getElementById('daily-briefing-content'); if (!container) return;
+            const newsTopics = ["surprise injury to a key wide receiver", "backup running back taking first-team reps", "rookie QB named Week 1 starter", "trade rumors for a veteran TE"];
+            const randomTopic = newsTopics[Math.floor(Math.random() * newsTopics.length)];
+            const prompt = `Act as a fantasy football analyst for a website called 'Front Row Fantasy'. Write a short, insightful 'Daily Briefing' article (about 100-120 words) for fantasy players. The main news topic today is: "${randomTopic}". Analyze the fantasy impact of this news, mention one or two players affected, and give actionable advice. Use a confident and engaging tone. Format the output with a headline in bold, followed by the article paragraphs.`;
+            try { let chatHistory = [{ role: "user", parts: [{ text: prompt }] }]; const payload = { contents: chatHistory }; const apiKey = ""; const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`; const response = await fetch(apiUrl, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) }); const result = await response.json(); if (result.candidates && result.candidates.length > 0) { let text = result.candidates[0].content.parts[0].text; text = text.replace(/\*\*(.*?)\*\*/g, '<h4 class="text-xl font-bold text-yellow-300 mb-2">$1</h4>'); text = text.replace(/\n\n/g, '</p><p class="text-gray-300 mb-4">'); container.innerHTML = `<p class="text-gray-300 mb-4">${text}</p>`; } else { throw new Error('No content returned from AI.'); } } catch (error) { console.error("Gemini API error:", error); container.innerHTML = `<p class="text-red-400">Could not generate today's briefing. Please check back later.</p>`; }
+        },
         initGuidesPage() {
             const modal = document.getElementById('guide-modal');
             const closeModalBtn = document.getElementById('close-guide-modal');
@@ -407,7 +415,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 });
             });
             closeModalBtn.addEventListener('click', () => modal.classList.add('hidden'));
-        },
+        }
     };
 
     App.init();
