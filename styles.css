@@ -75,4 +75,3 @@ body { background-color: #0f2027; font-family: 'Poppins', sans-serif; color: #e2
 .player-pos-k, .player-pos-dst { border-color: #6b7280; }
 .pick-pos-k, .pick-pos-dst { background-color: rgba(107, 114, 128, 0.15); }
 .player-card { display: flex; align-items: center; padding: 0.5rem 0.75rem; border-left-width: 4px; }
-
