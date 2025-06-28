@@ -1,15 +1,13 @@
 document.addEventListener('DOMContentLoaded', () => {
 
-    // Central configuration for the entire application
     const config = {
-        dataFiles: ['players.json'], // Now loads from the single, combined file
+        dataFiles: ['players.json'],
         rosterSettings: { QB: 1, RB: 2, WR: 2, TE: 1, FLEX: 1, SUPER_FLEX: 0, DST: 1, K: 1, BENCH: 6 },
         positions: ["QB", "RB", "WR", "TE", "DST", "K"],
         flexPositions: ["RB", "WR", "TE"],
         superflexPositions: ["QB", "RB", "WR", "TE"]
     };
 
-    // Main application object
     const App = {
         playerData: [],
         hasDataLoaded: false,
@@ -27,6 +25,7 @@ document.addEventListener('DOMContentLoaded', () => {
         },
 
         initializePageFeatures() {
+            if (document.getElementById('daily-briefing-section')) this.generateDailyBriefing();
             if (document.getElementById('top-players-section')) this.initTopPlayers();
             if (document.getElementById('goat-draft-builder')) this.setupGoatDraftControls();
             if (document.getElementById('start-sit-tool')) this.initStartSitTool();
@@ -36,8 +35,6 @@ document.addEventListener('DOMContentLoaded', () => {
             if (document.getElementById('trade-analyzer')) this.initTradeAnalyzer();
             if (document.getElementById('guides-page')) this.initGuidesPage();
         },
-        
-        // --- CORE & UI FUNCTIONS ---
         
         initMobileMenu() {
             const btn = document.getElementById('mobile-menu-button');
