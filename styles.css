@@ -19,7 +19,7 @@ body { background-color: #0f2027; font-family: 'Poppins', sans-serif; color: #e2
 .autocomplete-list li { padding: 0.75rem; cursor: pointer; transition: background-color 0.2s; }
 .autocomplete-list li:hover { background: #334155; }
 
-/* --- Player Popups (with fix) --- */
+/* --- Player Popups --- */
 .player-name-link { cursor: pointer; border-bottom: 1px dotted rgba(20, 184, 166, 0.5); }
 .player-name-link:hover { color: #facc15; border-bottom-color: #facc15; }
 #player-popup-card { position: absolute; z-index: 1000; width: 280px; background: #1e293b; border: 1px solid #14b8a6; border-radius: 0.75rem; box-shadow: 0 10px 25px rgba(0,0,0,0.4); backdrop-filter: blur(10px); font-size: 0.9rem; pointer-events: auto; }
