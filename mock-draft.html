@@ -33,7 +33,6 @@
 
     <main class="flex-grow max-w-screen-xl mx-auto py-8 px-4 w-full">
         <section id="mock-draft-simulator">
-            <!-- Settings Section -->
             <div id="draft-settings-container" class="tool-card">
                 <h1 class="text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-yellow-300 to-teal-300 mb-2 text-glow-gold text-center">Interactive Mock Draft</h1>
                 <p class="text-center text-teal-200 mb-6">Practice drafting against smart AI opponents to hone your strategy.</p>
@@ -54,13 +53,9 @@
                 <button id="start-draft-button" class="cta-btn w-full mt-2 text-lg">Start Your Draft</button>
             </div>
 
-            <!-- Interactive Draft Interface (Initially Hidden) -->
             <div id="interactive-draft-container" class="hidden mt-8 grid grid-cols-1 lg:grid-cols-4 gap-6">
-                <!-- Left Column: Best Available & Your Team -->
                 <div class="lg:col-span-1 space-y-6">
-                    <div id="draft-status-card" class="tool-card text-center p-4">
-                         <!-- Status will be updated here -->
-                    </div>
+                    <div id="draft-status-card" class="tool-card text-center p-4"></div>
                     <div id="best-available-container" class="tool-card p-0">
                         <h3 class="text-2xl font-bold text-center mb-4 text-teal-300 p-4">Best Available</h3>
                         <div id="best-available-list" class="space-y-1 px-4 pb-4 max-h-[60vh] overflow-y-auto"></div>
@@ -70,16 +65,13 @@
                          <div id="my-team-list" class="space-y-1"></div>
                     </div>
                 </div>
-
-                <!-- Right Column: Draft Board -->
                 <div class="lg:col-span-3 tool-card">
                     <h3 class="text-2xl font-bold text-center mb-4 text-teal-300">Live Draft Board</h3>
                     <div id="draft-board-grid" class="overflow-x-auto"></div>
                 </div>
             </div>
 
-             <!-- Draft Complete Section -->
-            <div id="draft-complete-container" class="hidden mt-8 tool-card text-center">
+             <div id="draft-complete-container" class="hidden mt-8 tool-card text-center">
                 <h2 class="text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-yellow-300 to-teal-300 mb-4 text-glow-gold">Draft Complete!</h2>
                 <p class="text-xl text-teal-200 mb-6">Here is your final roster. Good luck this season!</p>
                 <div id="final-roster-display" class="grid grid-cols-1 md:grid-cols-2 gap-x-8 text-left max-w-4xl mx-auto"></div>
