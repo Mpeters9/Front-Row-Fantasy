@@ -73,7 +73,7 @@ document.addEventListener('DOMContentLoaded', () => {
             document.querySelectorAll('#stats-table-body, #player-list-container, #player-table-body').forEach(el => { if(el) el.innerHTML = msg; });
         },
         generateFantasyPoints(player) {
-            const pos = (player.position||'').replace(/\d+$/, '').trim().toUpperCase();
+            const pos = (player.position||'').replace(/\d+$/,'').trim().toUpperCase();
             const tier = player.tier || 10;
             let base, range;
             if (pos === 'DST' || pos === 'K') { base = 5; range = 8; }
@@ -383,16 +383,15 @@ document.addEventListener('DOMContentLoaded', () => {
             let score = 0;
             const adp = player.adp[scoring] || 999;
             
-            // Blend ADP and VORP with randomness, weighted by round
-            if (round < 7) { // ADP is king in early rounds
+            if (round < 7) { 
                 const adpScore = (1 / adp) * 1000;
-                const vorpScore = (player.vorp || 0) * 1.5; // Give VORP some weight
-                score = (adpScore * 0.8) + (vorpScore * 0.2); // 80% ADP, 20% VORP
-            } else { // VORP and value matter more later
+                const vorpScore = (player.vorp || 0) * 1.5;
+                score = (adpScore * 0.8) + (vorpScore * 0.2); 
+            } else {
                 score = (player.vorp || 0);
             }
 
-            score *= (1 + (Math.random() - 0.5) * 0.4); // Add randomness
+            score *= (1 + (Math.random() - 0.5) * 0.4); 
             
             return score;
         },
@@ -429,16 +428,14 @@ document.addEventListener('DOMContentLoaded', () => {
                     let draftedPlayer;
                     const team = teams[teamIndex];
 
-                    // --- Forced Pick Logic for K/DST ---
                     const needsDST = team.needs.DST > 0 && !team.roster.some(p => p.simplePosition === 'DST');
                     const needsK = team.needs.K > 0 && !team.roster.some(p => p.simplePosition === 'K');
                     
-                    if(round === totalRounds - 1 && needsDST) {
+                    if(round >= totalRounds - 1 && needsDST) {
                         draftedPlayer = availablePlayers.find(p => p.simplePosition === 'DST');
-                    } else if (round === totalRounds && needsK) {
+                    } else if (round >= totalRounds && needsK) {
                         draftedPlayer = availablePlayers.find(p => p.simplePosition === 'K');
                     } else {
-                        // --- Standard Picking Logic ---
                         availablePlayers.forEach(p => {
                             p.draftScore = this.calculateDraftScore(p, round, scoring);
                         });
