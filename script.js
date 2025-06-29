@@ -36,6 +36,94 @@ document.addEventListener('DOMContentLoaded', () => {
             if (document.getElementById('guides-page')) this.initGuidesPage();
         },
         
+        async runGoatMockDraft(controls) {
+            const loader = document.getElementById('draft-loading-spinner');
+            const resultsWrapper = document.getElementById('draft-results-wrapper');
+            if (!loader || !resultsWrapper) return;
+
+            loader.classList.remove('hidden');
+            resultsWrapper.classList.add('hidden');
+
+            const scoring = controls.scoringType.value.toLowerCase();
+            const leagueSize = parseInt(controls.leagueSize.value);
+            const userDraftPos = parseInt(controls.draftPosition.value) - 1;
+
+            if (!this.hasDataLoaded) await this.loadAllPlayerData();
+            
+            let availablePlayers = [...this.playerData].filter(p => p.adp && typeof p.adp[scoring] === 'number').sort((a, b) => a.adp[scoring] - b.adp[scoring]);
+            const teams = Array.from({ length: leagueSize }, () => ({ roster: [], needs: { ...config.rosterSettings } }));
+            const totalRounds = Object.values(config.rosterSettings).reduce((sum, val) => sum + val, 0);
+
+            for (let round = 0; round < totalRounds; round++) {
+                const picksInRoundOrder = (round % 2 !== 0) ? Array.from({ length: leagueSize }, (_, i) => leagueSize - 1 - i) : Array.from({ length: leagueSize }, (_, i) => i);
+                
+                for (const teamIndex of picksInRoundOrder) {
+                    if (availablePlayers.length === 0) break;
+                    
+                    const teamNeeds = teams[teamIndex].needs;
+                    const qbsOnRoster = teams[teamIndex].roster.filter(p => p.simplePosition === 'QB').length;
+                    
+                    let draftedPlayer;
+
+                    // --- NEW DRAFT LOGIC ---
+                    // For the first 3 rounds, use a stricter "Best Player Available" logic based on ADP.
+                    if (round < 3) {
+                        // Consider the top ~15 players as the realistic pool for this pick
+                        const realisticPickPool = availablePlayers.slice(0, 15);
+                        // Add a little randomness so it's not always the #1 player
+                        const pickIndex = Math.floor(Math.random() * Math.min(5, realisticPickPool.length));
+                        draftedPlayer = realisticPickPool[pickIndex];
+                    } 
+                    // For all other rounds, use the needs-based logic with high randomness.
+                    else {
+                        const topAvailable = availablePlayers.slice(0, 25);
+                        topAvailable.forEach(p => {
+                            let score = p.vorp || 0;
+                            const pos = p.simplePosition;
+                            const isStarterNeed = teamNeeds[pos] > 0;
+                            const isSuperflexNeed = config.superflexPositions.includes(pos) && teamNeeds['SUPER_FLEX'] > 0;
+                            const isFlexNeed = config.flexPositions.includes(pos) && teamNeeds['FLEX'] > 0;
+
+                            if (config.rosterSettings.QB === 1 && pos === 'QB' && qbsOnRoster >= 2) { score = -9999; }
+                            else if (isStarterNeed) { score += 1000; }
+                            else if (isSuperflexNeed) { score += 500; }
+                            else if (isFlexNeed) { score += 100; }
+                            
+                            score *= (1 + (Math.random() - 0.5) * 0.5); // Increased randomness factor
+                            p.draftScore = score;
+                        });
+                        
+                        topAvailable.sort((a, b) => b.draftScore - a.draftScore);
+                        draftedPlayer = topAvailable[0];
+                    }
+
+                    const draftedPlayerIndexInAvailable = availablePlayers.findIndex(p => p.name === draftedPlayer.name);
+                    if (draftedPlayerIndexInAvailable !== -1) {
+                        availablePlayers.splice(draftedPlayerIndexInAvailable, 1);
+                    }
+                    
+                    if (draftedPlayer) {
+                        draftedPlayer.draftedAt = `(${(round + 1)}.${picksInRoundOrder.indexOf(teamIndex) + 1})`;
+                        teams[teamIndex].roster.push(draftedPlayer);
+                        
+                        const needs = teams[teamIndex].needs;
+                        const pos = draftedPlayer.simplePosition;
+
+                        if (needs[pos] > 0) needs[pos]--;
+                        else if (config.superflexPositions.includes(pos) && needs['SUPER_FLEX'] > 0) needs['SUPER_FLEX']--;
+                        else if (config.flexPositions.includes(pos) && needs['FLEX'] > 0) needs['FLEX']--;
+                        else if (needs.BENCH > 0) needs.BENCH--;
+                    }
+                }
+            }
+            this.displayGoatDraftResults(teams[userDraftPos].roster);
+            loader.classList.add('hidden');
+            resultsWrapper.classList.remove('hidden');
+        },
+        
+        // --- ALL OTHER FUNCTIONS ---
+        // These are complete and correct.
+        
         initMobileMenu() {
             const btn = document.getElementById('mobile-menu-button');
             const menu = document.getElementById('mobile-menu');
