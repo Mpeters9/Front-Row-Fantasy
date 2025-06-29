@@ -385,7 +385,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (round < 7) {
                 score = (1 / adp) * 1000;
             } else {
-                score = (player.vorp || 0) * (1 + (Math.random() - 0.5) * 0.5); // Add variability in later rounds
+                score = (player.vorp || 0) * (1 + (Math.random() - 0.5) * 0.5); 
             }
             return score;
         },
@@ -400,12 +400,12 @@ document.addEventListener('DOMContentLoaded', () => {
             resultsWrapper.classList.add('hidden');
             button.disabled = true;
 
-            await new Promise(resolve => setTimeout(resolve, 100)); // Allow UI to update
+            await new Promise(resolve => setTimeout(resolve, 100));
 
             const leagueType = controls.leagueType.value; const scoring = controls.scoringType.value.toLowerCase(); const leagueSize = parseInt(controls.leagueSize.value); const userDraftPos = parseInt(controls.draftPosition.value) - 1;
             if (!this.hasDataLoaded) await this.loadAllPlayerData();
 
-            let availablePlayers = [...this.playerData].filter(p => p.adp && typeof p.adp[scoring] === 'number');
+            let availablePlayers = JSON.parse(JSON.stringify(this.playerData)).filter(p => p.adp && typeof p.adp[scoring] === 'number');
             const teams = Array.from({ length: leagueSize }, () => ({ roster: [], needs: { ...config.rosterSettings } }));
 
             if (leagueType !== 'redraft') {
@@ -423,7 +423,6 @@ document.addEventListener('DOMContentLoaded', () => {
                         p.draftScore = this.calculateDraftScore(p, round, scoring);
                     });
                     
-                    // Specific logic for QBs, K, and DST
                     const qbsOnRoster = teams[teamIndex].roster.filter(p => p.simplePosition === 'QB').length;
                     if(qbsOnRoster >= 1 && !config.rosterSettings.SUPER_FLEX) {
                         availablePlayers.forEach(p => { if(p.simplePosition === 'QB') p.draftScore *= 0.1; });
@@ -438,8 +437,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
                     availablePlayers.sort((a, b) => b.draftScore - a.draftScore);
                     
-                    // Bucket Selection Logic
-                    const bucketSize = (round < 4) ? 2 : 4; // Smaller bucket for early rounds
+                    const bucketSize = (round < 4) ? 2 : 4;
                     const draftBucket = availablePlayers.slice(0, bucketSize);
                     const draftedPlayer = draftBucket[Math.floor(Math.random() * draftBucket.length)];
 
