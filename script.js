@@ -201,10 +201,50 @@ document.addEventListener('DOMContentLoaded', () => {
                 draftPosition: document.getElementById('goat-draft-position'),
                 generateButton: document.getElementById('generateDraftBuildButton'),
                 scoringType: document.getElementById('goat-draft-scoring'),
-                rosterInputs: { QB: document.getElementById('roster-qb'), RB: document.getElementById('roster-rb'), WR: document.getElementById('roster-wr'), TE: document.getElementById('roster-te'), FLEX: document.getElementById('roster-flex'), SUPER_FLEX: document.getElementById('roster-superflex'), BENCH: document.getElementById('roster-bench') }
+                rosterContainer: document.getElementById('roster-settings-container')
             };
 
             if (!controls.generateButton) return;
+            
+            // --- New Roster Stepper Logic ---
+            const rosterConfigs = {
+                QB: { "min": 1, "max": 2, "default": 1 },
+                RB: { "min": 1, "max": 3, "default": 2 },
+                WR: { "min": 2, "max": 4, "default": 3 },
+                TE: { "min": 1, "max": 2, "default": 1 },
+                FLEX: { "min": 0, "max": 2, "default": 1 },
+                SUPER_FLEX: { "min": 0, "max": 1, "default": 0 },
+                BENCH: { "min": 4, "max": 8, "default": 6 }
+            };
+
+            controls.rosterContainer.innerHTML = Object.entries(rosterConfigs).map(([pos, config]) => {
+                return `
+                    <div class="roster-stepper" id="roster-${pos.toLowerCase()}">
+                        <label class="roster-stepper-label">${pos}</label>
+                        <div class="roster-stepper-controls">
+                            <button type="button" class="roster-stepper-btn" data-action="decrement">-</button>
+                            <span class="roster-stepper-value">${config.default}</span>
+                            <button type="button" class="roster-stepper-btn" data-action="increment">+</button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+            
+            Object.entries(rosterConfigs).forEach(([pos, config]) => {
+                const stepperEl = document.getElementById(`roster-${pos.toLowerCase()}`);
+                const valueEl = stepperEl.querySelector('.roster-stepper-value');
+                stepperEl.addEventListener('click', (e) => {
+                    const action = e.target.dataset.action;
+                    let currentValue = parseInt(valueEl.textContent);
+                    if (action === 'increment' && currentValue < config.max) {
+                        currentValue++;
+                    } else if (action === 'decrement' && currentValue > config.min) {
+                        currentValue--;
+                    }
+                    valueEl.textContent = currentValue;
+                });
+            });
+
 
             const updateDraftPositions = () => {
                 const size = parseInt(controls.leagueSize.value);
@@ -215,20 +255,20 @@ document.addEventListener('DOMContentLoaded', () => {
             };
 
             controls.leagueSize.addEventListener('change', updateDraftPositions);
+            
             controls.generateButton.addEventListener('click', () => {
-                config.rosterSettings = {
-                    QB: parseInt(controls.rosterInputs.QB.value),
-                    RB: parseInt(controls.rosterInputs.RB.value),
-                    WR: parseInt(controls.rosterInputs.WR.value),
-                    TE: parseInt(controls.rosterInputs.TE.value),
-                    FLEX: parseInt(controls.rosterInputs.FLEX.value),
-                    SUPER_FLEX: parseInt(controls.rosterInputs.SUPER_FLEX.value),
-                    BENCH: parseInt(controls.rosterInputs.BENCH.value),
-                    DST: 1,
-                    K: 1
-                };
+                // Read values from the new steppers
+                const newRosterSettings = {};
+                Object.keys(rosterConfigs).forEach(pos => {
+                    const stepperEl = document.getElementById(`roster-${pos.toLowerCase()}`);
+                    const valueEl = stepperEl.querySelector('.roster-stepper-value');
+                    newRosterSettings[pos] = parseInt(valueEl.textContent);
+                });
+                config.rosterSettings = { ...newRosterSettings, DST: 1, K: 1 };
+                
                 this.runGoatMockDraft(controls);
             });
+            
             updateDraftPositions();
         },
 
