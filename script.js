@@ -95,7 +95,7 @@ document.addEventListener('DOMContentLoaded', () => {
             return Math.max(0, base + (Math.random() * range)); 
         },
         generateAdvancedStats(player, fantasyPoints) {
-            const pos = (player.position||'').replace(/\d+$/,'').trim().toUpperCase();
+            const pos = (player.position||'').replace(/\d+$/, '').trim().toUpperCase();
             const base = fantasyPoints;
             let stats = { passYds: 0, passTDs: 0, INTs: 0, rushAtt: 0, rushYds: 0, targets: 0, receptions: 0, recYds: 0, airYards: 0, redzoneTouches: 0, yprr: 0 };
             
@@ -691,10 +691,112 @@ document.addEventListener('DOMContentLoaded', () => {
             const draftInfo = player.draftedAt === "(Keeper)" ? `<span class="text-xs text-yellow-400 ml-auto font-bold">${player.draftedAt}</span>` : `<span class="text-xs text-gray-400 ml-auto">${player.draftedAt || ''}</span>`;
             return `<div class="player-card player-pos-${player.simplePosition.toLowerCase()}"><strong class="font-bold w-12">${pos}:</strong><span class="player-name-link" data-player-name="${player.name}">${player.name} (${player.team})</span>${draftInfo}</div>`;
         },
-        initStartSitTool() { /* ... */ },
-        analyzeStartSit(p1, p2) { /* ... */ },
-        generateStartSitAdvice(winner, loser) { /* ... */ },
-        initMockDraftSimulator() { /* ... */ },
+        initStartSitTool() {
+            const tool = { player1Input: document.getElementById('start-sit-player1'), player2Input: document.getElementById('start-sit-player2'), analyzeBtn: document.getElementById('start-sit-analyze'), resultsContainer: document.getElementById('start-sit-results') };
+            if(!tool.analyzeBtn) return;
+            [tool.player1Input, tool.player2Input].forEach(input => { input.addEventListener('input', e => this.showAutocomplete(e.target)); });
+            tool.analyzeBtn.addEventListener('click', () => { const player1 = this.playerData.find(p => p.name === tool.player1Input.value); const player2 = this.playerData.find(p => p.name === tool.player2Input.value); this.analyzeStartSit(player1, player2); });
+        },
+        analyzeStartSit(p1, p2) {
+            const resultsContainer = document.getElementById('start-sit-results');
+            if (!p1 || !p2) { resultsContainer.innerHTML = `<p class="text-red-400">Please select two valid players.</p>`; resultsContainer.classList.remove('hidden'); return; }
+            const score1 = (p1.vorp * 2) + ((10 - p1.tier) * 5) + p1.fantasyPoints; const score2 = (p2.vorp * 2) + ((10 - p2.tier) * 5) + p2.fantasyPoints;
+            const winner = score1 > score2 ? p1 : p2; const loser = score1 > score2 ? p2 : p1;
+            const advice = this.generateStartSitAdvice(winner, loser);
+            resultsContainer.innerHTML = ` <h3 class="text-2xl font-bold text-yellow-300 mb-4">The Verdict</h3> <div class="verdict-card start"><p class="decision-text">START</p><p class="player-name">${winner.name}</p><p class="player-details">${winner.simplePosition} | ${winner.team}</p></div> <div class="verdict-card sit"><p class="decision-text">SIT</p><p class="player-name">${loser.name}</p><p class="player-details">${loser.simplePosition} | ${loser.team}</p></div> <div class="analysis-section"><h4 class="font-semibold text-teal-300">Analysis</h4><p class="text-gray-300">${advice}</p></div> `;
+            resultsContainer.classList.remove('hidden');
+        },
+        generateStartSitAdvice(winner, loser) {
+            const reasons = [`has a significantly higher Value Over Replacement Player (VORP), indicating greater potential impact.`,`is in a higher tier, suggesting more reliable week-to-week production.`,`has a better recent performance trend, making them the safer bet this week.`,`simply projects for more points based on our latest data models.`,`has a more favorable matchup, increasing their scoring ceiling.`];
+            const randomReason = reasons[Math.floor(Math.random() * reasons.length)];
+            return `While both are viable options, **${winner.name}** gets the edge. Our model indicates that ${winner.name} ${randomReason} Consider starting ${loser.name} only in deeper leagues or as a bye-week replacement.`;
+        },
+        initMockDraftSimulator() {
+             const controls = { startBtn: document.getElementById('start-draft-button'), scoringSelect: document.getElementById('draftScoringType'), sizeSelect: document.getElementById('leagueSize'), pickSelect: document.getElementById('userPick'), settingsContainer: document.getElementById('draft-settings-container'), draftingContainer: document.getElementById('interactive-draft-container'), completeContainer: document.getElementById('draft-complete-container'), restartBtn: document.getElementById('restart-draft-button'), };
+            if (!controls.startBtn) return;
+            const updateUserPickOptions = () => { const size = parseInt(controls.sizeSelect.value); controls.pickSelect.innerHTML = ''; for (let i = 1; i <= size; i++) { controls.pickSelect.add(new Option(`Pick ${i}`, i)); } };
+            controls.sizeSelect.addEventListener('change', updateUserPickOptions);
+            controls.startBtn.addEventListener('click', () => this.startInteractiveDraft(controls));
+            controls.restartBtn.addEventListener('click', () => this.resetDraftUI(controls));
+            updateUserPickOptions();
+        },
+        startInteractiveDraft(controls) {
+            controls.settingsContainer.classList.add('hidden'); controls.draftingContainer.classList.remove('hidden'); controls.completeContainer.classList.add('hidden');
+            const leagueSize = parseInt(controls.sizeSelect.value); const userPickNum = parseInt(controls.pickSelect.value); const scoring = controls.scoringSelect.value.toLowerCase(); const totalRounds = 15;
+            this.draftState = { controls, leagueSize, userPickNum, scoring, totalRounds, currentRound: 1, currentPickInRound: 1, teams: Array.from({ length: leagueSize }, (v, i) => ({ teamNumber: i + 1, roster: [] })), availablePlayers: [...this.playerData].filter(p => p.adp && typeof p.adp[scoring] === 'number').sort((a, b) => a.adp[scoring] - b.adp[scoring]), draftPicks: [], isUserTurn: false, };
+            this.updateDraftBoard(); this.updateMyTeam(); this.runDraftTurn();
+        },
+        runDraftTurn() {
+            if (this.draftState.currentRound > this.draftState.totalRounds) { this.endInteractiveDraft(); return; }
+            const { currentRound, leagueSize } = this.draftState; const isSnake = currentRound % 2 === 0; const pickInRound = this.draftState.currentPickInRound; const teamIndex = isSnake ? leagueSize - 1 - (pickInRound - 1) : pickInRound - 1;
+            const isUserTurn = (teamIndex + 1) === this.draftState.userPickNum; this.draftState.isUserTurn = isUserTurn;
+            this.updateDraftStatus();
+            if (isUserTurn) { this.updateBestAvailable(true); } 
+            else { this.updateBestAvailable(false); setTimeout(() => { this.makeAiPick(teamIndex); this.runDraftTurn(); }, 500); }
+        },
+        makeAiPick(teamIndex) {
+            const { availablePlayers } = this.draftState; const topAvailable = availablePlayers.slice(0, 15);
+            topAvailable.forEach(p => { let score = p.vorp || 0; score *= (1 + (Math.random() - 0.5) * 0.4); p.draftScore = score; });
+            topAvailable.sort((a, b) => b.draftScore - a.draftScore);
+            const draftedPlayer = topAvailable[0]; this.makePick(draftedPlayer, teamIndex);
+        },
+        makeUserPick(playerName) { const player = this.draftState.availablePlayers.find(p => p.name === playerName); const teamIndex = this.draftState.userPickNum - 1; if (player) { this.makePick(player, teamIndex); this.runDraftTurn(); } },
+        makePick(player, teamIndex) {
+            this.draftState.availablePlayers = this.draftState.availablePlayers.filter(p => p.name !== player.name);
+            this.draftState.teams[teamIndex].roster.push(player);
+            this.draftState.draftPicks.push({ round: this.draftState.currentRound, pick: this.draftState.currentPickInRound, player: player, teamNumber: teamIndex + 1, });
+            this.updateDraftBoard(); if ((teamIndex + 1) === this.draftState.userPickNum) { this.updateMyTeam(); }
+            this.draftState.currentPickInRound++;
+            if (this.draftState.currentPickInRound > this.draftState.leagueSize) { this.draftState.currentPickInRound = 1; this.draftState.currentRound++; }
+        },
+        updateDraftStatus() {
+            const { currentRound, currentPickInRound, leagueSize, totalRounds, isUserTurn } = this.draftState;
+            const overallPick = (currentRound - 1) * leagueSize + currentPickInRound; const statusCard = document.getElementById('draft-status-card');
+            statusCard.classList.toggle('on-the-clock', isUserTurn);
+            let statusHTML = `<p class="text-gray-400 font-semibold">Round ${currentRound}/${totalRounds} | Pick ${overallPick}</p>`;
+            if(isUserTurn) { statusHTML += `<p class="text-2xl font-bold text-yellow-300 text-glow-gold animate-pulse">YOU ARE ON THE CLOCK</p>`; } 
+            else { const isSnake = currentRound % 2 === 0; const teamNumber = isSnake ? leagueSize - currentPickInRound + 1 : currentPickInRound; statusHTML += `<p class="text-xl font-semibold text-white">Team ${teamNumber} is picking...</p>`; }
+            statusCard.innerHTML = statusHTML;
+        },
+        updateBestAvailable(isUserTurn) {
+            const listEl = document.getElementById('best-available-list'); listEl.innerHTML = '';
+            const topPlayers = this.draftState.availablePlayers.slice(0, 30);
+            topPlayers.forEach(player => { const playerEl = document.createElement('div'); playerEl.className = 'best-available-player'; playerEl.innerHTML = `<span class="font-bold text-sm text-center w-12 player-pos-${player.simplePosition.toLowerCase()}">${player.simplePosition}</span><div class="flex-grow"><p class="player-name-link font-semibold text-white" data-player-name="${player.name}">${player.name}</p><p class="text-xs text-gray-400">${player.team} | Bye: ${player.bye || 'N/A'}</p></div>${isUserTurn ? `<button class="draft-button" data-player-name="${player.name}">Draft</button>` : `<span class="text-sm font-mono text-gray-500">${(player.adp.ppr || 999).toFixed(1)}</span>`}`; listEl.appendChild(playerEl); });
+            if(isUserTurn) { document.querySelectorAll('.draft-button').forEach(btn => { btn.onclick = (e) => this.makeUserPick(e.target.dataset.playerName); }); }
+            this.addPlayerPopupListeners();
+        },
+        updateMyTeam() {
+            const listEl = document.getElementById('my-team-list'); listEl.innerHTML = '';
+            const myTeam = this.draftState.teams[this.draftState.userPickNum - 1];
+            myTeam.roster.forEach(player => { listEl.innerHTML += ` <div class="my-team-player player-pos-${player.simplePosition.toLowerCase()}"><strong class="w-10">${player.simplePosition}</strong><span class="player-name-link" data-player-name="${player.name}">${player.name}</span></div> `; });
+            this.addPlayerPopupListeners();
+        },
+        updateDraftBoard() {
+            const gridEl = document.getElementById('draft-board-grid'); const { leagueSize, draftPicks, userPickNum, totalRounds } = this.draftState; gridEl.innerHTML = '';
+            let headerHtml = '<div class="draft-board-header">'; for (let i = 1; i <= leagueSize; i++) { headerHtml += `<div class="draft-board-team-header ${userPickNum === i ? 'user-team-header' : ''}">Team ${i}</div>`; } headerHtml += '</div>'; gridEl.innerHTML += headerHtml;
+            const bodyEl = document.createElement('div'); bodyEl.className = 'draft-board-body'; bodyEl.style.gridTemplateColumns = `repeat(${leagueSize}, minmax(0, 1fr))`;
+            for (let i = 0; i < totalRounds * leagueSize; i++) {
+                const pick = draftPicks[i];
+                const pickEl = document.createElement('div');
+                if(pick) { pickEl.className = `draft-pick pick-pos-${pick.player.simplePosition.toLowerCase()} ${pick.teamNumber === userPickNum ? 'user-pick' : ''}`; pickEl.innerHTML = `<span class="pick-number">${pick.round}.${pick.pick}</span><p class="player-name-link pick-player-name" data-player-name="${pick.player.name}">${pick.player.name}</p><p class="pick-player-info">${pick.player.team} - ${pick.player.simplePosition}</p>`; }
+                else { pickEl.className = `draft-pick empty`; }
+                bodyEl.appendChild(pickEl);
+            }
+            gridEl.appendChild(bodyEl); this.addPlayerPopupListeners();
+        },
+        endInteractiveDraft() {
+            this.draftState.controls.draftingContainer.classList.add('hidden'); this.draftState.controls.completeContainer.classList.remove('hidden');
+            const rosterEl = document.getElementById('final-roster-display'); rosterEl.innerHTML = '';
+            const myRoster = this.draftState.teams[this.draftState.userPickNum - 1].roster;
+            const starters = []; const bench = []; const rosterSlots = { ...config.rosterSettings };
+            myRoster.forEach(player => { const pos = player.simplePosition; if (rosterSlots[pos] > 0) { starters.push(player); rosterSlots[pos]--; } else if (config.flexPositions.includes(pos) && rosterSlots['FLEX'] > 0) { player.displayPos = 'FLEX'; starters.push(player); rosterSlots['FLEX']--; } else { bench.push(player); } });
+            rosterEl.innerHTML = ` <div><h4 class="text-xl font-semibold text-teal-300 mb-2 border-b border-gray-700 pb-1">Starters</h4><div class="space-y-2">${starters.map(p => this.createPlayerCardHTML(p)).join('')}</div></div> <div><h4 class="text-xl font-semibold text-teal-300 mb-2 border-b border-gray-700 pb-1">Bench</h4><div class="space-y-2">${bench.map(p => this.createPlayerCardHTML(p, true)).join('')}</div></div> `;
+            this.addPlayerPopupListeners();
+        },
+        resetDraftUI(controls) {
+            controls.settingsContainer.classList.remove('hidden'); controls.draftingContainer.classList.add('hidden'); controls.completeContainer.classList.add('hidden');
+            this.draftState = {};
+        },
         getOrdinal(n) {
             const s = ["th", "st", "nd", "rd"];
             const v = n % 100;
