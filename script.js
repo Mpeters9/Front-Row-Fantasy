@@ -538,6 +538,8 @@ document.addEventListener('DOMContentLoaded', () => {
                     controls.draftPosition.add(new Option(`Pick ${i}`, i));
                 }
             };
+            
+            updateDraftPositions(); // *** THIS IS THE FIX ***
 
             controls.leagueSize.addEventListener('change', updateDraftPositions);
             
@@ -555,7 +557,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 this.runGoatMockDraft(controls);
             });
             
-            updateDraftPositions();
         },
 
         calculateDraftScore(player, round, scoring) {
@@ -807,8 +808,8 @@ document.addEventListener('DOMContentLoaded', () => {
         updateAndShowPopup(player, event) { /* ... */ },
         async getAiPlayerAnalysis(playerName) { /* ... */ },
         async generateDailyBriefing() { /* ... */ },
-        initArticlesPage() { /* ... */ }, // Stub for now
-        loadArticleContent() { /* ... */ } // Stub for now
+        initArticlesPage() { /* ... */ }, 
+        loadArticleContent() { /* ... */ }
     };
 
     App.init();
