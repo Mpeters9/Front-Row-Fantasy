@@ -41,6 +41,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (document.getElementById('trade-analyzer')) this.initTradeAnalyzer();
             if (document.getElementById('articles-page')) this.initArticlesPage(); 
             if (document.getElementById('article-content')) this.loadArticleContent();
+            if (document.getElementById('waiver-wire-page')) this.initWaiverWirePage();
         },
         
         initMobileMenu() {
@@ -95,7 +96,7 @@ document.addEventListener('DOMContentLoaded', () => {
             return Math.max(0, base + (Math.random() * range)); 
         },
         generateAdvancedStats(player, fantasyPoints) {
-            const pos = (player.position||'').replace(/\d+$/,'').trim().toUpperCase();
+            const pos = (player.position||'').replace(/\d+$/, '').trim().toUpperCase();
             const base = fantasyPoints;
             let stats = { passYds: 0, passTDs: 0, INTs: 0, rushAtt: 0, rushYds: 0, targets: 0, receptions: 0, recYds: 0, airYards: 0, redzoneTouches: 0, yprr: 0 };
             
@@ -539,7 +540,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             };
             
-            updateDraftPositions(); 
+            updateDraftPositions();
 
             controls.leagueSize.addEventListener('change', updateDraftPositions);
             
@@ -716,10 +717,12 @@ document.addEventListener('DOMContentLoaded', () => {
              const controls = { startBtn: document.getElementById('start-draft-button'), scoringSelect: document.getElementById('draftScoringType'), sizeSelect: document.getElementById('leagueSize'), pickSelect: document.getElementById('userPick'), settingsContainer: document.getElementById('draft-settings-container'), draftingContainer: document.getElementById('interactive-draft-container'), completeContainer: document.getElementById('draft-complete-container'), restartBtn: document.getElementById('restart-draft-button'), };
             if (!controls.startBtn) return;
             const updateUserPickOptions = () => { const size = parseInt(controls.sizeSelect.value); controls.pickSelect.innerHTML = ''; for (let i = 1; i <= size; i++) { controls.pickSelect.add(new Option(`Pick ${i}`, i)); } };
+            
+            updateUserPickOptions(); // *** THIS IS THE FIX ***
+            
             controls.sizeSelect.addEventListener('change', updateUserPickOptions);
             controls.startBtn.addEventListener('click', () => this.startInteractiveDraft(controls));
             controls.restartBtn.addEventListener('click', () => this.resetDraftUI(controls));
-            updateUserPickOptions();
         },
         startInteractiveDraft(controls) {
             controls.settingsContainer.classList.add('hidden'); controls.draftingContainer.classList.remove('hidden'); controls.completeContainer.classList.add('hidden');
@@ -809,7 +812,8 @@ document.addEventListener('DOMContentLoaded', () => {
         async getAiPlayerAnalysis(playerName) { /* ... */ },
         async generateDailyBriefing() { /* ... */ },
         initArticlesPage() { /* ... */ }, 
-        loadArticleContent() { /* ... */ }
+        loadArticleContent() { /* ... */ },
+        initWaiverWirePage() { /* ... */ }
     };
 
     App.init();
