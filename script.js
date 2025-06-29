@@ -33,7 +33,7 @@ document.addEventListener('DOMContentLoaded', () => {
         initializePageFeatures() {
             if (document.getElementById('daily-briefing-section')) this.generateDailyBriefing();
             if (document.getElementById('top-players-section')) this.initTopPlayers();
-            if (document.getElementById('goat-draft-builder')) this.setupGoatDraftControls();
+            if (document.getElementById('goat-page')) this.initGoatPage();
             if (document.getElementById('start-sit-tool')) this.initStartSitTool();
             if (document.getElementById('mock-draft-simulator')) this.initMockDraftSimulator();
             if (document.getElementById('stats-page')) this.initStatsPage();
@@ -703,7 +703,7 @@ document.addEventListener('DOMContentLoaded', () => {
         analyzeStartSit(p1, p2) {
             const resultsContainer = document.getElementById('start-sit-results');
             if (!p1 || !p2) { resultsContainer.innerHTML = `<p class="text-red-400">Please select two valid players.</p>`; resultsContainer.classList.remove('hidden'); return; }
-            const score1 = (p1.vorp * 2) + ((10 - p1.tier) * 5) + p1.fantasyPoints; const score2 = (p2.vorp * 2) + ((10 - p2.tier) * 5) + p2.fantasyPoints;
+            const score1 = (p1.vorp * 2) + ((10 - p1.tier) * 5) + p1.fantasyPoints; const score2 = (p2.vorp * 2) + ((10 - p1.tier) * 5) + p2.fantasyPoints;
             const winner = score1 > score2 ? p1 : p2; const loser = score1 > score2 ? p2 : p1;
             const advice = this.generateStartSitAdvice(winner, loser);
             resultsContainer.innerHTML = ` <h3 class="text-2xl font-bold text-yellow-300 mb-4">The Verdict</h3> <div class="verdict-card start"><p class="decision-text">START</p><p class="player-name">${winner.name}</p><p class="player-details">${winner.simplePosition} | ${winner.team}</p></div> <div class="verdict-card sit"><p class="decision-text">SIT</p><p class="player-name">${loser.name}</p><p class="player-details">${loser.simplePosition} | ${loser.team}</p></div> <div class="analysis-section"><h4 class="font-semibold text-teal-300">Analysis</h4><p class="text-gray-300">${advice}</p></div> `;
@@ -840,6 +840,79 @@ document.addEventListener('DOMContentLoaded', () => {
                     </div>
                 `;
             }).join('');
+        },
+        initLeagueDominatorPage() {
+            const powerRankingsContainer = document.getElementById('power-rankings-list');
+            const playoffOddsContainer = document.getElementById('playoff-odds-list');
+            const commissionerReportContainer = document.getElementById('commissioner-report-content');
+
+            if (!powerRankingsContainer) return;
+
+            // In a real app, this data would come from a league sync
+            const teams = [
+                { id: 1, name: "The Gurus", wins: 8, losses: 2, pointsFor: 1450.5, rosterValue: 950 },
+                { id: 2, name: "Gridiron Gang", wins: 7, losses: 3, pointsFor: 1380.2, rosterValue: 920 },
+                { id: 3, name: "Endzone Enforcers", wins: 6, losses: 4, pointsFor: 1410.8, rosterValue: 880 },
+                { id: 4, name: "Touchdown Titans", wins: 6, losses: 4, pointsFor: 1350.1, rosterValue: 900 },
+                { id: 5, name: "Blitz Brigade", wins: 5, losses: 5, pointsFor: 1300.7, rosterValue: 850 },
+                { id: 6, name: "Redzone Rascals", wins: 5, losses: 5, pointsFor: 1280.4, rosterValue: 840 },
+                { id: 7, name: "The Pigskin Prophets", wins: 4, losses: 6, pointsFor: 1250.9, rosterValue: 800 },
+                { id: 8, name: "Hail Mary Heroes", wins: 4, losses: 6, pointsFor: 1230.3, rosterValue: 780 },
+                { id: 9, name: "Fourth and Phonies", wins: 3, losses: 7, pointsFor: 1180.6, rosterValue: 750 },
+                { id: 10, name: "The Bye Week Blues", wins: 2, losses: 8, pointsFor: 1100.2, rosterValue: 700 },
+            ];
+
+            // Calculate Power Score
+            teams.forEach(team => {
+                team.powerScore = (team.wins * 100) + (team.pointsFor / 10) + (team.rosterValue / 10);
+            });
+
+            // Sort by Power Score for Rankings
+            teams.sort((a, b) => b.powerScore - a.powerScore);
+
+            // Populate Power Rankings
+            powerRankingsContainer.innerHTML = teams.map((team, index) => {
+                const rank = index + 1;
+                const trend = Math.random() > 0.5 ? `<span class="text-green-400">▲</span>` : `<span class="text-red-400">▼</span>`;
+                return `
+                    <div class="flex items-center p-3 rounded-lg bg-gray-800/50">
+                        <div class="w-12 text-center text-2xl font-bold text-teal-300">${rank}</div>
+                        <div class="flex-grow">
+                            <p class="font-semibold text-lg text-white">${team.name}</p>
+                            <p class="text-sm text-gray-400">${team.wins}-${team.losses} | ${team.pointsFor.toFixed(1)} PF</p>
+                        </div>
+                        <div class="text-2xl">${trend}</div>
+                    </div>
+                `;
+            }).join('');
+
+            // Populate Playoff Odds
+            playoffOddsContainer.innerHTML = teams.map(team => {
+                const odds = Math.max(5, Math.min(95, 100 - (team.powerScore / 25)));
+                return `
+                    <div class="flex justify-between items-center text-white">
+                        <span>${team.name}</span>
+                        <span class="font-bold text-yellow-400">${odds.toFixed(0)}%</span>
+                    </div>
+                `;
+            }).join('');
+
+            // Populate Commissioner's Report
+            commissionerReportContainer.innerHTML = `
+                <div>
+                    <h4 class="font-semibold text-teal-300">Biggest Blowout</h4>
+                    <p class="text-gray-300 text-sm">The Gurus defeated The Bye Week Blues, 155.2 to 85.1.</p>
+                </div>
+                <div class="mt-4">
+                    <h4 class="font-semibold text-teal-300">Closest Matchup</h4>
+                    <p class="text-gray-300 text-sm">Redzone Rascals squeaked by Hail Mary Heroes, 121.5 to 120.9.</p>
+                </div>
+                <div class="mt-4">
+                    <h4 class="font-semibold text-teal-300">Player of the Week</h4>
+                    <p class="text-gray-300 text-sm">Ja'Marr Chase put up an incredible 42.5 points.</p>
+                </div>
+            `;
+
         }
     };
 
