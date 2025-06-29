@@ -39,8 +39,8 @@ document.addEventListener('DOMContentLoaded', () => {
             if (document.getElementById('stats-page')) this.initStatsPage();
             if (document.getElementById('players-page')) this.initPlayersPage();
             if (document.getElementById('trade-analyzer')) this.initTradeAnalyzer();
-            if (document.getElementById('articles-page')) this.initArticlesPage(); // Changed from initGuidesPage
-            if (document.getElementById('article-content')) this.loadArticleContent(); // For the template page
+            if (document.getElementById('articles-page')) this.initArticlesPage(); 
+            if (document.getElementById('article-content')) this.loadArticleContent();
         },
         
         initMobileMenu() {
@@ -95,7 +95,7 @@ document.addEventListener('DOMContentLoaded', () => {
             return Math.max(0, base + (Math.random() * range)); 
         },
         generateAdvancedStats(player, fantasyPoints) {
-            const pos = (player.position||'').replace(/\d+$/, '').trim().toUpperCase();
+            const pos = (player.position||'').replace(/\d+$/,'').trim().toUpperCase();
             const base = fantasyPoints;
             let stats = { passYds: 0, passTDs: 0, INTs: 0, rushAtt: 0, rushYds: 0, targets: 0, receptions: 0, recYds: 0, airYards: 0, redzoneTouches: 0, yprr: 0 };
             
@@ -705,7 +705,8 @@ document.addEventListener('DOMContentLoaded', () => {
         updateAndShowPopup(player, event) { /* ... */ },
         async getAiPlayerAnalysis(playerName) { /* ... */ },
         async generateDailyBriefing() { /* ... */ },
-        initGuidesPage() { /* ... */ },
+        initArticlesPage() { /* ... */ }, // Stub for now
+        loadArticleContent() { /* ... */ } // Stub for now
     };
 
     App.init();
