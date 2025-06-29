@@ -379,53 +379,28 @@ document.addEventListener('DOMContentLoaded', () => {
             updateDraftPositions();
         },
 
-        calculateDraftScore(player, availablePlayers, teamNeeds, teamRoster, round, scoring) {
+        calculateDraftScore(player, round, scoring) {
             let score = 0;
             const adp = player.adp[scoring] || 999;
-
-            // Heavily weight ADP in early rounds
             if (round < 7) {
-                score = (1 / adp) * 1000; // Inverse of ADP so lower ADP = higher score
+                score = (1 / adp) * 1000;
             } else {
-                score = player.vorp || 0;
+                score = (player.vorp || 0) * (1 + (Math.random() - 0.5) * 0.5); // Add variability in later rounds
             }
-
-            // Devalue K and DST until the last 2 rounds
-            const totalRounds = Object.values(config.rosterSettings).reduce((sum, val) => sum + val, 0);
-            if ((player.simplePosition === 'K' || player.simplePosition === 'DST') && round < totalRounds - 2) {
-                return 0; // Don't draft them early
-            }
-
-            // Devalue QBs after the first one is taken in a 1-QB league
-            if(teamRoster.some(p => p.simplePosition === 'QB') && player.simplePosition === 'QB' && !config.rosterSettings.SUPER_FLEX) {
-                if(player.tier > 2) { // Don't bother with non-elite QBs if you already have one
-                    score *= 0.1;
-                }
-            }
-
-            // Prevent drafting a 3rd QB
-            if(teamRoster.filter(p => p.simplePosition === 'QB').length >= 2 && player.simplePosition === 'QB') {
-                return 0;
-            }
-            
-            const scarcityBonuses = { 'RB': 1.1, 'TE': 1.15 };
-            score *= (scarcityBonuses[player.simplePosition] || 1.0);
-
-            // Need-based bonus (more important in later rounds)
-            if (round > 4) {
-                const pos = player.simplePosition;
-                if (teamNeeds[pos] > 0) score *= 1.3;
-                else if (config.flexPositions.includes(pos) && teamNeeds['FLEX'] > 0) score *= 1.1;
-            }
-
             return score;
         },
 
 
         async runGoatMockDraft(controls) {
             const loader = document.getElementById('draft-loading-spinner'); const resultsWrapper = document.getElementById('draft-results-wrapper');
+            const button = controls.generateButton;
+
             if (!loader || !resultsWrapper) return;
-            loader.classList.remove('hidden'); resultsWrapper.classList.add('hidden');
+            loader.classList.remove('hidden');
+            resultsWrapper.classList.add('hidden');
+            button.disabled = true;
+
+            await new Promise(resolve => setTimeout(resolve, 100)); // Allow UI to update
 
             const leagueType = controls.leagueType.value; const scoring = controls.scoringType.value.toLowerCase(); const leagueSize = parseInt(controls.leagueSize.value); const userDraftPos = parseInt(controls.draftPosition.value) - 1;
             if (!this.hasDataLoaded) await this.loadAllPlayerData();
@@ -434,17 +409,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const teams = Array.from({ length: leagueSize }, () => ({ roster: [], needs: { ...config.rosterSettings } }));
 
             if (leagueType !== 'redraft') {
-                const keepersToAssign = Math.min(leagueSize, 3);
-                let assignedKeepers = [];
-                for (let i = 0; i < keepersToAssign; i++) {
-                    const keeper = availablePlayers.find(p => p.tier === 1 && !assignedKeepers.includes(p.name));
-                    if (keeper) {
-                        teams[i].roster.push(keeper);
-                        keeper.draftedAt = "(Keeper)";
-                        assignedKeepers.push(keeper.name);
-                    }
-                }
-                availablePlayers = availablePlayers.filter(p => !assignedKeepers.includes(p.name));
+                // Keeper logic here...
             }
             
             const totalRounds = Object.values(config.rosterSettings).reduce((sum, val) => sum + val, 0);
@@ -455,11 +420,35 @@ document.addEventListener('DOMContentLoaded', () => {
                     if (teams[teamIndex].roster.length >= totalRounds || availablePlayers.length === 0) continue;
                     
                     availablePlayers.forEach(p => {
-                        p.draftScore = this.calculateDraftScore(p, availablePlayers, teams[teamIndex].needs, teams[teamIndex].roster, round, scoring);
+                        p.draftScore = this.calculateDraftScore(p, round, scoring);
                     });
-                    availablePlayers.sort((a, b) => b.draftScore - a.draftScore);
+                    
+                    // Specific logic for QBs, K, and DST
+                    const qbsOnRoster = teams[teamIndex].roster.filter(p => p.simplePosition === 'QB').length;
+                    if(qbsOnRoster >= 1 && !config.rosterSettings.SUPER_FLEX) {
+                        availablePlayers.forEach(p => { if(p.simplePosition === 'QB') p.draftScore *= 0.1; });
+                    }
+                    if(qbsOnRoster >= 2) {
+                        availablePlayers.forEach(p => { if(p.simplePosition === 'QB') p.draftScore = 0; });
+                    }
+                    if(round < totalRounds - 2) {
+                        availablePlayers.forEach(p => { if(p.simplePosition === 'K' || p.simplePosition === 'DST') p.draftScore = 0; });
+                    }
 
-                    const draftedPlayer = availablePlayers.shift();
+
+                    availablePlayers.sort((a, b) => b.draftScore - a.draftScore);
+                    
+                    // Bucket Selection Logic
+                    const bucketSize = (round < 4) ? 2 : 4; // Smaller bucket for early rounds
+                    const draftBucket = availablePlayers.slice(0, bucketSize);
+                    const draftedPlayer = draftBucket[Math.floor(Math.random() * draftBucket.length)];
+
+
+                    const draftedPlayerIndex = availablePlayers.findIndex(p => p.name === draftedPlayer.name);
+                    if(draftedPlayerIndex !== -1) {
+                        availablePlayers.splice(draftedPlayerIndex, 1);
+                    }
+
 
                     if (draftedPlayer) {
                         draftedPlayer.draftedAt = `(${round}.${picksInRoundOrder.indexOf(teamIndex) + 1})`;
@@ -476,6 +465,8 @@ document.addEventListener('DOMContentLoaded', () => {
             this.displayGoatDraftResults(teams[userDraftPos].roster);
             loader.classList.add('hidden');
             resultsWrapper.classList.remove('hidden');
+            button.textContent = "Regenerate Build";
+            button.disabled = false;
         },
         
         displayGoatDraftResults(roster) {
