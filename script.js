@@ -119,7 +119,9 @@ document.addEventListener('DOMContentLoaded', () => {
             const controls = { position: document.getElementById('stats-position-filter'), sortBy: document.getElementById('stats-sort-by'), search: document.getElementById('stats-player-search'), tableBody: document.getElementById('stats-table-body') };
             if (!controls.tableBody) return;
         
-            this.selectedPlayersForChart = this.playerData.filter(p => ['WR', 'RB'].includes(p.simplePosition)).slice(0, 4);
+            if(this.selectedPlayersForChart.length === 0) {
+                this.selectedPlayersForChart = this.playerData.filter(p => ['WR', 'RB'].includes(p.simplePosition)).slice(0, 4);
+            }
         
             const render = () => {
                 let filteredPlayers = [...this.playerData];
@@ -142,7 +144,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 this.updateStatsChart();
             };
         
-            this.initializeStatsChart();
+            if(!this.statsChart) {
+                this.initializeStatsChart();
+            }
             [controls.position, controls.sortBy, controls.search].forEach(el => el.addEventListener('input', render));
             render();
         },
@@ -164,21 +168,23 @@ document.addEventListener('DOMContentLoaded', () => {
         addPlayerSelectionListeners() {
             document.querySelectorAll('#stats-table-body tr').forEach(row => {
                 row.addEventListener('click', (e) => {
-                    if(e.target.classList.contains('player-name-link')) return; // Don't trigger on popup link
+                    if(e.target.classList.contains('player-name-link')) return; 
                     
                     const playerName = row.dataset.playerName;
                     const player = this.playerData.find(p => p.name === playerName);
+                    if(!player) return;
+
                     const selectedIndex = this.selectedPlayersForChart.findIndex(p => p.name === playerName);
         
                     if (selectedIndex > -1) {
                         this.selectedPlayersForChart.splice(selectedIndex, 1);
                     } else {
                         if (this.selectedPlayersForChart.length >= 5) {
-                            this.selectedPlayersForChart.shift(); // Remove the oldest
+                            this.selectedPlayersForChart.shift();
                         }
                         this.selectedPlayersForChart.push(player);
                     }
-                    this.initStatsPage(); // Re-render everything
+                    this.initStatsPage();
                 });
             });
             this.addPlayerPopupListeners();
@@ -209,30 +215,37 @@ document.addEventListener('DOMContentLoaded', () => {
         
         updateStatsChart() {
             if (!this.statsChart) return;
-            const chartData = {
-                'Fantasy Points': [], 'VORP': [], 'Target Share (%)': [], 'Air Yards': [], 'RZ Touches': []
-            };
-        
             const labels = this.selectedPlayersForChart.map(p => p.name);
-            this.selectedPlayersForChart.forEach(p => {
-                chartData['Fantasy Points'].push(p.fantasyPoints);
-                chartData['VORP'].push(p.vorp);
-                chartData['Target Share (%)'].push(p.targetShare);
-                chartData['Air Yards'].push(p.airYards);
-                chartData['RZ Touches'].push(p.redzoneTouches);
-            });
+            const datasets = [
+                {
+                    label: 'Fantasy Points',
+                    data: this.selectedPlayersForChart.map(p => p.fantasyPoints),
+                    backgroundColor: 'rgba(250, 204, 21, 0.7)',
+                },
+                {
+                    label: 'VORP',
+                    data: this.selectedPlayersForChart.map(p => p.vorp),
+                    backgroundColor: 'rgba(20, 184, 166, 0.7)',
+                },
+                {
+                    label: 'Target Share (%)',
+                    data: this.selectedPlayersForChart.map(p => p.targetShare),
+                    backgroundColor: 'rgba(59, 130, 246, 0.7)',
+                },
+                {
+                    label: 'Air Yards',
+                    data: this.selectedPlayersForChart.map(p => p.airYards),
+                    backgroundColor: 'rgba(239, 68, 68, 0.7)',
+                },
+                 {
+                    label: 'RZ Touches',
+                    data: this.selectedPlayersForChart.map(p => p.redzoneTouches),
+                    backgroundColor: 'rgba(139, 92, 246, 0.7)',
+                },
+            ];
         
             this.statsChart.data.labels = labels;
-            this.statsChart.data.datasets = Object.keys(chartData).map((key, index) => {
-                const colors = ['rgba(250, 204, 21, 0.7)', 'rgba(20, 184, 166, 0.7)', 'rgba(59, 130, 246, 0.7)', 'rgba(239, 68, 68, 0.7)', 'rgba(139, 92, 246, 0.7)'];
-                return {
-                    label: key,
-                    data: chartData[key],
-                    backgroundColor: colors[index % colors.length],
-                    borderColor: colors[index % colors.length].replace('0.7', '1'),
-                    borderWidth: 1
-                };
-            });
+            this.statsChart.data.datasets = datasets;
             this.statsChart.update();
         },
         
