@@ -198,7 +198,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const controls = {
                 leagueType: document.getElementById('goat-league-type'),
                 leagueSize: document.getElementById('goat-league-size'),
-                draftPosition: document.getElementById('goat-draft-position'),
+                draftPosition: document.getElementById('goat-draft-position'), // <--- THIS IS THE FIX
                 generateButton: document.getElementById('generateDraftBuildButton'),
                 scoringType: document.getElementById('goat-draft-scoring'),
                 rosterContainer: document.getElementById('roster-settings-container')
@@ -206,7 +206,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
             if (!controls.generateButton) return;
             
-            // --- New Roster Stepper Logic ---
             const rosterConfigs = {
                 QB: { "min": 1, "max": 2, "default": 1 },
                 RB: { "min": 1, "max": 3, "default": 2 },
@@ -257,7 +256,6 @@ document.addEventListener('DOMContentLoaded', () => {
             controls.leagueSize.addEventListener('change', updateDraftPositions);
             
             controls.generateButton.addEventListener('click', () => {
-                // Read values from the new steppers
                 const newRosterSettings = {};
                 Object.keys(rosterConfigs).forEach(pos => {
                     const stepperEl = document.getElementById(`roster-${pos.toLowerCase()}`);
@@ -290,16 +288,12 @@ document.addEventListener('DOMContentLoaded', () => {
             let availablePlayers = [...this.playerData].filter(p => p.adp && typeof p.adp[scoring] === 'number');
             const teams = Array.from({ length: leagueSize }, () => ({ roster: [], needs: { ...config.rosterSettings } }));
 
-            // --- Keeper/Dynasty Logic ---
             if (leagueType === 'keeper' || leagueType === 'dynasty') {
-                // In a real app, you'd have a UI for users to select keepers.
-                // For now, we'll simulate by giving the top 3 teams their best player as a keeper.
                 const keepersToAssign = Math.min(leagueSize, 3);
                 for (let i = 0; i < keepersToAssign; i++) {
-                    const keeper = availablePlayers.shift(); // Get the best available player
+                    const keeper = availablePlayers.shift(); 
                     if (keeper) {
                         teams[i].roster.push(keeper);
-                        // Mark the player as a keeper for display purposes
                         keeper.draftedAt = "(Keeper)"; 
                     }
                 }
@@ -497,15 +491,9 @@ document.addEventListener('DOMContentLoaded', () => {
             const container = document.getElementById('daily-briefing-content');
             if (!container) return;
 
-            // Show loading state
             container.innerHTML = `<div class="text-center p-8"><div class="loader"></div><p class="text-teal-300 mt-2">Generating today's fantasy analysis...</p></div>`;
-
-            // --- Production Note ---
-            // In a real application, you would make an API call to your backend here.
-            // The backend would then call the AI model to get the fresh article.
-            // For this demonstration, we will simulate this with a timeout and a pre-written article.
             
-            const simulatedAIDelay = 1500; // 1.5 seconds
+            const simulatedAIDelay = 1500; 
 
             setTimeout(() => {
                 const sampleArticle = {
