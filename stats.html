@@ -43,63 +43,67 @@
     <main class="flex-grow max-w-7xl mx-auto py-8 px-4 w-full">
         <section id="stats-page">
             <h1 class="text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-yellow-300 to-teal-300 mb-4 text-glow-gold text-center">Advanced Player Statistics</h1>
-            <p class="text-xl text-teal-200 max-w-3xl mx-auto text-center mb-8">
-                Dive deep into player performance. Select players from the table to compare them in the chart below.
+            <p class="text-xl text-teal-200 max-w-3xl mx-auto text-center mb-12">
+                Uncover hidden gems. Use the filters to find players, then click on a row to add them to the comparison chart.
             </p>
 
-            <div class="p-6 bg-gray-800 bg-opacity-80 rounded-xl shadow-lg border border-teal-600 mb-8">
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 items-end">
-                    <div>
-                        <label for="stats-position-filter" class="block text-sm font-medium text-gray-300 mb-1">Position</label>
-                        <select id="stats-position-filter" class="form-select">
-                            <option value="ALL">All Positions</option>
-                            <option value="QB">QB</option>
-                            <option value="RB">RB</option>
-                            <option value="WR">WR</option>
-                            <option value="TE">TE</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label for="stats-sort-by" class="block text-sm font-medium text-gray-300 mb-1">Sort By</label>
-                        <select id="stats-sort-by" class="form-select">
-                            <option value="fantasyPoints">Fantasy Points</option>
-                            <option value="vorp">VORP</option>
-                            <option value="targetShare">Target Share</option>
-                            <option value="airYards">Air Yards</option>
-                            <option value="redzoneTouches">RZ Touches</option>
-                            <option adp_ppr="">ADP (PPR)</option>
-                            <option value="name">Name (A-Z)</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label for="stats-player-search" class="block text-sm font-medium text-gray-300 mb-1">Player Name</label>
-                        <input type="text" id="stats-player-search" class="form-input" placeholder="Search by name...">
-                    </div>
+            <div id="stats-chart-container" class="tool-card mb-8 p-6">
+                <h3 class="text-2xl font-bold text-center mb-4 text-teal-300">Player Comparison</h3>
+                <div class="h-96 w-full">
+                    <canvas id="stats-chart"></canvas>
                 </div>
             </div>
 
-            <div id="stats-chart-container" class="tool-card mb-8">
-                <canvas id="stats-chart"></canvas>
-            </div>
-            
-            <div class="overflow-x-auto tool-card p-0">
-                <table class="w-full text-left whitespace-nowrap">
-                    <thead class="bg-gray-700 bg-opacity-80 text-teal-300 uppercase text-sm">
-                        <tr>
-                           <th class="p-4">Player</th>
-                           <th class="p-4 text-center">Pos</th>
-                           <th class="p-4 text-center">Team</th>
-                           <th class="p-4 text-center">FPTS</th>
-                           <th class="p-4 text-center">VORP</th>
-                           <th class="p-4 text-center">TGT %</th>
-                           <th class="p-4 text-center">Air Yds</th>
-                           <th class="p-4 text-center">RZ Touches</th>
-                        </tr>
-                    </thead>
-                    <tbody id="stats-table-body" class="bg-gray-900 bg-opacity-70 divide-y divide-gray-700 text-white">
-                        <tr><td colspan="8"><div class="loader my-8"></div></td></tr>
-                    </tbody>
-                </table>
+            <div class="tool-card p-0">
+                <div class="p-6 border-b border-gray-700">
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 items-end">
+                        <div>
+                            <label for="stats-position-filter" class="block text-sm font-medium text-gray-300 mb-1">Position</label>
+                            <select id="stats-position-filter" class="form-select">
+                                <option value="ALL">All Positions</option>
+                                <option value="QB">QB</option>
+                                <option value="RB">RB</option>
+                                <option value="WR">WR</option>
+                                <option value="TE">TE</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label for="stats-sort-by" class="block text-sm font-medium text-gray-300 mb-1">Sort By</label>
+                            <select id="stats-sort-by" class="form-select">
+                                <option value="fantasyPoints">Fantasy Points</option>
+                                <option value="vorp">VORP</option>
+                                <option value="targetShare">Target Share</option>
+                                <option value="airYards">Air Yards</option>
+                                <option value="redzoneTouches">RZ Touches</option>
+                                <option value="adp_ppr">ADP (PPR)</option>
+                                <option value="name">Name (A-Z)</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label for="stats-player-search" class="block text-sm font-medium text-gray-300 mb-1">Player Name</label>
+                            <input type="text" id="stats-player-search" class="form-input" placeholder="e.g., CeeDee Lamb...">
+                        </div>
+                    </div>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left whitespace-nowrap">
+                        <thead class="bg-gray-700 bg-opacity-80 text-teal-300 uppercase text-sm">
+                            <tr>
+                               <th class="p-4">Player</th>
+                               <th class="p-4 text-center">Pos</th>
+                               <th class="p-4 text-center">Team</th>
+                               <th class="p-4 text-center">FPTS</th>
+                               <th class="p-4 text-center">VORP</th>
+                               <th class="p-4 text-center">TGT %</th>
+                               <th class="p-4 text-center">Air Yards</th>
+                               <th class="p-4 text-center">RZ Touches</th>
+                            </tr>
+                        </thead>
+                        <tbody id="stats-table-body" class="bg-gray-900 bg-opacity-70 divide-y divide-gray-700 text-white">
+                            <tr><td colspan="8"><div class="loader my-8"></div></td></tr>
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </section>
     </main>
