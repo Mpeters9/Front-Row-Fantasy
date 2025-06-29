@@ -117,7 +117,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 stats.redzoneTouches = base * 0.8 + (Math.random() * 5 - 2.5);
             }
 
-            // Clean up and round the numbers
             for (const key in stats) {
                 stats[key] = Math.round(Math.max(0, stats[key]));
             }
