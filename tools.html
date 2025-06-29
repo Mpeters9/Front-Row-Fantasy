@@ -31,15 +31,6 @@
         <nav id="mobile-menu" class="md:hidden hidden px-4 pb-3 space-y-2"></nav>
     </header>
 
-    <!-- Ticker Section -->
-    <section class="bg-gray-800 bg-opacity-80 p-3 shadow-lg w-full border-y border-teal-800">
-        <div class="overflow-hidden relative h-8 bg-gray-900 rounded-lg">
-            <div id="tickerContent" class="whitespace-nowrap absolute top-0 left-0 h-full flex items-center ticker-animation text-gray-300">
-                <span class="text-gray-500 px-4">Loading player points...</span>
-            </div>
-        </div>
-    </section>
-
     <main class="max-w-7xl mx-auto px-4 py-8 flex-grow w-full">
         <section id="tools-page" class="space-y-12">
             <div id="trade-analyzer" class="tool-card">
@@ -48,7 +39,6 @@
                     AI Trade Analyzer
                 </h2>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
-                    <!-- Team 1 -->
                     <div class="space-y-3">
                         <h4 class="font-semibold text-center text-lg text-white">Your Assets to Send</h4>
                         <div class="relative">
@@ -59,7 +49,6 @@
                             <p class="text-gray-500 text-center p-4">Add players to this side of the trade.</p>
                         </div>
                     </div>
-                    <!-- Team 2 -->
                     <div class="space-y-3">
                         <h4 class="font-semibold text-center text-lg text-white">Assets to Receive</h4>
                          <div class="relative">
@@ -73,9 +62,9 @@
                 </div>
                 <button id="analyze-trade-btn" class="cta-btn w-full mt-6">Analyze Trade</button>
                 <div id="trade-results" class="mt-6 hidden">
-                    <!-- Results will be injected by script.js -->
-                </div>
+                    </div>
             </div>
+            
         </section>
     </main>
 
