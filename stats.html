@@ -8,6 +8,7 @@
     <link rel="icon" href="favicon.ico" type="image/x-icon">
     <link rel="stylesheet" href="styles.css">
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body class="min-h-screen flex flex-col font-poppins bg-gradient-to-br from-[#0f2027] to-[#2c5364]">
     <header class="sticky top-0 z-50 bg-opacity-98 bg-gray-900 shadow-lg border-b-2 border-teal-500">
@@ -31,7 +32,6 @@
         <nav id="mobile-menu" class="md:hidden hidden px-4 pb-3 space-y-2"></nav>
     </header>
 
-    <!-- Ticker Section -->
     <section class="bg-gray-800 bg-opacity-80 p-3 shadow-lg w-full border-y border-teal-800">
         <div class="overflow-hidden relative h-8 bg-gray-900 rounded-lg">
             <div id="tickerContent" class="whitespace-nowrap absolute top-0 left-0 h-full flex items-center ticker-animation text-gray-300">
@@ -42,9 +42,9 @@
 
     <main class="flex-grow max-w-7xl mx-auto py-8 px-4 w-full">
         <section id="stats-page">
-            <h1 class="text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-yellow-300 to-teal-300 mb-4 text-glow-gold text-center">Player Statistics</h1>
+            <h1 class="text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-yellow-300 to-teal-300 mb-4 text-glow-gold text-center">Advanced Player Statistics</h1>
             <p class="text-xl text-teal-200 max-w-3xl mx-auto text-center mb-8">
-                Dive into detailed player stats. Use the filters below to refine your search and uncover key insights.
+                Dive deep into player performance. Select players from the table to compare them in the chart below.
             </p>
 
             <div class="p-6 bg-gray-800 bg-opacity-80 rounded-xl shadow-lg border border-teal-600 mb-8">
@@ -64,7 +64,10 @@
                         <select id="stats-sort-by" class="form-select">
                             <option value="fantasyPoints">Fantasy Points</option>
                             <option value="vorp">VORP</option>
-                            <option value="adp_ppr">ADP (PPR)</option>
+                            <option value="targetShare">Target Share</option>
+                            <option value="airYards">Air Yards</option>
+                            <option value="redzoneTouches">RZ Touches</option>
+                            <option adp_ppr="">ADP (PPR)</option>
                             <option value="name">Name (A-Z)</option>
                         </select>
                     </div>
@@ -74,6 +77,10 @@
                     </div>
                 </div>
             </div>
+
+            <div id="stats-chart-container" class="tool-card mb-8">
+                <canvas id="stats-chart"></canvas>
+            </div>
             
             <div class="overflow-x-auto tool-card p-0">
                 <table class="w-full text-left whitespace-nowrap">
@@ -82,14 +89,15 @@
                            <th class="p-4">Player</th>
                            <th class="p-4 text-center">Pos</th>
                            <th class="p-4 text-center">Team</th>
-                           <th class="p-4 text-center">Bye</th>
-                           <th class="p-4 text-center">Fantasy Pts</th>
+                           <th class="p-4 text-center">FPTS</th>
                            <th class="p-4 text-center">VORP</th>
-                           <th class="p-4 text-center">ADP (PPR)</th>
+                           <th class="p-4 text-center">TGT %</th>
+                           <th class="p-4 text-center">Air Yds</th>
+                           <th class="p-4 text-center">RZ Touches</th>
                         </tr>
                     </thead>
                     <tbody id="stats-table-body" class="bg-gray-900 bg-opacity-70 divide-y divide-gray-700 text-white">
-                        <tr><td colspan="7"><div class="loader my-8"></div></td></tr>
+                        <tr><td colspan="8"><div class="loader my-8"></div></td></tr>
                     </tbody>
                 </table>
             </div>
