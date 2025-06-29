@@ -17,6 +17,8 @@ document.addEventListener('DOMContentLoaded', () => {
         hasDataLoaded: false,
         draftState: {}, 
         tradeState: { team1: {players: [], picks: []}, team2: {players: [], picks: []} },
+        statsChart: null,
+        selectedPlayersForChart: [],
         popupHideTimeout: null,
 
         async init() {
@@ -65,7 +67,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 const response = await fetch(config.dataFiles[0]);
                 if (!response.ok) throw new Error(`Failed to load ${config.dataFiles[0]}`);
                 let data = await response.json();
-                this.playerData = data.map(p => ({...p, simplePosition: (p.position||'N/A').replace(/\d+$/,'').trim().toUpperCase(), fantasyPoints: this.generateFantasyPoints(p) })).sort((a,b)=>b.fantasyPoints-a.fantasyPoints);
+                this.playerData = data.map(p => ({
+                    ...p, 
+                    simplePosition: (p.position||'N/A').replace(/\d+$/,'').trim().toUpperCase(), 
+                    fantasyPoints: this.generateFantasyPoints(p),
+                    ...this.generateAdvancedStats(p) // Add advanced stats
+                })).sort((a,b)=>b.fantasyPoints-a.fantasyPoints);
             } catch (error) { console.error("Error loading player data:", error); this.displayDataError(); }
         },
         displayDataError() {
@@ -73,7 +80,7 @@ document.addEventListener('DOMContentLoaded', () => {
             document.querySelectorAll('#stats-table-body, #player-list-container, #player-table-body').forEach(el => { if(el) el.innerHTML = msg; });
         },
         generateFantasyPoints(player) {
-            const pos = (player.position||'').replace(/\d+$/,'').trim().toUpperCase();
+            const pos = (player.position||'').replace(/\d+$/, '').trim().toUpperCase();
             const tier = player.tier || 10;
             let base, range;
             if (pos === 'DST' || pos === 'K') { base = 5; range = 8; }
@@ -82,6 +89,24 @@ document.addEventListener('DOMContentLoaded', () => {
             else if (tier <= 8) { base = (pos === 'QB') ? 12 : 7; range = 10; } 
             else { base = 2; range = 8; }
             return Math.max(0, base + (Math.random() * range)); 
+        },
+        generateAdvancedStats(player) {
+            const pos = (player.position||'').replace(/\d+$/, '').trim().toUpperCase();
+            const tier = player.tier || 10;
+            let targetShare = 0, airYards = 0, redzoneTouches = 0;
+            if (['WR', 'TE'].includes(pos)) {
+                targetShare = Math.max(5, 30 - tier * 2 + (Math.random() * 5 - 2.5));
+                airYards = Math.max(200, 1800 - tier * 150 + (Math.random() * 200 - 100));
+                redzoneTouches = Math.max(1, 15 - tier + (Math.random() * 4 - 2));
+            } else if (pos === 'RB') {
+                targetShare = Math.max(3, 20 - tier * 1.5 + (Math.random() * 4 - 2));
+                redzoneTouches = Math.max(5, 40 - tier * 3 + (Math.random() * 10 - 5));
+            }
+            return {
+                targetShare: targetShare.toFixed(1),
+                airYards: Math.round(airYards),
+                redzoneTouches: Math.round(redzoneTouches)
+            };
         },
         initTopPlayers() {
             const container = document.getElementById('player-showcase-container');
@@ -93,19 +118,124 @@ document.addEventListener('DOMContentLoaded', () => {
         initStatsPage() {
             const controls = { position: document.getElementById('stats-position-filter'), sortBy: document.getElementById('stats-sort-by'), search: document.getElementById('stats-player-search'), tableBody: document.getElementById('stats-table-body') };
             if (!controls.tableBody) return;
-            const renderTable = () => {
+        
+            this.selectedPlayersForChart = this.playerData.filter(p => ['WR', 'RB'].includes(p.simplePosition)).slice(0, 4);
+        
+            const render = () => {
                 let filteredPlayers = [...this.playerData];
-                const pos = controls.position.value; if (pos !== 'ALL') { filteredPlayers = filteredPlayers.filter(p => p.simplePosition === pos); }
-                const searchTerm = controls.search.value.toLowerCase(); if (searchTerm) { filteredPlayers = filteredPlayers.filter(p => p.name.toLowerCase().includes(searchTerm)); }
+                const pos = controls.position.value;
+                if (pos !== 'ALL') {
+                    filteredPlayers = filteredPlayers.filter(p => p.simplePosition === pos);
+                }
+                const searchTerm = controls.search.value.toLowerCase();
+                if (searchTerm) {
+                    filteredPlayers = filteredPlayers.filter(p => p.name.toLowerCase().includes(searchTerm));
+                }
                 const sortKey = controls.sortBy.value;
-                filteredPlayers.sort((a, b) => { if (sortKey === 'name') return a.name.localeCompare(b.name); if (sortKey === 'adp_ppr') return (a.adp.ppr || 999) - (b.adp.ppr || 999); return (b[sortKey] || 0) - (a[sortKey] || 0); });
-                controls.tableBody.innerHTML = filteredPlayers.map(p => `<tr class="hover:bg-gray-800"><td class="p-4 font-semibold"><span class="player-name-link" data-player-name="${p.name}">${p.name}</span></td><td class="p-4 text-center">${p.simplePosition}</td><td class="p-4 text-center">${p.team}</td><td class="p-4 text-center">${p.bye || 'N/A'}</td><td class="p-4 text-center font-mono">${p.fantasyPoints.toFixed(2)}</td><td class="p-4 text-center font-mono">${(p.vorp || 0).toFixed(2)}</td><td class="p-4 text-center font-mono">${p.adp.ppr || 'N/A'}</td></tr>`).join('');
-                if (filteredPlayers.length === 0) { controls.tableBody.innerHTML = `<tr><td colspan="7" class="text-center text-gray-400 py-8">No players match the current filters.</td></tr>`; }
-                this.addPlayerPopupListeners();
+                filteredPlayers.sort((a, b) => {
+                    if (sortKey === 'name') return a.name.localeCompare(b.name);
+                    return (parseFloat(b[sortKey]) || 0) - (parseFloat(a[sortKey]) || 0);
+                });
+        
+                controls.tableBody.innerHTML = filteredPlayers.map(p => this.createAdvancedStatsTableRow(p)).join('');
+                this.addPlayerSelectionListeners();
+                this.updateStatsChart();
             };
-            [controls.position, controls.sortBy, controls.search].forEach(el => el.addEventListener('input', renderTable));
-            renderTable();
+        
+            this.initializeStatsChart();
+            [controls.position, controls.sortBy, controls.search].forEach(el => el.addEventListener('input', render));
+            render();
         },
+
+        createAdvancedStatsTableRow(player) {
+            const isSelected = this.selectedPlayersForChart.some(p => p.name === player.name);
+            return `<tr class="cursor-pointer hover:bg-gray-800/50 ${isSelected ? 'bg-teal-500/10' : ''}" data-player-name="${player.name}">
+                <td class="p-4 font-semibold"><span class="player-name-link" data-player-name="${player.name}">${player.name}</span></td>
+                <td class="p-4 text-center">${player.simplePosition}</td>
+                <td class="p-4 text-center">${player.team}</td>
+                <td class="p-4 text-center font-mono">${player.fantasyPoints.toFixed(1)}</td>
+                <td class="p-4 text-center font-mono">${(player.vorp || 0).toFixed(1)}</td>
+                <td class="p-4 text-center font-mono">${player.targetShare || '0'}%</td>
+                <td class="p-4 text-center font-mono">${player.airYards || '0'}</td>
+                <td class="p-4 text-center font-mono">${player.redzoneTouches || '0'}</td>
+            </tr>`;
+        },
+
+        addPlayerSelectionListeners() {
+            document.querySelectorAll('#stats-table-body tr').forEach(row => {
+                row.addEventListener('click', (e) => {
+                    if(e.target.classList.contains('player-name-link')) return; // Don't trigger on popup link
+                    
+                    const playerName = row.dataset.playerName;
+                    const player = this.playerData.find(p => p.name === playerName);
+                    const selectedIndex = this.selectedPlayersForChart.findIndex(p => p.name === playerName);
+        
+                    if (selectedIndex > -1) {
+                        this.selectedPlayersForChart.splice(selectedIndex, 1);
+                    } else {
+                        if (this.selectedPlayersForChart.length >= 5) {
+                            this.selectedPlayersForChart.shift(); // Remove the oldest
+                        }
+                        this.selectedPlayersForChart.push(player);
+                    }
+                    this.initStatsPage(); // Re-render everything
+                });
+            });
+            this.addPlayerPopupListeners();
+        },
+        
+        initializeStatsChart() {
+            const ctx = document.getElementById('stats-chart').getContext('2d');
+            this.statsChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: [],
+                    datasets: []
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { labels: { color: '#e2e8f0' } },
+                        title: { display: true, text: 'Player Stat Comparison', color: '#facc15', font: { size: 18 } }
+                    },
+                    scales: {
+                        x: { ticks: { color: '#9ca3af' }, grid: { color: 'rgba(255,255,255,0.1)' } },
+                        y: { ticks: { color: '#9ca3af' }, grid: { color: 'rgba(255,255,255,0.1)' } }
+                    }
+                }
+            });
+        },
+        
+        updateStatsChart() {
+            if (!this.statsChart) return;
+            const chartData = {
+                'Fantasy Points': [], 'VORP': [], 'Target Share (%)': [], 'Air Yards': [], 'RZ Touches': []
+            };
+        
+            const labels = this.selectedPlayersForChart.map(p => p.name);
+            this.selectedPlayersForChart.forEach(p => {
+                chartData['Fantasy Points'].push(p.fantasyPoints);
+                chartData['VORP'].push(p.vorp);
+                chartData['Target Share (%)'].push(p.targetShare);
+                chartData['Air Yards'].push(p.airYards);
+                chartData['RZ Touches'].push(p.redzoneTouches);
+            });
+        
+            this.statsChart.data.labels = labels;
+            this.statsChart.data.datasets = Object.keys(chartData).map((key, index) => {
+                const colors = ['rgba(250, 204, 21, 0.7)', 'rgba(20, 184, 166, 0.7)', 'rgba(59, 130, 246, 0.7)', 'rgba(239, 68, 68, 0.7)', 'rgba(139, 92, 246, 0.7)'];
+                return {
+                    label: key,
+                    data: chartData[key],
+                    backgroundColor: colors[index % colors.length],
+                    borderColor: colors[index % colors.length].replace('0.7', '1'),
+                    borderWidth: 1
+                };
+            });
+            this.statsChart.update();
+        },
+        
         initPlayersPage() {
             const controls = { searchInput: document.getElementById('player-search-input'), positionFilter: document.getElementById('position-filter'), tierFilter: document.getElementById('tier-filter'), teamFilter: document.getElementById('team-filter'), tableBody: document.getElementById('player-table-body'), sortHeaders: document.querySelectorAll('.sortable-header') };
             if (!controls.tableBody) return;
@@ -431,9 +561,9 @@ document.addEventListener('DOMContentLoaded', () => {
                     const needsDST = team.needs.DST > 0 && !team.roster.some(p => p.simplePosition === 'DST');
                     const needsK = team.needs.K > 0 && !team.roster.some(p => p.simplePosition === 'K');
                     
-                    if(round >= totalRounds - 1 && needsDST) {
+                    if(round >= totalRounds - 1 && needsDST && availablePlayers.some(p => p.simplePosition === 'DST')) {
                         draftedPlayer = availablePlayers.find(p => p.simplePosition === 'DST');
-                    } else if (round >= totalRounds && needsK) {
+                    } else if (round >= totalRounds && needsK && availablePlayers.some(p => p.simplePosition === 'K')) {
                         draftedPlayer = availablePlayers.find(p => p.simplePosition === 'K');
                     } else {
                         availablePlayers.forEach(p => {
