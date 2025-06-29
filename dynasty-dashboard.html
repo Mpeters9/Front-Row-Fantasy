@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Front Row Fantasy - Dynasty Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="icon" href="favicon.ico" type="image/x-icon">
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="min-h-screen flex flex-col font-poppins bg-gradient-to-br from-[#0f2027] to-[#2c5364]">
+    <header class="sticky top-0 z-50 bg-opacity-98 bg-gray-900 shadow-lg border-b-2 border-teal-500">
+        <div class="max-w-7xl mx-auto px-4 flex justify-between items-center py-3">
+            <a href="index.html" class="text-2xl font-bold text-yellow-400 text-glow">Front Row Fantasy</a>
+            <nav class="hidden md:flex space-x-6 text-teal-200">
+                <a href="index.html" class="hover:text-yellow-400 transition-colors">Home</a>
+                <a href="tools.html" class="hover:text-yellow-400 transition-colors">Expert Tools</a>
+                <a href="goat.html" class="hover:text-yellow-400 transition-colors">GOAT</a>
+                <a href="mock-draft.html" class="hover:text-yellow-400 transition-colors">Mock Draft</a>
+                <a href="articles.html" class="hover:text-yellow-400 transition-colors">Articles</a>
+                <a href="players.html" class="hover:text-yellow-400 transition-colors">Players</a>
+                <a href="stats.html" class="hover:text-yellow-400 transition-colors">Stats</a>
+                <a href="waiver-wire.html" class="hover:text-yellow-400 transition-colors">Waiver Wire</a>
+                <a href="league-dominator.html" class="hover:text-yellow-400 transition-colors">League Dominator</a>
+                <a href="dynasty-dashboard.html" class="text-yellow-400 font-bold" aria-current="page">Dynasty</a>
+            </nav>
+            <div class="md:hidden">
+                <button id="mobile-menu-button" class="text-teal-400 hover:text-yellow-400 focus:outline-none">
+                    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
+                </button>
+            </div>
+        </div>
+        <nav id="mobile-menu" class="md:hidden hidden px-4 pb-3 space-y-2"></nav>
+    </header>
+
+    <main class="flex-grow max-w-7xl mx-auto py-8 px-4 w-full">
+        <section id="dynasty-dashboard-page">
+            <h1 class="text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-yellow-300 to-teal-300 mb-4 text-glow-gold text-center">Dynasty Dashboard</h1>
+            <p class="text-xl text-teal-200 max-w-3xl mx-auto text-center mb-12">
+                Your command center for building a long-term fantasy dynasty.
+            </p>
+
+            <div x-data="{ tab: 'trade-block' }" class="tool-card p-0">
+                <div class="border-b border-gray-700">
+                    <nav class="-mb-px flex space-x-8 px-6" aria-label="Tabs">
+                        <button @click="tab = 'trade-block'" :class="{ 'border-teal-400 text-teal-300': tab === 'trade-block', 'border-transparent text-gray-400 hover:text-gray-200 hover:border-gray-300': tab !== 'trade-block' }" class="whitespace-nowrap py-4 px-1 border-b-2 font-medium text-lg">
+                            Trade Block
+                        </button>
+                        <button @click="tab = 'rookie-draft'" :class="{ 'border-teal-400 text-teal-300': tab === 'rookie-draft', 'border-transparent text-gray-400 hover:text-gray-200 hover:border-gray-300': tab !== 'rookie-draft' }" class="whitespace-nowrap py-4 px-1 border-b-2 font-medium text-lg">
+                            Rookie Draft Planner
+                        </button>
+                        <button @click="tab = 'prospects'" :class="{ 'border-teal-400 text-teal-300': tab === 'prospects', 'border-transparent text-gray-400 hover:text-gray-200 hover:border-gray-300': tab !== 'prospects' }" class="whitespace-nowrap py-4 px-1 border-b-2 font-medium text-lg">
+                            Prospect Pipeline
+                        </button>
+                    </nav>
+                </div>
+                <div class="p-6">
+                    <div x-show="tab === 'trade-block'" id="dynasty-trade-block-container"><div class="loader"></div></div>
+                    <div x-show="tab === 'rookie-draft'" id="dynasty-rookie-draft-container"><div class="loader"></div></div>
+                    <div x-show="tab === 'prospects'" id="dynasty-prospects-container"><div class="loader"></div></div>
+                </div>
+            </div>
+
+        </section>
+    </main>
+    
+    <div id="player-popup-card" class="hidden"></div>
+
+    <footer class="bg-gray-900 text-teal-400 py-6 border-t-2 border-teal-500 mt-12">
+        <div class="mb-2 flex flex-wrap justify-center gap-x-6 gap-y-2 text-teal-200">
+           <a href="index.html" class="hover:text-yellow-400 transition-colors">Home</a>
+           <a href="tools.html" class="hover:text-yellow-400 transition-colors">Expert Tools</a>
+           <a href="goat.html" class="hover:text-yellow-400 transition-colors">GOAT</a>
+           <a href="mock-draft.html" class="hover:text-yellow-400 transition-colors">Mock Draft</a>
+           <a href="articles.html" class="hover:text-yellow-400 transition-colors">Articles</a>
+           <a href="players.html" class="hover:text-yellow-400 transition-colors">Players</a>
+           <a href="stats.html" class="hover:text-yellow-400 transition-colors">Stats</a>
+           <a href="waiver-wire.html" class="hover:text-yellow-400 transition-colors">Waiver Wire</a>
+           <a href="league-dominator.html" class="hover:text-yellow-400 transition-colors">League Dominator</a>
+           <a href="dynasty-dashboard.html" class="text-yellow-400 font-bold" aria-current="page">Dynasty</a>
+        </div>
+        <div class="text-center text-sm">© 2025 Front Row Fantasy. All rights reserved.</div>
+    </footer>
+    <script src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.x.x/dist/alpine.min.js" defer></script>
+    <script src="script.js"></script>
+</body>
+</html>
