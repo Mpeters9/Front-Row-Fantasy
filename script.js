@@ -95,7 +95,7 @@ document.addEventListener('DOMContentLoaded', () => {
             return Math.max(0, base + (Math.random() * range)); 
         },
         generateAdvancedStats(player, fantasyPoints) {
-            const pos = (player.position||'').replace(/\d+$/, '').trim().toUpperCase();
+            const pos = (player.position||'').replace(/\d+$/,'').trim().toUpperCase();
             const base = fantasyPoints;
             let stats = { passYds: 0, passTDs: 0, INTs: 0, rushAtt: 0, rushYds: 0, targets: 0, receptions: 0, recYds: 0, airYards: 0, redzoneTouches: 0, yprr: 0 };
             
@@ -208,7 +208,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 const isSelected = this.selectedPlayersForChart.some(p => p.name === player.name);
                 const rowHtml = columns.map(col => {
                     let val = player[col];
-                    if (col === 'name') return `<td class="p-4 font-semibold"><span class="player-name-link" data-player-name="${player.name}">${val}</span></td>`;
+                    if (col === 'name') return `<td class="p-4 font-semibold"><span class="player-name-link" data-player-name="${val}">${val}</span></td>`;
                     if (typeof val === 'number' && col !== 'fantasyPoints' && col !== 'yprr') val = Math.round(val);
                     if (col === 'fantasyPoints') val = val.toFixed(1);
                     return `<td class="p-4 text-center font-mono">${val || '0'}</td>`;
@@ -539,7 +539,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             };
             
-            updateDraftPositions(); // *** THIS IS THE FIX ***
+            updateDraftPositions(); 
 
             controls.leagueSize.addEventListener('change', updateDraftPositions);
             
