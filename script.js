@@ -386,11 +386,34 @@ document.addEventListener('DOMContentLoaded', () => {
         updateAndShowPopup(player, event) { const popup = document.getElementById('player-popup-card'); popup.innerHTML = `<div class="popup-header"><p class="font-bold text-lg text-white">${player.name}</p><p class="text-sm text-teal-300">${player.team} - ${player.simplePosition}</p></div><div class="popup-body"><p><strong>ADP (PPR):</strong> ${player.adp.ppr || 'N/A'}</p><p><strong>Tier:</strong> ${player.tier || 'N/A'}</p><p><strong>VORP:</strong> ${player.vorp ? player.vorp.toFixed(2) : 'N/A'}</p><p><strong>Bye Week:</strong> ${player.bye || 'N/A'}</p></div><div id="ai-analysis-container" class="popup-footer"><button id="get-ai-analysis-btn" class="ai-analysis-btn" data-player-name="${player.name}">Get AI Analysis</button><div id="ai-analysis-loader" class="loader-small hidden"></div><p id="ai-analysis-text" class="text-sm text-gray-300"></p></div>`; popup.classList.remove('hidden'); popup.querySelector('#get-ai-analysis-btn').addEventListener('click', (e) => { this.getAiPlayerAnalysis(e.target.dataset.playerName); }); },
         async getAiPlayerAnalysis(playerName) { const container = document.getElementById('ai-analysis-container'); const button = container.querySelector('#get-ai-analysis-btn'); const loader = container.querySelector('#ai-analysis-loader'); const textEl = container.querySelector('#ai-analysis-text'); button.classList.add('hidden'); loader.classList.remove('hidden'); textEl.textContent = ''; const prompt = `Provide a short, optimistic fantasy football outlook for the 2024-2025 season for player ${playerName}. Focus on their potential strengths, situation, and upside. Keep it under 50 words.`; try { let chatHistory = [{ role: "user", parts: [{ text: prompt }] }]; const payload = { contents: chatHistory }; const apiKey = ""; const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`; const response = await fetch(apiUrl, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) }); const result = await response.json(); if (result.candidates && result.candidates.length > 0) { textEl.textContent = result.candidates[0].content.parts[0].text; } else { throw new Error('No content returned'); } } catch (error) { console.error("Gemini API error:", error); textEl.textContent = "Could not retrieve AI analysis."; } finally { loader.classList.add('hidden'); } },
         async generateDailyBriefing() {
-            const container = document.getElementById('daily-briefing-content'); if (!container) return;
-            const newsTopics = ["surprise injury to a key wide receiver", "backup running back taking first-team reps", "rookie QB named Week 1 starter", "trade rumors for a veteran TE"];
-            const randomTopic = newsTopics[Math.floor(Math.random() * newsTopics.length)];
-            const prompt = `Act as a fantasy football analyst for a website called 'Front Row Fantasy'. Write a short, insightful 'Daily Briefing' article (about 100-120 words) for fantasy players. The main news topic today is: "${randomTopic}". Analyze the fantasy impact of this news, mention one or two players affected, and give actionable advice. Use a confident and engaging tone. Format the output with a headline in bold, followed by the article paragraphs.`;
-            try { let chatHistory = [{ role: "user", parts: [{ text: prompt }] }]; const payload = { contents: chatHistory }; const apiKey = ""; const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`; const response = await fetch(apiUrl, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) }); const result = await response.json(); if (result.candidates && result.candidates.length > 0) { let text = result.candidates[0].content.parts[0].text; text = text.replace(/\*\*(.*?)\*\*/g, '<h4 class="text-xl font-bold text-yellow-300 mb-2">$1</h4>'); text = text.replace(/\n\n/g, '</p><p class="text-gray-300 mb-4">'); container.innerHTML = `<p class="text-gray-300 mb-4">${text}</p>`; } else { throw new Error('No content returned from AI.'); } } catch (error) { console.error("Gemini API error:", error); container.innerHTML = `<p class="text-red-400">Could not generate today's briefing. Please check back later.</p>`; }
+            const container = document.getElementById('daily-briefing-content');
+            if (!container) return;
+
+            // Show loading state
+            container.innerHTML = `<div class="text-center p-8"><div class="loader"></div><p class="text-teal-300 mt-2">Generating today's fantasy analysis...</p></div>`;
+
+            // --- Production Note ---
+            // In a real application, you would make an API call to your backend here.
+            // The backend would then call the AI model to get the fresh article.
+            // For this demonstration, we will simulate this with a timeout and a pre-written article.
+            
+            const simulatedAIDelay = 1500; // 1.5 seconds
+
+            setTimeout(() => {
+                const sampleArticle = {
+                    headline: "Rookie RB Flashes, Demands More Touches",
+                    body: "The fantasy world is buzzing after rookie running back Ashton Jeanty turned heads in practice this week, reportedly taking first-team reps. His explosiveness and receiving ability have been on full display, creating a potential headache for managers who invested an early pick in the team's established starter. <br><br> While it's early, Jeanty's role seems destined to grow. He's a must-add in all formats. Managers should consider floating trade offers for the veteran starter, as his workload could diminish sooner rather than later. Jeanty is a league-winning asset in the making."
+                };
+
+                const formattedHtml = `
+                    <h4 class="text-xl font-bold text-yellow-300 mb-2">${sampleArticle.headline}</h4>
+                    <p class="text-gray-300 mb-4">${sampleArticle.body}</p>
+                    <a href="articles.html" class="text-teal-300 hover:text-yellow-400 font-semibold">Read More Articles &rarr;</a>
+                `;
+
+                container.innerHTML = formattedHtml;
+
+            }, simulatedAIDelay);
         },
         initGuidesPage() {
             const modal = document.getElementById('guide-modal');
