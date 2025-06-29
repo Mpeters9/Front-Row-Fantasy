@@ -192,9 +192,8 @@ document.addEventListener('DOMContentLoaded', () => {
         getPickValue(year, round, pickNumber) {
             const baseValue = config.draftPickValues[year]?.[round] || 0;
             if (!baseValue) return 0;
-            // Decrease value linearly within the round. Pick 1 is most valuable.
-            const depreciation = (pickNumber - 1) * (baseValue / 20); // Each pick is ~5% less valuable than the last
-            return Math.max(5, baseValue - depreciation); // Ensure a minimum value
+            const depreciation = (pickNumber - 1) * (baseValue / 20); 
+            return Math.max(5, baseValue - depreciation); 
         },
 
         addPickToTrade(year, round, pickNumberStr, teamNum) {
@@ -205,11 +204,11 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
             const pick = {
-                id: `pick-${year}-${round}-${pickNumber}-${Date.now()}`, // Unique ID
+                id: `pick-${year}-${round}-${pickNumber}-${Date.now()}`,
                 year: year,
                 round: round,
                 pick: pickNumber,
-                name: `${year} ${this.getOrdinal(round)} Rnd Pick (${round}.${String(pickNumber).padStart(2, '0')})`,
+                name: `${year} Pick ${round}.${String(pickNumber).padStart(2, '0')}`,
                 value: this.getPickValue(year, round, pickNumber)
             };
             if (teamNum === 1) this.tradeState.team1.picks.push(pick);
@@ -314,14 +313,14 @@ document.addEventListener('DOMContentLoaded', () => {
             if (!controls.generateButton) return;
             
             const rosterConfigs = {
-                QB: { "min": 1, "max": 2, "default": 1 },
-                RB: { "min": 1, "max": 3, "default": 2 },
-                WR: { "min": 1, "max": 4, "default": 2 },
-                TE: { "min": 0, "max": 2, "default": 1 },
-                FLEX: { "min": 0, "max": 2, "default": 1 },
-                K: { "min": 0, "max": 1, "default": 1 },
-                DST: { "min": 0, "max": 1, "default": 1 },
-                BENCH: { "min": 4, "max": 8, "default": 7 }
+                QB: { "min": 1, "max": 2, "default": config.rosterSettings.QB },
+                RB: { "min": 1, "max": 3, "default": config.rosterSettings.RB },
+                WR: { "min": 1, "max": 4, "default": config.rosterSettings.WR },
+                TE: { "min": 0, "max": 2, "default": config.rosterSettings.TE },
+                FLEX: { "min": 0, "max": 2, "default": config.rosterSettings.FLEX },
+                K: { "min": 0, "max": 1, "default": config.rosterSettings.K },
+                DST: { "min": 0, "max": 1, "default": config.rosterSettings.DST },
+                BENCH: { "min": 4, "max": 8, "default": config.rosterSettings.BENCH }
             };
 
             controls.rosterContainer.innerHTML = Object.entries(rosterConfigs).map(([pos, config]) => {
@@ -380,27 +379,48 @@ document.addEventListener('DOMContentLoaded', () => {
             updateDraftPositions();
         },
 
-        calculateDraftScore(player, availablePlayers, teamNeeds, teamRoster) {
-            let score = player.vorp || 0;
+        calculateDraftScore(player, availablePlayers, teamNeeds, teamRoster, round, scoring) {
+            let score = 0;
+            const adp = player.adp[scoring] || 999;
 
-            const scarcityBonuses = { 'RB': 1.15, 'TE': 1.25, 'QB': 1.0, 'WR': 1.0, 'DST': 0.8, 'K': 0.8 };
-            score *= (scarcityBonuses[player.simplePosition] || 1.0);
-
-            const playersInTier = this.playerData.filter(p => p.tier === player.tier && config.positions.includes(p.simplePosition));
-            const availableInTier = availablePlayers.filter(p => p.tier === player.tier && p.simplePosition === player.simplePosition);
-            if (availableInTier.length <= 2 && player.tier <= 4) {
-                score *= 1.3;
+            // Heavily weight ADP in early rounds
+            if (round < 7) {
+                score = (1 / adp) * 1000; // Inverse of ADP so lower ADP = higher score
+            } else {
+                score = player.vorp || 0;
             }
 
-            const pos = player.simplePosition;
-            if (teamNeeds[pos] > 0) score *= 1.5;
-            else if (config.superflexPositions.includes(pos) && teamNeeds['SUPER_FLEX'] > 0) score *= 1.2;
-            else if (config.flexPositions.includes(pos) && teamNeeds['FLEX'] > 0) score *= 1.1;
+            // Devalue K and DST until the last 2 rounds
+            const totalRounds = Object.values(config.rosterSettings).reduce((sum, val) => sum + val, 0);
+            if ((player.simplePosition === 'K' || player.simplePosition === 'DST') && round < totalRounds - 2) {
+                return 0; // Don't draft them early
+            }
 
-            score *= (1 + (Math.random() - 0.5) * 0.3);
+            // Devalue QBs after the first one is taken in a 1-QB league
+            if(teamRoster.some(p => p.simplePosition === 'QB') && player.simplePosition === 'QB' && !config.rosterSettings.SUPER_FLEX) {
+                if(player.tier > 2) { // Don't bother with non-elite QBs if you already have one
+                    score *= 0.1;
+                }
+            }
+
+            // Prevent drafting a 3rd QB
+            if(teamRoster.filter(p => p.simplePosition === 'QB').length >= 2 && player.simplePosition === 'QB') {
+                return 0;
+            }
+            
+            const scarcityBonuses = { 'RB': 1.1, 'TE': 1.15 };
+            score *= (scarcityBonuses[player.simplePosition] || 1.0);
+
+            // Need-based bonus (more important in later rounds)
+            if (round > 4) {
+                const pos = player.simplePosition;
+                if (teamNeeds[pos] > 0) score *= 1.3;
+                else if (config.flexPositions.includes(pos) && teamNeeds['FLEX'] > 0) score *= 1.1;
+            }
 
             return score;
         },
+
 
         async runGoatMockDraft(controls) {
             const loader = document.getElementById('draft-loading-spinner'); const resultsWrapper = document.getElementById('draft-results-wrapper');
@@ -410,44 +430,44 @@ document.addEventListener('DOMContentLoaded', () => {
             const leagueType = controls.leagueType.value; const scoring = controls.scoringType.value.toLowerCase(); const leagueSize = parseInt(controls.leagueSize.value); const userDraftPos = parseInt(controls.draftPosition.value) - 1;
             if (!this.hasDataLoaded) await this.loadAllPlayerData();
 
-            let availablePlayers = [...this.playerData].filter(p => p.adp && typeof p.adp[scoring] === 'number' && config.positions.includes(p.simplePosition));
+            let availablePlayers = [...this.playerData].filter(p => p.adp && typeof p.adp[scoring] === 'number');
             const teams = Array.from({ length: leagueSize }, () => ({ roster: [], needs: { ...config.rosterSettings } }));
 
             if (leagueType !== 'redraft') {
                 const keepersToAssign = Math.min(leagueSize, 3);
+                let assignedKeepers = [];
                 for (let i = 0; i < keepersToAssign; i++) {
-                    const keeper = availablePlayers.shift(); 
+                    const keeper = availablePlayers.find(p => p.tier === 1 && !assignedKeepers.includes(p.name));
                     if (keeper) {
                         teams[i].roster.push(keeper);
-                        keeper.draftedAt = "(Keeper)"; 
+                        keeper.draftedAt = "(Keeper)";
+                        assignedKeepers.push(keeper.name);
                     }
                 }
+                availablePlayers = availablePlayers.filter(p => !assignedKeepers.includes(p.name));
             }
             
-            availablePlayers.sort((a, b) => a.adp[scoring] - b.adp[scoring]);
-
             const totalRounds = Object.values(config.rosterSettings).reduce((sum, val) => sum + val, 0);
 
-            for (let round = 0; round < totalRounds; round++) {
-                const picksInRoundOrder = (round % 2 !== 0) ? Array.from({ length: leagueSize }, (_, i) => leagueSize - 1 - i) : Array.from({ length: leagueSize }, (_, i) => i);
+            for (let round = 1; round <= totalRounds; round++) {
+                const picksInRoundOrder = (round % 2 !== 0) ? Array.from({ length: leagueSize }, (_, i) => i) : Array.from({ length: leagueSize }, (_, i) => leagueSize - 1 - i);
                 for (const teamIndex of picksInRoundOrder) {
                     if (teams[teamIndex].roster.length >= totalRounds || availablePlayers.length === 0) continue;
                     
                     availablePlayers.forEach(p => {
-                        p.draftScore = this.calculateDraftScore(p, availablePlayers, teams[teamIndex].needs, teams[teamIndex].roster);
+                        p.draftScore = this.calculateDraftScore(p, availablePlayers, teams[teamIndex].needs, teams[teamIndex].roster, round, scoring);
                     });
                     availablePlayers.sort((a, b) => b.draftScore - a.draftScore);
 
                     const draftedPlayer = availablePlayers.shift();
 
                     if (draftedPlayer) {
-                        draftedPlayer.draftedAt = `(${(round + 1)}.${picksInRoundOrder.indexOf(teamIndex) + 1})`;
+                        draftedPlayer.draftedAt = `(${round}.${picksInRoundOrder.indexOf(teamIndex) + 1})`;
                         teams[teamIndex].roster.push(draftedPlayer);
                         
                         const needs = teams[teamIndex].needs;
-                        const pos = draftedPlayer.simplePosition;
+                        const pos = draftedPlayer.simplePosition.toUpperCase();
                         if (needs[pos] > 0) needs[pos]--;
-                        else if (config.superflexPositions.includes(pos) && needs['SUPER_FLEX'] > 0) needs['SUPER_FLEX']--;
                         else if (config.flexPositions.includes(pos) && needs['FLEX'] > 0) needs['FLEX']--;
                         else if (needs.BENCH > 0) needs.BENCH--;
                     }
@@ -465,17 +485,16 @@ document.addEventListener('DOMContentLoaded', () => {
             const rosterSlots = { ...config.rosterSettings };
 
             roster.forEach(player => {
-                const pos = player.simplePosition;
+                const pos = player.simplePosition.toUpperCase();
                 if (player.draftedAt === "(Keeper)") {
                      player.displayPos = pos; starters.push(player); if(rosterSlots[pos]) rosterSlots[pos]--;
                 }
                 else if (rosterSlots[pos] > 0) { player.displayPos = pos; starters.push(player); rosterSlots[pos]--; }
-                else if (config.superflexPositions.includes(pos) && rosterSlots['SUPER_FLEX'] > 0) { player.displayPos = 'S-FLEX'; starters.push(player); rosterSlots['SUPER_FLEX']--; }
                 else if (config.flexPositions.includes(pos) && rosterSlots['FLEX'] > 0) { player.displayPos = 'FLEX'; starters.push(player); rosterSlots['FLEX']--; }
                 else { bench.push(player); }
             });
 
-            const positionOrder = ['QB', 'RB', 'WR', 'TE', 'FLEX', 'S-FLEX', 'K', 'DST'];
+            const positionOrder = ['QB', 'RB', 'WR', 'TE', 'FLEX', 'K', 'DST'];
             starters.sort((a, b) => positionOrder.indexOf(a.displayPos) - positionOrder.indexOf(b.displayPos));
             
             startersEl.innerHTML = starters.map(p => this.createPlayerCardHTML(p)).join('');
