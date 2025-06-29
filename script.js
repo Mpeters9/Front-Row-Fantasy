@@ -39,7 +39,8 @@ document.addEventListener('DOMContentLoaded', () => {
             if (document.getElementById('stats-page')) this.initStatsPage();
             if (document.getElementById('players-page')) this.initPlayersPage();
             if (document.getElementById('trade-analyzer')) this.initTradeAnalyzer();
-            if (document.getElementById('guides-page')) this.initGuidesPage();
+            if (document.getElementById('articles-page')) this.initArticlesPage(); // Changed from initGuidesPage
+            if (document.getElementById('article-content')) this.loadArticleContent(); // For the template page
         },
         
         initMobileMenu() {
