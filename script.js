@@ -96,7 +96,7 @@ document.addEventListener('DOMContentLoaded', () => {
             return Math.max(0, base + (Math.random() * range)); 
         },
         generateAdvancedStats(player, fantasyPoints) {
-            const pos = (player.position||'').replace(/\d+$/, '').trim().toUpperCase();
+            const pos = (player.position||'').replace(/\d+$/,'').trim().toUpperCase();
             const base = fantasyPoints;
             let stats = { passYds: 0, passTDs: 0, INTs: 0, rushAtt: 0, rushYds: 0, targets: 0, receptions: 0, recYds: 0, airYards: 0, redzoneTouches: 0, yprr: 0 };
             
@@ -702,7 +702,7 @@ document.addEventListener('DOMContentLoaded', () => {
         analyzeStartSit(p1, p2) {
             const resultsContainer = document.getElementById('start-sit-results');
             if (!p1 || !p2) { resultsContainer.innerHTML = `<p class="text-red-400">Please select two valid players.</p>`; resultsContainer.classList.remove('hidden'); return; }
-            const score1 = (p1.vorp * 2) + ((10 - p1.tier) * 5) + p1.fantasyPoints; const score2 = (p2.vorp * 2) + ((10 - p2.tier) * 5) + p2.fantasyPoints;
+            const score1 = (p1.vorp * 2) + ((10 - p1.tier) * 5) + p1.fantasyPoints; const score2 = (p2.vorp * 2) + ((10 - p1.tier) * 5) + p2.fantasyPoints;
             const winner = score1 > score2 ? p1 : p2; const loser = score1 > score2 ? p2 : p1;
             const advice = this.generateStartSitAdvice(winner, loser);
             resultsContainer.innerHTML = ` <h3 class="text-2xl font-bold text-yellow-300 mb-4">The Verdict</h3> <div class="verdict-card start"><p class="decision-text">START</p><p class="player-name">${winner.name}</p><p class="player-details">${winner.simplePosition} | ${winner.team}</p></div> <div class="verdict-card sit"><p class="decision-text">SIT</p><p class="player-name">${loser.name}</p><p class="player-details">${loser.simplePosition} | ${loser.team}</p></div> <div class="analysis-section"><h4 class="font-semibold text-teal-300">Analysis</h4><p class="text-gray-300">${advice}</p></div> `;
@@ -718,7 +718,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (!controls.startBtn) return;
             const updateUserPickOptions = () => { const size = parseInt(controls.sizeSelect.value); controls.pickSelect.innerHTML = ''; for (let i = 1; i <= size; i++) { controls.pickSelect.add(new Option(`Pick ${i}`, i)); } };
             
-            updateUserPickOptions(); // *** THIS IS THE FIX ***
+            updateUserPickOptions();
             
             controls.sizeSelect.addEventListener('change', updateUserPickOptions);
             controls.startBtn.addEventListener('click', () => this.startInteractiveDraft(controls));
