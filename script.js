@@ -382,11 +382,18 @@ document.addEventListener('DOMContentLoaded', () => {
         calculateDraftScore(player, round, scoring) {
             let score = 0;
             const adp = player.adp[scoring] || 999;
-            if (round < 7) {
-                score = (1 / adp) * 1000;
-            } else {
-                score = (player.vorp || 0) * (1 + (Math.random() - 0.5) * 0.5); 
+            
+            // Blend ADP and VORP with randomness, weighted by round
+            if (round < 7) { // ADP is king in early rounds
+                const adpScore = (1 / adp) * 1000;
+                const vorpScore = (player.vorp || 0) * 1.5; // Give VORP some weight
+                score = (adpScore * 0.8) + (vorpScore * 0.2); // 80% ADP, 20% VORP
+            } else { // VORP and value matter more later
+                score = (player.vorp || 0);
             }
+
+            score *= (1 + (Math.random() - 0.5) * 0.4); // Add randomness
+            
             return score;
         },
 
@@ -419,27 +426,40 @@ document.addEventListener('DOMContentLoaded', () => {
                 for (const teamIndex of picksInRoundOrder) {
                     if (teams[teamIndex].roster.length >= totalRounds || availablePlayers.length === 0) continue;
                     
-                    availablePlayers.forEach(p => {
-                        p.draftScore = this.calculateDraftScore(p, round, scoring);
-                    });
-                    
-                    const qbsOnRoster = teams[teamIndex].roster.filter(p => p.simplePosition === 'QB').length;
-                    if(qbsOnRoster >= 1 && !config.rosterSettings.SUPER_FLEX) {
-                        availablePlayers.forEach(p => { if(p.simplePosition === 'QB') p.draftScore *= 0.1; });
-                    }
-                    if(qbsOnRoster >= 2) {
-                        availablePlayers.forEach(p => { if(p.simplePosition === 'QB') p.draftScore = 0; });
-                    }
-                    if(round < totalRounds - 2) {
-                        availablePlayers.forEach(p => { if(p.simplePosition === 'K' || p.simplePosition === 'DST') p.draftScore = 0; });
-                    }
+                    let draftedPlayer;
+                    const team = teams[teamIndex];
 
-
-                    availablePlayers.sort((a, b) => b.draftScore - a.draftScore);
+                    // --- Forced Pick Logic for K/DST ---
+                    const needsDST = team.needs.DST > 0 && !team.roster.some(p => p.simplePosition === 'DST');
+                    const needsK = team.needs.K > 0 && !team.roster.some(p => p.simplePosition === 'K');
                     
-                    const bucketSize = (round < 4) ? 2 : 4;
-                    const draftBucket = availablePlayers.slice(0, bucketSize);
-                    const draftedPlayer = draftBucket[Math.floor(Math.random() * draftBucket.length)];
+                    if(round === totalRounds - 1 && needsDST) {
+                        draftedPlayer = availablePlayers.find(p => p.simplePosition === 'DST');
+                    } else if (round === totalRounds && needsK) {
+                        draftedPlayer = availablePlayers.find(p => p.simplePosition === 'K');
+                    } else {
+                        // --- Standard Picking Logic ---
+                        availablePlayers.forEach(p => {
+                            p.draftScore = this.calculateDraftScore(p, round, scoring);
+                        });
+                        
+                        const qbsOnRoster = team.roster.filter(p => p.simplePosition === 'QB').length;
+                        if(qbsOnRoster >= 1 && !config.rosterSettings.SUPER_FLEX) {
+                            availablePlayers.forEach(p => { if(p.simplePosition === 'QB') p.draftScore *= 0.1; });
+                        }
+                        if(qbsOnRoster >= 2) {
+                            availablePlayers.forEach(p => { if(p.simplePosition === 'QB') p.draftScore = 0; });
+                        }
+                        if(round < totalRounds - 2) {
+                            availablePlayers.forEach(p => { if(p.simplePosition === 'K' || p.simplePosition === 'DST') p.draftScore = 0; });
+                        }
+
+                        availablePlayers.sort((a, b) => b.draftScore - a.draftScore);
+                        
+                        const bucketSize = (round < 3) ? 3 : 5;
+                        const draftBucket = availablePlayers.slice(0, bucketSize);
+                        draftedPlayer = draftBucket[Math.floor(Math.random() * draftBucket.length)];
+                    }
 
 
                     const draftedPlayerIndex = availablePlayers.findIndex(p => p.name === draftedPlayer.name);
@@ -450,9 +470,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
                     if (draftedPlayer) {
                         draftedPlayer.draftedAt = `(${round}.${picksInRoundOrder.indexOf(teamIndex) + 1})`;
-                        teams[teamIndex].roster.push(draftedPlayer);
+                        team.roster.push(draftedPlayer);
                         
-                        const needs = teams[teamIndex].needs;
+                        const needs = team.needs;
                         const pos = draftedPlayer.simplePosition.toUpperCase();
                         if (needs[pos] > 0) needs[pos]--;
                         else if (config.flexPositions.includes(pos) && needs['FLEX'] > 0) needs['FLEX']--;
