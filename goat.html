@@ -67,7 +67,15 @@
                 
                 <div class="border-b border-teal-700/50 pb-6 mb-6">
                     <h3 class="text-xl font-semibold text-center text-teal-300 mb-4">Draft Settings</h3>
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-x-8 gap-y-6">
+                    <div class="grid grid-cols-1 md:grid-cols-4 gap-x-8 gap-y-6">
+                        <div>
+                            <label for="goat-league-type" class="block text-gray-300 font-semibold mb-2">League Type</label>
+                            <select id="goat-league-type" class="form-select w-full">
+                                <option value="redraft" selected>Redraft</option>
+                                <option value="keeper">Keeper</option>
+                                <option value="dynasty">Dynasty</option>
+                            </select>
+                        </div>
                         <div>
                             <label for="goat-draft-scoring" class="block text-gray-300 font-semibold mb-2">Scoring</label>
                             <select id="goat-draft-scoring" class="form-select w-full"><option value="ppr" selected>PPR</option><option value="hppr">Half-PPR</option><option value="standard">Standard</option></select>
