@@ -42,6 +42,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (document.getElementById('articles-page')) this.initArticlesPage(); 
             if (document.getElementById('article-content')) this.loadArticleContent();
             if (document.getElementById('waiver-wire-page')) this.initWaiverWirePage();
+            if (document.getElementById('league-dominator-page')) this.initLeagueDominatorPage();
         },
         
         initMobileMenu() {
@@ -96,7 +97,7 @@ document.addEventListener('DOMContentLoaded', () => {
             return Math.max(0, base + (Math.random() * range)); 
         },
         generateAdvancedStats(player, fantasyPoints) {
-            const pos = (player.position||'').replace(/\d+$/,'').trim().toUpperCase();
+            const pos = (player.position||'').replace(/\d+$/, '').trim().toUpperCase();
             const base = fantasyPoints;
             let stats = { passYds: 0, passTDs: 0, INTs: 0, rushAtt: 0, rushYds: 0, targets: 0, receptions: 0, recYds: 0, airYards: 0, redzoneTouches: 0, yprr: 0 };
             
@@ -702,7 +703,7 @@ document.addEventListener('DOMContentLoaded', () => {
         analyzeStartSit(p1, p2) {
             const resultsContainer = document.getElementById('start-sit-results');
             if (!p1 || !p2) { resultsContainer.innerHTML = `<p class="text-red-400">Please select two valid players.</p>`; resultsContainer.classList.remove('hidden'); return; }
-            const score1 = (p1.vorp * 2) + ((10 - p1.tier) * 5) + p1.fantasyPoints; const score2 = (p2.vorp * 2) + ((10 - p1.tier) * 5) + p2.fantasyPoints;
+            const score1 = (p1.vorp * 2) + ((10 - p1.tier) * 5) + p1.fantasyPoints; const score2 = (p2.vorp * 2) + ((10 - p2.tier) * 5) + p2.fantasyPoints;
             const winner = score1 > score2 ? p1 : p2; const loser = score1 > score2 ? p2 : p1;
             const advice = this.generateStartSitAdvice(winner, loser);
             resultsContainer.innerHTML = ` <h3 class="text-2xl font-bold text-yellow-300 mb-4">The Verdict</h3> <div class="verdict-card start"><p class="decision-text">START</p><p class="player-name">${winner.name}</p><p class="player-details">${winner.simplePosition} | ${winner.team}</p></div> <div class="verdict-card sit"><p class="decision-text">SIT</p><p class="player-name">${loser.name}</p><p class="player-details">${loser.simplePosition} | ${loser.team}</p></div> <div class="analysis-section"><h4 class="font-semibold text-teal-300">Analysis</h4><p class="text-gray-300">${advice}</p></div> `;
@@ -813,7 +814,33 @@ document.addEventListener('DOMContentLoaded', () => {
         async generateDailyBriefing() { /* ... */ },
         initArticlesPage() { /* ... */ }, 
         loadArticleContent() { /* ... */ },
-        initWaiverWirePage() { /* ... */ }
+        initWaiverWirePage() {
+            const container = document.getElementById('waiver-wire-container');
+            if (!container) return;
+        
+            const waiverTargets = this.playerData.filter(p => p.vorp > 10 && p.adp.ppr > 100).slice(0, 5);
+        
+            container.innerHTML = waiverTargets.map(player => {
+                return `
+                    <div class="tool-card p-4">
+                        <div class="flex items-center">
+                            <div class="flex-grow">
+                                <h3 class="text-2xl font-bold text-yellow-400">${player.name}</h3>
+                                <p class="text-teal-300">${player.team} - ${player.simplePosition}</p>
+                            </div>
+                            <div class="text-right">
+                                <p class="text-lg font-semibold text-white">Rostered: <span class="text-yellow-400">${(100 - player.tier * 5).toFixed(1)}%</span></p>
+                                <button class="cta-btn !px-4 !py-2 text-sm mt-2">Add Player</button>
+                            </div>
+                        </div>
+                        <div class="mt-4">
+                            <h4 class="font-semibold text-teal-300">AI Analysis</h4>
+                            <p class="text-gray-300">This is a sample AI analysis. In a real application, this would be a dynamic, AI-generated summary of the player's recent performance, upcoming matchups, and long-term outlook, explaining why they are a priority waiver wire addition.</p>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
     };
 
     App.init();
