@@ -19,6 +19,14 @@ body { background-color: #0f2027; font-family: 'Poppins', sans-serif; color: #e2
 .autocomplete-list li { padding: 0.75rem; cursor: pointer; transition: background-color 0.2s; }
 .autocomplete-list li:hover { background: #334155; }
 
+/* --- Roster Stepper --- */
+.roster-stepper { text-align: center; }
+.roster-stepper-label { display: block; text-align: center; font-weight: 600; margin-bottom: 0.5rem; color: #cbd5e1; }
+.roster-stepper-controls { display: flex; justify-content: center; align-items: center; background-color: #1f2937; border: 1px solid #0d9488; border-radius: 9999px; padding: 0.25rem; }
+.roster-stepper-btn { background: #334155; color: white; border: none; width: 28px; height: 28px; border-radius: 50%; font-size: 1.25rem; line-height: 1; cursor: pointer; transition: background-color 0.2s; }
+.roster-stepper-btn:hover { background: #475569; }
+.roster-stepper-value { font-size: 1.25rem; font-weight: bold; min-width: 40px; text-align: center; color: white; }
+
 /* --- Player Popups --- */
 .player-name-link { cursor: pointer; border-bottom: 1px dotted rgba(20, 184, 166, 0.5); }
 .player-name-link:hover { color: #facc15; border-bottom-color: #facc15; }
