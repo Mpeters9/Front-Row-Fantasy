@@ -67,12 +67,15 @@ document.addEventListener('DOMContentLoaded', () => {
                 const response = await fetch(config.dataFiles[0]);
                 if (!response.ok) throw new Error(`Failed to load ${config.dataFiles[0]}`);
                 let data = await response.json();
-                this.playerData = data.map(p => ({
-                    ...p, 
-                    simplePosition: (p.position||'N/A').replace(/\d+$/,'').trim().toUpperCase(), 
-                    fantasyPoints: this.generateFantasyPoints(p),
-                    ...this.generateAdvancedStats(p) // Add advanced stats
-                })).sort((a,b)=>b.fantasyPoints-a.fantasyPoints);
+                this.playerData = data.map(p => {
+                    const fantasyPoints = this.generateFantasyPoints(p);
+                    return {
+                        ...p,
+                        simplePosition: (p.position||'N/A').replace(/\d+$/,'').trim().toUpperCase(),
+                        fantasyPoints: fantasyPoints,
+                        ...this.generateAdvancedStats(p, fantasyPoints)
+                    }
+                }).sort((a,b)=>b.fantasyPoints-a.fantasyPoints);
             } catch (error) { console.error("Error loading player data:", error); this.displayDataError(); }
         },
         displayDataError() {
@@ -90,23 +93,35 @@ document.addEventListener('DOMContentLoaded', () => {
             else { base = 2; range = 8; }
             return Math.max(0, base + (Math.random() * range)); 
         },
-        generateAdvancedStats(player) {
+        generateAdvancedStats(player, fantasyPoints) {
             const pos = (player.position||'').replace(/\d+$/, '').trim().toUpperCase();
-            const tier = player.tier || 10;
-            let targetShare = 0, airYards = 0, redzoneTouches = 0;
-            if (['WR', 'TE'].includes(pos)) {
-                targetShare = Math.max(5, 30 - tier * 2 + (Math.random() * 5 - 2.5));
-                airYards = Math.max(200, 1800 - tier * 150 + (Math.random() * 200 - 100));
-                redzoneTouches = Math.max(1, 15 - tier + (Math.random() * 4 - 2));
+            const base = fantasyPoints;
+            let stats = { passYds: 0, passTDs: 0, INTs: 0, rushAtt: 0, rushYds: 0, targets: 0, receptions: 0, recYds: 0, airYards: 0, redzoneTouches: 0 };
+            
+            if (pos === 'QB') {
+                stats.passYds = base * 180 + (Math.random() * 500 - 250);
+                stats.passTDs = base * 1.2 + (Math.random() * 5 - 2.5);
+                stats.INTs = Math.max(0, 15 - base * 0.5 + (Math.random() * 4 - 2));
             } else if (pos === 'RB') {
-                targetShare = Math.max(3, 20 - tier * 1.5 + (Math.random() * 4 - 2));
-                redzoneTouches = Math.max(5, 40 - tier * 3 + (Math.random() * 10 - 5));
+                stats.rushAtt = base * 10 + (Math.random() * 40 - 20);
+                stats.rushYds = stats.rushAtt * (4 + (Math.random() - 0.5));
+                stats.targets = base * 2 + (Math.random() * 20 - 10);
+                stats.receptions = stats.targets * 0.8;
+                stats.recYds = stats.receptions * 8;
+                stats.redzoneTouches = base * 1.5 + (Math.random() * 10 - 5);
+            } else if (pos === 'WR' || pos === 'TE') {
+                stats.targets = base * 5 + (Math.random() * 30 - 15);
+                stats.receptions = stats.targets * (0.65 + (Math.random() * 0.1));
+                stats.recYds = stats.receptions * (12 + (Math.random() * 4 - 2));
+                stats.airYards = stats.recYds * 1.5 + (Math.random() * 200 - 100);
+                stats.redzoneTouches = base * 0.8 + (Math.random() * 5 - 2.5);
             }
-            return {
-                targetShare: targetShare.toFixed(1),
-                airYards: Math.round(airYards),
-                redzoneTouches: Math.round(redzoneTouches)
-            };
+
+            // Clean up and round the numbers
+            for (const key in stats) {
+                stats[key] = Math.round(Math.max(0, stats[key]));
+            }
+            return stats;
         },
         initTopPlayers() {
             const container = document.getElementById('player-showcase-container');
@@ -116,7 +131,7 @@ document.addEventListener('DOMContentLoaded', () => {
             this.addPlayerPopupListeners();
         },
         initStatsPage() {
-            const controls = { position: document.getElementById('stats-position-filter'), sortBy: document.getElementById('stats-sort-by'), search: document.getElementById('stats-player-search'), tableBody: document.getElementById('stats-table-body') };
+            const controls = { position: document.getElementById('stats-position-filter'), sortBy: document.getElementById('stats-sort-by'), search: document.getElementById('stats-player-search'), tableBody: document.getElementById('stats-table-body'), tableHead: document.getElementById('stats-table-head') };
             if (!controls.tableBody) return;
         
             if(this.selectedPlayersForChart.length === 0) {
@@ -126,22 +141,25 @@ document.addEventListener('DOMContentLoaded', () => {
             const render = () => {
                 let filteredPlayers = [...this.playerData];
                 const pos = controls.position.value;
-                if (pos !== 'ALL') {
+
+                if (pos === 'FLEX') {
+                    filteredPlayers = filteredPlayers.filter(p => config.flexPositions.includes(p.simplePosition));
+                } else if (pos !== 'ALL') {
                     filteredPlayers = filteredPlayers.filter(p => p.simplePosition === pos);
                 }
+                
                 const searchTerm = controls.search.value.toLowerCase();
                 if (searchTerm) {
                     filteredPlayers = filteredPlayers.filter(p => p.name.toLowerCase().includes(searchTerm));
                 }
+
                 const sortKey = controls.sortBy.value;
                 filteredPlayers.sort((a, b) => {
                     if (sortKey === 'name') return a.name.localeCompare(b.name);
                     return (parseFloat(b[sortKey]) || 0) - (parseFloat(a[sortKey]) || 0);
                 });
-        
-                controls.tableBody.innerHTML = filteredPlayers.map(p => this.createAdvancedStatsTableRow(p)).join('');
-                this.addPlayerSelectionListeners();
-                this.updateStatsChart();
+                
+                this.updateStatsTable(pos, filteredPlayers);
             };
         
             if(!this.statsChart) {
@@ -151,18 +169,51 @@ document.addEventListener('DOMContentLoaded', () => {
             render();
         },
 
-        createAdvancedStatsTableRow(player) {
-            const isSelected = this.selectedPlayersForChart.some(p => p.name === player.name);
-            return `<tr class="cursor-pointer hover:bg-gray-800/50 ${isSelected ? 'bg-teal-500/10' : ''}" data-player-name="${player.name}">
-                <td class="p-4 font-semibold"><span class="player-name-link" data-player-name="${player.name}">${player.name}</span></td>
-                <td class="p-4 text-center">${player.simplePosition}</td>
-                <td class="p-4 text-center">${player.team}</td>
-                <td class="p-4 text-center font-mono">${player.fantasyPoints.toFixed(1)}</td>
-                <td class="p-4 text-center font-mono">${(player.vorp || 0).toFixed(1)}</td>
-                <td class="p-4 text-center font-mono">${player.targetShare || '0'}%</td>
-                <td class="p-4 text-center font-mono">${player.airYards || '0'}</td>
-                <td class="p-4 text-center font-mono">${player.redzoneTouches || '0'}</td>
-            </tr>`;
+        updateStatsTable(position, players) {
+            const tableHead = document.getElementById('stats-table-head');
+            const tableBody = document.getElementById('stats-table-body');
+            
+            let headers, columns;
+        
+            const baseHeaders = ['Player', 'Pos', 'Team', 'FPTS'];
+            const baseColumns = ['name', 'simplePosition', 'team', 'fantasyPoints'];
+
+            switch(position) {
+                case 'QB':
+                    headers = [...baseHeaders, 'Pass Yds', 'Pass TDs', 'INTs'];
+                    columns = [...baseColumns, 'passYds', 'passTDs', 'INTs'];
+                    break;
+                case 'RB':
+                    headers = [...baseHeaders, 'Rush Att', 'Rush Yds', 'RZ Touches'];
+                    columns = [...baseColumns, 'rushAtt', 'rushYds', 'redzoneTouches'];
+                    break;
+                case 'WR':
+                case 'TE':
+                    headers = [...baseHeaders, 'Tgts', 'Rec', 'Rec Yds', 'Air Yards'];
+                    columns = [...baseColumns, 'targets', 'receptions', 'recYds', 'airYards'];
+                    break;
+                default: // ALL or FLEX
+                    headers = [...baseHeaders, 'Rush Yds', 'Rec Yds', 'RZ Touches'];
+                    columns = [...baseColumns, 'rushYds', 'recYds', 'redzoneTouches'];
+                    break;
+            }
+        
+            tableHead.innerHTML = `<tr>${headers.map(h => `<th class="p-4 text-center">${h}</th>`).join('')}</tr>`;
+            
+            tableBody.innerHTML = players.map(player => {
+                const isSelected = this.selectedPlayersForChart.some(p => p.name === player.name);
+                const rowHtml = columns.map(col => {
+                    let val = player[col];
+                    if (col === 'name') return `<td class="p-4 font-semibold"><span class="player-name-link" data-player-name="${player.name}">${val}</span></td>`;
+                    if (typeof val === 'number' && col !== 'fantasyPoints') val = Math.round(val);
+                    if (col === 'fantasyPoints') val = val.toFixed(1);
+                    return `<td class="p-4 text-center font-mono">${val || '0'}</td>`;
+                }).join('');
+                return `<tr class="cursor-pointer hover:bg-gray-800/50 ${isSelected ? 'bg-teal-500/10' : ''}" data-player-name="${player.name}">${rowHtml}</tr>`;
+            }).join('');
+        
+            this.addPlayerSelectionListeners();
+            this.updateStatsChart(position);
         },
 
         addPlayerSelectionListeners() {
@@ -194,56 +245,37 @@ document.addEventListener('DOMContentLoaded', () => {
             const ctx = document.getElementById('stats-chart').getContext('2d');
             this.statsChart = new Chart(ctx, {
                 type: 'bar',
-                data: {
-                    labels: [],
-                    datasets: []
-                },
+                data: { labels: [], datasets: [] },
                 options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: { labels: { color: '#e2e8f0' } },
-                        title: { display: true, text: 'Player Stat Comparison', color: '#facc15', font: { size: 18 } }
-                    },
-                    scales: {
-                        x: { ticks: { color: '#9ca3af' }, grid: { color: 'rgba(255,255,255,0.1)' } },
-                        y: { ticks: { color: '#9ca3af' }, grid: { color: 'rgba(255,255,255,0.1)' } }
-                    }
+                    responsive: true, maintainAspectRatio: false,
+                    plugins: { legend: { labels: { color: '#e2e8f0' } }, title: { display: true, text: 'Player Stat Comparison', color: '#facc15', font: { size: 18 } } },
+                    scales: { x: { ticks: { color: '#9ca3af' }, grid: { color: 'rgba(255,255,255,0.1)' } }, y: { ticks: { color: '#9ca3af' }, grid: { color: 'rgba(255,255,255,0.1)' } } }
                 }
             });
         },
         
-        updateStatsChart() {
+        updateStatsChart(position) {
             if (!this.statsChart) return;
             const labels = this.selectedPlayersForChart.map(p => p.name);
-            const datasets = [
-                {
-                    label: 'Fantasy Points',
-                    data: this.selectedPlayersForChart.map(p => p.fantasyPoints),
-                    backgroundColor: 'rgba(250, 204, 21, 0.7)',
-                },
-                {
-                    label: 'VORP',
-                    data: this.selectedPlayersForChart.map(p => p.vorp),
-                    backgroundColor: 'rgba(20, 184, 166, 0.7)',
-                },
-                {
-                    label: 'Target Share (%)',
-                    data: this.selectedPlayersForChart.map(p => p.targetShare),
-                    backgroundColor: 'rgba(59, 130, 246, 0.7)',
-                },
-                {
-                    label: 'Air Yards',
-                    data: this.selectedPlayersForChart.map(p => p.airYards),
-                    backgroundColor: 'rgba(239, 68, 68, 0.7)',
-                },
-                 {
-                    label: 'RZ Touches',
-                    data: this.selectedPlayersForChart.map(p => p.redzoneTouches),
-                    backgroundColor: 'rgba(139, 92, 246, 0.7)',
-                },
-            ];
-        
+            let datasets;
+            
+            const colors = ['rgba(250, 204, 21, 0.7)', 'rgba(20, 184, 166, 0.7)', 'rgba(59, 130, 246, 0.7)', 'rgba(239, 68, 68, 0.7)', 'rgba(139, 92, 246, 0.7)'];
+
+            switch(position) {
+                case 'QB':
+                    datasets = [ { label: 'Pass Yds', data: this.selectedPlayersForChart.map(p => p.passYds), backgroundColor: colors[0] }, { label: 'Pass TDs', data: this.selectedPlayersForChart.map(p => p.passTDs), backgroundColor: colors[1] } ];
+                    break;
+                case 'RB':
+                    datasets = [ { label: 'Rush Yds', data: this.selectedPlayersForChart.map(p => p.rushYds), backgroundColor: colors[0] }, { label: 'RZ Touches', data: this.selectedPlayersForChart.map(p => p.redzoneTouches), backgroundColor: colors[1] } ];
+                    break;
+                case 'WR': case 'TE':
+                    datasets = [ { label: 'Rec Yds', data: this.selectedPlayersForChart.map(p => p.recYds), backgroundColor: colors[0] }, { label: 'Air Yards', data: this.selectedPlayersForChart.map(p => p.airYards), backgroundColor: colors[1] }, { label: 'Targets', data: this.selectedPlayersForChart.map(p => p.targets), backgroundColor: colors[2] } ];
+                    break;
+                default:
+                     datasets = [ { label: 'Fantasy Points', data: this.selectedPlayersForChart.map(p => p.fantasyPoints), backgroundColor: colors[0] }, { label: 'RZ Touches', data: this.selectedPlayersForChart.map(p => p.redzoneTouches), backgroundColor: colors[1] } ];
+                    break;
+            }
+
             this.statsChart.data.labels = labels;
             this.statsChart.data.datasets = datasets;
             this.statsChart.update();
