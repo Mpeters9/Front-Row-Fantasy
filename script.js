@@ -43,6 +43,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (document.getElementById('article-content')) this.loadArticleContent();
             if (document.getElementById('waiver-wire-page')) this.initWaiverWirePage();
             if (document.getElementById('league-dominator-page')) this.initLeagueDominatorPage();
+            if (document.getElementById('ai-analyst-page')) this.initAiAnalystPage();
         },
         
         initMobileMenu() {
@@ -913,6 +914,56 @@ document.addEventListener('DOMContentLoaded', () => {
                 </div>
             `;
 
+        },
+        initAiAnalystPage() {
+            const chatWindow = document.getElementById('chat-window');
+            const chatInput = document.getElementById('chat-input');
+            const sendButton = document.getElementById('send-chat-button');
+
+            if(!chatWindow) return;
+
+            const addMessage = (message, sender) => {
+                const messageElement = document.createElement('div');
+                messageElement.className = `chat-message ${sender}`;
+                messageElement.textContent = message;
+                chatWindow.appendChild(messageElement);
+                chatWindow.scrollTop = chatWindow.scrollHeight;
+            };
+
+            const getAIResponse = (question) => {
+                // In a real application, this would make an API call to a fine-tuned AI model
+                const responses = {
+                    "default": "That's a great question. Based on my analysis, I would recommend focusing on players with high target shares and favorable matchups. For example, Ja'Marr Chase is a great option this week due to his high target volume and a plus matchup against a weak secondary.",
+                    "who should I draft at 1.01?": "At the 1.01, you should be targeting one of the elite wide receivers. Ja'Marr Chase, CeeDee Lamb, and Justin Jefferson are all excellent options, and you can't go wrong with any of them. I would lean towards Chase due to his combination of age, talent, and quarterback play.",
+                    "should I trade for a running back?": "That depends on your current roster construction. If you are weak at the running back position, then it would be a good idea to trade for one. However, if you have a solid stable of running backs, then it would be better to hold onto your assets and build depth at other positions.",
+                    "who is a good waiver wire pickup this week?": "A great waiver wire pickup this week is the rookie running back from the Chargers, Omarion Hampton. He has been getting a lot of buzz in camp and could be in line for a significant workload this season. He's a great high-upside stash."
+                };
+                return responses[question.toLowerCase()] || responses['default'];
+            };
+
+            const handleSend = () => {
+                const question = chatInput.value.trim();
+                if (question) {
+                    addMessage(question, 'user');
+                    chatInput.value = '';
+                    setTimeout(() => {
+                        const aiResponse = getAIResponse(question);
+                        addMessage(aiResponse, 'ai');
+                    }, 1000);
+                }
+            };
+
+            sendButton.addEventListener('click', handleSend);
+            chatInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    handleSend();
+                }
+            });
+
+            addMessage("Welcome to the AI Analyst. Ask me anything about your fantasy league, from player analysis to trade advice.", 'ai');
+        },
+        initGoatPage() {
+            // This function is now just a placeholder, as the GOAT page is now powered by the AI Analyst
         }
     };
 
