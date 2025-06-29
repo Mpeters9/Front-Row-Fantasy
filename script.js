@@ -195,52 +195,116 @@ document.addEventListener('DOMContentLoaded', () => {
             try { let chatHistory = [{ role: "user", parts: [{ text: prompt }] }]; const payload = { contents: chatHistory }; const apiKey = ""; const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`; const response = await fetch(apiUrl, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) }); const result = await response.json(); if (result.candidates && result.candidates.length > 0) { textEl.textContent = result.candidates[0].content.parts[0].text; } else { throw new Error('No content returned from AI.'); } } catch (error) { console.error("Gemini API error:", error); textEl.textContent = "Could not retrieve AI analysis at this time."; } finally { loader.classList.add('hidden'); }
         },
         setupGoatDraftControls() {
-            const controls = { leagueSize: document.getElementById('goat-league-size'), draftPosition: document.getElementById('goat-draft-position'), generateButton: document.getElementById('generateDraftBuildButton'), scoringType: document.getElementById('goat-draft-scoring'), rosterInputs: { QB: document.getElementById('roster-qb'), RB: document.getElementById('roster-rb'), WR: document.getElementById('roster-wr'), TE: document.getElementById('roster-te'), FLEX: document.getElementById('roster-flex'), SUPER_FLEX: document.getElementById('roster-superflex'), BENCH: document.getElementById('roster-bench') } };
+            const controls = {
+                leagueType: document.getElementById('goat-league-type'),
+                leagueSize: document.getElementById('goat-league-size'),
+                draftPosition: document.getElementById('goat-draft-position'),
+                generateButton: document.getElementById('generateDraftBuildButton'),
+                scoringType: document.getElementById('goat-draft-scoring'),
+                rosterInputs: { QB: document.getElementById('roster-qb'), RB: document.getElementById('roster-rb'), WR: document.getElementById('roster-wr'), TE: document.getElementById('roster-te'), FLEX: document.getElementById('roster-flex'), SUPER_FLEX: document.getElementById('roster-superflex'), BENCH: document.getElementById('roster-bench') }
+            };
+
             if (!controls.generateButton) return;
-            const updateDraftPositions = () => { const size = parseInt(controls.leagueSize.value); controls.draftPosition.innerHTML = ''; for (let i = 1; i <= size; i++) { controls.draftPosition.add(new Option(`Pick ${i}`, i)); } };
+
+            const updateDraftPositions = () => {
+                const size = parseInt(controls.leagueSize.value);
+                controls.draftPosition.innerHTML = '';
+                for (let i = 1; i <= size; i++) {
+                    controls.draftPosition.add(new Option(`Pick ${i}`, i));
+                }
+            };
+
             controls.leagueSize.addEventListener('change', updateDraftPositions);
             controls.generateButton.addEventListener('click', () => {
-                config.rosterSettings = { QB: parseInt(controls.rosterInputs.QB.value), RB: parseInt(controls.rosterInputs.RB.value), WR: parseInt(controls.rosterInputs.WR.value), TE: parseInt(controls.rosterInputs.TE.value), FLEX: parseInt(controls.rosterInputs.FLEX.value), SUPER_FLEX: parseInt(controls.rosterInputs.SUPER_FLEX.value), BENCH: parseInt(controls.rosterInputs.BENCH.value), DST: 1, K: 1 };
+                config.rosterSettings = {
+                    QB: parseInt(controls.rosterInputs.QB.value),
+                    RB: parseInt(controls.rosterInputs.RB.value),
+                    WR: parseInt(controls.rosterInputs.WR.value),
+                    TE: parseInt(controls.rosterInputs.TE.value),
+                    FLEX: parseInt(controls.rosterInputs.FLEX.value),
+                    SUPER_FLEX: parseInt(controls.rosterInputs.SUPER_FLEX.value),
+                    BENCH: parseInt(controls.rosterInputs.BENCH.value),
+                    DST: 1,
+                    K: 1
+                };
                 this.runGoatMockDraft(controls);
             });
             updateDraftPositions();
         },
+
         async runGoatMockDraft(controls) {
-            const loader = document.getElementById('draft-loading-spinner'); const resultsWrapper = document.getElementById('draft-results-wrapper');
+            const loader = document.getElementById('draft-loading-spinner');
+            const resultsWrapper = document.getElementById('draft-results-wrapper');
             if (!loader || !resultsWrapper) return;
-            loader.classList.remove('hidden'); resultsWrapper.classList.add('hidden');
-            const scoring = controls.scoringType.value.toLowerCase(); const leagueSize = parseInt(controls.leagueSize.value); const userDraftPos = parseInt(controls.draftPosition.value) - 1;
+
+            loader.classList.remove('hidden');
+            resultsWrapper.classList.add('hidden');
+
+            const leagueType = controls.leagueType.value;
+            const scoring = controls.scoringType.value.toLowerCase();
+            const leagueSize = parseInt(controls.leagueSize.value);
+            const userDraftPos = parseInt(controls.draftPosition.value) - 1;
+
             if (!this.hasDataLoaded) await this.loadAllPlayerData();
-            let availablePlayers = [...this.playerData].filter(p => p.adp && typeof p.adp[scoring] === 'number').sort((a, b) => a.adp[scoring] - b.adp[scoring]);
+
+            let availablePlayers = [...this.playerData].filter(p => p.adp && typeof p.adp[scoring] === 'number');
             const teams = Array.from({ length: leagueSize }, () => ({ roster: [], needs: { ...config.rosterSettings } }));
+
+            // --- Keeper/Dynasty Logic ---
+            if (leagueType === 'keeper' || leagueType === 'dynasty') {
+                // In a real app, you'd have a UI for users to select keepers.
+                // For now, we'll simulate by giving the top 3 teams their best player as a keeper.
+                const keepersToAssign = Math.min(leagueSize, 3);
+                for (let i = 0; i < keepersToAssign; i++) {
+                    const keeper = availablePlayers.shift(); // Get the best available player
+                    if (keeper) {
+                        teams[i].roster.push(keeper);
+                        // Mark the player as a keeper for display purposes
+                        keeper.draftedAt = "(Keeper)"; 
+                    }
+                }
+            }
+            
+            availablePlayers.sort((a, b) => a.adp[scoring] - b.adp[scoring]);
+
             const totalRounds = Object.values(config.rosterSettings).reduce((sum, val) => sum + val, 0);
+
             for (let round = 0; round < totalRounds; round++) {
                 const picksInRoundOrder = (round % 2 !== 0) ? Array.from({ length: leagueSize }, (_, i) => leagueSize - 1 - i) : Array.from({ length: leagueSize }, (_, i) => i);
                 for (const teamIndex of picksInRoundOrder) {
+                    if(teams[teamIndex].roster.length >= totalRounds) continue;
                     if (availablePlayers.length === 0) break;
+
                     const topAvailable = availablePlayers.slice(0, 25);
                     const teamNeeds = teams[teamIndex].needs;
                     const qbsOnRoster = teams[teamIndex].roster.filter(p => p.simplePosition === 'QB').length;
+
                     topAvailable.forEach(p => {
                         let score = p.vorp || 0;
                         const pos = p.simplePosition;
                         const isStarterNeed = teamNeeds[pos] > 0;
                         const isSuperflexNeed = config.superflexPositions.includes(pos) && teamNeeds['SUPER_FLEX'] > 0;
                         const isFlexNeed = config.flexPositions.includes(pos) && teamNeeds['FLEX'] > 0;
+
                         if (config.rosterSettings.QB === 1 && pos === 'QB' && qbsOnRoster >= 2) { score = -9999; }
                         else if (isStarterNeed) { score += 1000; }
                         else if (isSuperflexNeed) { score += 500; }
                         else if (isFlexNeed) { score += 100; }
+                        
                         score *= (1 + (Math.random() - 0.5) * 0.4); 
                         p.draftScore = score;
                     });
+
                     topAvailable.sort((a, b) => b.draftScore - a.draftScore);
                     const draftedPlayer = topAvailable[0];
+
                     const draftedPlayerIndexInAvailable = availablePlayers.findIndex(p => p.name === draftedPlayer.name);
                     if (draftedPlayerIndexInAvailable !== -1) { availablePlayers.splice(draftedPlayerIndexInAvailable, 1); }
+
                     if (draftedPlayer) {
                         draftedPlayer.draftedAt = `(${(round + 1)}.${picksInRoundOrder.indexOf(teamIndex) + 1})`;
                         teams[teamIndex].roster.push(draftedPlayer);
+
                         const needs = teams[teamIndex].needs;
                         if (needs[draftedPlayer.simplePosition] > 0) needs[draftedPlayer.simplePosition]--;
                         else if (config.superflexPositions.includes(draftedPlayer.simplePosition) && needs['SUPER_FLEX'] > 0) needs['SUPER_FLEX']--;
@@ -260,7 +324,10 @@ document.addEventListener('DOMContentLoaded', () => {
             roster.sort((a, b) => (a.adp.ppr || 999) - (b.adp.ppr || 999));
             roster.forEach(player => {
                 const pos = player.simplePosition;
-                if (rosterSlots[pos] > 0) { player.displayPos = pos; starters.push(player); rosterSlots[pos]--; }
+                if (player.draftedAt === "(Keeper)") {
+                     player.displayPos = pos; starters.push(player); rosterSlots[pos]--;
+                }
+                else if (rosterSlots[pos] > 0) { player.displayPos = pos; starters.push(player); rosterSlots[pos]--; }
                 else if (config.superflexPositions.includes(pos) && rosterSlots['SUPER_FLEX'] > 0) { player.displayPos = 'S-FLEX'; starters.push(player); rosterSlots['SUPER_FLEX']--; }
                 else if (config.flexPositions.includes(pos) && rosterSlots['FLEX'] > 0) { player.displayPos = 'FLEX'; starters.push(player); rosterSlots['FLEX']--; }
                 else { bench.push(player); }
@@ -273,7 +340,8 @@ document.addEventListener('DOMContentLoaded', () => {
         },
         createPlayerCardHTML(player, isBench = false) {
             const pos = isBench ? 'BEN' : player.displayPos;
-            return `<div class="player-card player-pos-${player.simplePosition.toLowerCase()}"><strong class="font-bold w-12">${pos}:</strong><span class="player-name-link" data-player-name="${player.name}">${player.name} (${player.team})</span><span class="text-xs text-gray-400 ml-auto">${player.draftedAt || ''}</span></div>`;
+            const draftInfo = player.draftedAt === "(Keeper)" ? `<span class="text-xs text-yellow-400 ml-auto font-bold">${player.draftedAt}</span>` : `<span class="text-xs text-gray-400 ml-auto">${player.draftedAt || ''}</span>`;
+            return `<div class="player-card player-pos-${player.simplePosition.toLowerCase()}"><strong class="font-bold w-12">${pos}:</strong><span class="player-name-link" data-player-name="${player.name}">${player.name} (${player.team})</span>${draftInfo}</div>`;
         },
         initStartSitTool() {
             const tool = { player1Input: document.getElementById('start-sit-player1'), player2Input: document.getElementById('start-sit-player2'), analyzeBtn: document.getElementById('start-sit-analyze'), resultsContainer: document.getElementById('start-sit-results') };
