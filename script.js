@@ -43,7 +43,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (document.getElementById('article-content')) this.loadArticleContent();
             if (document.getElementById('waiver-wire-page')) this.initWaiverWirePage();
             if (document.getElementById('league-dominator-page')) this.initLeagueDominatorPage();
-            if (document.getElementById('ai-analyst-page')) this.initAiAnalystPage();
+            if (document.getElementById('dynasty-dashboard-page')) this.initDynastyDashboardPage();
         },
         
         initMobileMenu() {
@@ -566,7 +566,9 @@ document.addEventListener('DOMContentLoaded', () => {
             let score = 0;
             const adp = player.adp[scoring] || 999;
             
-            if (round < 7) { 
+            if (round < 3) {
+                 score = (1 / adp) * 1000;
+            } else if (round < 7) { 
                 const adpScore = (1 / adp) * 1000;
                 const vorpScore = (player.vorp || 0) * 1.5;
                 score = (adpScore * 0.8) + (vorpScore * 0.2); 
@@ -636,7 +638,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
                         availablePlayers.sort((a, b) => b.draftScore - a.draftScore);
                         
-                        const bucketSize = (round < 3) ? 3 : 5;
+                        const bucketSize = (round < 3) ? 4 : 5;
                         const draftBucket = availablePlayers.slice(0, bucketSize);
                         draftedPlayer = draftBucket[Math.floor(Math.random() * draftBucket.length)];
                     }
