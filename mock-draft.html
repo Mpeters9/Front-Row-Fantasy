@@ -80,7 +80,16 @@
                 </div>
                 <div class="col-span-12 lg:col-span-5 order-first lg:order-none">
                     <div id="best-available-container" class="draft-card p-0 flex flex-col h-full">
-                        <h3 class="text-xl font-bold text-center text-teal-300 p-4">Best Available Players</h3>
+                        <div class="flex justify-between items-center p-4">
+                            <h3 class="text-xl font-bold text-teal-300">Best Available</h3>
+                            <select id="best-available-pos-filter" class="form-select !w-auto">
+                                <option value="ALL">All</option>
+                                <option value="QB">QB</option>
+                                <option value="RB">RB</option>
+                                <option value="WR">WR</option>
+                                <option value="TE">TE</option>
+                            </select>
+                        </div>
                         <div id="best-available-list" class="space-y-1 px-2 pb-2 overflow-y-auto flex-grow" style="max-height: 75vh;"></div>
                     </div>
                 </div>
