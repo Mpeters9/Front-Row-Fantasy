@@ -39,7 +39,7 @@
         <section id="goat-hub-page">
             <h1 class="text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-yellow-300 to-teal-300 mb-4 text-glow-gold text-center">G.O.A.T. Hub</h1>
             <p class="text-xl text-teal-200 max-w-3xl mx-auto text-center mb-8">
-                Your ultimate draft preparation war room. AI-driven plans, cheat sheets, and analysis in one place.
+                Your ultimate draft preparation war room. AI-driven plans, simulators, cheat sheets, and analysis in one place.
             </p>
 
             <div x-data="{ tab: 'plan' }" class="tool-card p-0">
@@ -47,6 +47,9 @@
                     <nav class="-mb-px flex space-x-8 px-6" aria-label="Tabs">
                         <button @click="tab = 'plan'" :class="{ 'border-teal-400 text-teal-300': tab === 'plan', 'border-transparent text-gray-400 hover:text-gray-200 hover:border-gray-300': tab !== 'plan' }" class="whitespace-nowrap py-4 px-1 border-b-2 font-medium text-lg">
                             AI Draft Plan
+                        </button>
+                        <button @click="tab = 'build'" :class="{ 'border-teal-400 text-teal-300': tab === 'build', 'border-transparent text-gray-400 hover:text-gray-200 hover:border-gray-300': tab !== 'build' }" class="whitespace-nowrap py-4 px-1 border-b-2 font-medium text-lg">
+                            Draft Build
                         </button>
                         <button @click="tab = 'sheet'" :class="{ 'border-teal-400 text-teal-300': tab === 'sheet', 'border-transparent text-gray-400 hover:text-gray-200 hover:border-gray-300': tab !== 'sheet' }" class="whitespace-nowrap py-4 px-1 border-b-2 font-medium text-lg">
                             AI Cheat Sheet
@@ -81,7 +84,54 @@
                             <button id="generate-plan-btn" class="cta-btn w-full mt-2 text-lg">Generate Plan</button>
                         </div>
                         <div id="plan-output-container" class="mt-8 prose prose-invert prose-lg max-w-none">
-                            <!-- AI Generated Plan will be injected here -->
+                             <p class="text-center text-gray-400">Your AI-generated draft plan will appear here.</p>
+                        </div>
+                    </div>
+                    
+                    <!-- Draft Build Simulator Tab -->
+                    <div x-show="tab === 'build'" id="goat-draft-build-container">
+                        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                            <div class="lg:col-span-1">
+                                <h2 class="text-3xl font-bold text-center text-teal-300 mb-4">Draft Build Simulator</h2>
+                                <div class="p-6 bg-gray-800/50 rounded-lg border border-teal-800 space-y-4">
+                                    <div>
+                                        <label for="build-league-type" class="block text-gray-300 font-semibold mb-2">League Type</label>
+                                        <select id="build-league-type" class="form-select w-full"><option value="redraft" selected>Redraft</option><option value="keeper">Keeper</option></select>
+                                    </div>
+                                    <div>
+                                        <label for="build-scoring-type" class="block text-gray-300 font-semibold mb-2">Scoring</label>
+                                        <select id="build-scoring-type" class="form-select w-full"><option value="ppr" selected>PPR</option><option value="hppr">Half-PPR</option><option value="standard">Standard</option></select>
+                                    </div>
+                                    <div>
+                                        <label for="build-league-size" class="block text-gray-300 font-semibold mb-2">League Size</label>
+                                        <select id="build-league-size" class="form-select w-full"><option value="12" selected>12 Teams</option><option value="10">10 Teams</option><option value="14">14 Teams</option></select>
+                                    </div>
+                                    <div>
+                                        <label for="build-draft-position" class="block text-gray-300 font-semibold mb-2">Your Draft Pick</label>
+                                        <select id="build-draft-position" class="form-select w-full"></select>
+                                    </div>
+                                    <button id="generate-build-btn" class="cta-btn w-full mt-2 text-lg">Simulate & Build</button>
+                                </div>
+                            </div>
+                            <div class="lg:col-span-2">
+                                <div id="build-results-wrapper" class="hidden">
+                                    <h2 class="text-3xl font-bold text-center text-teal-300 mb-4">Your Simulated Team Build</h2>
+                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                        <div class="tool-card p-4">
+                                            <h3 class="font-semibold text-xl text-yellow-300 mb-3 text-center">Starters</h3>
+                                            <div id="starters-list" class="space-y-1"></div>
+                                        </div>
+                                        <div class="tool-card p-4">
+                                            <h3 class="font-semibold text-xl text-yellow-300 mb-3 text-center">Bench</h3>
+                                            <div id="bench-list" class="space-y-1"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div id="build-loading-spinner" class="hidden text-center py-16">
+                                    <div class="loader"></div>
+                                    <p class="text-teal-300 mt-2">Simulating thousands of drafts to find your optimal team...</p>
+                                </div>
+                            </div>
                         </div>
                     </div>
 
