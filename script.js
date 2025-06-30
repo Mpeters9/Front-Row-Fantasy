@@ -437,7 +437,7 @@ document.addEventListener('DOMContentLoaded', () => {
         async generateDailyBriefing() {
             const container = document.getElementById('daily-briefing-content');
             if (!container) return;
-            const prompt = `Act as a fantasy football analyst providing a "Daily Briefing"...`; // Full prompt omitted for brevity
+            const prompt = `Act as a fantasy football analyst providing a "Daily Briefing". Generate a short, engaging summary for a fantasy football website's homepage. The output MUST be a single block of clean, valid HTML. It should have three sections, each with an h3 heading: 1. "Top Headline": A major piece of recent NFL news and its fantasy impact. 2. "Player to Watch": Highlight a player who has an interesting situation or matchup this week. 3. "Sleeper of the Day": Identify a lesser-known player who could have a surprise performance. Keep the analysis for each section to 2-3 sentences. Be insightful and concise.`;
             try {
                 let chatHistory = [{ role: "user", parts: [{ text: prompt }] }];
                 const payload = { contents: chatHistory, generationConfig: { responseMimeType: "text/html" } };
@@ -594,7 +594,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 }).join('');
                 return `<tr class="cursor-pointer hover:bg-gray-800/50 ${isSelected ? 'bg-teal-500/10' : ''}" data-player-name="${player.name}">${rowHtml}</tr>`;
             }).join('');
-            this.addPlayerSelectionListeners();
+            this.addPlayerPopupListeners();
             if(document.getElementById('stats-chart')) this.updateStatsChart(position);
         },
         addPlayerSelectionListeners() {
@@ -840,25 +840,32 @@ document.addEventListener('DOMContentLoaded', () => {
         },
         updateDraftBoard() {
             const gridEl = document.getElementById('draft-board-grid'); const { leagueSize, draftPicks, userPickNum, totalRounds } = this.draftState; 
-            gridEl.innerHTML = ''; // Clear previous log
+            gridEl.innerHTML = '';
+            let headerHtml = '<div class="draft-board-header">'; for (let i = 1; i <= leagueSize; i++) { headerHtml += `<div class="draft-board-team-header ${userPickNum === i ? 'user-team-header' : ''}">Team ${i}</div>`; } headerHtml += '</div>'; gridEl.innerHTML += headerHtml;
+            const bodyEl = document.createElement('div'); bodyEl.className = 'draft-board-body'; bodyEl.style.gridTemplateColumns = `repeat(${leagueSize}, minmax(0, 1fr))`;
             
-            // Reverse the picks to show most recent first
-            const reversedPicks = [...draftPicks].reverse();
-
-            reversedPicks.forEach(pick => {
+            for (let i = 0; i < totalRounds * leagueSize; i++) {
+                const pick = draftPicks[i];
                 const pickEl = document.createElement('div');
-                pickEl.className = `draft-pick pick-pos-${pick.player.simplePosition.toLowerCase()} ${pick.teamNumber === userPickNum ? 'user-pick' : ''}`;
-                pickEl.innerHTML = `<span class="pick-number">${pick.round}.${pick.pick}</span><p class="pick-player-name player-name-link" data-player-name="${pick.player.name}">${pick.player.name}</p><p class="pick-player-info">${pick.player.team} - ${pick.player.simplePosition}</p>`;
-                gridEl.appendChild(pickEl);
-            });
+                if(pick) { pickEl.className = `draft-pick pick-pos-${pick.player.simplePosition.toLowerCase()} ${pick.teamNumber === userPickNum ? 'user-pick' : ''}`; pickEl.innerHTML = `<span class="pick-number">${pick.round}.${pick.pick}</span><p class="pick-player-name player-name-link" data-player-name="${pick.player.name}">${pick.player.name}</p><p class="pick-player-info">${pick.player.team} - ${pick.player.simplePosition}</p>`; }
+                else { pickEl.className = `draft-pick empty`; pickEl.innerHTML = `&nbsp;`; }
+                bodyEl.appendChild(pickEl);
+            }
+            gridEl.appendChild(bodyEl);
             this.addPlayerPopupListeners();
         },
         endInteractiveDraft() {
             this.draftState.controls.draftingContainer.classList.add('hidden'); this.draftState.controls.completeContainer.classList.remove('hidden');
             const rosterEl = document.getElementById('final-roster-display'); rosterEl.innerHTML = '';
             const myRoster = this.draftState.teams[this.draftState.userPickNum - 1].roster;
-            const starters = []; const bench = []; const rosterSlots = { ...config.rosterSettings };
-            myRoster.forEach(player => { const pos = player.simplePosition; if (rosterSlots[pos] > 0) { starters.push(player); rosterSlots[pos]--; } else if (config.flexPositions.includes(pos) && rosterSlots['FLEX'] > 0) { player.displayPos = 'FLEX'; starters.push(player); rosterSlots['FLEX']--; } else { bench.push(player); } });
+            const starters = []; const bench = []; 
+            const finalRosterSlots = { ...config.rosterSettings }; // Use the settings from the draft
+            myRoster.forEach(player => { 
+                const pos = player.simplePosition; 
+                if (finalRosterSlots[pos] > 0) { player.displayPos = pos; starters.push(player); finalRosterSlots[pos]--; } 
+                else if (config.flexPositions.includes(pos) && finalRosterSlots['FLEX'] > 0) { player.displayPos = 'FLEX'; starters.push(player); finalRosterSlots['FLEX']--; } 
+                else { bench.push(player); } 
+            });
             rosterEl.innerHTML = ` <div><h4 class="text-xl font-semibold text-teal-300 mb-2 border-b border-gray-700 pb-1">Starters</h4><div class="space-y-2">${starters.map(p => this.createPlayerCardHTML(p)).join('')}</div></div> <div><h4 class="text-xl font-semibold text-teal-300 mb-2 border-b border-gray-700 pb-1">Bench</h4><div class="space-y-2">${bench.map(p => this.createPlayerCardHTML(p, true)).join('')}</div></div> `;
             this.addPlayerPopupListeners();
         },
