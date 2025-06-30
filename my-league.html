@@ -68,7 +68,8 @@
     </main>
 
     <div id="login-modal" class="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center hidden z-50">
-        <div class="bg-gray-800 p-8 rounded-lg shadow-xl w-full max-w-md">
+        <div class="bg-gray-800 p-8 rounded-lg shadow-xl w-full max-w-md relative">
+             <button id="close-login-modal" class="absolute top-4 right-4 text-gray-400 hover:text-white text-3xl leading-none">&times;</button>
             <h2 class="text-3xl font-bold text-center mb-6 text-yellow-400">Welcome Back</h2>
             <div class="space-y-4">
                 <input type="email" placeholder="Email" class="form-input w-full">
@@ -82,7 +83,6 @@
                     Don't have an account? <a href="#" class="text-teal-400 hover:underline">Sign Up</a>
                 </p>
             </div>
-            <button id="close-login-modal" class="absolute top-4 right-4 text-gray-400 hover:text-white">&times;</button>
         </div>
     </div>
     
