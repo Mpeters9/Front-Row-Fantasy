@@ -287,9 +287,23 @@ document.addEventListener('DOMContentLoaded', () => {
         },
         async generateAiDraftPlan(controls) {
             controls.outputContainer.innerHTML = `<div class="loader"></div><p class="text-center text-teal-300 mt-2">Your personal AI analyst is crafting the perfect draft strategy...</p>`;
-            setTimeout(() => {
-                controls.outputContainer.innerHTML = `<h3><strong>This is a dummy AI Draft Plan.</strong></h3><p>This is where the AI-generated draft plan would appear. It would be tailored to your league settings and draft position.</p>`;
-            }, 1000);
+            const { size, pick, scoring } = controls;
+            const prompt = `Act as the world's greatest fantasy football draft analyst. A user needs a strategic draft plan for their upcoming fantasy draft. League Settings: - League Size: ${size.value} teams - Scoring Format: ${scoring.value} - Their Draft Position: Pick #${pick.value}. Provide a detailed, round-by-round draft strategy. For each group of rounds (e.g., Rounds 1-2, Rounds 3-5, etc.), give a clear strategic objective (e.g., "Secure an elite RB", "Focus on high-upside WRs"). Then, list 2-3 specific players who are excellent targets in that range and fit the strategy, considering their ADP. The tone should be confident and authoritative. Format the output in clean HTML using h3 for round groups and ul/li for player lists. Start with a bolded, one-sentence summary of the overall strategy (e.g., **"This plan focuses on a Hero RB strategy, surrounding a top running back with elite receiving talent."**).`;
+
+            try {
+                let chatHistory = [{ role: "user", parts: [{ text: prompt }] }];
+                const payload = { contents: chatHistory, generationConfig: { responseMimeType: "text/html" } };
+                const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${API_KEY}`;
+                const response = await fetch(apiUrl, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+                if (!response.ok) throw new Error(`API Error: ${response.statusText}`);
+                const result = await response.json();
+                if (result.candidates && result.candidates[0]?.content?.parts[0]?.text) {
+                    controls.outputContainer.innerHTML = result.candidates[0].content.parts[0].text;
+                } else { throw new Error('No content returned from AI.'); }
+            } catch (error) {
+                console.error("Gemini API error:", error);
+                controls.outputContainer.innerHTML = `<p class="text-red-400 text-center">Could not generate AI Draft Plan. Please try again later.</p>`;
+            }
         },
         initGoatCheatSheet() {
             const controls = { searchInput: document.getElementById('sheet-player-search'), positionFilter: document.getElementById('sheet-position-filter'), aiTagFilter: document.getElementById('sheet-ai-tag-filter'), tableBody: document.getElementById('cheat-sheet-table-body') };
@@ -334,10 +348,24 @@ document.addEventListener('DOMContentLoaded', () => {
                  thinkingElement.innerHTML = `<div class="loader-small"></div>`;
                  controls.chatWindow.appendChild(thinkingElement);
                  controls.chatWindow.scrollTop = controls.chatWindow.scrollHeight;
-                 setTimeout(() => {
+                const tradeContext = (this.tradeState.team1.players.length > 0) ? `For context, I am analyzing a trade where I give ${this.tradeState.team1.players.map(p=>p.name).join(', ')} and receive ${this.tradeState.team2.players.map(p=>p.name).join(', ')}.` : "";
+                const prompt = `You are a helpful and concise fantasy football analyst. Your name is GOAT. Answer the user's question based on the provided chat history. ${tradeContext}\n\nUser question: "${question}"`;
+                this.chatHistory.push({ role: "user", parts: [{ text: prompt }] });
+                try {
+                    const payload = { contents: this.chatHistory };
+                    const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${API_KEY}`;
+                    const response = await fetch(apiUrl, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+                    const result = await response.json();
                     controls.chatWindow.removeChild(thinkingElement);
-                    addMessage("This is a dummy response from the AI. The API is not currently connected.", 'ai');
-                }, 1000);
+                    if (result.candidates && result.candidates.length > 0) {
+                        const aiResponse = result.candidates[0].content.parts[0].text;
+                        addMessage(aiResponse, 'ai');
+                    } else { throw new Error('No content returned'); }
+                } catch (error) {
+                    console.error("AI Chat Error", error);
+                     controls.chatWindow.removeChild(thinkingElement);
+                    addMessage("I seem to be having trouble connecting to the sidelines. Please try again in a moment.", 'ai');
+                }
             };
             const handleSend = () => {
                 const question = controls.chatInput.value.trim();
@@ -506,7 +534,22 @@ document.addEventListener('DOMContentLoaded', () => {
         async generateDailyBriefing() {
             const container = document.getElementById('daily-briefing-content');
             if (!container) return;
-            container.innerHTML = `<h3><strong>This is a dummy Daily Briefing.</strong></h3><p>This is where the AI-generated daily briefing would appear. The API is not currently connected.</p>`;
+            container.innerHTML = `<div class="loader"></div><p class="text-center text-teal-300 mt-2">Generating today's fantasy analysis...</p></div>`;
+            const prompt = `Act as a fantasy football analyst providing a "Daily Briefing". Generate a short, engaging summary for a fantasy football website's homepage. The output MUST be a single block of clean, valid HTML. It should have three sections, each with an h3 heading: 1. "Top Headline": A major piece of recent NFL news and its fantasy impact. 2. "Player to Watch": Highlight a player who has an interesting situation or matchup this week. 3. "Sleeper of the Day": Identify a lesser-known player who could have a surprise performance. Keep the analysis for each section to 2-3 sentences. Be insightful and concise.`;
+            try {
+                let chatHistory = [{ role: "user", parts: [{ text: prompt }] }];
+                const payload = { contents: chatHistory, generationConfig: { responseMimeType: "text/html" } };
+                const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${API_KEY}`;
+                const response = await fetch(apiUrl, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+                if (!response.ok) throw new Error(`API Error: ${response.statusText}`);
+                const result = await response.json();
+                if (result.candidates && result.candidates[0]?.content?.parts[0]?.text) {
+                    container.innerHTML = result.candidates[0].content.parts[0].text;
+                } else { throw new Error('No content returned from AI.'); }
+            } catch (error) {
+                console.error("Gemini API error for briefing:", error);
+                container.innerHTML = `<p class="text-red-400 text-center">Could not generate the daily briefing at this time. Please check back later.</p>`;
+            }
         },
         createPlayerPopup() {
             if (document.getElementById('player-popup-card')) return;
@@ -570,10 +613,22 @@ document.addEventListener('DOMContentLoaded', () => {
             button.classList.add('hidden');
             loader.classList.remove('hidden');
             textEl.textContent = '';
-            setTimeout(() => {
-                textEl.textContent = "This is a dummy AI analysis for the player. The API is not currently connected.";
+            const prompt = `Provide a brief, 2-3 sentence fantasy football outlook for the player: ${playerName}. Focus on their upcoming season potential, role on the team, and whether they are a good value at their current ADP.`;
+            try {
+                let chatHistory = [{ role: "user", parts: [{ text: prompt }] }];
+                const payload = { contents: chatHistory };
+                const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${API_KEY}`;
+                const response = await fetch(apiUrl, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+                const result = await response.json();
+                if (result.candidates && result.candidates[0]?.content?.parts[0]?.text) {
+                    textEl.textContent = result.candidates[0].content.parts[0].text;
+                } else { throw new Error('No content returned from AI.'); }
+            } catch (error) {
+                console.error("Gemini API error:", error);
+                textEl.textContent = "Could not retrieve AI analysis at this time.";
+            } finally {
                 loader.classList.add('hidden');
-            }, 1000);
+            }
         },
         initTopPlayers() {
             const container = document.getElementById('player-showcase-container');
