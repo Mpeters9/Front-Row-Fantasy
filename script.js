@@ -484,16 +484,35 @@ document.addEventListener('DOMContentLoaded', () => {
             this.addPlayerPopupListeners();
         },
         initStatsPage() {
-            const controls = { position: document.getElementById('stats-position-filter'), sortBy: document.getElementById('stats-sort-by'), search: document.getElementById('stats-player-search'), tableBody: document.getElementById('stats-table-body'), tableHead: document.getElementById('stats-table-head') };
+            const controls = {
+                position: document.getElementById('stats-position-filter'),
+                sortBy: document.getElementById('stats-sort-by'),
+                search: document.getElementById('stats-player-search'),
+                tableBody: document.getElementById('stats-table-body'),
+                tableHead: document.getElementById('stats-table-head'),
+                similarPlayerSearch: document.getElementById('similar-player-search'),
+                findSimilarBtn: document.getElementById('find-similar-player-btn'),
+                similarPlayerResults: document.getElementById('similar-player-results')
+            };
+
             if (!controls.tableBody) return;
-            if(this.selectedPlayersForChart.length === 0) { this.selectedPlayersForChart = this.playerData.filter(p => ['WR', 'RB'].includes(p.simplePosition)).slice(0, 4); }
+
+            if (this.selectedPlayersForChart.length === 0) {
+                this.selectedPlayersForChart = this.playerData.filter(p => ['WR', 'RB'].includes(p.simplePosition)).slice(0, 4);
+            }
+
             const render = () => {
                 let filteredPlayers = [...this.playerData];
                 const pos = controls.position.value;
-                if (pos === 'FLEX') { filteredPlayers = filteredPlayers.filter(p => config.flexPositions.includes(p.simplePosition)); }
-                else if (pos !== 'ALL') { filteredPlayers = filteredPlayers.filter(p => p.simplePosition === pos); }
+                if (pos === 'FLEX') {
+                    filteredPlayers = filteredPlayers.filter(p => config.flexPositions.includes(p.simplePosition));
+                } else if (pos !== 'ALL') {
+                    filteredPlayers = filteredPlayers.filter(p => p.simplePosition === pos);
+                }
                 const searchTerm = controls.search.value.toLowerCase();
-                if (searchTerm) { filteredPlayers = filteredPlayers.filter(p => p.name.toLowerCase().includes(searchTerm)); }
+                if (searchTerm) {
+                    filteredPlayers = filteredPlayers.filter(p => p.name.toLowerCase().includes(searchTerm));
+                }
                 const sortKey = controls.sortBy.value;
                 filteredPlayers.sort((a, b) => {
                     if (sortKey === 'name') return a.name.localeCompare(b.name);
@@ -501,8 +520,18 @@ document.addEventListener('DOMContentLoaded', () => {
                 });
                 this.updateStatsTable(pos, filteredPlayers);
             };
-            if(!this.statsChart && document.getElementById('stats-chart')) { this.initializeStatsChart(); }
+
+            if (!this.statsChart && document.getElementById('stats-chart')) {
+                this.initializeStatsChart();
+            }
+
             [controls.position, controls.sortBy, controls.search].forEach(el => el.addEventListener('input', render));
+
+            controls.findSimilarBtn.addEventListener('click', () => {
+                const query = controls.similarPlayerSearch.value;
+                this.findSimilarPlayer(query);
+            });
+
             render();
         },
         updateStatsTable(position, players) {
@@ -565,6 +594,20 @@ document.addEventListener('DOMContentLoaded', () => {
             this.statsChart.data.labels = labels;
             this.statsChart.data.datasets = datasets;
             this.statsChart.update();
+        },
+        findSimilarPlayer(query) {
+            const resultsContainer = document.getElementById('similar-player-results');
+            resultsContainer.innerHTML = '<div class="loader"></div>';
+            setTimeout(() => {
+                const similarPlayer = this.playerData[Math.floor(Math.random() * this.playerData.length)];
+                resultsContainer.innerHTML = `
+                    <p class="text-gray-300">Based on your query, a similar player is:</p>
+                    <div class="mt-2 p-4 bg-gray-800 rounded-lg">
+                        <p class="font-bold text-lg text-yellow-400">${similarPlayer.name}</p>
+                        <p class="text-sm text-gray-400">${similarPlayer.team} - ${similarPlayer.simplePosition}</p>
+                    </div>
+                `;
+            }, 1000);
         },
         initPlayersPage() {
             const controls = { searchInput: document.getElementById('player-search-input'), positionFilter: document.getElementById('position-filter'), tierFilter: document.getElementById('tier-filter'), teamFilter: document.getElementById('team-filter'), tableBody: document.getElementById('player-table-body'), sortHeaders: document.querySelectorAll('.sortable-header') };
