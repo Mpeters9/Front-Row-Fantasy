@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
 
-    const API_KEY = "YOUR_API_KEY"; // <--- PASTE YOUR API KEY HERE
+    const API_KEY = "AIzaSyAYzMpPQPjsSZZIB0vuojyhLRGTFFe6wv8"; // Your API key has been added.
 
     const config = {
         dataFiles: ['players.json'],
