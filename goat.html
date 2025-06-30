@@ -188,55 +188,63 @@
                     </div>
 
                     <div x-show="tab === 'trade'" id="goat-trade-analyzer-container">
-                        <div id="trade-analyzer">
-                            <div class="flex flex-col md:flex-row justify-center items-center mb-6">
-                                <h2 class="text-2xl md:text-3xl font-bold text-teal-300 mb-4 md:mb-0 md:mr-6">Trade Analyzer</h2>
-                                <div id="trade-type-toggle" class="flex rounded-full bg-gray-800 p-1">
-                                    <button class="trade-type-btn" data-type="Redraft">Redraft</button>
-                                    <button class="trade-type-btn" data-type="Dynasty">Dynasty</button>
-                                </div>
-                            </div>
+                        <div x-show="tab === 'trade'" id="goat-trade-analyzer-container">
+    <div id="trade-analyzer">
+        <div class="flex flex-col md:flex-row justify-center items-center mb-6">
+            <h2 class="text-2xl md:text-3xl font-bold text-teal-300 mb-4 md:mb-0 md:mr-6">Trade Analyzer</h2>
+            <div id="trade-type-toggle" class="flex rounded-full bg-gray-800 p-1">
+                <button class="trade-type-btn active" data-type="Redraft">Redraft</button>
+                <button class="trade-type-btn" data-type="Dynasty">Dynasty</button>
+            </div>
+        </div>
 
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8 items-start">
-                                <div class="trade-card p-4 md:p-6 space-y-4">
-                                    <h3 class="font-bold text-xl text-yellow-400 mb-3">You Give</h3>
-                                    <div class="relative">
-                                        <input type="text" id="trade-search-1" class="form-input" placeholder="Search Player...">
-                                        <ul id="trade-autocomplete-1" class="autocomplete-list"></ul>
-                                    </div>
-                                    <div class="trade-pick-controls hidden">
-                                        <div class="grid grid-cols-3 gap-2 items-center">
-                                            <select id="trade-pick-year-1" class="form-select col-span-1"><option value="2025">2025</option><option value="2026">2026</option></select>
-                                            <select id="trade-pick-round-1" class="form-select col-span-1"><option value="1">1st</option><option value="2">2nd</option><option value="3">3rd</option></select>
-                                            <input type="number" id="trade-pick-number-1" class="form-input col-span-1" placeholder="Pick #">
-                                        </div>
-                                        <button id="add-pick-btn-1" class="w-full mt-2 bg-teal-800/50 text-teal-200 p-2 rounded-md hover:bg-teal-700/50 transition">Add Pick</button>
-                                    </div>
-                                    <div id="trade-team-1" class="space-y-2 pt-2 min-h-[50px]"></div>
-                                </div>
-                                <div class="trade-card p-4 md:p-6 space-y-4">
-                                    <h3 class="font-bold text-xl text-green-400 mb-3">You Get</h3>
-                                    <div class="relative">
-                                        <input type="text" id="trade-search-2" class="form-input" placeholder="Search Player...">
-                                        <ul id="trade-autocomplete-2" class="autocomplete-list"></ul>
-                                    </div>
-                                     <div class="trade-pick-controls hidden">
-                                        <div class="grid grid-cols-3 gap-2 items-center">
-                                            <select id="trade-pick-year-2" class="form-select col-span-1"><option value="2025">2025</option><option value="2026">2026</option></select>
-                                            <select id="trade-pick-round-2" class="form-select col-span-1"><option value="1">1st</option><option value="2">2nd</option><option value="3">3rd</option></select>
-                                             <input type="number" id="trade-pick-number-2" class="form-input col-span-1" placeholder="Pick #">
-                                        </div>
-                                         <button id="add-pick-btn-2" class="w-full mt-2 bg-teal-800/50 text-teal-200 p-2 rounded-md hover:bg-teal-700/50 transition">Add Pick</button>
-                                    </div>
-                                    <div id="trade-team-2" class="space-y-2 pt-2 min-h-[50px]"></div>
-                                </div>
-                            </div>
-                            <div class="text-center mt-8">
-                                <button id="analyze-trade-btn" class="cta-btn text-lg">Analyze Trade</button>
-                            </div>
-                            <div id="trade-results" class="hidden mt-8 tool-card p-6"></div>
-                        </div>
+        <div class="trade-analyzer-grid">
+            <div class="trade-card p-4 md:p-6 space-y-4">
+                <h3 class="font-bold text-2xl text-yellow-400 mb-3 text-center">You Give</h3>
+                <div class="relative">
+                    <input type="text" id="trade-search-1" class="form-input" placeholder="Search Player...">
+                    <ul id="trade-autocomplete-1" class="autocomplete-list"></ul>
+                </div>
+                <div class="trade-pick-controls hidden">
+                    <div class="grid grid-cols-3 gap-2 items-center">
+                        <select id="trade-pick-year-1" class="form-select col-span-1"><option value="2025">2025</option><option value="2026">2026</option></select>
+                        <select id="trade-pick-round-1" class="form-select col-span-1"><option value="1">1st</option><option value="2">2nd</option><option value="3">3rd</option></select>
+                        <input type="number" id="trade-pick-number-1" class="form-input col-span-1" placeholder="Pick #">
                     </div>
+                    <button id="add-pick-btn-1" class="w-full mt-2 bg-teal-800/50 text-teal-200 p-2 rounded-md hover:bg-teal-700/50 transition">Add Pick</button>
+                </div>
+                <div id="trade-team-1" class="space-y-2 pt-2 min-h-[100px]"></div>
+            </div>
+
+            <div class="trade-separator">
+                <span class="text-4xl font-black text-gray-600">VS</span>
+            </div>
+
+            <div class="trade-card p-4 md:p-6 space-y-4">
+                <h3 class="font-bold text-2xl text-green-400 mb-3 text-center">You Get</h3>
+                <div class="relative">
+                    <input type="text" id="trade-search-2" class="form-input" placeholder="Search Player...">
+                    <ul id="trade-autocomplete-2" class="autocomplete-list"></ul>
+                </div>
+                 <div class="trade-pick-controls hidden">
+                    <div class="grid grid-cols-3 gap-2 items-center">
+                        <select id="trade-pick-year-2" class="form-select col-span-1"><option value="2025">2025</option><option value="2026">2026</option></select>
+                        <select id="trade-pick-round-2" class="form-select col-span-1"><option value="1">1st</option><option value="2">2nd</option><option value="3">3rd</option></select>
+                         <input type="number" id="trade-pick-number-2" class="form-input col-span-1" placeholder="Pick #">
+                    </div>
+                     <button id="add-pick-btn-2" class="w-full mt-2 bg-teal-800/50 text-teal-200 p-2 rounded-md hover:bg-teal-700/50 transition">Add Pick</button>
+                </div>
+                <div id="trade-team-2" class="space-y-2 pt-2 min-h-[100px]"></div>
+            </div>
+        </div>
+
+        <div class="text-center mt-8">
+            <button id="analyze-trade-btn" class="cta-btn text-lg">Analyze Trade</button>
+        </div>
+
+        <div id="trade-results" class="hidden mt-8 tool-card p-6"></div>
+    </div>
+</div>
 
                      <div x-show="tab === 'chat'" id="goat-ai-analyst-container">
                         <div class="flex flex-col h-[60vh] bg-gray-900/40 rounded-lg">
