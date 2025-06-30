@@ -42,11 +42,11 @@
                 Your ultimate draft preparation war room. AI-driven plans, simulators, cheat sheets, and analysis in one place.
             </p>
 
-            <div x-data="{ tab: 'build' }" class="tool-card p-0">
+            <div x-data="{ tab: 'perfect-draft' }" class="tool-card p-0">
                 <div class="border-b border-gray-700 overflow-x-auto">
                     <nav class="-mb-px flex space-x-8 px-6" aria-label="Tabs">
-                         <button @click="tab = 'build'" :class="{ 'border-teal-400 text-teal-300': tab === 'build', 'border-transparent text-gray-400 hover:text-gray-200 hover:border-gray-300': tab !== 'build' }" class="whitespace-nowrap py-4 px-1 border-b-2 font-medium text-lg">
-                            Draft Build
+                         <button @click="tab = 'perfect-draft'" :class="{ 'border-teal-400 text-teal-300': tab === 'perfect-draft', 'border-transparent text-gray-400 hover:text-gray-200 hover:border-gray-300': tab !== 'perfect-draft' }" class="whitespace-nowrap py-4 px-1 border-b-2 font-medium text-lg">
+                            Perfect Draft
                         </button>
                         <button @click="tab = 'plan'" :class="{ 'border-teal-400 text-teal-300': tab === 'plan', 'border-transparent text-gray-400 hover:text-gray-200 hover:border-gray-300': tab !== 'plan' }" class="whitespace-nowrap py-4 px-1 border-b-2 font-medium text-lg">
                             AI Draft Plan
@@ -88,12 +88,14 @@
                         </div>
                     </div>
                     
-                    <!-- Draft Build Simulator Tab -->
-                    <div x-show="tab === 'build'" id="goat-draft-build-container">
+                    <!-- Perfect Draft Simulator Tab -->
+                    <div x-show="tab === 'perfect-draft'" id="goat-draft-build-container">
+                         <h2 class="text-3xl font-bold text-center text-teal-300 mb-6">Perfect Draft Simulator</h2>
                         <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
-                            <div class="lg:col-span-4">
-                                <h2 class="text-3xl font-bold text-center text-teal-300 mb-4">Draft Build Simulator</h2>
+                            <!-- Left Column: Settings -->
+                            <div class="lg:col-span-5">
                                 <div class="p-6 bg-gray-800/50 rounded-lg border border-teal-800 space-y-4">
+                                    <h3 class="text-2xl font-bold text-yellow-300 mb-4">1. Draft Settings</h3>
                                     <div>
                                         <label for="build-league-type" class="block text-gray-300 font-semibold mb-2">League Type</label>
                                         <select id="build-league-type" class="form-select w-full"><option value="redraft" selected>Redraft</option><option value="keeper">Keeper</option></select>
@@ -110,24 +112,25 @@
                                         <label for="build-draft-position" class="block text-gray-300 font-semibold mb-2">Your Draft Pick</label>
                                         <select id="build-draft-position" class="form-select w-full"></select>
                                     </div>
-                                    <button id="generate-build-btn" class="cta-btn w-full mt-2 text-lg">Simulate & Build</button>
                                 </div>
-                            </div>
-                             <div class="lg:col-span-3">
-                                <h3 class="text-2xl font-bold text-center text-teal-300 mb-4">Roster Settings</h3>
-                                 <div id="roster-settings-container" class="grid grid-cols-2 gap-4">
-                                     <!-- Roster steppers will be injected here by script.js -->
+                                 <div class="p-6 mt-8 bg-gray-800/50 rounded-lg border border-teal-800">
+                                      <h3 class="text-2xl font-bold text-yellow-300 mb-4">2. Roster Settings</h3>
+                                     <div id="roster-settings-container" class="grid grid-cols-2 gap-4">
+                                         <!-- Roster steppers will be injected here by script.js -->
+                                     </div>
                                  </div>
+                                  <button id="generate-build-btn" class="cta-btn w-full mt-8 text-xl">Generate My Perfect Draft</button>
                             </div>
-                            <div class="lg:col-span-5">
+                            <!-- Right Column: Results -->
+                            <div class="lg:col-span-7">
                                 <div id="build-results-wrapper" class="hidden">
                                     <h2 class="text-3xl font-bold text-center text-teal-300 mb-4">Your Simulated Team Build</h2>
                                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                        <div class="tool-card p-4">
+                                        <div class="tool-card p-4 bg-gray-900/40">
                                             <h3 class="font-semibold text-xl text-yellow-300 mb-3 text-center">Starters</h3>
                                             <div id="starters-list" class="space-y-1"></div>
                                         </div>
-                                        <div class="tool-card p-4">
+                                        <div class="tool-card p-4 bg-gray-900/40">
                                             <h3 class="font-semibold text-xl text-yellow-300 mb-3 text-center">Bench</h3>
                                             <div id="bench-list" class="space-y-1"></div>
                                         </div>
@@ -137,6 +140,9 @@
                                     <div class="loader"></div>
                                     <p class="text-teal-300 mt-2">Simulating thousands of drafts to find your optimal team...</p>
                                 </div>
+                                 <div id="build-placeholder" class="text-center py-16 text-gray-500">
+                                    <p>Your draft results will appear here after simulation.</p>
+                                 </div>
                             </div>
                         </div>
                     </div>
