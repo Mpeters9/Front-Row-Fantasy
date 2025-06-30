@@ -98,7 +98,7 @@ document.addEventListener('DOMContentLoaded', () => {
             return Math.max(0, base + (Math.random() * range)); 
         },
         generateAdvancedStats(player, fantasyPoints) {
-            const pos = (player.position||'').replace(/\d+$/, '').trim().toUpperCase();
+            const pos = (player.position||'').replace(/\d+$/,'').trim().toUpperCase();
             const base = fantasyPoints;
             let stats = { passYds: 0, passTDs: 0, INTs: 0, rushAtt: 0, rushYds: 0, targets: 0, receptions: 0, recYds: 0, airYards: 0, redzoneTouches: 0, yprr: 0 };
             
