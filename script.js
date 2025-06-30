@@ -34,7 +34,6 @@ document.addEventListener('DOMContentLoaded', () => {
             if (document.getElementById('daily-briefing-section')) this.generateDailyBriefing();
             if (document.getElementById('top-players-section')) this.initTopPlayers();
             if (document.getElementById('goat-page')) this.initGoatPage();
-            if (document.getElementById('start-sit-tool')) this.initStartSitTool();
             if (document.getElementById('mock-draft-simulator')) this.initMockDraftSimulator();
             if (document.getElementById('stats-page')) this.initStatsPage();
             if (document.getElementById('players-page')) this.initPlayersPage();
@@ -44,6 +43,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (document.getElementById('waiver-wire-page')) this.initWaiverWirePage();
             if (document.getElementById('league-dominator-page')) this.initLeagueDominatorPage();
             if (document.getElementById('dynasty-dashboard-page')) this.initDynastyDashboardPage();
+            if (document.getElementById('my-league-page')) this.initMyLeaguePage();
         },
         
         initMobileMenu() {
@@ -917,19 +917,68 @@ document.addEventListener('DOMContentLoaded', () => {
             `;
 
         },
-        initAiAnalystPage() {
-            const chatWindow = document.getElementById('chat-window');
-            const chatInput = document.getElementById('chat-input');
-            const sendButton = document.getElementById('send-chat-button');
+        initDynastyDashboardPage() {
+            const tradeBlockContainer = document.getElementById('dynasty-trade-block-container');
+            const rookieDraftContainer = document.getElementById('dynasty-rookie-draft-container');
+            const prospectsContainer = document.getElementById('dynasty-prospects-container');
 
-            if(!chatWindow) return;
+            if (!tradeBlockContainer) return;
+
+            // Simulate Trade Block
+            const tradeBlockPlayers = this.playerData.filter(p => p.tier > 2 && p.tier < 6).slice(0, 5);
+            tradeBlockContainer.innerHTML = tradeBlockPlayers.map(player => `
+                <div class="tool-card p-4 flex justify-between items-center">
+                    <div>
+                        <p class="font-bold text-xl text-white">${player.name}</p>
+                        <p class="text-teal-300">${player.team} - ${player.simplePosition}</p>
+                    </div>
+                    <button class="cta-btn !px-4 !py-2 text-sm">Inquire</button>
+                </div>
+            `).join('');
+
+            // Simulate Rookie Draft
+            const rookiePlayers = this.playerData.filter(p => p.tier > 8).slice(0, 12);
+            rookieDraftContainer.innerHTML = rookiePlayers.map((player, index) => `
+                <div class="flex items-center p-3 rounded-lg bg-gray-800/50">
+                    <div class="w-12 text-center text-2xl font-bold text-teal-300">${index + 1}</div>
+                    <div class="flex-grow">
+                        <p class="font-semibold text-lg text-white">${player.name}</p>
+                        <p class="text-sm text-gray-400">${player.team} - ${player.simplePosition}</p>
+                    </div>
+                    <button class="cta-btn !px-4 !py-2 text-sm">Draft</button>
+                </div>
+            `).join('');
+            
+            // Simulate Prospect Pipeline
+            const prospectPlayers = [
+                { name: "Luther Burden", position: "WR", school: "Missouri", analysis: "A dynamic playmaker with elite speed and route-running ability. Projects as a top-10 NFL draft pick." },
+                { name: "Shemar Stewart", position: "EDGE", school: "Texas A&M", analysis: "A dominant pass-rusher with a high motor and a knack for getting to the quarterback. A future IDP stud." },
+                { name: "Carson Schwesinger", position: "LB", school: "Wake Forest", analysis: "A tackling machine with great instincts and sideline-to-sideline speed. A future top-24 linebacker." },
+            ];
+
+            prospectsContainer.innerHTML = prospectPlayers.map(player => `
+                <div class="tool-card p-4">
+                    <h3 class="text-2xl font-bold text-yellow-400">${player.name}</h3>
+                    <p class="text-teal-300">${player.school} - ${player.position}</p>
+                    <p class="text-gray-300 mt-2">${player.analysis}</p>
+                </div>
+            `).join('');
+        },
+        initGoatPage() {
+             const controls = { 
+                 chatWindow: document.getElementById('chat-window'),
+                 chatInput: document.getElementById('chat-input'),
+                 sendButton: document.getElementById('send-chat-button'),
+            };
+
+            if(!controls.chatWindow) return;
 
             const addMessage = (message, sender) => {
                 const messageElement = document.createElement('div');
                 messageElement.className = `chat-message ${sender}`;
                 messageElement.textContent = message;
-                chatWindow.appendChild(messageElement);
-                chatWindow.scrollTop = chatWindow.scrollHeight;
+                controls.chatWindow.appendChild(messageElement);
+                controls.chatWindow.scrollTop = controls.chatWindow.scrollHeight;
             };
 
             const getAIResponse = (question) => {
@@ -944,10 +993,10 @@ document.addEventListener('DOMContentLoaded', () => {
             };
 
             const handleSend = () => {
-                const question = chatInput.value.trim();
+                const question = controls.chatInput.value.trim();
                 if (question) {
                     addMessage(question, 'user');
-                    chatInput.value = '';
+                    controls.chatInput.value = '';
                     setTimeout(() => {
                         const aiResponse = getAIResponse(question);
                         addMessage(aiResponse, 'ai');
@@ -955,17 +1004,14 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             };
 
-            sendButton.addEventListener('click', handleSend);
-            chatInput.addEventListener('keypress', (e) => {
+            controls.sendButton.addEventListener('click', handleSend);
+            controls.chatInput.addEventListener('keypress', (e) => {
                 if (e.key === 'Enter') {
                     handleSend();
                 }
             });
 
             addMessage("Welcome to the AI Analyst. Ask me anything about your fantasy league, from player analysis to trade advice.", 'ai');
-        },
-        initGoatPage() {
-            // This function is now just a placeholder, as the GOAT page is now powered by the AI Analyst
         }
     };
 
