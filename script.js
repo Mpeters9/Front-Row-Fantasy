@@ -668,29 +668,404 @@ document.addEventListener('DOMContentLoaded', () => {
             const tierClass = tierColorClasses[player.tier] || tierColorClasses.default;
             return `<tr class="hover:bg-gray-800/50"><td class="p-4 font-semibold"><span class="player-name-link" data-player-name="${player.name}">${player.name}</span></td><td class="p-4 text-center font-bold text-sm">${player.simplePosition}</td><td class="p-4 text-center hidden sm:table-cell text-gray-400">${player.team || 'N/A'}</td><td class="p-4 text-center hidden md:table-cell"><span class="tier-badge ${tierClass}">Tier ${player.tier || 'N/A'}</span></td><td class="p-4 text-center font-mono">${player.adp.ppr || '--'}</td><td class="p-4 text-center hidden sm:table-cell font-mono">${(player.vorp || 0).toFixed(2)}</td></tr>`;
         },
-        initMockDraftSimulator: function() { /* ... full implementation ... */ },
-        startInteractiveDraft: function(controls) { /* ... full implementation ... */ },
-        runDraftTurn: function() { /* ... full implementation ... */ },
-        makeAiPick: function(teamIndex) { /* ... full implementation ... */ },
-        makeUserPick: function(playerName) { /* ... full implementation ... */ },
-        makePick: function(player, teamIndex) { /* ... full implementation ... */ },
-        updateDraftStatus: function() { /* ... full implementation ... */ },
-        updateBestAvailable: function(isUserTurn) { /* ... full implementation ... */ },
-        updateMyTeam: function() { /* ... full implementation ... */ },
-        updateDraftBoard: function() { /* ... full implementation ... */ },
-        endInteractiveDraft: function() { /* ... full implementation ... */ },
-        getAiDraftGrade: async function() { /* ... full implementation ... */ },
-        resetDraftUI: function(controls) { /* ... full implementation ... */ },
-        getOrdinal: function(n) { /* ... full implementation ... */ },
-        getAiDraftAssistantAdvice: async function() { /* ... full implementation ... */ },
-        initArticlesPage: function() { /* ... full implementation ... */ },
-        async generateAiArticle(controls) { /* ... full implementation ... */ },
-        loadArticleContent: function() { /* ... full implementation ... */ },
-        initWaiverWirePage: function() { /* ... full implementation ... */ },
-        initLeagueDominatorPage: function() { /* ... full implementation ... */ },
-        initDynastyDashboardPage: function() { /* ... full implementation ... */ },
-        initMyLeaguePage: function() { /* ... full implementation ... */ },
-        populateMyLeagueData: function() { /* ... full implementation ... */ }
+        initTradeAnalyzer() {
+            const controls = {
+                searchInput1: document.getElementById('trade-search-1'), autocomplete1: document.getElementById('trade-autocomplete-1'), teamContainer1: document.getElementById('trade-team-1'),
+                searchInput2: document.getElementById('trade-search-2'), autocomplete2: document.getElementById('trade-autocomplete-2'), teamContainer2: document.getElementById('trade-team-2'),
+                addPickBtn1: document.getElementById('add-pick-btn-1'), addPickBtn2: document.getElementById('add-pick-btn-2'),
+                pickYear1: document.getElementById('trade-pick-year-1'), pickRound1: document.getElementById('trade-pick-round-1'), pickNumber1: document.getElementById('trade-pick-number-1'),
+                pickYear2: document.getElementById('trade-pick-year-2'), pickRound2: document.getElementById('trade-pick-round-2'), pickNumber2: document.getElementById('trade-pick-number-2'),
+                analyzeBtn: document.getElementById('analyze-trade-btn'), resultsContainer: document.getElementById('trade-results'),
+                tradeTypeToggle: document.getElementById('trade-type-toggle'),
+                tradePickControls: document.querySelectorAll('.trade-pick-controls'),
+            };
+
+            if (!controls.analyzeBtn) return;
+            
+            controls.tradeTypeToggle.addEventListener('click', (e) => {
+                if(e.target.matches('.trade-type-btn')) {
+                    const selectedType = e.target.dataset.type;
+                    this.tradeState.tradeType = selectedType;
+                    
+                    controls.tradeTypeToggle.querySelectorAll('.trade-type-btn').forEach(btn => btn.classList.remove('active'));
+                    e.target.classList.add('active');
+
+                    if (selectedType === 'Dynasty') {
+                        controls.tradePickControls.forEach(el => el.classList.remove('hidden'));
+                    } else {
+                        controls.tradePickControls.forEach(el => el.classList.add('hidden'));
+                        this.tradeState.team1.picks = [];
+                        this.tradeState.team2.picks = [];
+                        this.renderTradeUI();
+                    }
+                }
+            });
+
+            if (this.tradeState.tradeType === 'Dynasty') {
+                controls.tradePickControls.forEach(el => el.classList.remove('hidden'));
+            } else {
+                controls.tradePickControls.forEach(el => el.classList.add('hidden'));
+            }
+            const activeButton = controls.tradeTypeToggle.querySelector(`[data-type="${this.tradeState.tradeType}"]`);
+            if (activeButton) activeButton.classList.add('active');
+            
+            controls.searchInput1.addEventListener('input', () => this.showTradeAutocomplete(controls.searchInput1, controls.autocomplete1, 1));
+            controls.searchInput2.addEventListener('input', () => this.showTradeAutocomplete(controls.searchInput2, controls.autocomplete2, 2));
+            controls.addPickBtn1.addEventListener('click', () => this.addPickToTrade(controls.pickYear1.value, controls.pickRound1.value, controls.pickNumber1.value, 1));
+            controls.addPickBtn2.addEventListener('click', () => this.addPickToTrade(controls.pickYear2.value, controls.pickRound2.value, controls.pickNumber2.value, 2));
+            controls.analyzeBtn.addEventListener('click', () => this.analyzeTrade());
+        },
+        showTradeAutocomplete(input, listEl, teamNum) {
+            const searchTerm = input.value.toLowerCase();
+            listEl.innerHTML = ''; if (searchTerm.length < 2) return;
+            const filtered = this.playerData.filter(p => p.name.toLowerCase().includes(searchTerm)).slice(0, 5);
+            filtered.forEach(player => {
+                const item = document.createElement('li');
+                item.className = "p-3 hover:bg-gray-700 cursor-pointer";
+                item.textContent = `${player.name} (${player.team} - ${player.simplePosition})`;
+                item.addEventListener('click', () => { this.addPlayerToTrade(player, teamNum); input.value = ''; listEl.innerHTML = ''; });
+                listEl.appendChild(item);
+            });
+        },
+        addPlayerToTrade(player, teamNum) {
+            if (teamNum === 1) this.tradeState.team1.players.push(player);
+            else this.tradeState.team2.players.push(player);
+            this.renderTradeUI();
+        },
+        getPickValue(year, round, pickNumber) {
+            const baseValue = config.draftPickValues[year]?.[round] || 0;
+            if (!baseValue) return 0;
+            const depreciation = (pickNumber - 1) * (baseValue / 20); 
+            return Math.max(5, baseValue - depreciation); 
+        },
+        addPickToTrade(year, round, pickNumberStr, teamNum) {
+            const pickNumber = parseInt(pickNumberStr);
+            if (!pickNumber || pickNumber < 1 || pickNumber > 14) { return; }
+            const pick = { id: `pick-${year}-${round}-${pickNumber}-${Date.now()}`, year: year, round: round, pick: pickNumber, name: `${year} Pick ${round}.${String(pickNumber).padStart(2, '0')}`, value: this.getPickValue(year, round, pickNumber) };
+            if (teamNum === 1) this.tradeState.team1.picks.push(pick);
+            else this.tradeState.team2.picks.push(pick);
+            this.renderTradeUI();
+        },
+        removeAssetFromTrade(assetId, assetType, teamNum) {
+            const team = (teamNum === 1) ? this.tradeState.team1 : this.tradeState.team2;
+            if (assetType === 'player') { team.players = team.players.filter(p => p.name !== assetId); } 
+            else if (assetType === 'pick') { team.picks = team.picks.filter(p => p.id !== assetId); }
+            this.renderTradeUI();
+        },
+        renderTradeUI() {
+            const container1 = document.getElementById('trade-team-1');
+            const container2 = document.getElementById('trade-team-2');
+            const team1Assets = [...this.tradeState.team1.players.map(p => this.createTradeAssetPill(p, 1, 'player')), ...this.tradeState.team1.picks.map(p => this.createTradeAssetPill(p, 1, 'pick'))].join('');
+            const team2Assets = [...this.tradeState.team2.players.map(p => this.createTradeAssetPill(p, 2, 'player')), ...this.tradeState.team2.picks.map(p => this.createTradeAssetPill(p, 2, 'pick'))].join('');
+            container1.innerHTML = team1Assets || `<p class="text-gray-500 text-center p-4">Add players or picks.</p>`;
+            container2.innerHTML = team2Assets || `<p class="text-gray-500 text-center p-4">Add players or picks.</p>`;
+            document.querySelectorAll('.trade-remove-btn').forEach(btn => {
+                btn.onclick = () => this.removeAssetFromTrade(btn.dataset.assetId, btn.dataset.assetType, parseInt(btn.dataset.teamNum));
+            });
+            this.addPlayerPopupListeners();
+        },
+        createTradeAssetPill(asset, teamNum, type) {
+            const isPlayer = type === 'player';
+            const assetId = isPlayer ? asset.name : asset.id;
+            const displayName = isPlayer ? `<span class="player-name-link" data-player-name="${asset.name}">${asset.name}</span>` : `<span>${asset.name}</span>`;
+            const displayInfo = isPlayer ? asset.simplePosition : `Value: ${asset.value.toFixed(1)}`;
+            const pillClass = `border-l-4 ${isPlayer ? `player-pos-${asset.simplePosition.toLowerCase()}` : 'player-pos-pick'}`;
+            return `<div class="flex items-center p-2 bg-gray-700/50 rounded-md ${pillClass}"><div class="flex-grow">${displayName}<span class="text-xs text-gray-400 block">${displayInfo}</span></div><button class="text-red-400 font-bold text-xl px-2 hover:text-red-300 trade-remove-btn" data-asset-id="${assetId}" data-asset-type="${type}" data-team-num="${teamNum}">×</button></div>`;
+        },
+        analyzeTrade() {
+            const resultsContainer = document.getElementById('trade-results');
+            resultsContainer.classList.remove('hidden');
+            let team1Value = this.tradeState.team1.players.reduce((sum, p) => sum + (p.vorp || 0), 0);
+            let team2Value = this.tradeState.team2.players.reduce((sum, p) => sum + (p.vorp || 0), 0);
+            if (this.tradeState.tradeType === 'Dynasty') {
+                team1Value += this.tradeState.team1.picks.reduce((sum, p) => sum + p.value, 0);
+                team2Value += this.tradeState.team2.picks.reduce((sum, p) => sum + p.value, 0);
+            }
+            const totalAssets = this.tradeState.team1.players.length + this.tradeState.team1.picks.length + this.tradeState.team2.players.length + this.tradeState.team2.picks.length;
+            let verdict;
+            const diff = Math.abs(team1Value - team2Value);
+            const avgVal = (team1Value + team2Value) / 2 || 1;
+            if (totalAssets === 0) { verdict = `<h3 class="text-2xl font-bold text-red-400">Please add players or picks to analyze.</h3>`; } 
+            else if (diff / avgVal < 0.1) { verdict = `<h3 class="text-2xl font-bold text-yellow-300">This is a very balanced trade.</h3><p class="text-gray-300 mt-1">It's a fair swap that comes down to which assets you believe in more.</p>`; } 
+            else if (team1Value > team2Value) { verdict = `<h3 class="text-2xl font-bold text-red-400">You might be giving up too much value.</h3><p class="text-gray-300 mt-1">The other team seems to be getting the better end of this deal.</p>`; } 
+            else { verdict = `<h3 class="text-2xl font-bold text-green-400">This looks like a smash accept for you!</h3><p class="text-gray-300 mt-1">The assets you're getting back are a significant upgrade.</p>`; }
+            resultsContainer.innerHTML = ` <div class="text-center">${verdict}</div> <div id="ai-trade-analysis-container" class="popup-footer mt-4"><button id="get-ai-trade-btn" class="ai-analysis-btn">Get AI Opinion</button><div id="ai-trade-loader" class="loader-small hidden"></div><p id="ai-trade-text" class="text-sm text-gray-300 mt-2 text-left"></p></div> `;
+            if(totalAssets > 0) { document.getElementById('get-ai-trade-btn').addEventListener('click', () => this.getAITradeAnalysis()); } 
+            else { document.getElementById('ai-trade-analysis-container').classList.add('hidden'); }
+        },
+        async getAITradeAnalysis() {
+            const container = document.getElementById('ai-trade-analysis-container'); const button = container.querySelector('#get-ai-trade-btn'); const loader = container.querySelector('#ai-trade-loader'); const textEl = container.querySelector('#ai-trade-text');
+            button.classList.add('hidden'); loader.classList.remove('hidden');
+            const team1Players = this.tradeState.team1.players.map(p => p.name).join(', ') || "no players";
+            const team1Picks = this.tradeState.team1.picks.map(p => p.name).join(', ') || "no picks";
+            const team2Players = this.tradeState.team2.players.map(p => p.name).join(', ') || "no players";
+            const team2Picks = this.tradeState.team2.picks.map(p => p.name).join(', ') || "no picks";
+            const prompt = `Act as a fantasy football expert. Analyze this ${this.tradeState.tradeType} league trade: A manager sends ${team1Players} ${this.tradeState.tradeType === 'Dynasty' ? `and ${team1Picks}` : ''}. They receive ${team2Players} ${this.tradeState.tradeType === 'Dynasty' ? `and ${team2Picks}` : ''}. Provide a brief, strategic analysis of the trade, considering player value, age (if dynasty), draft pick value (if dynasty), and potential upside or risk. Keep it under 75 words.`;
+            
+            try { let chatHistory = [{ role: "user", parts: [{ text: prompt }] }]; const payload = { contents: chatHistory }; const apiKey = ""; const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`; const response = await fetch(apiUrl, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) }); const result = await response.json(); if (result.candidates && result.candidates.length > 0) { textEl.textContent = result.candidates[0].content.parts[0].text; } else { throw new Error('No content returned from AI.'); } } catch (error) { console.error("Gemini API error:", error); textEl.textContent = "Could not retrieve AI analysis at this time."; } finally { loader.classList.add('hidden'); }
+        },
+        initMockDraftSimulator() {
+            const controls = { startBtn: document.getElementById('start-draft-button'), scoringSelect: document.getElementById('draftScoringType'), sizeSelect: document.getElementById('leagueSize'), pickSelect: document.getElementById('userPick'), settingsContainer: document.getElementById('draft-settings-container'), draftingContainer: document.getElementById('interactive-draft-container'), completeContainer: document.getElementById('draft-complete-container'), restartBtn: document.getElementById('restart-draft-button'), aiPersona: document.getElementById('ai-persona') };
+            if (!controls.startBtn) return;
+            const updateUserPickOptions = () => { const size = parseInt(controls.sizeSelect.value); controls.pickSelect.innerHTML = ''; for (let i = 1; i <= size; i++) { controls.pickSelect.add(new Option(`Pick ${i}`, i)); } };
+            updateUserPickOptions();
+            controls.sizeSelect.addEventListener('change', updateUserPickOptions);
+            controls.startBtn.addEventListener('click', () => this.startInteractiveDraft(controls));
+            controls.restartBtn.addEventListener('click', () => this.resetDraftUI(controls));
+        },
+        startInteractiveDraft(controls) {
+            controls.settingsContainer.style.display = 'none'; 
+            const draftContainer = document.getElementById('interactive-draft-container');
+            draftContainer.classList.remove('hidden');
+            draftContainer.classList.add('grid');
+            document.getElementById('draft-complete-container').classList.add('hidden');
+
+            const leagueSize = parseInt(controls.sizeSelect.value); const userPickNum = parseInt(controls.pickSelect.value); const scoring = controls.scoringSelect.value.toLowerCase(); const totalRounds = 15;
+            const aiPersona = controls.aiPersona.value;
+            this.draftState = { controls, leagueSize, userPickNum, scoring, totalRounds, aiPersona, currentRound: 1, currentPickInRound: 1, teams: Array.from({ length: leagueSize }, (v, i) => ({ teamNumber: i + 1, roster: [] })), availablePlayers: [...this.playerData].filter(p => p.adp && typeof p.adp[scoring] === 'number').sort((a, b) => a.adp[scoring] - b.adp[scoring]), draftPicks: [], isUserTurn: false, };
+            this.updateDraftBoard(); this.updateMyTeam(); this.runDraftTurn();
+        },
+        runDraftTurn() {
+            if (this.draftState.currentRound > this.draftState.totalRounds) { this.endInteractiveDraft(); return; }
+            const { currentRound, leagueSize } = this.draftState; const isSnake = currentRound % 2 === 0; const pickInRound = this.draftState.currentPickInRound; const teamIndex = isSnake ? leagueSize - 1 - (pickInRound - 1) : pickInRound - 1;
+            const isUserTurn = (teamIndex + 1) === this.draftState.userPickNum; this.draftState.isUserTurn = isUserTurn;
+            const commentaryBox = document.getElementById('ai-draft-commentary');
+            if (commentaryBox) commentaryBox.innerHTML = `<p class="text-sm text-gray-400">The AI assistant will provide live analysis and suggestions here when you're on the clock.</p>`;
+
+            this.updateDraftStatus();
+            if (isUserTurn) { 
+                this.updateBestAvailable(true);
+                this.getAiDraftAssistantAdvice();
+            } 
+            else { 
+                this.updateBestAvailable(false); 
+                setTimeout(() => { this.makeAiPick(teamIndex); this.runDraftTurn(); }, 500); 
+            }
+        },
+        async getAiDraftAssistantAdvice() {
+            const commentaryBox = document.getElementById('ai-draft-commentary');
+            if (!commentaryBox) return;
+            commentaryBox.innerHTML = `<div class="loader-small mx-auto"></div>`;
+            const myTeam = this.draftState.teams[this.draftState.userPickNum - 1];
+            const bestAvailable = this.draftState.availablePlayers.slice(0, 10).map(p => `${p.name} (${p.simplePosition})`).join(', ');
+            const myRoster = myTeam.roster.length > 0 ? myTeam.roster.map(p => `${p.name} (${p.simplePosition})`).join(', ') : 'no players yet';
+            const prompt = `Act as an expert fantasy football draft co-pilot. I am on the clock. My league is a ${this.draftState.leagueSize}-team, ${this.draftState.scoring} scoring league. My current pick is ${this.draftState.currentRound}.${this.draftState.currentPickInRound}. My roster so far consists of: ${myRoster}. The best available players are: ${bestAvailable}. Give me a concise recommendation. In 2-3 sentences, suggest one primary target from the best available list, explain why they are a good fit for my team's needs, and mention one alternative pick.`;
+            try {
+                let chatHistory = [{ role: "user", parts: [{ text: prompt }] }];
+                const payload = { contents: chatHistory };
+                const apiKey = ""; 
+                const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
+                const response = await fetch(apiUrl, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+                const result = await response.json();
+                if (result.candidates && result.candidates[0]?.content?.parts[0]?.text) {
+                    commentaryBox.innerHTML = `<p class="text-teal-200">${result.candidates[0].content.parts[0].text}</p>`;
+                } else { throw new Error('No content returned'); }
+            } catch (error) {
+                console.error("AI Draft Assistant Error:", error);
+                commentaryBox.innerHTML = `<p class="text-red-400">Could not get AI advice at this time.</p>`;
+            }
+        },
+        makeAiPick(teamIndex) {
+            const { availablePlayers, aiPersona, scoring } = this.draftState; 
+            const currentRank = this.draftState.draftPicks.length + 1;
+            availablePlayers.forEach(p => { p.draftScore = this.calculateDraftScore(p, this.draftState.currentRound, scoring, aiPersona, currentRank); });
+            availablePlayers.sort((a, b) => b.draftScore - a.draftScore);
+            const topAvailable = availablePlayers.slice(0, 10);
+            const draftedPlayer = topAvailable[Math.floor(Math.random() * Math.min(topAvailable.length, 3))];
+            this.makePick(draftedPlayer, teamIndex);
+        },
+        makeUserPick(playerName) { const player = this.draftState.availablePlayers.find(p => p.name === playerName); const teamIndex = this.draftState.userPickNum - 1; if (player) { this.makePick(player, teamIndex); this.runDraftTurn(); } },
+        makePick(player, teamIndex) {
+            this.draftState.availablePlayers = this.draftState.availablePlayers.filter(p => p.name !== player.name);
+            this.draftState.teams[teamIndex].roster.push(player);
+            this.draftState.draftPicks.push({ round: this.draftState.currentRound, pick: this.draftState.currentPickInRound, player: player, teamNumber: teamIndex + 1, });
+            this.updateDraftBoard(); if ((teamIndex + 1) === this.draftState.userPickNum) { this.updateMyTeam(); }
+            this.draftState.currentPickInRound++;
+            if (this.draftState.currentPickInRound > this.draftState.leagueSize) { this.draftState.currentPickInRound = 1; this.draftState.currentRound++; }
+        },
+        updateDraftStatus() {
+            const { currentRound, currentPickInRound, leagueSize, totalRounds, isUserTurn } = this.draftState;
+            const overallPick = (currentRound - 1) * leagueSize + currentPickInRound; const statusCard = document.getElementById('draft-status-card');
+            statusCard.classList.toggle('on-the-clock', isUserTurn);
+            let statusHTML = `<p class="text-gray-400 font-semibold">Round ${currentRound}/${totalRounds} | Pick ${overallPick}</p>`;
+            if(isUserTurn) { statusHTML += `<p class="text-2xl font-bold text-yellow-300 text-glow-gold animate-pulse">YOU ARE ON THE CLOCK</p>`; } 
+            else { const isSnake = currentRound % 2 === 0; const teamNumber = isSnake ? leagueSize - currentPickInRound + 1 : currentPickInRound; statusHTML += `<p class="text-xl font-semibold text-white">Team ${teamNumber} is picking...</p>`; }
+            statusCard.innerHTML = statusHTML;
+        },
+        updateBestAvailable(isUserTurn) {
+            const listEl = document.getElementById('best-available-list'); listEl.innerHTML = '';
+            const topPlayers = this.draftState.availablePlayers.slice(0, 50);
+            topPlayers.forEach(player => { const playerEl = document.createElement('div'); playerEl.className = 'best-available-player'; playerEl.innerHTML = `<span class="font-bold text-sm text-center w-12 player-pos-${player.simplePosition.toLowerCase()}">${player.simplePosition}</span><div class="flex-grow"><p class="player-name-link font-semibold text-white" data-player-name="${player.name}">${player.name}</p><p class="text-xs text-gray-400">${player.team} | Bye: ${player.bye || 'N/A'}</p></div>${isUserTurn ? `<button class="draft-button" data-player-name="${player.name}">Draft</button>` : `<span class="text-sm font-mono text-gray-500">${(player.adp.ppr || 999).toFixed(1)}</span>`}`; listEl.appendChild(playerEl); });
+            if(isUserTurn) { document.querySelectorAll('.draft-button').forEach(btn => { btn.onclick = (e) => this.makeUserPick(e.target.dataset.playerName); }); }
+            this.addPlayerPopupListeners();
+        },
+        updateMyTeam() {
+            const listEl = document.getElementById('my-team-list'); listEl.innerHTML = '';
+            const myTeam = this.draftState.teams[this.draftState.userPickNum - 1];
+            myTeam.roster.forEach(player => { listEl.innerHTML += ` <div class="my-team-player player-pos-${player.simplePosition.toLowerCase()}"><strong class="w-10">${player.simplePosition}</strong><span class="player-name-link" data-player-name="${player.name}">${player.name}</span></div> `; });
+            this.addPlayerPopupListeners();
+        },
+        updateDraftBoard() {
+            const gridEl = document.getElementById('draft-board-grid'); const { leagueSize, draftPicks, userPickNum, totalRounds } = this.draftState; 
+            gridEl.innerHTML = '';
+            let headerHtml = '<div class="draft-board-header">'; for (let i = 1; i <= leagueSize; i++) { headerHtml += `<div class="draft-board-team-header ${userPickNum === i ? 'user-team-header' : ''}">Team ${i}</div>`; } headerHtml += '</div>'; gridEl.innerHTML += headerHtml;
+            const bodyEl = document.createElement('div'); bodyEl.className = 'draft-board-body'; bodyEl.style.gridTemplateColumns = `repeat(${leagueSize}, minmax(0, 1fr))`;
+            
+            for (let i = 0; i < totalRounds * leagueSize; i++) {
+                const pick = draftPicks[i];
+                const pickEl = document.createElement('div');
+                if(pick) { pickEl.className = `draft-pick pick-pos-${pick.player.simplePosition.toLowerCase()} ${pick.teamNumber === userPickNum ? 'user-pick' : ''}`; pickEl.innerHTML = `<span class="pick-number">${pick.round}.${pick.pick}</span><p class="pick-player-name player-name-link" data-player-name="${pick.player.name}">${pick.player.name}</p><p class="pick-player-info">${pick.player.team} - ${pick.player.simplePosition}</p>`; }
+                else { pickEl.className = `draft-pick empty`; pickEl.innerHTML = `&nbsp;`; }
+                bodyEl.appendChild(pickEl);
+            }
+            gridEl.appendChild(bodyEl);
+            this.addPlayerPopupListeners();
+        },
+        endInteractiveDraft() {
+            this.draftState.controls.draftingContainer.style.display = 'none';
+            this.draftState.controls.draftingContainer.classList.remove('grid');
+            this.draftState.controls.completeContainer.classList.remove('hidden');
+            const rosterEl = document.getElementById('final-roster-display');
+            rosterEl.innerHTML = '';
+            const myRoster = this.draftState.teams[this.draftState.userPickNum - 1].roster;
+            const starters = []; const bench = []; 
+            const finalRosterSlots = { ...config.rosterSettings }; 
+            myRoster.forEach(player => { 
+                const pos = player.simplePosition.toUpperCase(); 
+                if (finalRosterSlots[pos] > 0) { player.displayPos = pos; starters.push(player); finalRosterSlots[pos]--; } 
+                else if (config.flexPositions.includes(pos) && finalRosterSlots['FLEX'] > 0) { player.displayPos = 'FLEX'; starters.push(player); finalRosterSlots['FLEX']--; } 
+                else { bench.push(player); } 
+            });
+            const positionOrder = ['QB', 'RB', 'WR', 'TE', 'FLEX', 'K', 'DST'];
+            starters.sort((a,b) => positionOrder.indexOf(a.displayPos) - positionOrder.indexOf(b.displayPos));
+            rosterEl.innerHTML = ` <div><h4 class="text-xl font-semibold text-teal-300 mb-2 border-b border-gray-700 pb-1">Starters</h4><div class="space-y-2">${starters.map(p => this.createPlayerCardHTML(p)).join('')}</div></div> <div><h4 class="text-xl font-semibold text-teal-300 mb-2 border-b border-gray-700 pb-1">Bench</h4><div class="space-y-2">${bench.map(p => this.createPlayerCardHTML(p, true)).join('')}</div></div> `;
+            this.addPlayerPopupListeners();
+            this.getAiDraftGrade();
+        },
+        async getAiDraftGrade() {
+            const gradeContainer = document.getElementById('draft-grade-container');
+            if (!gradeContainer) return;
+            gradeContainer.innerHTML = '<div class="loader"></div>';
+            const myRoster = this.draftState.teams[this.draftState.userPickNum - 1].roster;
+            const rosterList = myRoster.map(p => `${p.name} (${p.simplePosition}, Round ${p.draftedAt.match(/\((\d+)/)[1]})`).join(', ');
+            const prompt = `Act as an expert fantasy football analyst. I have just completed a mock draft. My League Settings: ${this.draftState.leagueSize}-team, ${this.draftState.scoring}. My Final Roster: ${rosterList}. Please provide a draft grade. The output MUST be a single block of clean, valid HTML. Your response should include: 1. An overall letter grade (e.g., A-, B+, etc.) inside a div with class "draft-grade". The letter grade itself should be in a span with a class that corresponds to the grade (grade-a, grade-b, grade-c, grade-d, grade-f). 2. A "Team Strength" in a paragraph tag. 3. A "Team Weakness" in a paragraph tag. 4. A "Projected Record" in a paragraph tag. Be concise and provide a clear justification for your analysis.`;
+            try {
+                let chatHistory = [{ role: "user", parts: [{ text: prompt }] }];
+                const payload = { contents: chatHistory, generationConfig: { responseMimeType: "text/html" } };
+                const apiKey = ""; 
+                const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
+                const response = await fetch(apiUrl, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+                if (!response.ok) throw new Error(`API Error: ${response.statusText}`);
+                const result = await response.json();
+                if (result.candidates && result.candidates[0]?.content?.parts[0]?.text) {
+                    gradeContainer.innerHTML = result.candidates[0].content.parts[0].text;
+                } else { throw new Error('No content returned from AI for draft grade.'); }
+            } catch (error) {
+                console.error("Gemini API error for draft grade:", error);
+                gradeContainer.innerHTML = `<p class="text-red-400 text-center">Could not generate AI draft grade. Please try again later.</p>`;
+            }
+        },
+        resetDraftUI(controls) {
+            controls.settingsContainer.style.display = 'block';
+            const draftContainer = document.getElementById('interactive-draft-container');
+            draftContainer.classList.add('hidden');
+            draftContainer.classList.remove('grid');
+            document.getElementById('draft-complete-container').classList.add('hidden');
+            this.draftState = {};
+        },
+        getOrdinal(n) { const s = ["th", "st", "nd", "rd"]; const v = n % 100; return n + (s[(v - 20) % 10] || s[v] || s[0]); },
+        initArticlesPage() {
+            const controls = { promptTextarea: document.getElementById('ai-article-prompt'), generateBtn: document.getElementById('generate-article-btn'), outputContainer: document.getElementById('article-output-container'), examplePromptsContainer: document.getElementById('example-prompts') };
+            if (!controls.generateBtn) return;
+            const examplePrompts = [ "Top 5 breakout running backs this season", "A deep dive on why I should draft Amon-Ra St. Brown", "Compare and contrast the top 3 rookie quarterbacks", "Write a guide to the 'Zero RB' draft strategy" ];
+            controls.examplePromptsContainer.innerHTML = examplePrompts.map(prompt => `<button class="p-2 text-sm bg-gray-700 hover:bg-gray-600 rounded-md transition-colors" data-prompt="${prompt}">${prompt}</button>`).join('');
+            controls.examplePromptsContainer.addEventListener('click', (e) => { if(e.target.matches('button')) { const prompt = e.target.dataset.prompt; controls.promptTextarea.value = prompt; this.generateAiArticle(controls); } });
+            controls.generateBtn.addEventListener('click', () => this.generateAiArticle(controls));
+        },
+        async generateAiArticle(controls) {
+            const userPrompt = controls.promptTextarea.value;
+            if (!userPrompt) { controls.outputContainer.innerHTML = `<p class="text-center text-yellow-400">Please enter a topic for the briefing.</p>`; return; }
+            controls.outputContainer.innerHTML = `<div class="loader"></div><p class="text-center text-teal-300 mt-2">Your analyst is writing your briefing now...</p>`;
+            const fullPrompt = `As an expert fantasy football analyst, write a detailed article based on the following user request: "${userPrompt}". The article should be well-structured, insightful, and engaging. - Use headings (h2, h3) to organize the content. - Use paragraphs for explanations and bold tags for emphasis on key player names or stats. - If the request involves a list of players, use an ordered or unordered list. - Conclude with a summary or a final strategic recommendation. - The entire output should be a single block of clean, valid HTML.`;
+            try {
+                let chatHistory = [{ role: "user", parts: [{ text: fullPrompt }] }];
+                const payload = { contents: chatHistory, generationConfig: { responseMimeType: "text/html" } };
+                const apiKey = ""; 
+                const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
+                const response = await fetch(apiUrl, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+                if (!response.ok) throw new Error(`API Error: ${response.statusText}`);
+                const result = await response.json();
+                if (result.candidates && result.candidates[0]?.content?.parts[0]?.text) {
+                    controls.outputContainer.innerHTML = result.candidates[0].content.parts[0].text;
+                } else { throw new Error('No content returned from AI.'); }
+            } catch (error) {
+                console.error("Gemini API error for articles:", error);
+                controls.outputContainer.innerHTML = `<p class="text-red-400 text-center">Could not generate the briefing. The AI analyst might be on a coffee break. Please try again later.</p>`;
+            }
+        },
+        loadArticleContent() {
+            const container = document.getElementById('article-content');
+            if (!container) return;
+            container.innerHTML = `<h2>This is a Placeholder Article Title</h2><p>This page is a template for individual articles. In a full build, clicking an article on the main articles page would lead here, and the content for that specific article would be loaded. For now, we are focusing on the AI-powered "Briefing Room" on the main articles page.</p>`;
+        },
+        initWaiverWirePage() {
+            const container = document.getElementById('waiver-wire-container');
+            if (!container) return;
+            const waiverTargets = this.playerData.filter(p => p.vorp > 10 && p.adp.ppr > 100).sort((a,b)=>b.vorp - a.vorp).slice(0, 5);
+            container.innerHTML = waiverTargets.map(player => {
+                return `<div class="tool-card p-4"><div class="flex flex-col sm:flex-row items-center"><div class="flex-grow text-center sm:text-left"><h3 class="text-2xl font-bold text-yellow-400">${player.name}</h3><p class="text-teal-300">${player.team} - ${player.simplePosition}</p></div><div class="text-center sm:text-right mt-4 sm:mt-0"><p class="text-lg font-semibold text-white">Rostered: <span class="text-yellow-400">${Math.max(1, 100 - (player.adp.ppr / 2.5)).toFixed(1)}%</span></p><button class="cta-btn !px-4 !py-2 text-sm mt-2">Add Player</button></div></div><div class="mt-4"><h4 class="font-semibold text-teal-300">AI Analysis</h4><p class="text-gray-300 text-sm">With a VORP of ${player.vorp.toFixed(1)} and an ADP outside the top 100, ${player.name} represents a significant value on the waiver wire. Their recent usage suggests an expanding role in the offense, making them a priority addition for teams needing depth at ${player.simplePosition}.</p></div></div>`;
+            }).join('');
+        },
+        initLeagueDominatorPage() {
+            const powerRankingsContainer = document.getElementById('power-rankings-list');
+            const playoffOddsContainer = document.getElementById('playoff-odds-list');
+            const commissionerReportContainer = document.getElementById('commissioner-report-content');
+            if (!powerRankingsContainer) return;
+            const teams = [ { id: 1, name: "The Gurus", wins: 8, losses: 2, pointsFor: 1450.5, rosterValue: 950 }, { id: 2, name: "Gridiron Gang", wins: 7, losses: 3, pointsFor: 1380.2, rosterValue: 920 }, { id: 3, name: "Endzone Enforcers", wins: 6, losses: 4, pointsFor: 1410.8, rosterValue: 880 }, { id: 4, name: "Touchdown Titans", wins: 6, losses: 4, pointsFor: 1350.1, rosterValue: 900 }, { id: 5, name: "Blitz Brigade", wins: 5, losses: 5, pointsFor: 1300.7, rosterValue: 850 }, { id: 6, name: "Redzone Rascals", wins: 5, losses: 5, pointsFor: 1280.4, rosterValue: 840 }, { id: 7, name: "The Pigskin Prophets", wins: 4, losses: 6, pointsFor: 1250.9, rosterValue: 800 }, { id: 8, name: "Hail Mary Heroes", wins: 4, losses: 6, pointsFor: 1230.3, rosterValue: 780 }, { id: 9, name: "Fourth and Phonies", wins: 3, losses: 7, pointsFor: 1180.6, rosterValue: 750 }, { id: 10, name: "The Bye Week Blues", wins: 2, losses: 8, pointsFor: 1100.2, rosterValue: 700 }, ];
+            teams.forEach(team => { team.powerScore = (team.wins * 100) + (team.pointsFor / 10) + (team.rosterValue / 10); });
+            teams.sort((a, b) => b.powerScore - a.powerScore);
+            powerRankingsContainer.innerHTML = teams.map((team, index) => { const rank = index + 1; const trend = Math.random() > 0.5 ? `<span class="text-green-400">▲</span>` : `<span class="text-red-400">▼</span>`; return `<div class="flex items-center p-3 rounded-lg bg-gray-800/50"><div class="w-12 text-center text-2xl font-bold text-teal-300">${rank}</div><div class="flex-grow"><p class="font-semibold text-lg text-white">${team.name}</p><p class="text-sm text-gray-400">${team.wins}-${team.losses} | ${team.pointsFor.toFixed(1)} PF</p></div><div class="text-2xl">${trend}</div></div>`; }).join('');
+            playoffOddsContainer.innerHTML = teams.map(team => { const odds = Math.max(5, Math.min(95, 100 - (teams.findIndex(t => t.id === team.id) * 8))); return `<div class="flex justify-between items-center text-white p-2 border-b border-gray-700 last:border-0"><span>${team.name}</span><span class="font-bold text-yellow-400">${odds.toFixed(0)}%</span></div>`; }).join('');
+            commissionerReportContainer.innerHTML = `<div><h4 class="font-semibold text-teal-300">Biggest Blowout</h4><p class="text-gray-300 text-sm">The Gurus defeated The Bye Week Blues, 155.2 to 85.1.</p></div><div class="mt-4"><h4 class="font-semibold text-teal-300">Closest Matchup</h4><p class="text-gray-300 text-sm">Redzone Rascals squeaked by Hail Mary Heroes, 121.5 to 120.9.</p></div><div class="mt-4"><h4 class="font-semibold text-teal-300">Player of the Week</h4><p class="text-gray-300 text-sm">Ja'Marr Chase put up an incredible 42.5 points.</p></div>`;
+        },
+        initDynastyDashboardPage() {
+            const tradeBlockContainer = document.getElementById('dynasty-trade-block-container');
+            const rookieDraftContainer = document.getElementById('dynasty-rookie-draft-container');
+            const prospectsContainer = document.getElementById('dynasty-prospects-container');
+            if (!tradeBlockContainer) return;
+            const tradeBlockPlayers = this.playerData.filter(p => p.tier > 2 && p.tier < 6).slice(0, 5);
+            tradeBlockContainer.innerHTML = tradeBlockPlayers.map(player => `<div class="tool-card p-4 flex justify-between items-center"><div class="flex-grow"><p class="font-bold text-xl text-white player-name-link" data-player-name="${player.name}">${player.name}</p><p class="text-teal-300">${player.team} - ${player.simplePosition}</p></div><button class="cta-btn !px-4 !py-2 text-sm">Inquire</button></div>`).join('');
+            const rookiePlayers = this.playerData.filter(p => p.tier > 8 && ['QB', 'RB', 'WR', 'TE'].includes(p.simplePosition)).slice(0, 12);
+            rookieDraftContainer.innerHTML = rookiePlayers.map((player, index) => `<div class="flex items-center p-3 rounded-lg bg-gray-800/50"><div class="w-12 text-center text-xl font-bold text-teal-300">${(Math.floor(index/4)+1)}.${(index%4)+1}</div><div class="flex-grow"><p class="font-semibold text-lg text-white player-name-link" data-player-name="${player.name}">${player.name}</p><p class="text-sm text-gray-400">${player.team} - ${player.simplePosition}</p></div><button class="cta-btn !px-4 !py-2 text-sm">Draft</button></div>`).join('');
+            const prospectPlayers = [ { name: "Luther Burden", position: "WR", school: "Missouri", analysis: "A dynamic playmaker with elite speed and route-running ability. Projects as a top-10 NFL draft pick." }, { name: "Shemar Stewart", position: "EDGE", school: "Texas A&M", analysis: "A dominant pass-rusher with a high motor and a knack for getting to the quarterback. A future IDP stud." }, { name: "Carson Beck", position: "QB", school: "Georgia", analysis: "A prototypical pocket passer with excellent accuracy and decision-making. High-floor prospect for Superflex leagues." }, ];
+            prospectsContainer.innerHTML = prospectPlayers.map(player => `<div class="tool-card p-4"><h3 class="text-2xl font-bold text-yellow-400">${player.name}</h3><p class="text-teal-300">${player.school} - ${player.position}</p><p class="text-gray-300 mt-2">${player.analysis}</p></div>`).join('');
+            this.addPlayerPopupListeners();
+        },
+        initMyLeaguePage() {
+            const loginButton = document.getElementById('login-button');
+            const submitLoginButton = document.getElementById('submit-login-button');
+            const closeLoginModalButton = document.getElementById('close-login-modal');
+            const loginModal = document.getElementById('login-modal');
+            const loggedOutView = document.getElementById('logged-out-view');
+            const loggedInView = document.getElementById('logged-in-view');
+            if (!loginButton) return;
+            const showModal = () => loginModal.classList.remove('hidden');
+            const hideModal = () => loginModal.classList.add('hidden');
+            loginButton.addEventListener('click', showModal);
+            closeLoginModalButton.addEventListener('click', hideModal);
+            submitLoginButton.addEventListener('click', () => { hideModal(); loggedOutView.classList.add('hidden'); loggedInView.classList.remove('hidden'); this.populateMyLeagueData(); });
+        },
+        populateMyLeagueData() {
+            const myTeamRoster = document.getElementById('my-team-roster');
+            const myMatchup = document.getElementById('my-matchup');
+            const myWaiverWire = document.getElementById('my-waiver-wire');
+            const myTeam = this.playerData.filter(p => p.adp.ppr < 60).slice(0, 8);
+            const waiverPlayers = this.playerData.filter(p => p.vorp > 10 && p.adp.ppr > 120).slice(0, 3);
+            myTeamRoster.innerHTML = myTeam.map(p => this.createPlayerCardHTML(p, p.simplePosition)).join('');
+            myMatchup.innerHTML = `<div class="text-center"><p class="text-lg font-bold text-yellow-400">My Team</p><p class="text-3xl font-bold text-white">125.4</p><p class="text-sm text-gray-400">Projected Points</p></div><div class="text-center text-gray-400 font-bold my-2">VS</div><div class="text-center"><p class="text-lg font-bold text-gray-300">Opponent</p><p class="text-3xl font-bold text-white">118.9</p><p class="text-sm text-gray-400">Projected Points</p></div>`;
+            myWaiverWire.innerHTML = waiverPlayers.map(p => `<div class="my-team-player player-pos-${p.simplePosition.toLowerCase()}"><strong class="w-10">${p.simplePosition}</strong><span class="player-name-link" data-player-name="${p.name}">${p.name}</span></div>`).join('');
+            this.addPlayerPopupListeners();
+        }
     };
 
     App.init();
