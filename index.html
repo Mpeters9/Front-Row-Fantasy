@@ -6,7 +6,7 @@
     <meta name="description" content="Front Row Fantasy - Your ultimate destination for fantasy football success. Access real-time stats, expert tools, and community insights to dominate your league.">
     <meta name="keywords" content="fantasy football, draft strategies, player rankings, real-time stats, expert tools">
     <title>Front Row Fantasy - Ultimate Fantasy Football Hub</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="icon" href="favicon.ico" type="image/x-icon">
     <link rel="stylesheet" href="styles.css">
     <script src="https://cdn.tailwindcss.com"></script>
@@ -14,7 +14,7 @@
 <body class="min-h-screen flex flex-col font-poppins bg-gradient-to-br from-[#0f2027] to-[#2c5364]">
     <header class="sticky top-0 z-50 bg-opacity-98 bg-gray-900 shadow-lg border-b-2 border-teal-500">
         <div class="max-w-7xl mx-auto px-4 flex justify-between items-center py-3">
-            <a href="index.html" class="text-2xl font-bold text-yellow-400 text-glow">Front Row Fantasy</a>
+            <a href="index.html" class="text-xl md:text-2xl font-bold text-yellow-400 text-glow">Front Row Fantasy</a>
             <nav class="hidden md:flex space-x-6 text-teal-200">
                 <a href="index.html" class="text-yellow-400 font-bold" aria-current="page">Home</a>
                 <a href="goat.html" class="hover:text-yellow-400 transition-colors">GOAT</a>
@@ -45,13 +45,13 @@
     </section>
 
     <main class="flex-grow max-w-7xl mx-auto py-8 px-4 w-full">
-        <section class="text-center mb-16">
-            <h1 class="text-5xl md:text-6xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-yellow-300 to-teal-300 mb-4 text-glow-gold">Dominate Your League</h1>
-            <p class="text-xl text-teal-200 mb-8 max-w-3xl mx-auto">Front Row Fantasy provides cutting-edge tools and insights for every fantasy football enthusiast. From draft prep to weekly management, we've got you covered.</p>
+        <section class="text-center mb-12 md:mb-16">
+            <h1 class="text-4xl md:text-6xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-yellow-300 to-teal-300 mb-4 text-glow-gold">Dominate Your League</h1>
+            <p class="text-lg md:text-xl text-teal-200 mb-8 max-w-3xl mx-auto">Front Row Fantasy provides cutting-edge tools and insights for every fantasy football enthusiast. From draft prep to weekly management, we've got you covered.</p>
              <a href="goat.html" class="cta-btn text-lg">Access the GOAT Hub</a>
         </section>
         
-        <section id="daily-briefing-section" class="tool-card mb-16">
+        <section id="daily-briefing-section" class="tool-card mb-12 md:mb-16">
             <h2 class="text-3xl font-bold text-center mb-6 text-teal-300">The Front Row Daily Briefing</h2>
             <div id="daily-briefing-content" class="prose prose-invert prose-lg max-w-none">
                 <div class="text-center p-8"><div class="loader"></div><p class="text-teal-300 mt-2">Generating today's fantasy analysis...</p></div>
@@ -60,8 +60,8 @@
 
         <section id="top-players-section">
             <h2 class="text-4xl font-bold text-center mb-10 text-teal-300">Top Players</h2>
-            <div id="player-showcase-container" class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                 <div class="text-center p-8 md:col-span-2"><div class="loader"></div><p class="text-teal-300 mt-2">Loading top players...</p></div>
+            <div id="player-showcase-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8">
+                 <div class="text-center p-8 lg:col-span-4"><div class="loader"></div><p class="text-teal-300 mt-2">Loading top players...</p></div>
             </div>
         </section>
     </main>
@@ -87,3 +87,4 @@
     <script src="script.js"></script>
 </body>
 </html>
+
