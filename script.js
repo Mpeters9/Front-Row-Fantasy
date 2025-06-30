@@ -1041,17 +1041,66 @@ document.addEventListener('DOMContentLoaded', () => {
             commissionerReportContainer.innerHTML = `<div><h4 class="font-semibold text-teal-300">Biggest Blowout</h4><p class="text-gray-300 text-sm">The Gurus defeated The Bye Week Blues, 155.2 to 85.1.</p></div><div class="mt-4"><h4 class="font-semibold text-teal-300">Closest Matchup</h4><p class="text-gray-300 text-sm">Redzone Rascals squeaked by Hail Mary Heroes, 121.5 to 120.9.</p></div><div class="mt-4"><h4 class="font-semibold text-teal-300">Player of the Week</h4><p class="text-gray-300 text-sm">Ja'Marr Chase put up an incredible 42.5 points.</p></div>`;
         },
         initDynastyDashboardPage() {
-            const tradeBlockContainer = document.getElementById('dynasty-trade-block-container');
-            const rookieDraftContainer = document.getElementById('dynasty-rookie-draft-container');
-            const prospectsContainer = document.getElementById('dynasty-prospects-container');
-            if (!tradeBlockContainer) return;
+            const controls = {
+                tradeBlockContainer: document.getElementById('dynasty-trade-block-container'),
+                rookieDraftContainer: document.getElementById('dynasty-rookie-draft-container'),
+                prospectsContainer: document.getElementById('dynasty-prospects-container'),
+                prospectSelect: document.getElementById('prospect-select'),
+                scoutProspectBtn: document.getElementById('scout-prospect-btn'),
+                prospectReport: document.getElementById('prospect-scouting-report'),
+                simulateTeamBtn: document.getElementById('simulate-team-btn'),
+                simulationResults: document.getElementById('team-simulation-results')
+            };
+
+            if (!controls.tradeBlockContainer) return;
+
             const tradeBlockPlayers = this.playerData.filter(p => p.tier > 2 && p.tier < 6).slice(0, 5);
-            tradeBlockContainer.innerHTML = tradeBlockPlayers.map(player => `<div class="tool-card p-4 flex justify-between items-center"><div class="flex-grow"><p class="font-bold text-xl text-white player-name-link" data-player-name="${player.name}">${player.name}</p><p class="text-teal-300">${player.team} - ${player.simplePosition}</p></div><button class="cta-btn !px-4 !py-2 text-sm">Inquire</button></div>`).join('');
+            controls.tradeBlockContainer.innerHTML = tradeBlockPlayers.map(player => `<div class="tool-card p-4 flex justify-between items-center"><div class="flex-grow"><p class="font-bold text-xl text-white player-name-link" data-player-name="${player.name}">${player.name}</p><p class="text-teal-300">${player.team} - ${player.simplePosition}</p></div><button class="cta-btn !px-4 !py-2 text-sm">Inquire</button></div>`).join('');
+
             const rookiePlayers = this.playerData.filter(p => p.tier > 8 && ['QB', 'RB', 'WR', 'TE'].includes(p.simplePosition)).slice(0, 12);
-            rookieDraftContainer.innerHTML = rookiePlayers.map((player, index) => `<div class="flex items-center p-3 rounded-lg bg-gray-800/50"><div class="w-12 text-center text-xl font-bold text-teal-300">${(Math.floor(index/4)+1)}.${(index%4)+1}</div><div class="flex-grow"><p class="font-semibold text-lg text-white player-name-link" data-player-name="${player.name}">${player.name}</p><p class="text-sm text-gray-400">${player.team} - ${player.simplePosition}</p></div><button class="cta-btn !px-4 !py-2 text-sm">Draft</button></div>`).join('');
-            const prospectPlayers = [ { name: "Luther Burden", position: "WR", school: "Missouri", analysis: "A dynamic playmaker with elite speed and route-running ability. Projects as a top-10 NFL draft pick." }, { name: "Shemar Stewart", position: "EDGE", school: "Texas A&M", analysis: "A dominant pass-rusher with a high motor and a knack for getting to the quarterback. A future IDP stud." }, { name: "Carson Beck", position: "QB", school: "Georgia", analysis: "A prototypical pocket passer with excellent accuracy and decision-making. High-floor prospect for Superflex leagues." }, ];
-            prospectsContainer.innerHTML = prospectPlayers.map(player => `<div class="tool-card p-4"><h3 class="text-2xl font-bold text-yellow-400">${player.name}</h3><p class="text-teal-300">${player.school} - ${player.position}</p><p class="text-gray-300 mt-2">${player.analysis}</p></div>`).join('');
+            controls.rookieDraftContainer.innerHTML = rookiePlayers.map((player, index) => `<div class="flex items-center p-3 rounded-lg bg-gray-800/50"><div class="w-12 text-center text-xl font-bold text-teal-300">${(Math.floor(index/4)+1)}.${(index%4)+1}</div><div class="flex-grow"><p class="font-semibold text-lg text-white player-name-link" data-player-name="${player.name}">${player.name}</p><p class="text-sm text-gray-400">${player.team} - ${player.simplePosition}</p></div><button class="cta-btn !px-4 !py-2 text-sm">Draft</button></div>`).join('');
+
+            const prospectPlayers = [
+                { name: "Luther Burden", position: "WR", school: "Missouri", analysis: "A dynamic playmaker with elite speed and route-running ability. Projects as a top-10 NFL draft pick." },
+                { name: "Shemar Stewart", position: "EDGE", school: "Texas A&M", analysis: "A dominant pass-rusher with a high motor and a knack for getting to the quarterback. A future IDP stud." },
+                { name: "Carson Beck", position: "QB", school: "Georgia", analysis: "A prototypical pocket passer with excellent accuracy and decision-making. High-floor prospect for Superflex leagues." },
+            ];
+            controls.prospectsContainer.innerHTML = prospectPlayers.map(player => `<div class="tool-card p-4"><h3 class="text-2xl font-bold text-yellow-400">${player.name}</h3><p class="text-teal-300">${player.school} - ${player.position}</p><p class="text-gray-300 mt-2">${player.analysis}</p></div>`).join('');
+
+            prospectPlayers.forEach(prospect => {
+                controls.prospectSelect.add(new Option(prospect.name, prospect.name));
+            });
+
+            controls.scoutProspectBtn.addEventListener('click', () => {
+                const prospectName = controls.prospectSelect.value;
+                this.getProspectScoutingReport(prospectName);
+            });
+
+            controls.simulateTeamBtn.addEventListener('click', () => {
+                this.runTeamSimulation();
+            });
+
             this.addPlayerPopupListeners();
+        },
+        getProspectScoutingReport(prospectName) {
+            const reportContainer = document.getElementById('prospect-scouting-report');
+            reportContainer.innerHTML = '<div class="loader"></div>';
+            setTimeout(() => {
+                reportContainer.innerHTML = `
+                    <h3 class="text-xl font-bold text-yellow-400">${prospectName}</h3>
+                    <p>This is a dummy scouting report for ${prospectName}. The API is not currently connected.</p>
+                `;
+            }, 1000);
+        },
+        runTeamSimulation() {
+            const resultsContainer = document.getElementById('team-simulation-results');
+            resultsContainer.innerHTML = '<div class="loader"></div>';
+            setTimeout(() => {
+                resultsContainer.innerHTML = `
+                    <h3 class="text-xl font-bold text-yellow-400 text-center">3-Year Dynasty Outlook</h3>
+                    <p class="text-center text-gray-300">This is a dummy team simulation. The API is not currently connected.</p>
+                `;
+            }, 1000);
         },
         initMyLeaguePage() {
             const loginButton = document.getElementById('login-button');
