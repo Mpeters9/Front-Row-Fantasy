@@ -591,7 +591,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 tableHead: document.getElementById('stats-table-head'),
                 similarPlayerSelect: document.getElementById('similar-player-select'),
                 findSimilarBtn: document.getElementById('find-similar-player-btn'),
-                similarPlayerResults: document.getElementById('similar-player-results')
+                similarPlayerResults: document.getElementById('similar-player-results'),
+                proactiveAiContainer: document.getElementById('proactive-ai-container'),
+                proactiveAiSuggestion: document.getElementById('proactive-ai-suggestion'),
+                proactiveAiYes: document.getElementById('proactive-ai-yes'),
+                proactiveAiNo: document.getElementById('proactive-ai-no')
             };
 
             if (!controls.tableBody) return;
@@ -637,6 +641,15 @@ document.addEventListener('DOMContentLoaded', () => {
                 this.findSimilarPlayer(query);
             });
             
+            controls.proactiveAiYes.addEventListener('click', () => {
+                // Placeholder for 'Yes' action
+                controls.proactiveAiContainer.classList.add('hidden');
+            });
+            
+            controls.proactiveAiNo.addEventListener('click', () => {
+                controls.proactiveAiContainer.classList.add('hidden');
+            });
+
             populateSimilarPlayerSelect();
             render();
         },
@@ -700,6 +713,7 @@ document.addEventListener('DOMContentLoaded', () => {
             this.statsChart.data.labels = labels;
             this.statsChart.data.datasets = datasets;
             this.statsChart.update();
+            this.showProactiveAISuggestion();
         },
         findSimilarPlayer(query) {
             const resultsContainer = document.getElementById('similar-player-results');
@@ -714,6 +728,14 @@ document.addEventListener('DOMContentLoaded', () => {
                     </div>
                 `;
             }, 1000);
+        },
+        showProactiveAISuggestion() {
+            const container = document.getElementById('proactive-ai-container');
+            const suggestionEl = document.getElementById('proactive-ai-suggestion');
+            if(container && suggestionEl) {
+                suggestionEl.textContent = `I see you're comparing ${this.selectedPlayersForChart.map(p => p.name).join(', ')}. Would you like a detailed AI breakdown of this comparison?`;
+                container.classList.remove('hidden');
+            }
         },
         initPlayersPage() {
             const controls = { searchInput: document.getElementById('player-search-input'), positionFilter: document.getElementById('position-filter'), tierFilter: document.getElementById('tier-filter'), teamFilter: document.getElementById('team-filter'), tableBody: document.getElementById('player-table-body'), sortHeaders: document.querySelectorAll('.sortable-header') };
@@ -1155,7 +1177,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 scoutProspectBtn: document.getElementById('scout-prospect-btn'),
                 prospectReport: document.getElementById('prospect-scouting-report'),
                 simulateTeamBtn: document.getElementById('simulate-team-btn'),
-                simulationResults: document.getElementById('team-simulation-results')
+                simulationResults: document.getElementById('team-simulation-results'),
+                simulationChart: document.getElementById('team-simulation-chart')
             };
 
             if (!controls.tradeBlockContainer) return;
@@ -1202,10 +1225,45 @@ document.addEventListener('DOMContentLoaded', () => {
             const resultsContainer = document.getElementById('team-simulation-results');
             resultsContainer.innerHTML = '<div class="loader"></div>';
             setTimeout(() => {
-                resultsContainer.innerHTML = `
-                    <h3 class="text-xl font-bold text-yellow-400 text-center">3-Year Dynasty Outlook</h3>
-                    <p class="text-center text-gray-300">This is a dummy team simulation. The API is not currently connected.</p>
-                `;
+                resultsContainer.innerHTML = `<canvas id="team-simulation-chart"></canvas>`;
+                const ctx = document.getElementById('team-simulation-chart').getContext('2d');
+                new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: ['2025', '2026', '2027'],
+                        datasets: [{
+                            label: 'Projected Team Value',
+                            data: [850, 950, 900],
+                            borderColor: '#2dd4bf',
+                            backgroundColor: 'rgba(45, 212, 191, 0.2)',
+                            fill: true,
+                            tension: 0.4
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                labels: {
+                                    color: '#e2e8f0'
+                                }
+                            }
+                        },
+                        scales: {
+                            x: {
+                                ticks: {
+                                    color: '#9ca3af'
+                                }
+                            },
+                            y: {
+                                ticks: {
+                                    color: '#9ca3af'
+                                }
+                            }
+                        }
+                    }
+                });
             }, 1000);
         },
         initMyLeaguePage() {
