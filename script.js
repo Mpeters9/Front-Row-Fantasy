@@ -805,13 +805,34 @@ document.addEventListener('DOMContentLoaded', () => {
             try { let chatHistory = [{ role: "user", parts: [{ text: prompt }] }]; const payload = { contents: chatHistory }; const apiKey = ""; const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`; const response = await fetch(apiUrl, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) }); const result = await response.json(); if (result.candidates && result.candidates.length > 0) { textEl.textContent = result.candidates[0].content.parts[0].text; } else { throw new Error('No content returned from AI.'); } } catch (error) { console.error("Gemini API error:", error); textEl.textContent = "Could not retrieve AI analysis at this time."; } finally { loader.classList.add('hidden'); }
         },
         initMockDraftSimulator() {
-            const controls = { startBtn: document.getElementById('start-draft-button'), scoringSelect: document.getElementById('draftScoringType'), sizeSelect: document.getElementById('leagueSize'), pickSelect: document.getElementById('userPick'), settingsContainer: document.getElementById('draft-settings-container'), draftingContainer: document.getElementById('interactive-draft-container'), completeContainer: document.getElementById('draft-complete-container'), restartBtn: document.getElementById('restart-draft-button'), aiPersona: document.getElementById('ai-persona') };
+            const controls = {
+                startBtn: document.getElementById('start-draft-button'),
+                scoringSelect: document.getElementById('draftScoringType'),
+                sizeSelect: document.getElementById('leagueSize'),
+                pickSelect: document.getElementById('userPick'),
+                settingsContainer: document.getElementById('draft-settings-container'),
+                draftingContainer: document.getElementById('interactive-draft-container'),
+                completeContainer: document.getElementById('draft-complete-container'),
+                restartBtn: document.getElementById('restart-draft-button'),
+                aiPersona: document.getElementById('ai-persona'),
+                posFilter: document.getElementById('best-available-pos-filter')
+            };
+        
             if (!controls.startBtn) return;
-            const updateUserPickOptions = () => { const size = parseInt(controls.sizeSelect.value); controls.pickSelect.innerHTML = ''; for (let i = 1; i <= size; i++) { controls.pickSelect.add(new Option(`Pick ${i}`, i)); } };
+        
+            const updateUserPickOptions = () => {
+                const size = parseInt(controls.sizeSelect.value);
+                controls.pickSelect.innerHTML = '';
+                for (let i = 1; i <= size; i++) {
+                    controls.pickSelect.add(new Option(`Pick ${i}`, i));
+                }
+            };
+        
             updateUserPickOptions();
             controls.sizeSelect.addEventListener('change', updateUserPickOptions);
             controls.startBtn.addEventListener('click', () => this.startInteractiveDraft(controls));
             controls.restartBtn.addEventListener('click', () => this.resetDraftUI(controls));
+            controls.posFilter.addEventListener('change', () => this.updateBestAvailable(this.draftState.isUserTurn));
         },
         startInteractiveDraft(controls) {
             controls.settingsContainer.style.display = 'none';
@@ -826,20 +847,34 @@ document.addEventListener('DOMContentLoaded', () => {
             this.updateDraftBoard(); this.updateMyTeam(); this.runDraftTurn();
         },
         runDraftTurn() {
-            if (this.draftState.currentRound > this.draftState.totalRounds) { this.endInteractiveDraft(); return; }
-            const { currentRound, leagueSize } = this.draftState; const isSnake = currentRound % 2 === 0; const pickInRound = this.draftState.currentPickInRound; const teamIndex = isSnake ? leagueSize - 1 - (pickInRound - 1) : pickInRound - 1;
-            const isUserTurn = (teamIndex + 1) === this.draftState.userPickNum; this.draftState.isUserTurn = isUserTurn;
+            if (this.draftState.currentRound > this.draftState.totalRounds) {
+                this.endInteractiveDraft();
+                return;
+            }
+        
+            const { currentRound, leagueSize } = this.draftState;
+            const isSnake = currentRound % 2 === 0;
+            const pickInRound = this.draftState.currentPickInRound;
+            const teamIndex = isSnake ? leagueSize - 1 - (pickInRound - 1) : pickInRound - 1;
+            const isUserTurn = (teamIndex + 1) === this.draftState.userPickNum;
+            this.draftState.isUserTurn = isUserTurn;
+        
             const commentaryBox = document.getElementById('ai-draft-commentary');
-            if (commentaryBox) commentaryBox.innerHTML = `<p class="text-sm text-gray-400">The AI assistant will provide live analysis and suggestions here when you're on the clock.</p>`;
-
+            if (commentaryBox) {
+                commentaryBox.innerHTML = `<p class="text-sm text-gray-400">The AI assistant will provide live analysis and suggestions here when you're on the clock.</p>`;
+            }
+        
             this.updateDraftStatus();
+        
             if (isUserTurn) {
                 this.updateBestAvailable(true);
                 this.getAiDraftAssistantAdvice();
-            }
-            else {
+            } else {
                 this.updateBestAvailable(false);
-                setTimeout(() => { this.makeAiPick(teamIndex); this.runDraftTurn(); }, 500);
+                setTimeout(() => {
+                    this.makeAiPick(teamIndex);
+                    this.runDraftTurn();
+                }, 500);
             }
         },
         async getAiDraftAssistantAdvice() {
@@ -893,10 +928,43 @@ document.addEventListener('DOMContentLoaded', () => {
             statusCard.innerHTML = statusHTML;
         },
         updateBestAvailable(isUserTurn) {
-            const listEl = document.getElementById('best-available-list'); listEl.innerHTML = '';
-            const topPlayers = this.draftState.availablePlayers.slice(0, 50);
-            topPlayers.forEach(player => { const playerEl = document.createElement('div'); playerEl.className = 'best-available-player'; playerEl.innerHTML = `<span class="font-bold text-sm text-center w-12 player-pos-${player.simplePosition.toLowerCase()}">${player.simplePosition}</span><div class="flex-grow"><p class="player-name-link font-semibold text-white" data-player-name="${player.name}">${player.name}</p><p class="text-xs text-gray-400">${player.team} | Bye: ${player.bye || 'N/A'}</p></div>${isUserTurn ? `<button class="draft-button" data-player-name="${player.name}">Draft</button>` : `<span class="text-sm font-mono text-gray-500">${(player.adp.ppr || 999).toFixed(1)}</span>`}`; listEl.appendChild(playerEl); });
-            if(isUserTurn) { document.querySelectorAll('.draft-button').forEach(btn => { btn.onclick = (e) => this.makeUserPick(e.target.dataset.playerName); }); }
+            const listEl = document.getElementById('best-available-list');
+            const posFilter = document.getElementById('best-available-pos-filter').value;
+            listEl.innerHTML = '';
+        
+            let topPlayers = this.draftState.availablePlayers;
+            if (posFilter !== 'ALL') {
+                topPlayers = topPlayers.filter(p => p.simplePosition === posFilter);
+            }
+        
+            topPlayers.slice(0, 50).forEach(player => {
+                const playerEl = document.createElement('div');
+                playerEl.className = 'best-available-player';
+                playerEl.innerHTML = `
+                    <span class="font-bold text-sm text-center w-12 player-pos-${player.simplePosition.toLowerCase()}">${player.simplePosition}</span>
+                    <div class="flex-grow">
+                        <p class="player-name-link font-semibold text-white" data-player-name="${player.name}">${player.name}</p>
+                        <p class="text-xs text-gray-400">${player.team} | Bye: ${player.bye || 'N/A'}</p>
+                    </div>
+                    <button class="ai-analysis-btn" data-player-name="${player.name}">Ask AI</button>
+                    ${isUserTurn ? `<button class="draft-button" data-player-name="${player.name}">Draft</button>` : `<span class="text-sm font-mono text-gray-500">${(player.adp.ppr || 999).toFixed(1)}</span>`}
+                `;
+                listEl.appendChild(playerEl);
+            });
+        
+            if (isUserTurn) {
+                document.querySelectorAll('.draft-button').forEach(btn => {
+                    btn.onclick = (e) => this.makeUserPick(e.target.dataset.playerName);
+                });
+            }
+        
+            document.querySelectorAll('.ai-analysis-btn').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const playerName = e.target.dataset.playerName;
+                    this.getAiPlayerAnalysis(playerName);
+                });
+            });
+        
             this.addPlayerPopupListeners();
         },
         updateMyTeam() {
