@@ -12,27 +12,6 @@
 </head>
 <body class="min-h-screen flex flex-col font-poppins bg-gradient-to-br from-[#0f2027] to-[#2c5364]">
     <header class="sticky top-0 z-50 bg-opacity-98 bg-gray-900 shadow-lg border-b-2 border-teal-500">
-        <div class="max-w-7xl mx-auto px-4 flex justify-between items-center py-3">
-            <a href="index.html" class="text-xl md:text-2xl font-bold text-yellow-400 text-glow">Front Row Fantasy</a>
-            <nav class="hidden md:flex space-x-6 text-teal-200">
-                <a href="index.html" class="hover:text-yellow-400 transition-colors">Home</a>
-                <a href="goat.html" class="text-yellow-400 font-bold" aria-current="page">GOAT</a>
-                <a href="mock-draft.html" class="hover:text-yellow-400 transition-colors">Mock Draft</a>
-                <a href="articles.html" class="hover:text-yellow-400 transition-colors">Articles</a>
-                <a href="players.html" class="hover:text-yellow-400 transition-colors">Players</a>
-                <a href="stats.html" class="hover:text-yellow-400 transition-colors">The Lab</a>
-                <a href="waiver-wire.html" class="hover:text-yellow-400 transition-colors">Waiver Wire</a>
-                <a href="league-dominator.html" class="hover:text-yellow-400 transition-colors">League Dominator</a>
-                <a href="dynasty-dashboard.html" class="hover:text-yellow-400 transition-colors">Dynasty</a>
-                <a href="my-league.html" class="hover:text-yellow-400 transition-colors">My League</a>
-            </nav>
-            <div class="md:hidden">
-                <button id="mobile-menu-button" class="text-teal-400 hover:text-yellow-400 focus:outline-none">
-                    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
-                </button>
-            </div>
-        </div>
-        <nav id="mobile-menu" class="md:hidden hidden px-4 pb-3 space-y-2"></nav>
     </header>
 
     <main class="flex-grow max-w-7xl mx-auto py-4 md:py-8 px-2 md:px-4 w-full">
@@ -63,7 +42,7 @@
                     </nav>
                 </div>
                 <div class="p-2 md:p-6">
-                    <div x-show="tab === 'plan'" id="goat-draft-plan-container">
+                    <div x-show="tab === 'plan'">
                         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 md:gap-8">
                             <div class="lg:col-span-1">
                                 <h2 class="text-2xl md:text-3xl font-bold text-teal-300 mb-4">Draft Plan Generator</h2>
@@ -99,7 +78,7 @@
                         </div>
                     </div>
 
-                    <div x-show="tab === 'perfect-draft'" id="goat-draft-build-container">
+                    <div x-show="tab === 'perfect-draft'">
                         <div class="grid grid-cols-1 lg:grid-cols-4 gap-6 md:gap-8">
                             <div class="lg:col-span-1 space-y-4">
                                 <h2 class="text-2xl font-bold text-teal-300 text-center">Draft Settings</h2>
@@ -141,7 +120,7 @@
                         </div>
                     </div>
 
-                    <div x-show="tab === 'sheet'" id="goat-cheat-sheet-container">
+                    <div x-show="tab === 'sheet'">
                         <h2 class="text-2xl md:text-3xl font-bold text-teal-300 mb-4 text-center">AI-Powered Cheat Sheet</h2>
                         <div class="p-4 md:p-6 bg-gray-800 bg-opacity-80 rounded-xl shadow-lg border border-teal-600 mb-8">
                             <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
@@ -187,7 +166,7 @@
                         </div>
                     </div>
 
-                    <div x-show="tab === 'trade'" id="goat-trade-analyzer-container">
+                    <div x-show="tab === 'trade'">
                         <div id="trade-analyzer">
                             <div class="flex flex-col md:flex-row justify-center items-center mb-6">
                                 <h2 class="text-2xl md:text-3xl font-bold text-teal-300 mb-4 md:mb-0 md:mr-6">Trade Analyzer</h2>
@@ -238,7 +217,7 @@
                         </div>
                     </div>
 
-                     <div x-show="tab === 'chat'" id="goat-ai-analyst-container">
+                    <div x-show="tab === 'chat'">
                         <div class="flex flex-col h-[60vh] bg-gray-900/40 rounded-lg">
                             <h2 class="text-2xl font-bold text-teal-300 text-center p-4 border-b border-gray-700">AI Analyst Chat</h2>
                             <div id="chat-window" class="flex-grow p-4 space-y-4 overflow-y-auto">
@@ -257,19 +236,6 @@
     <div id="player-popup-card" class="hidden"></div>
 
     <footer class="bg-gray-900 text-teal-400 py-6 border-t-2 border-teal-500">
-        <div class="mb-2 flex flex-wrap justify-center gap-x-6 gap-y-2 text-teal-200">
-           <a href="index.html" class="hover:text-yellow-400 transition-colors">Home</a>
-           <a href="goat.html" class="text-yellow-400 font-bold" aria-current="page">GOAT</a>
-           <a href="mock-draft.html" class="hover:text-yellow-400 transition-colors">Mock Draft</a>
-           <a href="articles.html" class="hover:text-yellow-400 transition-colors">Articles</a>
-           <a href="players.html" class="hover:text-yellow-400 transition-colors">Players</a>
-           <a href="stats.html" class="hover:text-yellow-400 transition-colors">The Lab</a>
-           <a href="waiver-wire.html" class="hover:text-yellow-400 transition-colors">Waiver Wire</a>
-           <a href="league-dominator.html" class="hover:text-yellow-400 transition-colors">League Dominator</a>
-           <a href="dynasty-dashboard.html" class="hover:text-yellow-400 transition-colors">Dynasty</a>
-           <a href="my-league.html" class="hover:text-yellow-400 transition-colors">My League</a>
-        </div>
-        <div class="text-center text-sm">© 2025 Front Row Fantasy. All rights reserved.</div>
     </footer>
     <script src="script.js"></script>
 </body>
