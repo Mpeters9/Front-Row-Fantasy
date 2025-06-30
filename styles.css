@@ -269,3 +269,11 @@ main {
 .player-pos-pick { border-color: #a855f7; }
 
 .player-card { display: flex; align-items: center; padding: 0.5rem 0.75rem; border-left-width: 4px; }
+
+/* --- AI Chat Widget --- */
+#ai-chat-widget {
+    position: fixed;
+    bottom: 1.25rem;
+    right: 1.25rem;
+    z-index: 1000;
+}
