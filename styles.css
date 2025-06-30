@@ -2,6 +2,9 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap');
 
 body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
     background-color: #0f2027;
     font-family: 'Poppins', sans-serif;
     color: #e2e8f0;
@@ -11,6 +14,10 @@ body {
     --c-gray-900: #111827;
     --c-gray-800: #1f2937;
     --c-gray-700: #374151;
+}
+
+main {
+    flex-grow: 1;
 }
 
 .text-glow-gold {
