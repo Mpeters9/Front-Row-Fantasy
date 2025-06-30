@@ -42,14 +42,14 @@
                 Your ultimate draft preparation war room. AI-driven plans, simulators, cheat sheets, and analysis in one place.
             </p>
 
-            <div x-data="{ tab: 'plan' }" class="tool-card p-0">
+            <div x-data="{ tab: 'build' }" class="tool-card p-0">
                 <div class="border-b border-gray-700 overflow-x-auto">
                     <nav class="-mb-px flex space-x-8 px-6" aria-label="Tabs">
+                         <button @click="tab = 'build'" :class="{ 'border-teal-400 text-teal-300': tab === 'build', 'border-transparent text-gray-400 hover:text-gray-200 hover:border-gray-300': tab !== 'build' }" class="whitespace-nowrap py-4 px-1 border-b-2 font-medium text-lg">
+                            Draft Build
+                        </button>
                         <button @click="tab = 'plan'" :class="{ 'border-teal-400 text-teal-300': tab === 'plan', 'border-transparent text-gray-400 hover:text-gray-200 hover:border-gray-300': tab !== 'plan' }" class="whitespace-nowrap py-4 px-1 border-b-2 font-medium text-lg">
                             AI Draft Plan
-                        </button>
-                        <button @click="tab = 'build'" :class="{ 'border-teal-400 text-teal-300': tab === 'build', 'border-transparent text-gray-400 hover:text-gray-200 hover:border-gray-300': tab !== 'build' }" class="whitespace-nowrap py-4 px-1 border-b-2 font-medium text-lg">
-                            Draft Build
                         </button>
                         <button @click="tab = 'sheet'" :class="{ 'border-teal-400 text-teal-300': tab === 'sheet', 'border-transparent text-gray-400 hover:text-gray-200 hover:border-gray-300': tab !== 'sheet' }" class="whitespace-nowrap py-4 px-1 border-b-2 font-medium text-lg">
                             AI Cheat Sheet
