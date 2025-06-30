@@ -455,3 +455,11 @@ body {
     color: #6b7280;
     font-weight: bold;
 }
+body.draft-active {
+    display: flex;
+    flex-direction: column;
+}
+
+body.draft-active main {
+    flex-grow: 1;
+}
