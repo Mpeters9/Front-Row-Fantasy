@@ -12,7 +12,7 @@
 <body class="min-h-screen flex flex-col font-poppins bg-gradient-to-br from-[#0f2027] to-[#2c5364]">
     <header class="sticky top-0 z-50 bg-opacity-98 bg-gray-900 shadow-lg border-b-2 border-teal-500">
         <div class="max-w-7xl mx-auto px-4 flex justify-between items-center py-3">
-            <a href="index.html" class="text-2xl font-bold text-yellow-400 text-glow">Front Row Fantasy</a>
+            <a href="index.html" class="text-xl md:text-2xl font-bold text-yellow-400 text-glow">Front Row Fantasy</a>
             <nav class="hidden md:flex space-x-6 text-teal-200">
                 <a href="index.html" class="hover:text-yellow-400 transition-colors">Home</a>
                 <a href="goat.html" class="hover:text-yellow-400 transition-colors">GOAT</a>
@@ -44,12 +44,12 @@
 
     <main class="flex-grow max-w-7xl mx-auto py-8 px-4 w-full">
         <section id="players-page">
-            <h1 class="text-5xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-yellow-300 to-teal-300 mb-4 text-glow-gold text-center">Player Rankings</h1>
-            <p class="text-xl text-teal-200 max-w-3xl mx-auto text-center mb-8">
+            <h1 class="text-4xl md:text-5xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-yellow-300 to-teal-300 mb-4 text-glow-gold text-center">Player Rankings</h1>
+            <p class="text-lg md:text-xl text-teal-200 max-w-3xl mx-auto text-center mb-8">
                 Search, sort, and filter through all players to find your next league winner.
             </p>
             
-            <div class="p-6 bg-gray-800 bg-opacity-80 rounded-xl shadow-lg border border-teal-600 mb-8">
+            <div class="p-4 md:p-6 bg-gray-800 bg-opacity-80 rounded-xl shadow-lg border border-teal-600 mb-8">
                 <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 items-end">
                     <div>
                         <label for="player-search-input" class="block text-sm font-medium text-gray-300 mb-1">Player Name</label>
@@ -89,10 +89,10 @@
                         <tr>
                            <th class="p-4 sortable-header" data-sort="name">Player</th>
                            <th class="p-4 text-center sortable-header" data-sort="simplePosition">Pos</th>
-                           <th class="p-4 text-center sortable-header" data-sort="team">Team</th>
-                           <th class="p-4 text-center sortable-header" data-sort="tier">Tier</th>
-                           <th class="p-4 text-center sortable-header" data-sort="adp_ppr">ADP (PPR)</th>
-                           <th class="p-4 text-center sortable-header" data-sort="vorp">VORP</th>
+                           <th class="p-4 text-center sortable-header hidden sm:table-cell" data-sort="team">Team</th>
+                           <th class="p-4 text-center sortable-header hidden md:table-cell" data-sort="tier">Tier</th>
+                           <th class="p-4 text-center sortable-header sorted-asc" data-sort="adp_ppr">ADP</th>
+                           <th class="p-4 text-center sortable-header hidden sm:table-cell" data-sort="vorp">VORP</th>
                         </tr>
                     </thead>
                     <tbody id="player-table-body" class="bg-gray-900 bg-opacity-70 divide-y divide-gray-700 text-white">
@@ -122,3 +122,4 @@
     <script src="script.js"></script>
 </body>
 </html>
+
