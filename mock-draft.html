@@ -12,7 +12,7 @@
 <body class="min-h-screen flex flex-col font-poppins bg-gradient-to-br from-[#0f2027] to-[#2c5364]">
     <header class="sticky top-0 z-50 bg-opacity-98 bg-gray-900 shadow-lg border-b-2 border-teal-500">
         <div class="max-w-7xl mx-auto px-4 flex justify-between items-center py-3">
-            <a href="index.html" class="text-2xl font-bold text-yellow-400 text-glow">Front Row Fantasy</a>
+            <a href="index.html" class="text-xl md:text-2xl font-bold text-yellow-400 text-glow">Front Row Fantasy</a>
             <nav class="hidden md:flex space-x-6 text-teal-200">
                 <a href="index.html" class="hover:text-yellow-400 transition-colors">Home</a>
                 <a href="goat.html" class="hover:text-yellow-400 transition-colors">GOAT</a>
@@ -35,11 +35,11 @@
     </header>
 
     <main class="flex-grow flex flex-col w-full">
-        <section id="mock-draft-simulator" class="flex-grow flex flex-col">
+        <section id="mock-draft-simulator" class="flex-grow flex flex-col p-2 md:p-4">
             <div id="draft-settings-container" class="tool-card max-w-4xl mx-auto my-auto">
-                <h1 class="text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-yellow-300 to-teal-300 mb-2 text-glow-gold text-center">Mock Draft War Room</h1>
-                <p class="text-center text-teal-200 mb-6">Practice drafting against smart AI opponents to hone your strategy. The ultimate live draft companion.</p>
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6 p-4 border border-teal-800 rounded-lg bg-gray-900/30">
+                <h1 class="text-3xl md:text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-yellow-300 to-teal-300 mb-2 text-glow-gold text-center">Mock Draft War Room</h1>
+                <p class="text-center text-teal-200 mb-6">Practice drafting against smart AI opponents to hone your strategy.</p>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6 mb-6 p-4 border border-teal-800 rounded-lg bg-gray-900/30">
                     <div>
                         <label for="draftScoringType" class="block text-gray-300 font-semibold mb-2">Scoring</label>
                         <select id="draftScoringType" class="form-select w-full"><option value="ppr" selected>PPR</option><option value="hppr">Half-PPR</option><option value="standard">Standard</option></select>
@@ -56,26 +56,26 @@
                 <button id="start-draft-button" class="cta-btn w-full mt-2 text-lg">Start Live Mock Draft</button>
             </div>
 
-            <div id="interactive-draft-container" class="hidden flex-grow grid-cols-12 gap-4 p-4 max-w-screen-2xl mx-auto w-full">
+            <div id="interactive-draft-container" class="hidden flex-grow grid grid-cols-12 gap-4 w-full max-w-screen-2xl mx-auto">
                 <!-- Left Column -->
                 <div class="col-span-12 lg:col-span-3 space-y-4">
                     <div id="draft-status-card" class="draft-card text-center p-4 transition-all duration-300"></div>
-                    <div id="my-team-container" class="draft-card">
-                         <h3 class="text-2xl font-bold text-center mb-4 text-teal-300">My Team</h3>
+                     <div id="my-team-container" class="draft-card">
+                         <h3 class="text-xl font-bold text-center mb-4 text-teal-300">My Team</h3>
                          <div id="my-team-list" class="space-y-1"></div>
                     </div>
                 </div>
                 <!-- Middle Column -->
-                <div class="col-span-12 lg:col-span-5">
+                <div class="col-span-12 lg:col-span-5 order-first lg:order-none">
                     <div id="best-available-container" class="draft-card p-0 flex flex-col h-full">
-                        <h3 class="text-2xl font-bold text-center text-teal-300 p-4">Best Available Players</h3>
-                        <div id="best-available-list" class="space-y-1 px-2 pb-2 overflow-y-auto flex-grow"></div>
+                        <h3 class="text-xl font-bold text-center text-teal-300 p-4">Best Available Players</h3>
+                        <div id="best-available-list" class="space-y-1 px-2 pb-2 overflow-y-auto flex-grow" style="max-height: 75vh;"></div>
                     </div>
                 </div>
                  <!-- Right Column -->
                 <div class="col-span-12 lg:col-span-4">
                     <div class="draft-card p-4 flex flex-col h-full">
-                        <h3 class="text-2xl font-bold text-center text-teal-300 mb-4">Live Draft Board</h3>
+                        <h3 class="text-xl font-bold text-center text-teal-300 mb-4">Live Draft Board</h3>
                         <div id="draft-board-grid" class="overflow-x-auto flex-grow">
                            <!-- Full grid draft board will be injected here -->
                         </div>
@@ -84,17 +84,17 @@
             </div>
 
              <div id="draft-complete-container" class="hidden mt-8 tool-card text-center max-w-4xl mx-auto my-auto">
-                <h2 class="text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-yellow-300 to-teal-300 mb-4 text-glow-gold">Draft Complete!</h2>
+                <h2 class="text-3xl md:text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-yellow-300 to-teal-300 mb-4 text-glow-gold">Draft Complete!</h2>
                 <p class="text-xl text-teal-200 mb-6">Here is your final roster. Good luck this season!</p>
                 <div id="final-roster-display" class="grid grid-cols-1 md:grid-cols-2 gap-x-8 text-left max-w-4xl mx-auto"></div>
                 <button id="restart-draft-button" class="cta-btn mt-8">Start a New Draft</button>
             </div>
         </section>
     </main>
-
+    
     <div id="player-popup-card" class="hidden"></div>
 
-    <footer class="bg-gray-900 text-teal-400 py-6 border-t-2 border-teal-500">
+    <footer class="bg-gray-900 text-teal-400 py-6 border-t-2 border-teal-500 mt-auto">
         <div class="mb-2 flex flex-wrap justify-center gap-x-6 gap-y-2 text-teal-200">
            <a href="index.html" class="hover:text-yellow-400 transition-colors">Home</a>
            <a href="goat.html" class="hover:text-yellow-400 transition-colors">GOAT</a>
