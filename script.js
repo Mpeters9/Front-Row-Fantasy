@@ -15,9 +15,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const App = {
         playerData: [],
         hasDataLoaded: false,
-        draftState: {}, 
-        tradeState: { 
-            team1: {players: [], picks: []}, 
+        draftState: {},
+        tradeState: {
+            team1: {players: [], picks: []},
             team2: {players: [], picks: []},
             tradeType: 'Redraft'
         },
@@ -29,9 +29,9 @@ document.addEventListener('DOMContentLoaded', () => {
         async init() {
             this.initMobileMenu();
             this.createPlayerPopup();
-            this.initPlaceholderTicker(); 
+            this.initPlaceholderTicker();
             await this.loadAllPlayerData();
-            this.initLiveTicker(); 
+            this.initLiveTicker();
             this.initializePageFeatures();
         },
 
@@ -42,14 +42,14 @@ document.addEventListener('DOMContentLoaded', () => {
             if (document.getElementById('mock-draft-simulator')) this.initMockDraftSimulator();
             if (document.getElementById('stats-page')) this.initStatsPage();
             if (document.getElementById('players-page')) this.initPlayersPage();
-            if (document.getElementById('articles-page')) this.initArticlesPage(); 
+            if (document.getElementById('articles-page')) this.initArticlesPage();
             if (document.getElementById('article-content')) this.loadArticleContent();
             if (document.getElementById('waiver-wire-page')) this.initWaiverWirePage();
             if (document.getElementById('league-dominator-page')) this.initLeagueDominatorPage();
             if (document.getElementById('dynasty-dashboard-page')) this.initDynastyDashboardPage();
             if (document.getElementById('my-league-page')) this.initMyLeaguePage();
         },
-        
+
         initMobileMenu() {
             const btn = document.getElementById('mobile-menu-button');
             const menu = document.getElementById('mobile-menu');
@@ -108,17 +108,17 @@ document.addEventListener('DOMContentLoaded', () => {
             const tier = player.tier || 10;
             let base, range;
             if (pos === 'DST' || pos === 'K') { base = 5; range = 8; }
-            else if (tier <= 2) { base = (pos === 'QB') ? 22 : 18; range = 15; } 
-            else if (tier <= 5) { base = (pos === 'QB') ? 17 : 12; range = 12; } 
-            else if (tier <= 8) { base = (pos === 'QB') ? 12 : 7; range = 10; } 
+            else if (tier <= 2) { base = (pos === 'QB') ? 22 : 18; range = 15; }
+            else if (tier <= 5) { base = (pos === 'QB') ? 17 : 12; range = 12; }
+            else if (tier <= 8) { base = (pos === 'QB') ? 12 : 7; range = 10; }
             else { base = 2; range = 8; }
-            return Math.max(0, base + (Math.random() * range)); 
+            return Math.max(0, base + (Math.random() * range));
         },
         generateAdvancedStats(player, fantasyPoints) {
             const pos = (player.position||'').replace(/\d+$/, '').trim().toUpperCase();
             const base = fantasyPoints;
             let stats = { passYds: 0, passTDs: 0, INTs: 0, rushAtt: 0, rushYds: 0, targets: 0, receptions: 0, recYds: 0, airYards: 0, redzoneTouches: 0, yprr: 0 };
-            
+
             if (pos === 'QB') {
                 stats.passYds = base * 180 + (Math.random() * 500 - 250);
                 stats.passTDs = base * 1.2 + (Math.random() * 5 - 2.5);
@@ -178,7 +178,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 planControls.size.addEventListener('change', updatePlanPickOptions);
                 planControls.generateBtn.addEventListener('click', () => this.generateAiDraftPlan(planControls));
             }
-            
+
             this.initGoatDraftBuild();
             this.initGoatCheatSheet();
             this.initTradeAnalyzer();
@@ -239,7 +239,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 messageElement.innerHTML = message;
                 controls.chatWindow.appendChild(messageElement);
                 controls.chatWindow.scrollTop = controls.chatWindow.scrollHeight;
-                 if (sender === 'user') { this.chatHistory.push({ role: "user", parts: [{ text: message }] }); } 
+                 if (sender === 'user') { this.chatHistory.push({ role: "user", parts: [{ text: message }] }); }
                  else { this.chatHistory.push({ role: "model", parts: [{ text: message }] }); }
             };
             const getAIResponse = async (question) => {
@@ -287,10 +287,10 @@ document.addEventListener('DOMContentLoaded', () => {
             };
 
             if (!controls.generateButton) return;
-            
+
             const rosterConfigs = { QB: { "min": 0, "max": 2, "default": config.rosterSettings.QB }, RB: { "min": 1, "max": 4, "default": config.rosterSettings.RB }, WR: { "min": 1, "max": 4, "default": config.rosterSettings.WR }, TE: { "min": 0, "max": 2, "default": config.rosterSettings.TE }, FLEX: { "min": 0, "max": 2, "default": config.rosterSettings.FLEX }, K: { "min": 0, "max": 1, "default": config.rosterSettings.K }, DST: { "min": 0, "max": 1, "default": config.rosterSettings.DST }, BENCH: { "min": 4, "max": 8, "default": config.rosterSettings.BENCH } };
             controls.rosterContainer.innerHTML = Object.entries(rosterConfigs).map(([pos, config]) => `<div class="roster-stepper" id="roster-${pos.toLowerCase()}"><label class="roster-stepper-label">${pos}</label><div class="roster-stepper-controls"><button type="button" class="roster-stepper-btn" data-action="decrement">-</button><span class="roster-stepper-value">${config.default}</span><button type="button" class="roster-stepper-btn" data-action="increment">+</button></div></div>`).join('');
-            
+
             Object.entries(rosterConfigs).forEach(([pos, config]) => {
                 const stepperEl = document.getElementById(`roster-${pos.toLowerCase()}`);
                 const valueEl = stepperEl.querySelector('.roster-stepper-value');
@@ -310,10 +310,10 @@ document.addEventListener('DOMContentLoaded', () => {
                     controls.draftPosition.add(new Option(`Pick ${i}`, i));
                 }
             };
-            
+
             updateDraftPositions();
             controls.leagueSize.addEventListener('change', updateDraftPositions);
-            
+
             controls.generateButton.addEventListener('click', () => {
                  const newRosterSettings = {};
                 Object.keys(rosterConfigs).forEach(pos => {
@@ -337,15 +337,15 @@ document.addEventListener('DOMContentLoaded', () => {
             if (persona === 'aggressive') {
                 score += (player.vorp || 0) * 0.5;
             } else if (persona === 'value-focused') {
-                if (adp > rank + 10) { score *= 1.5; } 
+                if (adp > rank + 10) { score *= 1.5; }
                 else if (rank > adp + 5) { score *= 0.5; }
             }
-            
-            score *= (1 + (Math.random() - 0.5) * 0.4); 
+
+            score *= (1 + (Math.random() - 0.5) * 0.4);
             return score;
         },
         async runGoatMockDraft(controls) {
-            const loader = document.getElementById('build-loading-spinner'); 
+            const loader = document.getElementById('build-loading-spinner');
             const resultsWrapper = document.getElementById('build-results-wrapper');
             const placeholder = document.getElementById('build-placeholder');
             const button = controls.generateButton;
@@ -361,7 +361,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const { scoringType, leagueSize, draftPosition } = controls;
             const scoring = scoringType.value;
             const userDraftPos = parseInt(draftPosition.value) - 1;
-            
+
             if (!this.hasDataLoaded) await this.loadAllPlayerData();
             const currentRosterSettings = { ...config.rosterSettings };
             let availablePlayers = JSON.parse(JSON.stringify(this.playerData)).filter(p => p.adp && typeof p.adp[scoring] === 'number');
@@ -379,8 +379,8 @@ document.addEventListener('DOMContentLoaded', () => {
                     const availableDST = availablePlayers.find(p => p.simplePosition === 'DST');
                     const availableK = availablePlayers.find(p => p.simplePosition === 'K');
 
-                    if (round >= totalRounds - 1 && needsDST && availableDST) { draftedPlayer = availableDST; } 
-                    else if (round >= totalRounds && needsK && availableK) { draftedPlayer = availableK; } 
+                    if (round >= totalRounds - 1 && needsDST && availableDST) { draftedPlayer = availableDST; }
+                    else if (round >= totalRounds && needsK && availableK) { draftedPlayer = availableK; }
                     else {
                         availablePlayers.forEach(p => { p.draftScore = this.calculateDraftScore(p, round, scoring); });
                         const qbsOnRoster = team.roster.filter(p => p.simplePosition === 'QB').length;
@@ -397,7 +397,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         draftedPlayer.draftedAt = `(${round}.${picksInRoundOrder.indexOf(teamIndex) + 1})`;
                         team.roster.push(draftedPlayer);
                         const pos = draftedPlayer.simplePosition.toUpperCase();
-                        if (team.needs[pos] > 0) { team.needs[pos]--; } 
+                        if (team.needs[pos] > 0) { team.needs[pos]--; }
                         else if (config.flexPositions.includes(pos) && team.needs['FLEX'] > 0) { team.needs['FLEX']--; }
                         else if (team.needs.BENCH > 0) { team.needs.BENCH--; }
                     }
@@ -410,10 +410,10 @@ document.addEventListener('DOMContentLoaded', () => {
             button.disabled = false;
         },
         displayGoatDraftResults(roster) {
-            const startersEl = document.getElementById('starters-list'); 
+            const startersEl = document.getElementById('starters-list');
             const benchEl = document.getElementById('bench-list');
             startersEl.innerHTML = ''; benchEl.innerHTML = '';
-            const starters = []; const bench = []; 
+            const starters = []; const bench = [];
             const rosterSlots = { ...config.rosterSettings };
             roster.forEach(player => {
                 const pos = player.simplePosition.toUpperCase();
@@ -439,7 +439,7 @@ document.addEventListener('DOMContentLoaded', () => {
             try {
                 let chatHistory = [{ role: "user", parts: [{ text: prompt }] }];
                 const payload = { contents: chatHistory, generationConfig: { responseMimeType: "text/html" } };
-                const apiKey = ""; 
+                const apiKey = "";
                 const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
                 const response = await fetch(apiUrl, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
                 if (!response.ok) throw new Error(`API Error: ${response.statusText}`);
@@ -518,7 +518,7 @@ document.addEventListener('DOMContentLoaded', () => {
             try {
                 let chatHistory = [{ role: "user", parts: [{ text: prompt }] }];
                 const payload = { contents: chatHistory };
-                const apiKey = ""; 
+                const apiKey = "";
                 const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
                 const response = await fetch(apiUrl, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
                 const result = await response.json();
@@ -546,7 +546,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const render = () => {
                 let filteredPlayers = [...this.playerData];
                 const pos = controls.position.value;
-                if (pos === 'FLEX') { filteredPlayers = filteredPlayers.filter(p => config.flexPositions.includes(p.simplePosition)); } 
+                if (pos === 'FLEX') { filteredPlayers = filteredPlayers.filter(p => config.flexPositions.includes(p.simplePosition)); }
                 else if (pos !== 'ALL') { filteredPlayers = filteredPlayers.filter(p => p.simplePosition === pos); }
                 const searchTerm = controls.search.value.toLowerCase();
                 if (searchTerm) { filteredPlayers = filteredPlayers.filter(p => p.name.toLowerCase().includes(searchTerm)); }
@@ -591,12 +591,12 @@ document.addEventListener('DOMContentLoaded', () => {
         addPlayerSelectionListeners() {
             document.querySelectorAll('#stats-table-body tr').forEach(row => {
                 row.addEventListener('click', (e) => {
-                    if(e.target.classList.contains('player-name-link')) return; 
+                    if(e.target.classList.contains('player-name-link')) return;
                     const playerName = row.dataset.playerName;
                     const player = this.playerData.find(p => p.name === playerName);
                     if(!player) return;
                     const selectedIndex = this.selectedPlayersForChart.findIndex(p => p.name === playerName);
-                    if (selectedIndex > -1) { this.selectedPlayersForChart.splice(selectedIndex, 1); } 
+                    if (selectedIndex > -1) { this.selectedPlayersForChart.splice(selectedIndex, 1); }
                     else { if (this.selectedPlayersForChart.length >= 5) { this.selectedPlayersForChart.shift(); } this.selectedPlayersForChart.push(player); }
                     this.initStatsPage();
                 });
@@ -681,12 +681,12 @@ document.addEventListener('DOMContentLoaded', () => {
             };
 
             if (!controls.analyzeBtn) return;
-            
+
             controls.tradeTypeToggle.addEventListener('click', (e) => {
                 if(e.target.matches('.trade-type-btn')) {
                     const selectedType = e.target.dataset.type;
                     this.tradeState.tradeType = selectedType;
-                    
+
                     controls.tradeTypeToggle.querySelectorAll('.trade-type-btn').forEach(btn => btn.classList.remove('active'));
                     e.target.classList.add('active');
 
@@ -708,7 +708,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
             const activeButton = controls.tradeTypeToggle.querySelector(`[data-type="${this.tradeState.tradeType}"]`);
             if (activeButton) activeButton.classList.add('active');
-            
+
             controls.searchInput1.addEventListener('input', () => this.showTradeAutocomplete(controls.searchInput1, controls.autocomplete1, 1));
             controls.searchInput2.addEventListener('input', () => this.showTradeAutocomplete(controls.searchInput2, controls.autocomplete2, 2));
             controls.addPickBtn1.addEventListener('click', () => this.addPickToTrade(controls.pickYear1.value, controls.pickRound1.value, controls.pickNumber1.value, 1));
@@ -735,8 +735,8 @@ document.addEventListener('DOMContentLoaded', () => {
         getPickValue(year, round, pickNumber) {
             const baseValue = config.draftPickValues[year]?.[round] || 0;
             if (!baseValue) return 0;
-            const depreciation = (pickNumber - 1) * (baseValue / 20); 
-            return Math.max(5, baseValue - depreciation); 
+            const depreciation = (pickNumber - 1) * (baseValue / 20);
+            return Math.max(5, baseValue - depreciation);
         },
         addPickToTrade(year, round, pickNumberStr, teamNum) {
             const pickNumber = parseInt(pickNumberStr);
@@ -748,7 +748,7 @@ document.addEventListener('DOMContentLoaded', () => {
         },
         removeAssetFromTrade(assetId, assetType, teamNum) {
             const team = (teamNum === 1) ? this.tradeState.team1 : this.tradeState.team2;
-            if (assetType === 'player') { team.players = team.players.filter(p => p.name !== assetId); } 
+            if (assetType === 'player') { team.players = team.players.filter(p => p.name !== assetId); }
             else if (assetType === 'pick') { team.picks = team.picks.filter(p => p.id !== assetId); }
             this.renderTradeUI();
         },
@@ -785,12 +785,12 @@ document.addEventListener('DOMContentLoaded', () => {
             let verdict;
             const diff = Math.abs(team1Value - team2Value);
             const avgVal = (team1Value + team2Value) / 2 || 1;
-            if (totalAssets === 0) { verdict = `<h3 class="text-2xl font-bold text-red-400">Please add players or picks to analyze.</h3>`; } 
-            else if (diff / avgVal < 0.1) { verdict = `<h3 class="text-2xl font-bold text-yellow-300">This is a very balanced trade.</h3><p class="text-gray-300 mt-1">It's a fair swap that comes down to which assets you believe in more.</p>`; } 
-            else if (team1Value > team2Value) { verdict = `<h3 class="text-2xl font-bold text-red-400">You might be giving up too much value.</h3><p class="text-gray-300 mt-1">The other team seems to be getting the better end of this deal.</p>`; } 
+            if (totalAssets === 0) { verdict = `<h3 class="text-2xl font-bold text-red-400">Please add players or picks to analyze.</h3>`; }
+            else if (diff / avgVal < 0.1) { verdict = `<h3 class="text-2xl font-bold text-yellow-300">This is a very balanced trade.</h3><p class="text-gray-300 mt-1">It's a fair swap that comes down to which assets you believe in more.</p>`; }
+            else if (team1Value > team2Value) { verdict = `<h3 class="text-2xl font-bold text-red-400">You might be giving up too much value.</h3><p class="text-gray-300 mt-1">The other team seems to be getting the better end of this deal.</p>`; }
             else { verdict = `<h3 class="text-2xl font-bold text-green-400">This looks like a smash accept for you!</h3><p class="text-gray-300 mt-1">The assets you're getting back are a significant upgrade.</p>`; }
             resultsContainer.innerHTML = ` <div class="text-center">${verdict}</div> <div id="ai-trade-analysis-container" class="popup-footer mt-4"><button id="get-ai-trade-btn" class="ai-analysis-btn">Get AI Opinion</button><div id="ai-trade-loader" class="loader-small hidden"></div><p id="ai-trade-text" class="text-sm text-gray-300 mt-2 text-left"></p></div> `;
-            if(totalAssets > 0) { document.getElementById('get-ai-trade-btn').addEventListener('click', () => this.getAITradeAnalysis()); } 
+            if(totalAssets > 0) { document.getElementById('get-ai-trade-btn').addEventListener('click', () => this.getAITradeAnalysis()); }
             else { document.getElementById('ai-trade-analysis-container').classList.add('hidden'); }
         },
         async getAITradeAnalysis() {
@@ -801,7 +801,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const team2Players = this.tradeState.team2.players.map(p => p.name).join(', ') || "no players";
             const team2Picks = this.tradeState.team2.picks.map(p => p.name).join(', ') || "no picks";
             const prompt = `Act as a fantasy football expert. Analyze this ${this.tradeState.tradeType} league trade: A manager sends ${team1Players} ${this.tradeState.tradeType === 'Dynasty' ? `and ${team1Picks}` : ''}. They receive ${team2Players} ${this.tradeState.tradeType === 'Dynasty' ? `and ${team2Picks}` : ''}. Provide a brief, strategic analysis of the trade, considering player value, age (if dynasty), draft pick value (if dynasty), and potential upside or risk. Keep it under 75 words.`;
-            
+
             try { let chatHistory = [{ role: "user", parts: [{ text: prompt }] }]; const payload = { contents: chatHistory }; const apiKey = ""; const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`; const response = await fetch(apiUrl, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) }); const result = await response.json(); if (result.candidates && result.candidates.length > 0) { textEl.textContent = result.candidates[0].content.parts[0].text; } else { throw new Error('No content returned from AI.'); } } catch (error) { console.error("Gemini API error:", error); textEl.textContent = "Could not retrieve AI analysis at this time."; } finally { loader.classList.add('hidden'); }
         },
         initMockDraftSimulator() {
@@ -814,7 +814,7 @@ document.addEventListener('DOMContentLoaded', () => {
             controls.restartBtn.addEventListener('click', () => this.resetDraftUI(controls));
         },
         startInteractiveDraft(controls) {
-            controls.settingsContainer.style.display = 'none'; 
+            controls.settingsContainer.style.display = 'none';
             const draftContainer = document.getElementById('interactive-draft-container');
             draftContainer.classList.remove('hidden');
             draftContainer.classList.add('grid');
@@ -833,13 +833,13 @@ document.addEventListener('DOMContentLoaded', () => {
             if (commentaryBox) commentaryBox.innerHTML = `<p class="text-sm text-gray-400">The AI assistant will provide live analysis and suggestions here when you're on the clock.</p>`;
 
             this.updateDraftStatus();
-            if (isUserTurn) { 
+            if (isUserTurn) {
                 this.updateBestAvailable(true);
                 this.getAiDraftAssistantAdvice();
-            } 
-            else { 
-                this.updateBestAvailable(false); 
-                setTimeout(() => { this.makeAiPick(teamIndex); this.runDraftTurn(); }, 500); 
+            }
+            else {
+                this.updateBestAvailable(false);
+                setTimeout(() => { this.makeAiPick(teamIndex); this.runDraftTurn(); }, 500);
             }
         },
         async getAiDraftAssistantAdvice() {
@@ -853,7 +853,7 @@ document.addEventListener('DOMContentLoaded', () => {
             try {
                 let chatHistory = [{ role: "user", parts: [{ text: prompt }] }];
                 const payload = { contents: chatHistory };
-                const apiKey = ""; 
+                const apiKey = "";
                 const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
                 const response = await fetch(apiUrl, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
                 const result = await response.json();
@@ -866,7 +866,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         },
         makeAiPick(teamIndex) {
-            const { availablePlayers, aiPersona, scoring } = this.draftState; 
+            const { availablePlayers, aiPersona, scoring } = this.draftState;
             const currentRank = this.draftState.draftPicks.length + 1;
             availablePlayers.forEach(p => { p.draftScore = this.calculateDraftScore(p, this.draftState.currentRound, scoring, aiPersona, currentRank); });
             availablePlayers.sort((a, b) => b.draftScore - a.draftScore);
@@ -888,7 +888,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const overallPick = (currentRound - 1) * leagueSize + currentPickInRound; const statusCard = document.getElementById('draft-status-card');
             statusCard.classList.toggle('on-the-clock', isUserTurn);
             let statusHTML = `<p class="text-gray-400 font-semibold">Round ${currentRound}/${totalRounds} | Pick ${overallPick}</p>`;
-            if(isUserTurn) { statusHTML += `<p class="text-2xl font-bold text-yellow-300 text-glow-gold animate-pulse">YOU ARE ON THE CLOCK</p>`; } 
+            if(isUserTurn) { statusHTML += `<p class="text-2xl font-bold text-yellow-300 text-glow-gold animate-pulse">YOU ARE ON THE CLOCK</p>`; }
             else { const isSnake = currentRound % 2 === 0; const teamNumber = isSnake ? leagueSize - currentPickInRound + 1 : currentPickInRound; statusHTML += `<p class="text-xl font-semibold text-white">Team ${teamNumber} is picking...</p>`; }
             statusCard.innerHTML = statusHTML;
         },
@@ -906,11 +906,11 @@ document.addEventListener('DOMContentLoaded', () => {
             this.addPlayerPopupListeners();
         },
         updateDraftBoard() {
-            const gridEl = document.getElementById('draft-board-grid'); const { leagueSize, draftPicks, userPickNum, totalRounds } = this.draftState; 
+            const gridEl = document.getElementById('draft-board-grid'); const { leagueSize, draftPicks, userPickNum, totalRounds } = this.draftState;
             gridEl.innerHTML = '';
             let headerHtml = '<div class="draft-board-header">'; for (let i = 1; i <= leagueSize; i++) { headerHtml += `<div class="draft-board-team-header ${userPickNum === i ? 'user-team-header' : ''}">Team ${i}</div>`; } headerHtml += '</div>'; gridEl.innerHTML += headerHtml;
             const bodyEl = document.createElement('div'); bodyEl.className = 'draft-board-body'; bodyEl.style.gridTemplateColumns = `repeat(${leagueSize}, minmax(0, 1fr))`;
-            
+
             for (let i = 0; i < totalRounds * leagueSize; i++) {
                 const pick = draftPicks[i];
                 const pickEl = document.createElement('div');
@@ -928,13 +928,13 @@ document.addEventListener('DOMContentLoaded', () => {
             const rosterEl = document.getElementById('final-roster-display');
             rosterEl.innerHTML = '';
             const myRoster = this.draftState.teams[this.draftState.userPickNum - 1].roster;
-            const starters = []; const bench = []; 
-            const finalRosterSlots = { ...config.rosterSettings }; 
-            myRoster.forEach(player => { 
-                const pos = player.simplePosition.toUpperCase(); 
-                if (finalRosterSlots[pos] > 0) { player.displayPos = pos; starters.push(player); finalRosterSlots[pos]--; } 
-                else if (config.flexPositions.includes(pos) && finalRosterSlots['FLEX'] > 0) { player.displayPos = 'FLEX'; starters.push(player); finalRosterSlots['FLEX']--; } 
-                else { bench.push(player); } 
+            const starters = []; const bench = [];
+            const finalRosterSlots = { ...config.rosterSettings };
+            myRoster.forEach(player => {
+                const pos = player.simplePosition.toUpperCase();
+                if (finalRosterSlots[pos] > 0) { player.displayPos = pos; starters.push(player); finalRosterSlots[pos]--; }
+                else if (config.flexPositions.includes(pos) && finalRosterSlots['FLEX'] > 0) { player.displayPos = 'FLEX'; starters.push(player); finalRosterSlots['FLEX']--; }
+                else { bench.push(player); }
             });
             const positionOrder = ['QB', 'RB', 'WR', 'TE', 'FLEX', 'K', 'DST'];
             starters.sort((a,b) => positionOrder.indexOf(a.displayPos) - positionOrder.indexOf(b.displayPos));
@@ -949,11 +949,11 @@ document.addEventListener('DOMContentLoaded', () => {
             const myRoster = this.draftState.teams[this.draftState.userPickNum - 1].roster;
             const rosterList = myRoster.map(p => `${p.name} (${p.simplePosition}, Round ${p.draftedAt.match(/\((\d+)/)[1]})`).join(', ');
             const prompt = `Act as an expert fantasy football analyst. I have just completed a mock draft. My League Settings: ${this.draftState.leagueSize}-team, ${this.draftState.scoring}. My Final Roster: ${rosterList}. Please provide a draft grade. The output MUST be a single block of clean, valid HTML. Your response should include: 1. An overall letter grade (e.g., A-, B+, etc.) inside a div with class "draft-grade". The letter grade itself should be in a span with a class that corresponds to the grade (grade-a, grade-b, grade-c, grade-d, grade-f). 2. A "Team Strength" in a paragraph tag. 3. A "Team Weakness" in a paragraph tag. 4. A "Projected Record" in a paragraph tag. Be concise and provide a clear justification for your analysis.`;
-            
+
             try {
                 let chatHistory = [{ role: "user", parts: [{ text: prompt }] }];
                 const payload = { contents: chatHistory, generationConfig: { responseMimeType: "text/html" } };
-                const apiKey = ""; 
+                const apiKey = "";
                 const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
                 const response = await fetch(apiUrl, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
                 if (!response.ok) throw new Error(`API Error: ${response.statusText}`);
@@ -991,7 +991,7 @@ document.addEventListener('DOMContentLoaded', () => {
             try {
                 let chatHistory = [{ role: "user", parts: [{ text: fullPrompt }] }];
                 const payload = { contents: chatHistory, generationConfig: { responseMimeType: "text/html" } };
-                const apiKey = ""; 
+                const apiKey = "";
                 const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
                 const response = await fetch(apiUrl, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
                 if (!response.ok) throw new Error(`API Error: ${response.statusText}`);
