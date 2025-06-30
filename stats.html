@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Front Row Fantasy - Player Statistics</title>
+    <title>Front Row Fantasy - The Lab</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&display=swap" rel="stylesheet">
     <link rel="icon" href="favicon.ico" type="image/x-icon">
     <link rel="stylesheet" href="styles.css">
@@ -20,7 +20,7 @@
                 <a href="mock-draft.html" class="hover:text-yellow-400 transition-colors">Mock Draft</a>
                 <a href="articles.html" class="hover:text-yellow-400 transition-colors">Articles</a>
                 <a href="players.html" class="hover:text-yellow-400 transition-colors">Players</a>
-                <a href="stats.html" class="text-yellow-400 font-bold" aria-current="page">Stats</a>
+                <a href="stats.html" class="text-yellow-400 font-bold" aria-current="page">The Lab</a>
                 <a href="waiver-wire.html" class="hover:text-yellow-400 transition-colors">Waiver Wire</a>
                 <a href="league-dominator.html" class="hover:text-yellow-400 transition-colors">League Dominator</a>
                 <a href="dynasty-dashboard.html" class="hover:text-yellow-400 transition-colors">Dynasty</a>
@@ -37,17 +37,29 @@
 
     <main class="flex-grow max-w-7xl mx-auto py-8 px-4 w-full">
         <section id="stats-page">
-            <h1 class="text-4xl md:text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-yellow-300 to-teal-300 mb-4 text-glow-gold text-center">Advanced Player Statistics</h1>
+            <h1 class="text-4xl md:text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-yellow-300 to-teal-300 mb-4 text-glow-gold text-center">The Lab</h1>
             <p class="text-lg md:text-xl text-teal-200 max-w-3xl mx-auto text-center mb-12">
-                Uncover hidden gems. Use the filters to find players, then click on a row to add them to the comparison chart.
+                Go beyond the box score with predictive analytics and AI-powered player comparisons.
             </p>
 
-            <div id="stats-chart-container" class="tool-card mb-8 p-4 md:p-6">
-                <h3 class="text-2xl font-bold text-center mb-4 text-teal-300">Player Comparison</h3>
-                <div class="h-64 md:h-96 w-full">
-                    <canvas id="stats-chart"></canvas>
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+                <div id="stats-chart-container" class="tool-card p-4 md:p-6">
+                    <h3 class="text-2xl font-bold text-center mb-4 text-teal-300">Player Comparison</h3>
+                    <div class="h-96 w-full">
+                        <canvas id="stats-chart"></canvas>
+                    </div>
+                </div>
+                 <div id="similar-player-container" class="tool-card p-4 md:p-6">
+                    <h3 class="text-2xl font-bold text-center mb-4 text-teal-300">Find a Similar Player</h3>
+                     <div class="relative">
+                        <input type="text" id="similar-player-search" class="form-input" placeholder="e.g., A high-upside WR with a low ADP...">
+                        <ul id="similar-player-autocomplete" class="autocomplete-list"></ul>
+                    </div>
+                     <button id="find-similar-player-btn" class="cta-btn w-full mt-4">Find Player</button>
+                     <div id="similar-player-results" class="mt-4"></div>
                 </div>
             </div>
+
 
             <div class="tool-card p-0">
                 <div class="p-4 md:p-6 border-b border-gray-700">
@@ -92,21 +104,21 @@
             </div>
         </section>
     </main>
-    
+
     <div id="player-popup-card" class="hidden"></div>
-    
+
     <footer class="bg-gray-900 text-teal-400 py-6 border-t-2 border-teal-500 mt-12">
         <div class="mb-2 flex flex-wrap justify-center gap-x-6 gap-y-2 text-teal-200">
-            <a href="index.html" class="hover:text-yellow-400 transition-colors">Home</a>
-            <a href="goat.html" class="hover:text-yellow-400 transition-colors">GOAT</a>
-            <a href="mock-draft.html" class="hover:text-yellow-400 transition-colors">Mock Draft</a>
-            <a href="articles.html" class="hover:text-yellow-400 transition-colors">Articles</a>
-            <a href="players.html" class="hover:text-yellow-400 transition-colors">Players</a>
-            <a href="stats.html" class="text-yellow-400 font-bold" aria-current="page">Stats</a>
-            <a href="waiver-wire.html" class="hover:text-yellow-400 transition-colors">Waiver Wire</a>
-            <a href="league-dominator.html" class="hover:text-yellow-400 transition-colors">League Dominator</a>
-            <a href="dynasty-dashboard.html" class="hover:text-yellow-400 transition-colors">Dynasty</a>
-            <a href="my-league.html" class="hover:text-yellow-400 transition-colors">My League</a>
+           <a href="index.html" class="hover:text-yellow-400 transition-colors">Home</a>
+           <a href="goat.html" class="hover:text-yellow-400 transition-colors">GOAT</a>
+           <a href="mock-draft.html" class="hover:text-yellow-400 transition-colors">Mock Draft</a>
+           <a href="articles.html" class="hover:text-yellow-400 transition-colors">Articles</a>
+           <a href="players.html" class="hover:text-yellow-400 transition-colors">Players</a>
+           <a href="stats.html" class="text-yellow-400 font-bold" aria-current="page">The Lab</a>
+           <a href="waiver-wire.html" class="hover:text-yellow-400 transition-colors">Waiver Wire</a>
+           <a href="league-dominator.html" class="hover:text-yellow-400 transition-colors">League Dominator</a>
+           <a href="dynasty-dashboard.html" class="hover:text-yellow-400 transition-colors">Dynasty</a>
+           <a href="my-league.html" class="hover:text-yellow-400 transition-colors">My League</a>
         </div>
         <div class="text-center text-sm">© 2025 Front Row Fantasy. All rights reserved.</div>
     </footer>
@@ -114,4 +126,3 @@
     <script src="script.js"></script>
 </body>
 </html>
-
