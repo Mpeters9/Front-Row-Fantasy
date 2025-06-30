@@ -56,35 +56,27 @@
                 <button id="start-draft-button" class="cta-btn w-full mt-2 text-lg">Start Live Mock Draft</button>
             </div>
 
-            <div id="interactive-draft-container" class="hidden mt-8 grid grid-cols-1 lg:grid-cols-12 gap-6">
+            <div id="interactive-draft-container" class="hidden mt-8 grid grid-cols-1 lg:grid-cols-4 gap-6">
                 <!-- Left Column -->
-                <div class="lg:col-span-3 space-y-6">
+                <div class="lg:col-span-1 space-y-6">
                     <div id="draft-status-card" class="draft-card text-center p-4 transition-all duration-300"></div>
+                     <div id="best-available-container" class="draft-card p-0">
+                        <h3 class="text-xl font-bold text-center text-teal-300 p-4">Best Available</h3>
+                        <div id="best-available-list" class="space-y-1 px-2 pb-2 max-h-[60vh] overflow-y-auto"></div>
+                    </div>
                     <div id="my-team-container" class="draft-card">
-                         <h3 class="text-2xl font-bold text-center mb-4 text-teal-300">My Team</h3>
+                         <h3 class="text-xl font-bold text-center mb-4 text-teal-300">My Team</h3>
                          <div id="my-team-list" class="space-y-1"></div>
                     </div>
                 </div>
-                <!-- Middle Column -->
-                <div class="lg:col-span-6">
-                    <div id="best-available-container" class="draft-card p-0">
-                        <h3 class="text-2xl font-bold text-center text-teal-300 p-4">Best Available Players</h3>
-                        <div id="best-available-list" class="space-y-1 px-4 pb-4 max-h-[80vh] overflow-y-auto"></div>
-                    </div>
-                </div>
-                 <!-- Right Column -->
-                <div class="lg:col-span-3 space-y-6">
-                    <div class="draft-card">
-                        <h3 class="text-2xl font-bold text-center mb-4 text-teal-300">AI Draft Assistant</h3>
-                        <div id="ai-draft-commentary" class="text-center text-teal-200 p-4 bg-gray-900/50 rounded-lg min-h-[150px]">
-                            <p>The AI assistant will provide live analysis and suggestions here when you're on the clock.</p>
+
+                <!-- Right Column: Full Draft Board -->
+                <div class="lg:col-span-3">
+                    <div class="draft-card p-4">
+                        <h3 class="text-2xl font-bold text-center text-teal-300 mb-4">Live Draft Board</h3>
+                        <div id="draft-board-grid" class="overflow-x-auto">
+                           <!-- Full grid draft board will be injected here -->
                         </div>
-                    </div>
-                    <div class="draft-card">
-                         <h3 class="text-2xl font-bold text-center mb-4 text-teal-300">Draft Log</h3>
-                         <div id="draft-board-grid" class="max-h-[50vh] overflow-y-auto">
-                            <!-- Draft picks will be logged here -->
-                         </div>
                     </div>
                 </div>
             </div>
