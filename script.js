@@ -1,5 +1,7 @@
 document.addEventListener('DOMContentLoaded', () => {
 
+    const API_KEY = "YOUR_API_KEY"; // <--- PASTE YOUR API KEY HERE
+
     const config = {
         dataFiles: ['players.json'],
         rosterSettings: { QB: 1, RB: 2, WR: 2, TE: 1, FLEX: 1, DST: 1, K: 1, BENCH: 7 }, // ESPN Default
@@ -192,8 +194,7 @@ document.addEventListener('DOMContentLoaded', () => {
             try {
                 let chatHistory = [{ role: "user", parts: [{ text: prompt }] }];
                 const payload = { contents: chatHistory, generationConfig: { responseMimeType: "text/html" } };
-                const apiKey = "";
-                const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
+                const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${API_KEY}`;
                 const response = await fetch(apiUrl, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
                 if (!response.ok) throw new Error(`API Error: ${response.statusText}`);
                 const result = await response.json();
@@ -253,8 +254,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 this.chatHistory.push({ role: "user", parts: [{ text: prompt }] });
                 try {
                     const payload = { contents: this.chatHistory };
-                    const apiKey = "";
-                    const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
+                    const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${API_KEY}`;
                     const response = await fetch(apiUrl, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
                     const result = await response.json();
                     controls.chatWindow.removeChild(thinkingElement);
@@ -439,8 +439,7 @@ document.addEventListener('DOMContentLoaded', () => {
             try {
                 let chatHistory = [{ role: "user", parts: [{ text: prompt }] }];
                 const payload = { contents: chatHistory, generationConfig: { responseMimeType: "text/html" } };
-                const apiKey = "";
-                const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
+                const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${API_KEY}`;
                 const response = await fetch(apiUrl, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
                 if (!response.ok) throw new Error(`API Error: ${response.statusText}`);
                 const result = await response.json();
@@ -518,8 +517,7 @@ document.addEventListener('DOMContentLoaded', () => {
             try {
                 let chatHistory = [{ role: "user", parts: [{ text: prompt }] }];
                 const payload = { contents: chatHistory };
-                const apiKey = "";
-                const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
+                const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${API_KEY}`;
                 const response = await fetch(apiUrl, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
                 const result = await response.json();
                 if (result.candidates && result.candidates[0]?.content?.parts[0]?.text) {
@@ -802,7 +800,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const team2Picks = this.tradeState.team2.picks.map(p => p.name).join(', ') || "no picks";
             const prompt = `Act as a fantasy football expert. Analyze this ${this.tradeState.tradeType} league trade: A manager sends ${team1Players} ${this.tradeState.tradeType === 'Dynasty' ? `and ${team1Picks}` : ''}. They receive ${team2Players} ${this.tradeState.tradeType === 'Dynasty' ? `and ${team2Picks}` : ''}. Provide a brief, strategic analysis of the trade, considering player value, age (if dynasty), draft pick value (if dynasty), and potential upside or risk. Keep it under 75 words.`;
 
-            try { let chatHistory = [{ role: "user", parts: [{ text: prompt }] }]; const payload = { contents: chatHistory }; const apiKey = ""; const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`; const response = await fetch(apiUrl, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) }); const result = await response.json(); if (result.candidates && result.candidates.length > 0) { textEl.textContent = result.candidates[0].content.parts[0].text; } else { throw new Error('No content returned from AI.'); } } catch (error) { console.error("Gemini API error:", error); textEl.textContent = "Could not retrieve AI analysis at this time."; } finally { loader.classList.add('hidden'); }
+            try { let chatHistory = [{ role: "user", parts: [{ text: prompt }] }]; const payload = { contents: chatHistory }; const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${API_KEY}`; const response = await fetch(apiUrl, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) }); const result = await response.json(); if (result.candidates && result.candidates.length > 0) { textEl.textContent = result.candidates[0].content.parts[0].text; } else { throw new Error('No content returned from AI.'); } } catch (error) { console.error("Gemini API error:", error); textEl.textContent = "Could not retrieve AI analysis at this time."; } finally { loader.classList.add('hidden'); }
         },
         initMockDraftSimulator() {
             const controls = {
@@ -835,6 +833,7 @@ document.addEventListener('DOMContentLoaded', () => {
             controls.posFilter.addEventListener('change', () => this.updateBestAvailable(this.draftState.isUserTurn));
         },
         startInteractiveDraft(controls) {
+            document.body.classList.add('draft-active');
             controls.settingsContainer.style.display = 'none';
             const draftContainer = document.getElementById('interactive-draft-container');
             draftContainer.classList.remove('hidden');
@@ -888,8 +887,7 @@ document.addEventListener('DOMContentLoaded', () => {
             try {
                 let chatHistory = [{ role: "user", parts: [{ text: prompt }] }];
                 const payload = { contents: chatHistory };
-                const apiKey = "";
-                const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
+                const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${API_KEY}`;
                 const response = await fetch(apiUrl, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
                 const result = await response.json();
                 if (result.candidates && result.candidates[0]?.content?.parts[0]?.text) {
@@ -990,6 +988,7 @@ document.addEventListener('DOMContentLoaded', () => {
             this.addPlayerPopupListeners();
         },
         endInteractiveDraft() {
+            document.body.classList.remove('draft-active');
             this.draftState.controls.draftingContainer.style.display = 'none';
             this.draftState.controls.draftingContainer.classList.remove('grid');
             this.draftState.controls.completeContainer.classList.remove('hidden');
@@ -1021,8 +1020,7 @@ document.addEventListener('DOMContentLoaded', () => {
             try {
                 let chatHistory = [{ role: "user", parts: [{ text: prompt }] }];
                 const payload = { contents: chatHistory, generationConfig: { responseMimeType: "text/html" } };
-                const apiKey = "";
-                const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
+                const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${API_KEY}`;
                 const response = await fetch(apiUrl, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
                 if (!response.ok) throw new Error(`API Error: ${response.statusText}`);
                 const result = await response.json();
@@ -1035,6 +1033,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         },
         resetDraftUI(controls) {
+            document.body.classList.remove('draft-active');
             controls.settingsContainer.style.display = 'block';
             const draftContainer = document.getElementById('interactive-draft-container');
             draftContainer.classList.add('hidden');
@@ -1059,8 +1058,7 @@ document.addEventListener('DOMContentLoaded', () => {
             try {
                 let chatHistory = [{ role: "user", parts: [{ text: fullPrompt }] }];
                 const payload = { contents: chatHistory, generationConfig: { responseMimeType: "text/html" } };
-                const apiKey = "";
-                const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
+                const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${API_KEY}`;
                 const response = await fetch(apiUrl, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
                 if (!response.ok) throw new Error(`API Error: ${response.statusText}`);
                 const result = await response.json();
