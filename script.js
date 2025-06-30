@@ -104,7 +104,7 @@ document.addEventListener('DOMContentLoaded', () => {
             document.querySelectorAll('#stats-table-body, #player-list-container, #player-table-body, #cheat-sheet-table-body').forEach(el => { if(el) el.innerHTML = msg; });
         },
         generateFantasyPoints(player) {
-            const pos = (player.position||'').replace(/\d+$/, '').trim().toUpperCase();
+            const pos = (player.position||'').replace(/\d+$/,'').trim().toUpperCase();
             const tier = player.tier || 10;
             let base, range;
             if (pos === 'DST' || pos === 'K') { base = 5; range = 8; }
@@ -352,7 +352,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             if (!loader || !resultsWrapper) return;
             loader.classList.remove('hidden');
-            placeholder.classList.add('hidden');
+            if(placeholder) placeholder.classList.add('hidden');
             resultsWrapper.classList.add('hidden');
             button.disabled = true;
             button.textContent = "Simulating...";
@@ -949,6 +949,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const myRoster = this.draftState.teams[this.draftState.userPickNum - 1].roster;
             const rosterList = myRoster.map(p => `${p.name} (${p.simplePosition}, Round ${p.draftedAt.match(/\((\d+)/)[1]})`).join(', ');
             const prompt = `Act as an expert fantasy football analyst. I have just completed a mock draft. My League Settings: ${this.draftState.leagueSize}-team, ${this.draftState.scoring}. My Final Roster: ${rosterList}. Please provide a draft grade. The output MUST be a single block of clean, valid HTML. Your response should include: 1. An overall letter grade (e.g., A-, B+, etc.) inside a div with class "draft-grade". The letter grade itself should be in a span with a class that corresponds to the grade (grade-a, grade-b, grade-c, grade-d, grade-f). 2. A "Team Strength" in a paragraph tag. 3. A "Team Weakness" in a paragraph tag. 4. A "Projected Record" in a paragraph tag. Be concise and provide a clear justification for your analysis.`;
+            
             try {
                 let chatHistory = [{ role: "user", parts: [{ text: prompt }] }];
                 const payload = { contents: chatHistory, generationConfig: { responseMimeType: "text/html" } };
