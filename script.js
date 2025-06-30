@@ -29,12 +29,64 @@ document.addEventListener('DOMContentLoaded', () => {
         chatHistory: [],
 
         async init() {
+            this.createHeader();
+            this.createFooter();
             this.initMobileMenu();
             this.createPlayerPopup();
             this.initPlaceholderTicker();
             await this.loadAllPlayerData();
             this.initLiveTicker();
             this.initializePageFeatures();
+        },
+
+        createHeader() {
+            const header = document.querySelector('header');
+            if (header) {
+                header.innerHTML = `
+                    <div class="max-w-7xl mx-auto px-4 flex justify-between items-center py-3">
+                        <a href="index.html" class="text-xl md:text-2xl font-bold text-yellow-400 text-glow">Front Row Fantasy</a>
+                        <nav class="hidden md:flex space-x-6 text-teal-200">
+                            <a href="index.html" class="hover:text-yellow-400 transition-colors">Home</a>
+                            <a href="goat.html" class="hover:text-yellow-400 transition-colors">GOAT</a>
+                            <a href="mock-draft.html" class="hover:text-yellow-400 transition-colors">Mock Draft</a>
+                            <a href="articles.html" class="hover:text-yellow-400 transition-colors">Articles</a>
+                            <a href="players.html" class="hover:text-yellow-400 transition-colors">Players</a>
+                            <a href="stats.html" class="hover:text-yellow-400 transition-colors">The Lab</a>
+                            <a href="waiver-wire.html" class="hover:text-yellow-400 transition-colors">Waiver Wire</a>
+                            <a href="league-dominator.html" class="hover:text-yellow-400 transition-colors">League Dominator</a>
+                            <a href="dynasty-dashboard.html" class="hover:text-yellow-400 transition-colors">Dynasty</a>
+                            <a href="my-league.html" class="hover:text-yellow-400 transition-colors">My League</a>
+                        </nav>
+                        <div class="md:hidden">
+                            <button id="mobile-menu-button" class="text-teal-400 hover:text-yellow-400 focus:outline-none">
+                                <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
+                            </button>
+                        </div>
+                    </div>
+                    <nav id="mobile-menu" class="md:hidden hidden px-4 pb-3 space-y-2"></nav>
+                `;
+            }
+        },
+
+        createFooter() {
+            const footer = document.querySelector('footer');
+            if (footer) {
+                footer.innerHTML = `
+                    <div class="mb-2 flex flex-wrap justify-center gap-x-6 gap-y-2 text-teal-200">
+                       <a href="index.html" class="hover:text-yellow-400 transition-colors">Home</a>
+                       <a href="goat.html" class="hover:text-yellow-400 transition-colors">GOAT</a>
+                       <a href="mock-draft.html" class="hover:text-yellow-400 transition-colors">Mock Draft</a>
+                       <a href="articles.html" class="hover:text-yellow-400 transition-colors">Articles</a>
+                       <a href="players.html" class="hover:text-yellow-400 transition-colors">Players</a>
+                       <a href="stats.html" class="hover:text-yellow-400 transition-colors">The Lab</a>
+                       <a href="waiver-wire.html" class="hover:text-yellow-400 transition-colors">Waiver Wire</a>
+                       <a href="league-dominator.html" class="hover:text-yellow-400 transition-colors">League Dominator</a>
+                       <a href="dynasty-dashboard.html" class="hover:text-yellow-400 transition-colors">Dynasty</a>
+                       <a href="my-league.html" class="hover:text-yellow-400 transition-colors">My League</a>
+                    </div>
+                    <div class="text-center text-sm">© 2025 Front Row Fantasy. All rights reserved.</div>
+                `;
+            }
         },
 
         initializePageFeatures() {
