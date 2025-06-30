@@ -19,7 +19,7 @@
                 <a href="mock-draft.html" class="hover:text-yellow-400 transition-colors">Mock Draft</a>
                 <a href="articles.html" class="hover:text-yellow-400 transition-colors">Articles</a>
                 <a href="players.html" class="hover:text-yellow-400 transition-colors">Players</a>
-                <a href="stats.html" class="hover:text-yellow-400 transition-colors">Stats</a>
+                <a href="stats.html" class="hover:text-yellow-400 transition-colors">The Lab</a>
                 <a href="waiver-wire.html" class="hover:text-yellow-400 transition-colors">Waiver Wire</a>
                 <a href="league-dominator.html" class="hover:text-yellow-400 transition-colors">League Dominator</a>
                 <a href="dynasty-dashboard.html" class="text-yellow-400 font-bold" aria-current="page">Dynasty</a>
@@ -53,12 +53,34 @@
                         <button @click="tab = 'prospects'" :class="{ 'border-teal-400 text-teal-300': tab === 'prospects', 'border-transparent text-gray-400 hover:text-gray-200 hover:border-gray-300': tab !== 'prospects' }" class="whitespace-nowrap py-4 px-1 border-b-2 font-medium text-lg">
                             Prospect Pipeline
                         </button>
+                        <button @click="tab = 'oracle'" :class="{ 'border-teal-400 text-teal-300': tab === 'oracle', 'border-transparent text-gray-400 hover:text-gray-200 hover:border-gray-300': tab !== 'oracle' }" class="whitespace-nowrap py-4 px-1 border-b-2 font-medium text-lg">
+                            Dynasty Oracle
+                        </button>
                     </nav>
                 </div>
                 <div class="p-4 md:p-6">
                     <div x-show="tab === 'trade-block'" id="dynasty-trade-block-container" class="space-y-4"><div class="loader"></div></div>
                     <div x-show="tab === 'rookie-draft'" id="dynasty-rookie-draft-container" class="space-y-4"><div class="loader"></div></div>
                     <div x-show="tab === 'prospects'" id="dynasty-prospects-container" class="space-y-4"><div class="loader"></div></div>
+                    <div x-show="tab === 'oracle'" id="dynasty-oracle-container" class="space-y-8">
+                        <div>
+                            <h2 class="text-2xl md:text-3xl font-bold text-center mb-6 text-teal-300">Prospect Scouting Report</h2>
+                            <div class="max-w-lg mx-auto">
+                                <label for="prospect-select" class="block text-gray-300 font-semibold mb-2">Select a Prospect</label>
+                                <select id="prospect-select" class="form-select w-full"></select>
+                                <button id="scout-prospect-btn" class="cta-btn w-full mt-4">Get Scouting Report</button>
+                            </div>
+                            <div id="prospect-scouting-report" class="mt-4 prose prose-invert prose-lg max-w-none"></div>
+                        </div>
+                        <div class="border-t border-gray-700 pt-8">
+                            <h2 class="text-2xl md:text-3xl font-bold text-center mb-6 text-teal-300">Team Simulation</h2>
+                            <div class="max-w-lg mx-auto text-center">
+                                <p class="text-gray-300 mb-4">Simulate your team's performance over the next 3 seasons to project your championship window.</p>
+                                <button id="simulate-team-btn" class="cta-btn">Simulate My Dynasty</button>
+                            </div>
+                            <div id="team-simulation-results" class="mt-4"></div>
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -67,14 +89,14 @@
     
     <div id="player-popup-card" class="hidden"></div>
 
-    <footer class="bg-gray-900 text-teal-400 py-6 border-t-2 border-teal-500 mt-12">
+    <footer class="bg-gray-900 text-teal-400 py-6 border-t-2 border-teal-500">
         <div class="mb-2 flex flex-wrap justify-center gap-x-6 gap-y-2 text-teal-200">
            <a href="index.html" class="hover:text-yellow-400 transition-colors">Home</a>
            <a href="goat.html" class="hover:text-yellow-400 transition-colors">GOAT</a>
            <a href="mock-draft.html" class="hover:text-yellow-400 transition-colors">Mock Draft</a>
            <a href="articles.html" class="hover:text-yellow-400 transition-colors">Articles</a>
            <a href="players.html" class="hover:text-yellow-400 transition-colors">Players</a>
-           <a href="stats.html" class="hover:text-yellow-400 transition-colors">Stats</a>
+           <a href="stats.html" class="text-yellow-400 font-bold" aria-current="page">The Lab</a>
            <a href="waiver-wire.html" class="hover:text-yellow-400 transition-colors">Waiver Wire</a>
            <a href="league-dominator.html" class="hover:text-yellow-400 transition-colors">League Dominator</a>
            <a href="dynasty-dashboard.html" class="text-yellow-400 font-bold" aria-current="page">Dynasty</a>
@@ -86,4 +108,3 @@
     <script src="script.js"></script>
 </body>
 </html>
-
