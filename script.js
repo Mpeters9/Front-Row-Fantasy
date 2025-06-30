@@ -102,6 +102,53 @@ document.addEventListener('DOMContentLoaded', () => {
             if (document.getElementById('league-dominator-page')) this.initLeagueDominatorPage();
             if (document.getElementById('dynasty-dashboard-page')) this.initDynastyDashboardPage();
             if (document.getElementById('my-league-page')) this.initMyLeaguePage();
+            this.initPersonalizedHomepage();
+        },
+
+        initPersonalizedHomepage() {
+            const waiverContainer = document.getElementById('waiver-wire-personalized');
+            if (waiverContainer) {
+                const waiverTargets = this.playerData.filter(p => p.vorp > 10 && p.adp.ppr > 120).slice(0, 3);
+                waiverContainer.innerHTML = waiverTargets.map(player => `
+                    <div class="my-team-player player-pos-${player.simplePosition.toLowerCase()}">
+                        <strong class="w-10">${player.simplePosition}</strong>
+                        <span class="player-name-link" data-player-name="${player.name}">${player.name}</span>
+                    </div>
+                `).join('');
+                this.addPlayerPopupListeners();
+            }
+
+            const watchlistContainer = document.getElementById('watchlist-personalized');
+            if (watchlistContainer) {
+                const watchlistPlayers = this.playerData.filter(p => p.tier === 3).slice(0, 3);
+                watchlistContainer.innerHTML = watchlistPlayers.map(player => `
+                    <div class="my-team-player player-pos-${player.simplePosition.toLowerCase()}">
+                        <strong class="w-10">${player.simplePosition}</strong>
+                        <span class="player-name-link" data-player-name="${player.name}">${player.name}</span>
+                    </div>
+                `).join('');
+                this.addPlayerPopupListeners();
+            }
+
+            const reportCardContainer = document.getElementById('weekly-report-card');
+            if (reportCardContainer) {
+                reportCardContainer.innerHTML = `
+                    <div class="text-center">
+                        <p class="text-4xl font-bold text-green-400">A-</p>
+                        <p class="text-sm text-gray-400 mt-1">Your team performed well above expectations this week.</p>
+                    </div>
+                `;
+            }
+
+            const opponentWeaknessContainer = document.getElementById('opponent-weakness');
+            if (opponentWeaknessContainer) {
+                opponentWeaknessContainer.innerHTML = `
+                    <div class="text-center">
+                        <p class="text-xl font-bold text-red-400">Weak at WR</p>
+                        <p class="text-sm text-gray-400 mt-1">Your opponent is projected to be weak at the WR position this week.</p>
+                    </div>
+                `;
+            }
         },
 
         initMobileMenu() {
@@ -542,7 +589,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 search: document.getElementById('stats-player-search'),
                 tableBody: document.getElementById('stats-table-body'),
                 tableHead: document.getElementById('stats-table-head'),
-                similarPlayerSearch: document.getElementById('similar-player-search'),
+                similarPlayerSelect: document.getElementById('similar-player-select'),
                 findSimilarBtn: document.getElementById('find-similar-player-btn'),
                 similarPlayerResults: document.getElementById('similar-player-results')
             };
@@ -552,6 +599,12 @@ document.addEventListener('DOMContentLoaded', () => {
             if (this.selectedPlayersForChart.length === 0) {
                 this.selectedPlayersForChart = this.playerData.filter(p => ['WR', 'RB'].includes(p.simplePosition)).slice(0, 4);
             }
+
+            const populateSimilarPlayerSelect = () => {
+                this.playerData.forEach(player => {
+                    controls.similarPlayerSelect.add(new Option(player.name, player.name));
+                });
+            };
 
             const render = () => {
                 let filteredPlayers = [...this.playerData];
@@ -580,10 +633,11 @@ document.addEventListener('DOMContentLoaded', () => {
             [controls.position, controls.sortBy, controls.search].forEach(el => el.addEventListener('input', render));
 
             controls.findSimilarBtn.addEventListener('click', () => {
-                const query = controls.similarPlayerSearch.value;
+                const query = controls.similarPlayerSelect.value;
                 this.findSimilarPlayer(query);
             });
-
+            
+            populateSimilarPlayerSelect();
             render();
         },
         updateStatsTable(position, players) {
