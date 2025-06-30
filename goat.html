@@ -212,4 +212,65 @@
                                         </div>
                                         <button id="add-pick-btn-1" class="w-full mt-2 bg-teal-800/50 text-teal-200 p-2 rounded-md hover:bg-teal-700/50 transition">Add Pick</button>
                                     </div>
-                                    <div id="trade-team-1" class="space
+                                    <div id="trade-team-1" class="space-y-2 pt-2 min-h-[50px]"></div>
+                                </div>
+                                <div class="trade-card p-4 md:p-6 space-y-4">
+                                    <h3 class="font-bold text-xl text-green-400 mb-3">You Get</h3>
+                                    <div class="relative">
+                                        <input type="text" id="trade-search-2" class="form-input" placeholder="Search Player...">
+                                        <ul id="trade-autocomplete-2" class="autocomplete-list"></ul>
+                                    </div>
+                                     <div class="trade-pick-controls hidden">
+                                        <div class="grid grid-cols-3 gap-2 items-center">
+                                            <select id="trade-pick-year-2" class="form-select col-span-1"><option value="2025">2025</option><option value="2026">2026</option></select>
+                                            <select id="trade-pick-round-2" class="form-select col-span-1"><option value="1">1st</option><option value="2">2nd</option><option value="3">3rd</option></select>
+                                             <input type="number" id="trade-pick-number-2" class="form-input col-span-1" placeholder="Pick #">
+                                        </div>
+                                         <button id="add-pick-btn-2" class="w-full mt-2 bg-teal-800/50 text-teal-200 p-2 rounded-md hover:bg-teal-700/50 transition">Add Pick</button>
+                                    </div>
+                                    <div id="trade-team-2" class="space-y-2 pt-2 min-h-[50px]"></div>
+                                </div>
+                            </div>
+                            <div class="text-center mt-8">
+                                <button id="analyze-trade-btn" class="cta-btn text-lg">Analyze Trade</button>
+                            </div>
+                            <div id="trade-results" class="hidden mt-8 tool-card p-6"></div>
+                        </div>
+                    </div>
+
+                     <div x-show="tab === 'chat'" id="goat-ai-analyst-container">
+                        <div class="flex flex-col h-[60vh] bg-gray-900/40 rounded-lg">
+                            <h2 class="text-2xl font-bold text-teal-300 text-center p-4 border-b border-gray-700">AI Analyst Chat</h2>
+                            <div id="chat-window" class="flex-grow p-4 space-y-4 overflow-y-auto">
+                                </div>
+                            <div class="p-4 border-t border-gray-700 flex items-center">
+                                <input type="text" id="chat-input" class="form-input flex-grow" placeholder="Ask about a player, trade, or strategy...">
+                                <button id="send-chat-button" class="cta-btn !rounded-lg !px-6 !py-3 ml-4">Send</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <div id="player-popup-card" class="hidden"></div>
+
+    <footer class="bg-gray-900 text-teal-400 py-6 border-t-2 border-teal-500">
+        <div class="mb-2 flex flex-wrap justify-center gap-x-6 gap-y-2 text-teal-200">
+           <a href="index.html" class="hover:text-yellow-400 transition-colors">Home</a>
+           <a href="goat.html" class="text-yellow-400 font-bold" aria-current="page">GOAT</a>
+           <a href="mock-draft.html" class="hover:text-yellow-400 transition-colors">Mock Draft</a>
+           <a href="articles.html" class="hover:text-yellow-400 transition-colors">Articles</a>
+           <a href="players.html" class="hover:text-yellow-400 transition-colors">Players</a>
+           <a href="stats.html" class="hover:text-yellow-400 transition-colors">The Lab</a>
+           <a href="waiver-wire.html" class="hover:text-yellow-400 transition-colors">Waiver Wire</a>
+           <a href="league-dominator.html" class="hover:text-yellow-400 transition-colors">League Dominator</a>
+           <a href="dynasty-dashboard.html" class="hover:text-yellow-400 transition-colors">Dynasty</a>
+           <a href="my-league.html" class="hover:text-yellow-400 transition-colors">My League</a>
+        </div>
+        <div class="text-center text-sm">© 2025 Front Row Fantasy. All rights reserved.</div>
+    </footer>
+    <script src="script.js"></script>
+</body>
+</html>
