@@ -64,13 +64,128 @@
                 </div>
                 <div class="p-2 md:p-6">
                     <div x-show="tab === 'plan'" id="goat-draft-plan-container">
+                        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 md:gap-8">
+                            <div class="lg:col-span-1">
+                                <h2 class="text-2xl md:text-3xl font-bold text-teal-300 mb-4">Draft Plan Generator</h2>
+                                <div class="space-y-4">
+                                    <div>
+                                        <label for="plan-scoring" class="block text-gray-300 font-semibold mb-2">Scoring</label>
+                                        <select id="plan-scoring" class="form-select w-full">
+                                            <option value="ppr" selected>PPR</option>
+                                            <option value="hppr">Half-PPR</option>
+                                            <option value="standard">Standard</option>
+                                        </select>
+                                    </div>
+                                    <div>
+                                        <label for="plan-size" class="block text-gray-300 font-semibold mb-2">League Size</label>
+                                        <select id="plan-size" class="form-select w-full">
+                                            <option value="12" selected>12 Teams</option>
+                                            <option value="10">10 Teams</option>
+                                            <option value="14">14 Teams</option>
+                                        </select>
+                                    </div>
+                                    <div>
+                                        <label for="plan-pick" class="block text-gray-300 font-semibold mb-2">Your Draft Pick</label>
+                                        <select id="plan-pick" class="form-select w-full"></select>
+                                    </div>
+                                    <button id="generate-plan-btn" class="cta-btn w-full !text-base">Generate My AI Draft Plan</button>
+                                </div>
+                            </div>
+                            <div class="lg:col-span-2">
+                                <div id="plan-output-container" class="prose prose-invert prose-lg max-w-none bg-gray-900/30 p-4 md:p-6 rounded-lg min-h-[300px]">
+                                    <p class="text-gray-400">Your personalized AI draft plan will appear here.</p>
+                                </div>
+                            </div>
                         </div>
+                    </div>
 
                     <div x-show="tab === 'perfect-draft'" id="goat-draft-build-container">
+                        <div class="grid grid-cols-1 lg:grid-cols-4 gap-6 md:gap-8">
+                            <div class="lg:col-span-1 space-y-4">
+                                <h2 class="text-2xl font-bold text-teal-300 text-center">Draft Settings</h2>
+                                <div>
+                                    <label for="build-league-type" class="block text-gray-300 font-semibold mb-2">League Type</label>
+                                    <select id="build-league-type" class="form-select w-full"><option value="redraft">Redraft</option></select>
+                                </div>
+                                <div>
+                                    <label for="build-scoring-type" class="block text-gray-300 font-semibold mb-2">Scoring</label>
+                                    <select id="build-scoring-type" class="form-select w-full"><option value="ppr">PPR</option><option value="hppr">Half-PPR</option><option value="standard">Standard</option></select>
+                                </div>
+                                <div>
+                                    <label for="build-league-size" class="block text-gray-300 font-semibold mb-2">League Size</label>
+                                    <select id="build-league-size" class="form-select w-full"><option value="10">10-Team</option><option value="12" selected>12-Team</option><option value="14">14-Team</option></select>
+                                </div>
+                                <div>
+                                    <label for="build-draft-position" class="block text-gray-300 font-semibold mb-2">Draft Position</label>
+                                    <select id="build-draft-position" class="form-select w-full"></select>
+                                </div>
+                                <div>
+                                    <h3 class="block text-gray-300 font-semibold mb-2 text-center">Roster Settings</h3>
+                                    <div id="roster-settings-container" class="grid grid-cols-2 gap-4"></div>
+                                </div>
+                                <button id="generate-build-btn" class="cta-btn w-full">Generate My Perfect Draft</button>
+                            </div>
+                            <div class="lg:col-span-3">
+                                <div id="build-results-wrapper" class="hidden">
+                                    <h2 class="text-3xl font-bold text-yellow-400 text-center mb-4">Your Perfect Draft Results</h2>
+                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                        <div id="starters-list" class="space-y-2 p-4 bg-gray-900/30 rounded-lg"></div>
+                                        <div id="bench-list" class="space-y-2 p-4 bg-gray-900/30 rounded-lg"></div>
+                                    </div>
+                                </div>
+                                <div id="build-loading-spinner" class="hidden text-center p-8"><div class="loader"></div><p>Simulating thousands of drafts...</p></div>
+                                <div id="build-placeholder" class="text-center p-8 bg-gray-900/20 rounded-lg flex flex-col items-center justify-center min-h-[400px]">
+                                    <p class="text-xl text-gray-400">Your optimal draft results will be displayed here.</p>
+                                </div>
+                            </div>
                         </div>
+                    </div>
 
                     <div x-show="tab === 'sheet'" id="goat-cheat-sheet-container">
+                        <h2 class="text-2xl md:text-3xl font-bold text-teal-300 mb-4 text-center">AI-Powered Cheat Sheet</h2>
+                        <div class="p-4 md:p-6 bg-gray-800 bg-opacity-80 rounded-xl shadow-lg border border-teal-600 mb-8">
+                            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+                                <div>
+                                    <label for="sheet-player-search" class="block text-sm font-medium text-gray-300 mb-1">Player Name</label>
+                                    <input type="text" id="sheet-player-search" class="form-input" placeholder="e.g., CeeDee Lamb...">
+                                </div>
+                                <div>
+                                    <label for="sheet-position-filter" class="block text-sm font-medium text-gray-300 mb-1">Position</label>
+                                    <select id="sheet-position-filter" class="form-select">
+                                        <option value="ALL">All Positions</option>
+                                        <option value="QB">QB</option><option value="RB">RB</option><option value="WR">WR</option><option value="TE">TE</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label for="sheet-ai-tag-filter" class="block text-sm font-medium text-gray-300 mb-1">AI Tag</label>
+                                    <select id="sheet-ai-tag-filter" class="form-select">
+                                        <option value="ALL">All Tags</option>
+                                        <option value="Sleeper">Sleeper</option>
+                                        <option value="Bust">Bust</option>
+                                        <option value="High Upside">High Upside</option>
+                                        <option value="Safe Floor">Safe Floor</option>
+                                    </select>
+                                </div>
+                            </div>
                         </div>
+                        <div class="overflow-x-auto tool-card p-0">
+                            <table class="w-full text-left whitespace-nowrap">
+                                <thead class="bg-gray-700 bg-opacity-80 text-teal-300 uppercase text-sm">
+                                    <tr>
+                                        <th class="p-4">Player</th>
+                                        <th class="p-4 text-center">Pos</th>
+                                        <th class="p-4 text-center hidden sm:table-cell">Team</th>
+                                        <th class="p-4 text-center hidden md:table-cell">ADP (PPR)</th>
+                                        <th class="p-4 text-center hidden md:table-cell">VORP</th>
+                                        <th class="p-4 text-center">AI Tag</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="cheat-sheet-table-body" class="bg-gray-900 bg-opacity-70 divide-y divide-gray-700 text-white">
+                                    <tr><td colspan="6"><div class="loader my-8"></div></td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
 
                     <div x-show="tab === 'trade'" id="goat-trade-analyzer-container">
                         <div id="trade-analyzer">
@@ -97,52 +212,4 @@
                                         </div>
                                         <button id="add-pick-btn-1" class="w-full mt-2 bg-teal-800/50 text-teal-200 p-2 rounded-md hover:bg-teal-700/50 transition">Add Pick</button>
                                     </div>
-                                    <div id="trade-team-1" class="space-y-2 pt-2 min-h-[50px]"></div>
-                                </div>
-                                <div class="trade-card p-4 md:p-6 space-y-4">
-                                    <h3 class="font-bold text-xl text-green-400 mb-3">You Get</h3>
-                                    <div class="relative">
-                                        <input type="text" id="trade-search-2" class="form-input" placeholder="Search Player...">
-                                        <ul id="trade-autocomplete-2" class="autocomplete-list"></ul>
-                                    </div>
-                                     <div class="trade-pick-controls hidden">
-                                        <div class="grid grid-cols-3 gap-2 items-center">
-                                            <select id="trade-pick-year-2" class="form-select col-span-1"><option value="2025">2025</option><option value="2026">2026</option></select>
-                                            <select id="trade-pick-round-2" class="form-select col-span-1"><option value="1">1st</option><option value="2">2nd</option><option value="3">3rd</option></select>
-                                             <input type="number" id="trade-pick-number-2" class="form-input col-span-1" placeholder="Pick #">
-                                        </div>
-                                         <button id="add-pick-btn-2" class="w-full mt-2 bg-teal-800/50 text-teal-200 p-2 rounded-md hover:bg-teal-700/50 transition">Add Pick</button>
-                                    </div>
-                                    <div id="trade-team-2" class="space-y-2 pt-2 min-h-[50px]"></div>
-                                </div>
-                            </div>
-                            <div class="text-center mt-8">
-                                <button id="analyze-trade-btn" class="cta-btn text-lg">Analyze Trade</button>
-                            </div>
-                            <div id="trade-results" class="hidden mt-8 tool-card p-6"></div>
-                        </div>
-                    </div>
-
-                     <div x-show="tab === 'chat'" id="goat-ai-analyst-container">
-                        <div class="flex flex-col h-[60vh] bg-gray-900/40 rounded-lg">
-                            <h2 class="text-2xl font-bold text-teal-300 text-center p-4 border-b border-gray-700">AI Analyst Chat</h2>
-                            <div id="chat-window" class="flex-grow p-4 space-y-4 overflow-y-auto">
-                                </div>
-                            <div class="p-4 border-t border-gray-700 flex items-center">
-                                <input type="text" id="chat-input" class="form-input flex-grow" placeholder="Ask about a player, trade, or strategy...">
-                                <button id="send-chat-button" class="cta-btn !rounded-lg !px-6 !py-3 ml-4">Send</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-    </main>
-
-    <div id="player-popup-card" class="hidden"></div>
-
-    <footer class="bg-gray-900 text-teal-400 py-6 border-t-2 border-teal-500">
-        </footer>
-    <script src="script.js"></script>
-</body>
-</html>
+                                    <div id="trade-team-1" class="space
