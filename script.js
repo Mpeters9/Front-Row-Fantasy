@@ -341,7 +341,6 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         },
         
-        // --- Articles Page / AI Briefing Room ---
         initArticlesPage() {
             const controls = {
                 promptTextarea: document.getElementById('ai-article-prompt'),
@@ -414,6 +413,42 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         },
 
+        async generateDailyBriefing() {
+            const container = document.getElementById('daily-briefing-content');
+            if (!container) return;
+
+            const prompt = `
+                Act as a fantasy football analyst providing a "Daily Briefing". 
+                Generate a short, engaging summary for a fantasy football website's homepage.
+                The output MUST be a single block of clean, valid HTML.
+                It should have three sections, each with an h3 heading:
+                1. "Top Headline": A major piece of recent NFL news and its fantasy impact.
+                2. "Player to Watch": Highlight a player who has an interesting situation or matchup this week.
+                3. "Sleeper of the Day": Identify a lesser-known player who could have a surprise performance.
+                Keep the analysis for each section to 2-3 sentences. Be insightful and concise.
+            `;
+            
+            try {
+                let chatHistory = [{ role: "user", parts: [{ text: prompt }] }];
+                const payload = { contents: chatHistory, generationConfig: { responseMimeType: "text/html" } };
+                const apiKey = ""; 
+                const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
+                
+                const response = await fetch(apiUrl, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+                if (!response.ok) throw new Error(`API Error: ${response.statusText}`);
+                const result = await response.json();
+
+                if (result.candidates && result.candidates[0]?.content?.parts[0]?.text) {
+                    container.innerHTML = result.candidates[0].content.parts[0].text;
+                } else {
+                    throw new Error('No content returned from AI.');
+                }
+            } catch (error) {
+                console.error("Gemini API error for briefing:", error);
+                container.innerHTML = `<p class="text-red-400 text-center">Could not generate the daily briefing at this time. Please check back later.</p>`;
+            }
+        },
+
         initTopPlayers() { /* Unchanged */ },
         initStatsPage() { /* Unchanged */ },
         updateStatsTable(position, players) { /* Unchanged */ },
@@ -450,7 +485,6 @@ document.addEventListener('DOMContentLoaded', () => {
         addPlayerPopupListeners() { /* Unchanged */ },
         updateAndShowPopup(player, event) { /* Unchanged */ },
         async getAiPlayerAnalysis(playerName) { /* Unchanged */ },
-        async generateDailyBriefing() { /* Unchanged */ },
         loadArticleContent() { /* Unchanged */ },
         initWaiverWirePage() { /* Unchanged */ },
         initLeagueDominatorPage() { /* Unchanged */ },
