@@ -169,23 +169,16 @@ body {
 .draft-button { background-color: var(--c-teal-500); color: white; border: none; border-radius: 0.375rem; padding: 0.5rem 1rem; font-weight: 600; cursor: pointer; transition: background-color 0.2s; }
 .draft-button:hover { background-color: #0f766e; }
 .my-team-player { display: flex; align-items: center; padding: 0.4rem 0.5rem; font-size: 0.9rem; border-radius: 0.25rem; border-left-width: 4px; }
-.draft-board-header { display: none; }
-.draft-board-body { display: flex; flex-direction: column; }
-.draft-pick { display: grid; grid-template-columns: auto 1fr; gap: 0.75rem; align-items: center; padding: 0.75rem; border-bottom: 1px solid var(--c-gray-800); }
-.pick-player-name { font-weight: 600; color: #e5e7eb; font-size: 1rem; }
+.draft-board-header { display: flex; font-weight: bold; background-color: #111827; border-radius: 0.5rem 0.5rem 0 0; }
+.draft-board-team-header { flex: 1 1 0; min-width: 100px; padding: 0.75rem; text-align: center; border-right: 1px solid var(--c-gray-700); white-space: nowrap; }
+.draft-board-team-header:last-child { border-right: none; }
+.user-team-header { background-color: var(--c-teal-500); color: var(--c-gray-900); }
+.draft-board-body { display: grid; }
+.draft-pick { display: block; padding: 0.5rem; border-right: 1px solid var(--c-gray-800); border-bottom: 1px solid var(--c-gray-800);}
+.pick-player-name { font-weight: 600; color: #e5e7eb; font-size: 0.9rem; }
 .pick-player-info { font-size: 0.8rem; color: #9ca3af; }
 .user-pick { background-color: rgba(250, 204, 21, 0.05); border-left: 3px solid var(--c-yellow-400); }
 .pick-number { font-size: 0.75rem; color: #6b7280; font-weight: bold; }
-
-@media (min-width: 1024px) {
-    .draft-board-header { display: flex; font-weight: bold; background-color: #111827; border-radius: 0.5rem 0.5rem 0 0; }
-    .draft-board-team-header { flex: 1 1 0; min-width: 100px; padding: 0.75rem; text-align: center; border-right: 1px solid var(--c-gray-700); white-space: nowrap; }
-    .draft-board-team-header:last-child { border-right: none; }
-    .user-team-header { background-color: var(--c-teal-500); color: var(--c-gray-900); }
-    .draft-board-body { display: grid; }
-    .draft-pick { display: block; padding: 0.5rem; border-right: 1px solid var(--c-gray-800); }
-    .pick-player-name { font-size: 0.9rem; }
-}
 
 /* --- Position Colors --- */
 .player-pos-qb, .pick-pos-qb { border-color: #3b82f6; } .pick-pos-qb { background-color: rgba(59, 130, 246, 0.15); }
@@ -194,7 +187,7 @@ body {
 .player-pos-te, .pick-pos-te { border-color: #f97316; } .pick-pos-te { background-color: rgba(249, 115, 22, 0.15); }
 .player-pos-k, .player-pos-dst { border-color: #6b7280; }
 .pick-pos-k, .pick-pos-dst { background-color: rgba(107, 114, 128, 0.15); }
-
 .player-pos-pick { border-color: #a855f7; }
 
 .player-card { display: flex; align-items: center; padding: 0.5rem 0.75rem; border-left-width: 4px; }
+
