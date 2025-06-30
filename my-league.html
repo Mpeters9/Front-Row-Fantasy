@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Front Row Fantasy - My League</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="icon" href="favicon.ico" type="image/x-icon">
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="min-h-screen flex flex-col font-poppins bg-gradient-to-br from-[#0f2027] to-[#2c5364]">
+    <header class="sticky top-0 z-50 bg-opacity-98 bg-gray-900 shadow-lg border-b-2 border-teal-500">
+        <div class="max-w-7xl mx-auto px-4 flex justify-between items-center py-3">
+            <a href="index.html" class="text-2xl font-bold text-yellow-400 text-glow">Front Row Fantasy</a>
+            <nav class="hidden md:flex space-x-6 text-teal-200">
+                <a href="index.html" class="hover:text-yellow-400 transition-colors">Home</a>
+                <a href="goat.html" class="hover:text-yellow-400 transition-colors">GOAT</a>
+                <a href="mock-draft.html" class="hover:text-yellow-400 transition-colors">Mock Draft</a>
+                <a href="articles.html" class="hover:text-yellow-400 transition-colors">Articles</a>
+                <a href="players.html" class="hover:text-yellow-400 transition-colors">Players</a>
+                <a href="stats.html" class="hover:text-yellow-400 transition-colors">Stats</a>
+                <a href="waiver-wire.html" class="hover:text-yellow-400 transition-colors">Waiver Wire</a>
+                <a href="league-dominator.html" class="hover:text-yellow-400 transition-colors">League Dominator</a>
+                <a href="dynasty-dashboard.html" class="hover:text-yellow-400 transition-colors">Dynasty</a>
+                <a href="my-league.html" class="text-yellow-400 font-bold" aria-current="page">My League</a>
+            </nav>
+            <div class="md:hidden">
+                <button id="mobile-menu-button" class="text-teal-400 hover:text-yellow-400 focus:outline-none">
+                    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
+                </button>
+            </div>
+        </div>
+        <nav id="mobile-menu" class="md:hidden hidden px-4 pb-3 space-y-2"></nav>
+    </header>
+
+    <main class="flex-grow max-w-7xl mx-auto py-8 px-4 w-full">
+        <section id="my-league-page">
+            <div id="logged-out-view">
+                <div class="text-center">
+                    <h1 class="text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-yellow-300 to-teal-300 mb-4 text-glow-gold">Connect Your League</h1>
+                    <p class="text-xl text-teal-200 max-w-3xl mx-auto mb-8">
+                        Sign in and sync your fantasy league to unlock a personalized experience.
+                    </p>
+                    <button id="login-button" class="cta-btn text-lg">Login or Sign Up</button>
+                </div>
+            </div>
+            <div id="logged-in-view" class="hidden">
+                <h1 class="text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-yellow-300 to-teal-300 mb-4 text-glow-gold text-center">My League Dashboard</h1>
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                    <div class="lg:col-span-2 tool-card">
+                        <h2 class="text-3xl font-bold text-center mb-6 text-teal-300">Your Team</h2>
+                        <div id="my-team-roster" class="space-y-3"><div class="loader"></div></div>
+                    </div>
+                    <div class="lg:col-span-1 space-y-8">
+                        <div class="tool-card">
+                            <h2 class="text-3xl font-bold text-center mb-6 text-teal-300">This Week's Matchup</h2>
+                            <div id="my-matchup" class="space-y-3"><div class="loader"></div></div>
+                        </div>
+                        <div class="tool-card">
+                            <h2 class="text-3xl font-bold text-center mb-6 text-teal-300">Top Waiver Wire Adds</h2>
+                            <div id="my-waiver-wire" class="space-y-3"><div class="loader"></div></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <div id="login-modal" class="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center hidden z-50">
+        <div class="bg-gray-800 p-8 rounded-lg shadow-xl w-full max-w-md">
+            <h2 class="text-3xl font-bold text-center mb-6 text-yellow-400">Welcome Back</h2>
+            <div class="space-y-4">
+                <input type="email" placeholder="Email" class="form-input w-full">
+                <input type="password" placeholder="Password" class="form-input w-full">
+                <button id="submit-login-button" class="cta-btn w-full">Sign In</button>
+                <p class="text-center text-gray-400">or</p>
+                <button class="w-full bg-blue-600 text-white font-bold py-2 px-4 rounded-lg hover:bg-blue-700 transition-colors">
+                    Sign in with Google
+                </button>
+                <p class="text-center text-sm text-gray-400">
+                    Don't have an account? <a href="#" class="text-teal-400 hover:underline">Sign Up</a>
+                </p>
+            </div>
+            <button id="close-login-modal" class="absolute top-4 right-4 text-gray-400 hover:text-white">&times;</button>
+        </div>
+    </div>
+    
+    <div id="player-popup-card" class="hidden"></div>
+
+    <footer class="bg-gray-900 text-teal-400 py-6 border-t-2 border-teal-500 mt-12">
+        <div class="mb-2 flex flex-wrap justify-center gap-x-6 gap-y-2 text-teal-200">
+           <a href="index.html" class="hover:text-yellow-400 transition-colors">Home</a>
+           <a href="goat.html" class="hover:text-yellow-400 transition-colors">GOAT</a>
+           <a href="mock-draft.html" class="hover:text-yellow-400 transition-colors">Mock Draft</a>
+           <a href="articles.html" class="hover:text-yellow-400 transition-colors">Articles</a>
+           <a href="players.html" class="hover:text-yellow-400 transition-colors">Players</a>
+           <a href="stats.html" class="hover:text-yellow-400 transition-colors">Stats</a>
+           <a href="waiver-wire.html" class="hover:text-yellow-400 transition-colors">Waiver Wire</a>
+           <a href="league-dominator.html" class="hover:text-yellow-400 transition-colors">League Dominator</a>
+           <a href="dynasty-dashboard.html" class="hover:text-yellow-400 transition-colors">Dynasty</a>
+           <a href="my-league.html" class="text-yellow-400 font-bold" aria-current="page">My League</a>
+        </div>
+        <div class="text-center text-sm">© 2025 Front Row Fantasy. All rights reserved.</div>
+    </footer>
+    <script src="script.js"></script>
+</body>
+</html>
