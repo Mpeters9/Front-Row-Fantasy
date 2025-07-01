@@ -6,11 +6,11 @@ const app = express();
 const port = 3000;
 
 app.use(express.json());
-app.use(express.static('.')); // This line serves all your existing files (html, css, etc.)
+app.use(express.static('.')); // This serves your existing HTML, CSS, and JS files
 
 app.post('/api/generate', async (req, res) => {
     const { prompt } = req.body;
-    const API_KEY = process.env.API_KEY;
+    const API_KEY = "AIzaSyBhg7SCkGnCoG0RjVv0z7681QbKDMc5Qw4"; // Your new API key is now here
 
     if (!API_KEY) {
         return res.status(500).json({ error: 'API key not configured on the server.' });
