@@ -1,19 +1,19 @@
 const express = require('express');
 const fetch = require('node-fetch');
-require('dotenv').config();
+require('dotenv').config(); // This line loads the .env file
 
 const app = express();
 const port = 3000;
 
 app.use(express.json());
-app.use(express.static('.')); // This serves your existing HTML, CSS, and JS files
+app.use(express.static('.')); // This serves your HTML, CSS, and client-side JS
 
 app.post('/api/generate', async (req, res) => {
     const { prompt } = req.body;
-    const API_KEY = "AIzaSyBhg7SCkGnCoG0RjVv0z7681QbKDMc5Qw4"; // Your new API key is now here
+    const API_KEY = process.env.API_KEY; // This securely reads the key from your .env file
 
     if (!API_KEY) {
-        return res.status(500).json({ error: 'API key not configured on the server.' });
+        return res.status(500).json({ error: 'API key not configured on the server. Make sure you have a .env file.' });
     }
 
     try {
