@@ -67,6 +67,19 @@
                                         <label for="plan-pick" class="block text-gray-300 font-semibold mb-2">Your Draft Pick</label>
                                         <select id="plan-pick" class="form-select w-full"></select>
                                     </div>
+                                    <div>
+                                        <label for="plan-style" class="block text-gray-300 font-semibold mb-2">Draft Style</label>
+                                        <select id="plan-style" class="form-select w-full">
+                                            <option value="Best Player Available" selected>Best Player Available</option>
+                                            <option value="Hero RB">Hero RB</option>
+                                            <option value="Zero RB">Zero RB</option>
+                                            <option value="Robust RB">Robust RB</option>
+                                        </select>
+                                    </div>
+                                    <div>
+                                        <label for="plan-notes" class="block text-gray-300 font-semibold mb-2">Custom Notes for AI</label>
+                                        <textarea id="plan-notes" class="form-input w-full" rows="3" placeholder="e.g., Prioritize young players, avoid players with injury history..."></textarea>
+                                    </div>
                                     <button id="generate-plan-btn" class="cta-btn w-full !text-base">Generate My AI Draft Plan</button>
                                 </div>
                             </div>
@@ -237,6 +250,8 @@
 
     <footer class="bg-gray-900 text-teal-400 py-6 border-t-2 border-teal-500">
     </footer>
-    <script src="script.js"></script>
+    
+    <script src="main.js"></script>
+    <script src="goat-hub.js"></script>
 </body>
 </html>
