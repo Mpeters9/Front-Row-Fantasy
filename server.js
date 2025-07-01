@@ -1,38 +1,38 @@
 const express = require('express');
-const fetch = require('node-fetch');
-require('dotenv').config(); // This line loads the .env file
+const axios = require('axios'); // Use axios instead of node-fetch
+require('dotenv').config();
 
 const app = express();
 const port = 3000;
 
 app.use(express.json());
-app.use(express.static('.')); // This serves your HTML, CSS, and client-side JS
+app.use(express.static('.'));
 
 app.post('/api/generate', async (req, res) => {
     const { prompt } = req.body;
-    const API_KEY = process.env.API_KEY; // This securely reads the key from your .env file
+    const API_KEY = process.env.API_KEY;
 
     if (!API_KEY) {
-        return res.status(500).json({ error: 'API key not configured on the server. Make sure you have a .env file.' });
+        return res.status(500).json({ error: 'API key not configured on the server.' });
     }
 
     try {
-        const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${API_KEY}`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
+        const response = await axios.post(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${API_KEY}`, {
+            contents: [{
+                parts: [{
+                    text: prompt
+                }]
+            }]
+        }, {
+            headers: {
+                'Content-Type': 'application/json'
+            }
         });
 
-        if (!response.ok) {
-            const errorBody = await response.text();
-            throw new Error(`Google AI API error: ${response.statusText} - ${errorBody}`);
-        }
-
-        const data = await response.json();
-        res.json(data);
+        res.json(response.data);
 
     } catch (error) {
-        console.error('Server Error:', error);
+        console.error('Server Error:', error.response ? error.response.data : error.message);
         res.status(500).json({ error: 'Failed to fetch from Google AI API.' });
     }
 });
