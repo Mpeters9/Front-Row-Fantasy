@@ -129,10 +129,9 @@ document.addEventListener('DOMContentLoaded', () => {
         },
 
         initializePageFeatures() {
-            // This function is now much cleaner. It calls the specific initializers for each page.
-            if (document.getElementById('daily-briefing-section')) this.generateDailyBriefing();
+            if (document.getElementById('daily-briefing-section') || document.getElementById('waiver-wire-personalized')) this.initPersonalizedHomepage();
             if (document.getElementById('top-players-section')) this.initTopPlayers();
-            // The GOAT Hub logic is now in its own file (goat-hub.js)
+            if (document.getElementById('goat-hub-page')) this.initGoatHub();
             if (document.getElementById('mock-draft-simulator')) this.initMockDraftSimulator();
             if (document.getElementById('stats-page')) this.initStatsPage();
             if (document.getElementById('players-page')) this.initPlayersPage();
@@ -142,10 +141,11 @@ document.addEventListener('DOMContentLoaded', () => {
             if (document.getElementById('league-dominator-page')) this.initLeagueDominatorPage();
             if (document.getElementById('dynasty-dashboard-page')) this.initDynastyDashboardPage();
             if (document.getElementById('my-league-page')) this.initMyLeaguePage();
-            this.initPersonalizedHomepage();
         },
-
+        
         initPersonalizedHomepage() {
+            this.generateDailyBriefing();
+            
             const waiverContainer = document.getElementById('waiver-wire-personalized');
             if (waiverContainer) {
                 const waiverTargets = this.playerData.filter(p => p.vorp > 10 && p.adp_ppr > 120).slice(0, 3);
@@ -301,14 +301,12 @@ document.addEventListener('DOMContentLoaded', () => {
             return "";
         },
         
-        // ... all other init functions and their helpers go here (initTopPlayers, initStatsPage, etc.)
-        // This file does NOT contain initGoatHub or its related functions.
+        // ... (The rest of the functions from the last complete script would go here)
+        // e.g., initGoatHub, generateAiDraftPlan, initMockDraftSimulator, etc.
     };
     
     window.App = App;
     window.callApi = callApi;
 
-    App.init().then(() => {
-        document.dispatchEvent(new CustomEvent('playerDataLoaded'));
-    });
+    App.init();
 });
