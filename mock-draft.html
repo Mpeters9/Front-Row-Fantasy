@@ -11,27 +11,6 @@
 </head>
 <body class="min-h-screen flex flex-col font-poppins bg-gradient-to-br from-[#0f2027] to-[#2c5364]">
     <header class="sticky top-0 z-50 bg-opacity-98 bg-gray-900 shadow-lg border-b-2 border-teal-500">
-        <div class="max-w-7xl mx-auto px-4 flex justify-between items-center py-3">
-            <a href="index.html" class="text-xl md:text-2xl font-bold text-yellow-400 text-glow">Front Row Fantasy</a>
-            <nav class="hidden md:flex space-x-6 text-teal-200">
-                <a href="index.html" class="hover:text-yellow-400 transition-colors">Home</a>
-                <a href="goat.html" class="hover:text-yellow-400 transition-colors">GOAT</a>
-                <a href="mock-draft.html" class="text-yellow-400 font-bold" aria-current="page">Mock Draft</a>
-                <a href="articles.html" class="hover:text-yellow-400 transition-colors">Articles</a>
-                <a href="players.html" class="hover:text-yellow-400 transition-colors">Players</a>
-                <a href="stats.html" class="hover:text-yellow-400 transition-colors">Stats</a>
-                <a href="waiver-wire.html" class="hover:text-yellow-400 transition-colors">Waiver Wire</a>
-                <a href="league-dominator.html" class="hover:text-yellow-400 transition-colors">League Dominator</a>
-                <a href="dynasty-dashboard.html" class="hover:text-yellow-400 transition-colors">Dynasty</a>
-                <a href="my-league.html" class="hover:text-yellow-400 transition-colors">My League</a>
-            </nav>
-            <div class="md:hidden">
-                <button id="mobile-menu-button" class="text-teal-400 hover:text-yellow-400 focus:outline-none">
-                    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
-                </button>
-            </div>
-        </div>
-        <nav id="mobile-menu" class="md:hidden hidden px-4 pb-3 space-y-2"></nav>
     </header>
 
     <main class="flex-grow flex flex-col w-full">
@@ -80,16 +59,7 @@
                 </div>
                 <div class="col-span-12 lg:col-span-5 order-first lg:order-none">
                     <div id="best-available-container" class="draft-card p-0 flex flex-col h-full">
-                        <div class="flex justify-between items-center p-4">
-                            <h3 class="text-xl font-bold text-teal-300">Best Available</h3>
-                            <select id="best-available-pos-filter" class="form-select !w-auto">
-                                <option value="ALL">All</option>
-                                <option value="QB">QB</option>
-                                <option value="RB">RB</option>
-                                <option value="WR">WR</option>
-                                <option value="TE">TE</option>
-                            </select>
-                        </div>
+                        <h3 class="text-xl font-bold text-center text-teal-300 p-4">Best Available Players</h3>
                         <div id="best-available-list" class="space-y-1 px-2 pb-2 overflow-y-auto flex-grow" style="max-height: 75vh;"></div>
                     </div>
                 </div>
@@ -118,24 +88,12 @@
             </div>
         </section>
     </main>
-
+    
     <div id="player-popup-card" class="hidden"></div>
 
-    <footer class="bg-gray-900 text-teal-400 py-6 border-t-2 border-teal-500">
-        <div class="mb-2 flex flex-wrap justify-center gap-x-6 gap-y-2 text-teal-200">
-           <a href="index.html" class="hover:text-yellow-400 transition-colors">Home</a>
-           <a href="goat.html" class="hover:text-yellow-400 transition-colors">GOAT</a>
-           <a href="mock-draft.html" class="text-yellow-400 font-bold" aria-current="page">Mock Draft</a>
-           <a href="articles.html" class="hover:text-yellow-400 transition-colors">Articles</a>
-           <a href="players.html" class="hover:text-yellow-400 transition-colors">Players</a>
-           <a href="stats.html" class="hover:text-yellow-400 transition-colors">Stats</a>
-           <a href="waiver-wire.html" class="hover:text-yellow-400 transition-colors">Waiver Wire</a>
-           <a href="league-dominator.html" class="hover:text-yellow-400 transition-colors">League Dominator</a>
-           <a href="dynasty-dashboard.html" class="hover:text-yellow-400 transition-colors">Dynasty</a>
-           <a href="my-league.html" class="hover:text-yellow-400 transition-colors">My League</a>
-        </div>
-        <div class="text-center text-sm">© 2025 Front Row Fantasy. All rights reserved.</div>
+    <footer class="bg-gray-900 text-teal-400 py-6 border-t-2 border-teal-500 mt-auto">
     </footer>
-    <script src="script.js"></script>
+    <script src="main.js"></script>
+    <script src="mock-draft.js"></script>
 </body>
 </html>

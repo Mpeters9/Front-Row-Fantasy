@@ -129,9 +129,10 @@ document.addEventListener('DOMContentLoaded', () => {
         },
 
         initializePageFeatures() {
+            // This function is now much cleaner. It calls the specific initializers for each page.
             if (document.getElementById('daily-briefing-section')) this.generateDailyBriefing();
             if (document.getElementById('top-players-section')) this.initTopPlayers();
-            // GOAT Hub initialization is now in goat-hub.js
+            // The GOAT Hub logic is now in its own file (goat-hub.js)
             if (document.getElementById('mock-draft-simulator')) this.initMockDraftSimulator();
             if (document.getElementById('stats-page')) this.initStatsPage();
             if (document.getElementById('players-page')) this.initPlayersPage();
@@ -299,14 +300,15 @@ document.addEventListener('DOMContentLoaded', () => {
             if (vorp > 50 && player.tier < 4) return "Safe Floor";
             return "";
         },
-        // ... (The rest of your site-wide functions remain here)
+        
+        // ... all other init functions and their helpers go here (initTopPlayers, initStatsPage, etc.)
+        // This file does NOT contain initGoatHub or its related functions.
     };
     
-    window.App = App; // Make the App object global
-    window.callApi = callApi; // Make callApi global
+    window.App = App;
+    window.callApi = callApi;
 
     App.init().then(() => {
-        // Dispatch a custom event when the main App is initialized and data is loaded
         document.dispatchEvent(new CustomEvent('playerDataLoaded'));
     });
 });
