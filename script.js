@@ -1,9 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
 
-    // This script will now make requests to your local server, which will then use the API key.
-    
     const config = {
-        dataFiles: ['players.json'],
         rosterSettings: { QB: 1, RB: 2, WR: 2, TE: 1, FLEX: 1, DST: 1, K: 1, BENCH: 7 },
         positions: ["QB", "RB", "WR", "TE", "DST", "K"],
         flexPositions: ["RB", "WR", "TE"],
@@ -132,7 +129,7 @@ document.addEventListener('DOMContentLoaded', () => {
         initPersonalizedHomepage() {
             const waiverContainer = document.getElementById('waiver-wire-personalized');
             if (waiverContainer) {
-                const waiverTargets = this.playerData.filter(p => p.vorp > 10 && p.adp.ppr > 120).slice(0, 3);
+                const waiverTargets = this.playerData.filter(p => p.vorp > 10 && p.adp_ppr > 120).slice(0, 3);
                 waiverContainer.innerHTML = waiverTargets.map(player => `
                     <div class="my-team-player player-pos-${player.simplePosition.toLowerCase()}">
                         <strong class="w-10">${player.simplePosition}</strong>
@@ -207,9 +204,11 @@ document.addEventListener('DOMContentLoaded', () => {
             if (this.hasDataLoaded) return;
             try {
                 this.hasDataLoaded = true;
-                const response = await fetch(config.dataFiles[0]);
-                if (!response.ok) throw new Error(`Failed to load ${config.dataFiles[0]}`);
+                const response = await fetch('/api/players'); // Fetch from your new API endpoint
+                if (!response.ok) throw new Error('Failed to load player data from server');
                 let data = await response.json();
+                
+                // Re-calculate dynamic data on the client-side
                 this.playerData = data.map(p => {
                     const fantasyPoints = this.generateFantasyPoints(p);
                     const advancedStats = this.generateAdvancedStats(p, fantasyPoints);
@@ -219,9 +218,10 @@ document.addEventListener('DOMContentLoaded', () => {
                         simplePosition: (p.position||'N/A').replace(/\d+$/,'').trim().toUpperCase(),
                         fantasyPoints: fantasyPoints,
                         ...advancedStats,
-                        aiTag: aiTag
+                        aiTag: aiTag,
+                        adp: { ppr: p.adp_ppr, hppr: p.adp_hppr, standard: p.adp_standard } // Reconstruct ADP object
                     }
-                }).sort((a,b)=>b.fantasyPoints-a.fantasyPoints);
+                }).sort((a,b)=>b.fantasyPoints - a.fantasyPoints);
             } catch (error) { console.error("Error loading player data:", error); this.displayDataError(); }
         },
         displayDataError() {
@@ -273,7 +273,7 @@ document.addEventListener('DOMContentLoaded', () => {
             return stats;
         },
         generateAiTag(player, stats) {
-            const adp = player.adp?.ppr || 200;
+            const adp = player.adp_ppr || 200;
             const vorp = player.vorp || 0;
 
             if (vorp > 80 && adp > 60) return "Sleeper";
@@ -287,6 +287,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 size: document.getElementById('plan-size'),
                 pick: document.getElementById('plan-pick'),
                 scoring: document.getElementById('plan-scoring'),
+                style: document.getElementById('plan-style'),
+                notes: document.getElementById('plan-notes'),
                 generateBtn: document.getElementById('generate-plan-btn'),
                 outputContainer: document.getElementById('plan-output-container')
             };
@@ -311,7 +313,7 @@ document.addEventListener('DOMContentLoaded', () => {
         },
         async generateAiDraftPlan(controls) {
             controls.outputContainer.innerHTML = `<div class="loader"></div><p class="text-center text-teal-300 mt-2">Your personal AI analyst is crafting the perfect draft strategy...</p>`;
-            const { size, pick, scoring } = controls;
+            const { size, pick, scoring, style, notes } = controls;
             
             const prompt = `
                 Act as the world's greatest fantasy football draft analyst. A user needs a strategic draft plan for their upcoming fantasy draft.
@@ -320,8 +322,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 - League Size: ${size.value} teams
                 - Scoring Format: ${scoring.value}
                 - Their Draft Position: Pick #${pick.value}
-        
-                Provide a detailed, round-by-round draft strategy. 
+                - Desired Draft Style: ${style.value}
+                
+                User's Custom Notes: "${notes.value || 'None'}"
+
+                Provide a detailed, round-by-round draft strategy based on these settings and notes. 
                 
                 **IMPORTANT FORMATTING RULES:**
                 - The entire output must be a single block of clean, valid HTML.
@@ -337,14 +342,14 @@ document.addEventListener('DOMContentLoaded', () => {
             const controls = { searchInput: document.getElementById('sheet-player-search'), positionFilter: document.getElementById('sheet-position-filter'), aiTagFilter: document.getElementById('sheet-ai-tag-filter'), tableBody: document.getElementById('cheat-sheet-table-body') };
             if (!controls.tableBody) return;
             const renderSheet = () => {
-                let filteredPlayers = [...this.playerData.filter(p => p.adp?.ppr)];
+                let filteredPlayers = [...this.playerData];
                 const pos = controls.positionFilter.value;
                 if (pos !== 'ALL') filteredPlayers = filteredPlayers.filter(p => p.simplePosition === pos);
                 const tag = controls.aiTagFilter.value;
                 if (tag !== 'ALL') filteredPlayers = filteredPlayers.filter(p => p.aiTag === tag);
                 const searchTerm = controls.searchInput.value.toLowerCase();
                 if (searchTerm) filteredPlayers = filteredPlayers.filter(p => p.name.toLowerCase().includes(searchTerm));
-                filteredPlayers.sort((a,b) => (a.adp.ppr || 999) - (b.adp.ppr || 999));
+                filteredPlayers.sort((a,b) => (a.adp_ppr || 999) - (b.adp_ppr || 999));
                 controls.tableBody.innerHTML = filteredPlayers.map(p => this.createCheatSheetRow(p)).join('');
                 if (filteredPlayers.length === 0) controls.tableBody.innerHTML = `<tr><td colspan="6" class="text-center py-8 text-gray-400">No players match your criteria.</td></tr>`;
                 this.addPlayerPopupListeners();
@@ -1134,9 +1139,9 @@ document.addEventListener('DOMContentLoaded', () => {
         initWaiverWirePage() {
             const container = document.getElementById('waiver-wire-container');
             if (!container) return;
-            const waiverTargets = this.playerData.filter(p => p.vorp > 10 && p.adp.ppr > 100).sort((a,b)=>b.vorp - a.vorp).slice(0, 5);
+            const waiverTargets = this.playerData.filter(p => p.vorp > 10 && p.adp_ppr > 100).sort((a,b)=>b.vorp - a.vorp).slice(0, 5);
             container.innerHTML = waiverTargets.map(player => {
-                return `<div class="tool-card p-4"><div class="flex flex-col sm:flex-row items-center"><div class="flex-grow text-center sm:text-left"><h3 class="text-2xl font-bold text-yellow-400">${player.name}</h3><p class="text-teal-300">${player.team} - ${player.simplePosition}</p></div><div class="text-center sm:text-right mt-4 sm:mt-0"><p class="text-lg font-semibold text-white">Rostered: <span class="text-yellow-400">${Math.max(1, 100 - (player.adp.ppr / 2.5)).toFixed(1)}%</span></p><button class="cta-btn !px-4 !py-2 text-sm mt-2">Add Player</button></div></div><div class="mt-4"><h4 class="font-semibold text-teal-300">AI Analysis</h4><p class="text-gray-300 text-sm">With a VORP of ${player.vorp.toFixed(1)} and an ADP outside the top 100, ${player.name} represents a significant value on the waiver wire. Their recent usage suggests an expanding role in the offense, making them a priority addition for teams needing depth at ${player.simplePosition}.</p></div></div>`;
+                return `<div class="tool-card p-4"><div class="flex flex-col sm:flex-row items-center"><div class="flex-grow text-center sm:text-left"><h3 class="text-2xl font-bold text-yellow-400">${player.name}</h3><p class="text-teal-300">${player.team} - ${player.simplePosition}</p></div><div class="text-center sm:text-right mt-4 sm:mt-0"><p class="text-lg font-semibold text-white">Rostered: <span class="text-yellow-400">${Math.max(1, 100 - (player.adp_ppr / 2.5)).toFixed(1)}%</span></p><button class="cta-btn !px-4 !py-2 text-sm mt-2">Add Player</button></div></div><div class="mt-4"><h4 class="font-semibold text-teal-300">AI Analysis</h4><p class="text-gray-300 text-sm">With a VORP of ${player.vorp.toFixed(1)} and an ADP outside the top 100, ${player.name} represents a significant value on the waiver wire. Their recent usage suggests an expanding role in the offense, making them a priority addition for teams needing depth at ${player.simplePosition}.</p></div></div>`;
             }).join('');
         },
         initLeagueDominatorPage() {
@@ -1152,17 +1157,95 @@ document.addEventListener('DOMContentLoaded', () => {
             commissionerReportContainer.innerHTML = `<div><h4 class="font-semibold text-teal-300">Biggest Blowout</h4><p class="text-gray-300 text-sm">The Gurus defeated The Bye Week Blues, 155.2 to 85.1.</p></div><div class="mt-4"><h4 class="font-semibold text-teal-300">Closest Matchup</h4><p class="text-gray-300 text-sm">Redzone Rascals squeaked by Hail Mary Heroes, 121.5 to 120.9.</p></div><div class="mt-4"><h4 class="font-semibold text-teal-300">Player of the Week</h4><p class="text-gray-300 text-sm">Ja'Marr Chase put up an incredible 42.5 points.</p></div>`;
         },
         initDynastyDashboardPage() {
-            const tradeBlockContainer = document.getElementById('dynasty-trade-block-container');
-            const rookieDraftContainer = document.getElementById('dynasty-rookie-draft-container');
-            const prospectsContainer = document.getElementById('dynasty-prospects-container');
-            if (!tradeBlockContainer) return;
+            const controls = {
+                tradeBlockContainer: document.getElementById('dynasty-trade-block-container'),
+                rookieDraftContainer: document.getElementById('dynasty-rookie-draft-container'),
+                prospectsContainer: document.getElementById('dynasty-prospects-container'),
+                prospectSelect: document.getElementById('prospect-select'),
+                scoutProspectBtn: document.getElementById('scout-prospect-btn'),
+                prospectReport: document.getElementById('prospect-scouting-report'),
+                simulateTeamBtn: document.getElementById('simulate-team-btn'),
+                simulationResults: document.getElementById('team-simulation-results'),
+                simulationChart: document.getElementById('team-simulation-chart')
+            };
+
+            if (!controls.tradeBlockContainer) return;
+
             const tradeBlockPlayers = this.playerData.filter(p => p.tier > 2 && p.tier < 6).slice(0, 5);
-            tradeBlockContainer.innerHTML = tradeBlockPlayers.map(player => `<div class="tool-card p-4 flex justify-between items-center"><div class="flex-grow"><p class="font-bold text-xl text-white player-name-link" data-player-name="${player.name}">${player.name}</p><p class="text-teal-300">${player.team} - ${player.simplePosition}</p></div><button class="cta-btn !px-4 !py-2 text-sm">Inquire</button></div>`).join('');
+            controls.tradeBlockContainer.innerHTML = tradeBlockPlayers.map(player => `<div class="tool-card p-4 flex justify-between items-center"><div class="flex-grow"><p class="font-bold text-xl text-white player-name-link" data-player-name="${player.name}">${player.name}</p><p class="text-teal-300">${player.team} - ${player.simplePosition}</p></div><button class="cta-btn !px-4 !py-2 text-sm">Inquire</button></div>`).join('');
+
             const rookiePlayers = this.playerData.filter(p => p.tier > 8 && ['QB', 'RB', 'WR', 'TE'].includes(p.simplePosition)).slice(0, 12);
-            rookieDraftContainer.innerHTML = rookiePlayers.map((player, index) => `<div class="flex items-center p-3 rounded-lg bg-gray-800/50"><div class="w-12 text-center text-xl font-bold text-teal-300">${(Math.floor(index/4)+1)}.${(index%4)+1}</div><div class="flex-grow"><p class="font-semibold text-lg text-white player-name-link" data-player-name="${player.name}">${player.name}</p><p class="text-sm text-gray-400">${player.team} - ${player.simplePosition}</p></div><button class="cta-btn !px-4 !py-2 text-sm">Draft</button></div>`).join('');
-            const prospectPlayers = [ { name: "Luther Burden", position: "WR", school: "Missouri", analysis: "A dynamic playmaker with elite speed and route-running ability. Projects as a top-10 NFL draft pick." }, { name: "Shemar Stewart", position: "EDGE", school: "Texas A&M", analysis: "A dominant pass-rusher with a high motor and a knack for getting to the quarterback. A future IDP stud." }, { name: "Carson Beck", position: "QB", school: "Georgia", analysis: "A prototypical pocket passer with excellent accuracy and decision-making. High-floor prospect for Superflex leagues." }, ];
-            prospectsContainer.innerHTML = prospectPlayers.map(player => `<div class="tool-card p-4"><h3 class="text-2xl font-bold text-yellow-400">${player.name}</h3><p class="text-teal-300">${player.school} - ${player.position}</p><p class="text-gray-300 mt-2">${player.analysis}</p></div>`).join('');
+            controls.rookieDraftContainer.innerHTML = rookiePlayers.map((player, index) => `<div class="flex items-center p-3 rounded-lg bg-gray-800/50"><div class="w-12 text-center text-xl font-bold text-teal-300">${(Math.floor(index/4)+1)}.${(index%4)+1}</div><div class="flex-grow"><p class="font-semibold text-lg text-white player-name-link" data-player-name="${player.name}">${player.name}</p><p class="text-sm text-gray-400">${player.team} - ${player.simplePosition}</p></div><button class="cta-btn !px-4 !py-2 text-sm">Draft</button></div>`).join('');
+
+            const prospectPlayers = [
+                { name: "Luther Burden", position: "WR", school: "Missouri", analysis: "A dynamic playmaker with elite speed and route-running ability. Projects as a top-10 NFL draft pick." },
+                { name: "Shemar Stewart", position: "EDGE", school: "Texas A&M", analysis: "A dominant pass-rusher with a high motor and a knack for getting to the quarterback. A future IDP stud." },
+                { name: "Carson Beck", position: "QB", school: "Georgia", analysis: "A prototypical pocket passer with excellent accuracy and decision-making. High-floor prospect for Superflex leagues." },
+            ];
+            controls.prospectsContainer.innerHTML = prospectPlayers.map(player => `<div class="tool-card p-4"><h3 class="text-2xl font-bold text-yellow-400">${player.name}</h3><p class="text-teal-300">${player.school} - ${player.position}</p><p class="text-gray-300 mt-2">${player.analysis}</p></div>`).join('');
+
+            prospectPlayers.forEach(prospect => {
+                controls.prospectSelect.add(new Option(prospect.name, prospect.name));
+            });
+
+            controls.scoutProspectBtn.addEventListener('click', () => {
+                const prospectName = controls.prospectSelect.value;
+                this.getProspectScoutingReport(prospectName);
+            });
+
+            controls.simulateTeamBtn.addEventListener('click', () => {
+                this.runTeamSimulation();
+            });
+
             this.addPlayerPopupListeners();
+        },
+        async getProspectScoutingReport(prospectName) {
+            const reportContainer = document.getElementById('prospect-scouting-report');
+            reportContainer.innerHTML = '<div class="loader"></div>';
+            const prompt = `Provide a detailed scouting report for the following college football prospect: ${prospectName}. The report should be in HTML format and include headings (h3) for "Strengths", "Weaknesses", and "Fantasy Outlook".`;
+            reportContainer.innerHTML = await callApi(prompt);
+        },
+        async runTeamSimulation() {
+            const resultsContainer = document.getElementById('team-simulation-results');
+            resultsContainer.innerHTML = '<div class="loader"></div>';
+            const prompt = `Simulate my dynasty fantasy football team's performance over the next 3 seasons. Provide a short analysis and a projected team value for each year in a JSON array format like this: [{"year": "2025", "value": 850}, {"year": "2026", "value": 950}, {"year": "2027", "value": 900}]`;
+            const simulationData = await callApi(prompt);
+            try {
+                const data = JSON.parse(simulationData);
+                resultsContainer.innerHTML = `<canvas id="team-simulation-chart"></canvas>`;
+                const ctx = document.getElementById('team-simulation-chart').getContext('2d');
+                new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: data.map(d => d.year),
+                        datasets: [{
+                            label: 'Projected Team Value',
+                            data: data.map(d => d.value),
+                            borderColor: '#2dd4bf',
+                            backgroundColor: 'rgba(45, 212, 191, 0.2)',
+                            fill: true,
+                            tension: 0.4
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                labels: {
+                                    color: '#e2e8f0'
+                                }
+                            }
+                        },
+                        scales: {
+                            x: { ticks: { color: '#9ca3af' } },
+                            y: { ticks: { color: '#9ca3af' } }
+                        }
+                    }
+                });
+            } catch (error) {
+                resultsContainer.innerHTML = `<p class="text-red-400">Could not parse the simulation data from the AI.</p>`;
+            }
         },
         initMyLeaguePage() {
             const loginButton = document.getElementById('login-button');
@@ -1182,8 +1265,8 @@ document.addEventListener('DOMContentLoaded', () => {
             const myTeamRoster = document.getElementById('my-team-roster');
             const myMatchup = document.getElementById('my-matchup');
             const myWaiverWire = document.getElementById('my-waiver-wire');
-            const myTeam = this.playerData.filter(p => p.adp.ppr < 60).slice(0, 8);
-            const waiverPlayers = this.playerData.filter(p => p.vorp > 10 && p.adp.ppr > 120).slice(0, 3);
+            const myTeam = this.playerData.filter(p => p.adp_ppr < 60).slice(0, 8);
+            const waiverPlayers = this.playerData.filter(p => p.vorp > 10 && p.adp_ppr > 120).slice(0, 3);
             myTeamRoster.innerHTML = myTeam.map(p => this.createPlayerCardHTML(p, p.simplePosition)).join('');
             myMatchup.innerHTML = `<div class="text-center"><p class="text-lg font-bold text-yellow-400">My Team</p><p class="text-3xl font-bold text-white">125.4</p><p class="text-sm text-gray-400">Projected Points</p></div><div class="text-center text-gray-400 font-bold my-2">VS</div><div class="text-center"><p class="text-lg font-bold text-gray-300">Opponent</p><p class="text-3xl font-bold text-white">118.9</p><p class="text-sm text-gray-400">Projected Points</p></div>`;
             myWaiverWire.innerHTML = waiverPlayers.map(p => `<div class="my-team-player player-pos-${p.simplePosition.toLowerCase()}"><strong class="w-10">${p.simplePosition}</strong><span class="player-name-link" data-player-name="${p.name}">${p.name}</span></div>`).join('');
