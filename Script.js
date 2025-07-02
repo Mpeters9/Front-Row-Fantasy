@@ -323,8 +323,15 @@ document.addEventListener('DOMContentLoaded', () => {
         async generateAiDraftPlan(controls) {
             controls.outputContainer.innerHTML = `<div class="loader"></div><p class="text-center text-teal-300 mt-2">Your personal AI analyst is crafting the perfect draft strategy...</p>`;
             const { size, pick, scoring, style, notes } = controls;
+
+            const pickNum = parseInt(pick.value);
+            const leagueSize = parseInt(size.value);
+
+            // Create lists of realistically available players
+            const earlyRoundTargets = this.playerData.filter(p => p.adp_ppr >= pickNum - 3 && p.adp_ppr <= pickNum + leagueSize).map(p => p.name).join(', ');
+            const midRoundTargets = this.playerData.filter(p => p.adp_ppr >= (leagueSize * 2) && p.adp_ppr <= (leagueSize * 6)).map(p => p.name).join(', ');
+            const lateRoundTargets = this.playerData.filter(p => p.adp_ppr > (leagueSize * 6)).map(p => p.name).join(', ');
             
-            // **Contrarian Logic:** 15% chance to ask for a bold take.
             const isContrarian = Math.random() < 0.15;
             const contrarianInstruction = isContrarian 
                 ? `Incorporate at least one bold, contrarian prediction (e.g., a highly-ranked player you'd avoid, or a late-round sleeper you love) and justify it with a short, convincing argument. Place this in a special section using <div class="p-3 my-4 bg-gray-900/50 border-l-4 border-yellow-400"> with a heading like <strong>Contrarian Corner:</strong>. ` 
@@ -340,6 +347,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 - Desired Draft Style: ${style.value}
                 
                 User's Custom Notes: "${notes.value || 'None'}"
+
+                Here are the pools of realistically available players based on their draft position:
+                - Early-Round Targets (Rounds 1-2): ${earlyRoundTargets}
+                - Mid-Round Targets (Rounds 3-6): ${midRoundTargets}
+                - Late-Round Targets (Rounds 7+): ${lateRoundTargets}
+
+                Base your recommendations for each round ONLY on players from these provided lists. Do not suggest a player in a round where they are not available. Adhere strictly to the user's selected Draft Style.
 
                 ${contrarianInstruction}
 
