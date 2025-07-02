@@ -30,26 +30,37 @@ def get_all_players():
 
 @app.route('/api/generate', methods=['POST'])
 def generate_content():
-    API_KEY = os.getenv("API_KEY")
-    if not API_KEY:
-        return jsonify({"error": "API key not configured."}), 500
+    # Using the API key you provided directly
+    API_KEY = "AIzaSyDi4lOrriC1U4e-xgtSITFUBpIsmx1jY5U"
     
     data = request.get_json()
     prompt = data.get('prompt')
     if not prompt:
         return jsonify({"error": "No prompt provided."}), 400
 
+    # Using a correct, stable model endpoint
+    api_url = f'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key={API_KEY}'
+    
     try:
         response = requests.post(
-            f'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key={API_KEY}',
+            api_url,
             headers={'Content-Type': 'application/json'},
             json={"contents": [{"parts": [{"text": prompt}]}]}
         )
         response.raise_for_status()
-        return jsonify(response.json())
+        
+        api_response = response.json()
+        
+        if 'candidates' in api_response and api_response['candidates'][0].get('content', {}).get('parts', [{}])[0].get('text'):
+             return jsonify(api_response)
+        else:
+             return jsonify({"error": "Unexpected response structure from AI.", "details": api_response}), 500
     
-    except requests.exceptions.RequestException as e:
-        print(f"Server Error: {e}")
+    except requests.exceptions.HTTPError as http_err:
+        print(f"HTTP error occurred: {http_err.response.text}")
+        return jsonify({"error": "Failed to fetch from Google AI API.", "details": http_err.response.text}), http_err.response.status_code
+    except requests.exceptions.RequestException as req_err:
+        print(f"Request error occurred: {req_err}")
         return jsonify({"error": "Failed to fetch from Google AI API."}), 500
 
 if __name__ == '__main__':
