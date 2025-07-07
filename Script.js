@@ -327,12 +327,12 @@ document.addEventListener('DOMContentLoaded', () => {
             const pickNum = parseInt(pick.value);
             const leagueSize = parseInt(size.value);
 
-            // Create lists of realistically available players
-            const earlyRoundTargets = this.playerData.filter(p => p.adp_ppr >= pickNum - 3 && p.adp_ppr <= pickNum + leagueSize).map(p => p.name).join(', ');
-            const midRoundTargets = this.playerData.filter(p => p.adp_ppr >= (leagueSize * 2) && p.adp_ppr <= (leagueSize * 6)).map(p => p.name).join(', ');
+            // Create lists of realistically available players for each round
+            const earlyRoundTargets = this.playerData.filter(p => p.adp_ppr >= pickNum - 3 && p.adp_ppr <= pickNum + (leagueSize * 1.5)).map(p => p.name).join(', ');
+            const midRoundTargets = this.playerData.filter(p => p.adp_ppr >= (leagueSize * 2.5) && p.adp_ppr <= (leagueSize * 6)).map(p => p.name).join(', ');
             const lateRoundTargets = this.playerData.filter(p => p.adp_ppr > (leagueSize * 6)).map(p => p.name).join(', ');
             
-            const isContrarian = Math.random() < 0.15;
+            const isContrarian = Math.random() < 0.15; // Set to 15%
             const contrarianInstruction = isContrarian 
                 ? `Incorporate at least one bold, contrarian prediction (e.g., a highly-ranked player you'd avoid, or a late-round sleeper you love) and justify it with a short, convincing argument. Place this in a special section using <div class="p-3 my-4 bg-gray-900/50 border-l-4 border-yellow-400"> with a heading like <strong>Contrarian Corner:</strong>. ` 
                 : '';
